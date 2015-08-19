@@ -378,7 +378,7 @@ begin
   dbgrid1.columns[0].readonly:=FALSE;
   
   dbgrid1.Columns[0].Width:=42;//联机号
-  dbgrid1.Columns[1].Width:=55;//唯一编号
+  dbgrid1.Columns[1].Width:=100;//条码号
   dbgrid1.Columns[2].Width:=30;//选择
   dbgrid1.Columns[3].Width:=40;//样本号
   dbgrid1.Columns[4].Width:=42;//姓名
@@ -535,10 +535,10 @@ begin
   if (Sender as TLabeledEdit).Text='' then exit;
 
   ServerDate:=GetServerDate(DM.ADOConnection1);
-  
+
   ADOQuery1.Close;
   ADOQuery1.SQL.Clear;
-  ADOQuery1.SQL.Text:=SHOW_CHK_CON_HIS+' where convert(varchar(50),cch.unid)='''+LabeledEdit2.Text+''' or dbo.uf_GetExtBarcode(cch.unid) like ''%'+LabeledEdit2.Text+'%'' ';
+  ADOQuery1.SQL.Text:=SHOW_CHK_CON_HIS+' where dbo.uf_GetExtBarcode(cch.unid) like ''%,'+(Sender as TLabeledEdit).Text+',%'' ';
   ADOQuery1.Open;
 
   adotemp22:=tadoquery.Create(nil);
