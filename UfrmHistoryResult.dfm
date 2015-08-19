@@ -1,0 +1,64 @@
+object frmHistoryResult: TfrmHistoryResult
+  Left = 192
+  Top = 103
+  Width = 544
+  Height = 375
+  Caption = #21382#21490#26816#39564#32467#26524#26354#32447
+  Color = clBtnFace
+  Font.Charset = ANSI_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -13
+  Font.Name = #23435#20307
+  Font.Style = []
+  OldCreateOrder = False
+  Position = poScreenCenter
+  OnClose = FormClose
+  OnKeyDown = FormKeyDown
+  OnShow = FormShow
+  PixelsPerInch = 96
+  TextHeight = 13
+  object Chart1: TChart
+    Left = 0
+    Top = 0
+    Width = 351
+    Height = 341
+    AllowZoom = False
+    BackWall.Brush.Color = clWhite
+    BackWall.Brush.Style = bsClear
+    Title.Text.Strings = (
+      'TChart')
+    Legend.Visible = False
+    View3D = False
+    Align = alClient
+    Color = clWindow
+    TabOrder = 0
+    OnDblClick = Chart1DblClick
+    object Series1: TLineSeries
+      Marks.ArrowLength = 8
+      Marks.Visible = False
+      SeriesColor = clRed
+      Pointer.InflateMargins = True
+      Pointer.Style = psRectangle
+      Pointer.Visible = True
+      XValues.DateTime = False
+      XValues.Name = 'X'
+      XValues.Multiplier = 1.000000000000000000
+      XValues.Order = loAscending
+      YValues.DateTime = False
+      YValues.Name = 'Y'
+      YValues.Multiplier = 1.000000000000000000
+      YValues.Order = loNone
+    end
+  end
+  object Memo1: TMemo
+    Left = 351
+    Top = 0
+    Width = 185
+    Height = 341
+    Align = alRight
+    BorderStyle = bsNone
+    ReadOnly = True
+    ScrollBars = ssBoth
+    TabOrder = 1
+  end
+end
