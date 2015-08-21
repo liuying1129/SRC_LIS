@@ -21,30 +21,30 @@ object frmExtItemSetup: TfrmExtItemSetup
   TextHeight = 13
   object Label1: TLabel
     Left = 75
-    Top = 11
+    Top = 7
     Width = 59
     Height = 13
     Caption = #20445#30041#23383#27573'1'
   end
   object Label2: TLabel
     Left = 75
-    Top = 118
+    Top = 114
     Width = 59
     Height = 13
     Caption = #20445#30041#23383#27573'2'
   end
   object BitBtn2: TBitBtn
     Left = 135
-    Top = 420
+    Top = 435
     Width = 75
     Height = 25
     Caption = #20445#23384
-    TabOrder = 12
+    TabOrder = 13
     OnClick = BitBtn2Click
   end
   object LabeledEdit6: TLabeledEdit
     Left = 136
-    Top = 222
+    Top = 218
     Width = 500
     Height = 19
     Color = 16767438
@@ -59,7 +59,7 @@ object frmExtItemSetup: TfrmExtItemSetup
   end
   object LabeledEdit7: TLabeledEdit
     Left = 136
-    Top = 246
+    Top = 242
     Width = 500
     Height = 19
     Color = 16767438
@@ -74,7 +74,7 @@ object frmExtItemSetup: TfrmExtItemSetup
   end
   object LabeledEdit8: TLabeledEdit
     Left = 136
-    Top = 270
+    Top = 266
     Width = 500
     Height = 19
     Color = 16767438
@@ -89,7 +89,7 @@ object frmExtItemSetup: TfrmExtItemSetup
   end
   object LabeledEdit9: TLabeledEdit
     Left = 136
-    Top = 294
+    Top = 290
     Width = 500
     Height = 19
     Color = 16767438
@@ -104,7 +104,7 @@ object frmExtItemSetup: TfrmExtItemSetup
   end
   object LabeledEdit10: TLabeledEdit
     Left = 136
-    Top = 318
+    Top = 314
     Width = 500
     Height = 19
     Color = 16767438
@@ -119,7 +119,7 @@ object frmExtItemSetup: TfrmExtItemSetup
   end
   object LabeledEdit11: TLabeledEdit
     Left = 136
-    Top = 342
+    Top = 338
     Width = 500
     Height = 19
     Color = 16767438
@@ -134,7 +134,7 @@ object frmExtItemSetup: TfrmExtItemSetup
   end
   object DateTimePicker1: TDateTimePicker
     Left = 614
-    Top = 366
+    Top = 362
     Width = 22
     Height = 21
     Date = 40647.679042129630000000
@@ -145,7 +145,7 @@ object frmExtItemSetup: TfrmExtItemSetup
   end
   object DateTimePicker2: TDateTimePicker
     Left = 614
-    Top = 392
+    Top = 388
     Width = 22
     Height = 21
     Date = 40647.690831944440000000
@@ -156,7 +156,7 @@ object frmExtItemSetup: TfrmExtItemSetup
   end
   object LabeledEdit12: TLabeledEdit
     Left = 136
-    Top = 367
+    Top = 363
     Width = 478
     Height = 19
     Color = 16767438
@@ -171,7 +171,7 @@ object frmExtItemSetup: TfrmExtItemSetup
   end
   object LabeledEdit13: TLabeledEdit
     Left = 136
-    Top = 393
+    Top = 389
     Width = 478
     Height = 19
     Color = 16767438
@@ -186,7 +186,7 @@ object frmExtItemSetup: TfrmExtItemSetup
   end
   object LabeledEdit4: TMemo
     Left = 136
-    Top = 8
+    Top = 4
     Width = 500
     Height = 100
     ImeName = #20013#25991'('#31616#20307') - '#19975#33021#20116#31508#36755#20837#27861
@@ -195,12 +195,27 @@ object frmExtItemSetup: TfrmExtItemSetup
   end
   object LabeledEdit5: TMemo
     Left = 136
-    Top = 115
+    Top = 111
     Width = 500
     Height = 100
     ImeName = #20013#25991'('#31616#20307') - '#19975#33021#20116#31508#36755#20837#27861
     ScrollBars = ssBoth
     TabOrder = 1
+  end
+  object LabeledEdit1: TLabeledEdit
+    Left = 136
+    Top = 413
+    Width = 500
+    Height = 19
+    Color = 16767438
+    Ctl3D = False
+    EditLabel.Width = 78
+    EditLabel.Height = 13
+    EditLabel.Caption = #25512#36865#32852#26426#26631#35782
+    ImeName = #20013#25991'('#31616#20307') - '#19975#33021#20116#31508#36755#20837#27861
+    LabelPosition = lpLeft
+    ParentCtl3D = False
+    TabOrder = 12
   end
   object DosMove1: TDosMove
     Active = True

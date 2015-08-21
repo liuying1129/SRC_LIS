@@ -25,6 +25,7 @@ type
     Label1: TLabel;
     LabeledEdit5: TMemo;
     Label2: TLabel;
+    LabeledEdit1: TLabeledEdit;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormShow(Sender: TObject);
     procedure BitBtn2Click(Sender: TObject);
@@ -77,7 +78,7 @@ begin
   adotemp11.SQL.Clear;
   adotemp11.SQL.Text:='select Reserve1 as ±£Áô×Ö¶Î1,Reserve2 as ±£Áô×Ö¶Î2,Dosage1 as ±£Áô×Ö¶Î3,Dosage2 as ±£Áô×Ö¶Î4,'+
   'Reserve5 as ±£Áô×Ö¶Î5,Reserve6 as ±£Áô×Ö¶Î6,Reserve7 as ±£Áô×Ö¶Î7,Reserve8 as ±£Áô×Ö¶Î8,'+
-  'Reserve9 as ±£Áô×Ö¶Î9,Reserve10 as ±£Áô×Ö¶Î10 from clinicchkitem WHERE unid='+inttostr(pItem_Unid);
+  'Reserve9 as ±£Áô×Ö¶Î9,Reserve10 as ±£Áô×Ö¶Î10,defaultvalue from clinicchkitem WHERE unid='+inttostr(pItem_Unid);
   adotemp11.Open;
   LabeledEdit4.Text:=trim(adotemp11.fieldbyname('±£Áô×Ö¶Î1').AsString);
   LabeledEdit5.Text:=trim(adotemp11.fieldbyname('±£Áô×Ö¶Î2').AsString);
@@ -89,6 +90,7 @@ begin
   LabeledEdit11.Text:=adotemp11.fieldbyname('±£Áô×Ö¶Î8').AsString;
   LabeledEdit12.Text:=adotemp11.fieldbyname('±£Áô×Ö¶Î9').AsString;
   LabeledEdit13.Text:=adotemp11.fieldbyname('±£Áô×Ö¶Î10').AsString;
+  LabeledEdit1.Text:=adotemp11.fieldbyname('defaultvalue').AsString;
   adotemp11.Free;
 end;
 
@@ -104,7 +106,7 @@ begin
     adotemp11.Close;
     adotemp11.SQL.Clear;
     adotemp11.SQL.Text:=' Update clinicchkitem  '+
-    '  set Reserve1=:Reserve1,Reserve2=:Reserve2,Dosage1=:Reserve3,Dosage2=:Reserve4,Reserve5=:Reserve5,Reserve6=:Reserve6,Reserve7=:Reserve7,Reserve8=:Reserve8,Reserve9=:Reserve9,Reserve10=:Reserve10  '+
+    '  set Reserve1=:Reserve1,Reserve2=:Reserve2,Dosage1=:Reserve3,Dosage2=:Reserve4,Reserve5=:Reserve5,Reserve6=:Reserve6,Reserve7=:Reserve7,Reserve8=:Reserve8,Reserve9=:Reserve9,Reserve10=:Reserve10,defaultvalue=:defaultvalue  '+
     '  Where    Unid=:Unid      ';
     adotemp11.Parameters.ParamByName('Reserve1').Value:=trim(LabeledEdit4.Text);
     adotemp11.Parameters.ParamByName('Reserve2').Value:=trim(LabeledEdit5.Text);
@@ -129,6 +131,7 @@ begin
       adotemp11.Parameters.ParamByName('Reserve10').Value:=iReserve10
     else adotemp11.Parameters.ParamByName('Reserve10').Value:=null;
     adotemp11.Parameters.ParamByName('Unid').Value:=pItem_Unid;
+    adotemp11.Parameters.ParamByName('defaultvalue').Value:=trim(LabeledEdit1.Text);//ÍÆËÍÁª»ú±êÊ¶
     adotemp11.ExecSQL;
   adotemp11.Free;
 end;
