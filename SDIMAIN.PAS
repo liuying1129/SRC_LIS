@@ -1742,7 +1742,7 @@ begin
           pWorkID,pWorkCompany,pWorkDepartment,pWorkCategory,pifMarry,pOldAddress,pAddress,pTelephone,
           Pcheck_date,Preport_date,pSJSJ,pJCSJ,
           ValetudinarianInfoId);
-      end else if OldCheckidValue='' then
+      end else if not ifnewadd then//OldCheckidValue=''
       begin
         AddorUpdateResult:=UpdateValetudinarianBasicInfo(Punid,PLSH,pcheckid,Ppatientname,Psex,
           Page,PCaseno,Pbedno,Pdeptname,Pcheck_doctor,Preport_doctor,Poperator,
