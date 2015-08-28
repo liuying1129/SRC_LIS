@@ -148,7 +148,7 @@ begin
       adotemp22.SQL.Text:='select unid from chk_con where patientname='''+XM+''' AND sex='''+XB+''' AND age='''+LL+''' AND combin_id='''+ZB+'''';// dnh='+TJH;
       adotemp22.Open;
       RecNum:=adotemp22.RecordCount;
-      IF RecNum>=1 then ValetudinarianInfoId:=adotemp22.FIELDBYNAME('UNID').AsInteger;
+      IF RecNum>=1 then ValetudinarianInfoId:=adotemp22.FIELDBYNAME('UNID').AsInteger else ValetudinarianInfoId:=-1;
       adotemp22.Free;
       IF RecNum>=1 then//该病人已存在
       begin

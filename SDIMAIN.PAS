@@ -1635,15 +1635,14 @@ var
   pAddress :string;
   pTelephone :string;
 
-  OldCheckidValue:string;
-
   AddorUpdateResult:boolean;
 
   ini:tinifile;
+  
+  ifExistsCheckId:boolean;
+  OldWorkGroup:string;//存在该联机号时的工作组
 begin
   if not ifhaspower(sender,powerstr_js_main) then exit; //权限检查
-
-  OldCheckidValue:=trim(ADObasic.fieldbyname('联机号').AsString);
 
   PDiagnosetype := trim(LabeledEdit12.text); //string 优先级别
   if PDiagnosetype='' then PDiagnosetype:=CGYXJB;
@@ -1673,7 +1672,7 @@ begin
   pissure:=trim(labelededit15.Text);
   pSJSJ:=DateTimePicker3.Time;
   pJCSJ:=DateTimePicker4.Time;
-  pCombin_id:=trim(cbxConnChar.Text); //组别
+  pCombin_id:=trim(cbxConnChar.Text); //工作组
   //pGermName:=trim(LabeledEdit18.Text);//细菌
   //pTjDescription:=Memo1.Text;//结论
   pHis_MzOrZy:=trim(ADObasic.fieldbyname('His门诊或住院').AsString);
@@ -1687,11 +1686,45 @@ begin
   pAddress := trim(lbedtAddress.Text);
   pTelephone := trim(lbedtTelephone.Text);
 
-  //if Ppatientname='' then
-  //begin
-  //  if (MessageDlg('没有填写病人姓名,确实要保存该流水号为"'+PLSH+'"、联机号为"'+Pcheckid+'"的病人记录吗？', mtConfirmation, [mbYes, mbNo], 0) <> mrYes) then exit;
-  //end;
+  ifExistsCheckId:=false;
+
+  //伪代码
+  {if 有新联机号 and 该联机号存在 and 该联机号不在当前工作组 then 提示并退出
+
+  if 当前工作组无记录 then 新增
+  else begin
+    if 该联机号存在 then 修改
+    else begin
+      if 新增状态 then 新增 else 修改
+    end
+  end//}
   
+  if Pcheckid<>'' then
+  begin
+    adotemp11:=tadoquery.Create(nil);
+    adotemp11.Connection:=DM.ADOConnection1;
+    adotemp11.Close;
+    adotemp11.SQL.Clear;
+    adotemp11.SQL.Text:='select Unid,combin_id from chk_con where checkid is not null and checkid<>'''' and checkid='''+Pcheckid+''' and '+
+                          ' CONVERT(CHAR(10),check_date,121)=:P_check_date and Diagnosetype=:Diagnosetype ';
+    adotemp11.Parameters.ParamByName('P_check_date').Value:=FormatDateTime('YYYY-MM-DD',Pcheck_date);
+    adotemp11.Parameters.ParamByName('Diagnosetype').Value:=PDiagnosetype;
+    adotemp11.Open;
+    if adotemp11.RecordCount>0 then
+    begin
+      ifExistsCheckId:=true;
+      OldWorkGroup:=adotemp11.fieldbyname('combin_id').AsString;
+      Punid:=adotemp11.fieldbyname('unid').AsInteger;
+    end;
+    adotemp11.Free;
+  end;
+
+  if ifExistsCheckId and (OldWorkGroup<>pCombin_id) then
+  begin
+    MessageDlg('工作组"'+OldWorkGroup+'"中已存在联机号为"'+Pcheckid+'"的病人记录', mtError, [mbYes], 0);
+    exit;
+  end;
+
   if ADObasic.RecordCount=0 then//当前无记录的情况,则肯定是新增
   begin
       AddorUpdateResult:=AddValetudinarianBasicInfo(PLSH,pcheckid,Ppatientname,Psex,
@@ -1702,7 +1735,15 @@ begin
         ValetudinarianInfoId);
   end else//当前有记录的情况
   begin
-    if Pcheckid='' then//联机号输入为空,则新增状态时新增，修改状态时修改
+    if ifExistsCheckId then//该联机号存在
+    begin
+        AddorUpdateResult:=UpdateValetudinarianBasicInfo(Punid,PLSH,pcheckid,Ppatientname,Psex,
+          Page,PCaseno,Pbedno,Pdeptname,Pcheck_doctor,Preport_doctor,Poperator,
+          PDiagnosetype,Pflagetype,Pdiagnose,Ptypeflagcase,pissure,'','',pHis_MzOrZy,
+          pWorkID,pWorkCompany,pWorkDepartment,pWorkCategory,pifMarry,pOldAddress,pAddress,pTelephone,
+          Pcheck_date,Preport_date,pSJSJ,pJCSJ,
+          ValetudinarianInfoId);
+    end else
     begin
       if ifnewadd then//新增
       begin
@@ -1721,45 +1762,6 @@ begin
           Pcheck_date,Preport_date,pSJSJ,pJCSJ,
           ValetudinarianInfoId);
       end;
-    end else
-    //输入了联机号的情况.如果能找到该联机号则修改找到的病人;如果找不到这个联机号且当前选择的这个病人以前无联机号则修改当前选择的这个病人;否则新增
-    begin
-      adotemp11:=tadoquery.Create(nil);
-      adotemp11.Connection:=DM.ADOConnection1;
-      adotemp11.Close;
-      adotemp11.SQL.Clear;
-      adotemp11.SQL.Text:='select Unid from chk_con where checkid is not null and checkid<>'''' and checkid='''+Pcheckid+''' and '+
-                            ' CONVERT(CHAR(10),check_date,121)=:P_check_date and Diagnosetype=:Diagnosetype ';
-      adotemp11.Parameters.ParamByName('P_check_date').Value:=FormatDateTime('YYYY-MM-DD',Pcheck_date);
-      adotemp11.Parameters.ParamByName('Diagnosetype').Value:=PDiagnosetype;
-      adotemp11.Open;
-      if (adotemp11.RecordCount>0) then //有该联机号的情况(如：已经从机器传过来了)，则修改
-      begin
-        Punid:=adotemp11.fieldbyname('unid').AsInteger;
-        AddorUpdateResult:=UpdateValetudinarianBasicInfo(Punid,PLSH,pcheckid,Ppatientname,Psex,
-          Page,PCaseno,Pbedno,Pdeptname,Pcheck_doctor,Preport_doctor,Poperator,
-          PDiagnosetype,Pflagetype,Pdiagnose,Ptypeflagcase,pissure,'','',pHis_MzOrZy,
-          pWorkID,pWorkCompany,pWorkDepartment,pWorkCategory,pifMarry,pOldAddress,pAddress,pTelephone,
-          Pcheck_date,Preport_date,pSJSJ,pJCSJ,
-          ValetudinarianInfoId);
-      end else if not ifnewadd then//OldCheckidValue=''
-      begin
-        AddorUpdateResult:=UpdateValetudinarianBasicInfo(Punid,PLSH,pcheckid,Ppatientname,Psex,
-          Page,PCaseno,Pbedno,Pdeptname,Pcheck_doctor,Preport_doctor,Poperator,
-          PDiagnosetype,Pflagetype,Pdiagnose,Ptypeflagcase,pissure,'','',pHis_MzOrZy,
-          pWorkID,pWorkCompany,pWorkDepartment,pWorkCategory,pifMarry,pOldAddress,pAddress,pTelephone,
-          Pcheck_date,Preport_date,pSJSJ,pJCSJ,
-          ValetudinarianInfoId);
-      end else//无该联机号,则新增
-      begin
-        AddorUpdateResult:=AddValetudinarianBasicInfo(PLSH,pcheckid,Ppatientname,Psex,
-          Page,PCaseno,Pbedno,Pdeptname,Pcheck_doctor,Preport_doctor,Poperator,
-          PDiagnosetype,Pflagetype,Pdiagnose,Ptypeflagcase,pissure,pCombin_id,'','',
-          pWorkID,pWorkCompany,pWorkDepartment,pWorkCategory,pifMarry,pOldAddress,pAddress,pTelephone,
-          Pcheck_date,Preport_date,pSJSJ,pJCSJ,
-          ValetudinarianInfoId);
-      end;
-      adotemp11.Free;
     end;
   end;
   
@@ -3880,7 +3882,7 @@ begin
   adotemp3.Open;
   setlength(GroupBox,adotemp3.RecordCount);
   setlength(Chart,adotemp3.RecordCount);
-  n:=0;m:=0;
+  n:=0;m:=0;k:=-1;Reserve8_1:=-1;Reserve8_2:=-1;
   while not adotemp3.Eof do
   begin
     GroupBox[n]:=TGroupBox.Create(self);
