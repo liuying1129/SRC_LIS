@@ -4047,8 +4047,8 @@ AS
         continue
       end
 
-      insert into chk_con_his (patientname,flagetype,sex,age,report_date,bedno,His_Unid,check_doctor,deptname,combin_id,Caseno,diagnose,Diagnosetype,typeflagcase)  
-      	select patientname,flagetype,sex,age,report_date,bedno,His_Unid,check_doctor,deptname,combin_id,Caseno,diagnose,Diagnosetype,typeflagcase from chk_con_his where unid=@Unid
+      insert into chk_con_his (patientname,flagetype,sex,age,report_date,bedno,His_Unid,check_doctor,deptname,combin_id,Caseno,diagnose,Diagnosetype,typeflagcase,WorkCompany,WorkDepartment,ifMarry)  
+      	select patientname,flagetype,sex,age,report_date,bedno,His_Unid,check_doctor,deptname,combin_id,Caseno,diagnose,Diagnosetype,typeflagcase,WorkCompany,WorkDepartment,ifMarry from chk_con_his where unid=@Unid
       SELECT @SCOPE_IDENTITY=SCOPE_IDENTITY()
       update chk_valu_his set chk_valu_his.pkunid=@SCOPE_IDENTITY 
 	where chk_valu_his.pkunid=@Unid 
