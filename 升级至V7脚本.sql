@@ -814,7 +814,7 @@ begin
                 Combin_Name,
 		sum(getmoney) as tmpView_Getmoney
 		FROM chk_valu_bak 
-		where (select top 1 check_date from chk_con_bak where chk_con_bak.unid=chk_valu_bak.pkunid) between @in_StartDate and @in_StopDate
+		where (select top 1 CAST(CONVERT(CHAR(10),check_date,121) as datetime) from chk_con_bak where chk_con_bak.unid=chk_valu_bak.pkunid) between @in_StartDate and @in_StopDate
 		and Combin_Name is not null
 		and Combin_Name<>''
 	        and itemvalue<>''
@@ -836,7 +836,7 @@ if @in_StaticType='按送检医生'
 begin
   DECLARE Cur_check_doctor Cursor For 
     select isnull(check_doctor,'') FROM Chk_Con_BAK where 
-             check_date between @in_StartDate and @in_StopDate 
+             CAST(CONVERT(CHAR(10),check_date,121) as datetime) between @in_StartDate and @in_StopDate 
 	     group by isnull(check_doctor,'')
 
   Open Cur_check_doctor
@@ -855,7 +855,7 @@ begin
 		Combin_Name,
 		sum(getmoney) as tmpView_Getmoney
 		FROM chk_valu_bak 
-		where (select top 1 check_date from chk_con_bak where chk_con_bak.unid=chk_valu_bak.pkunid) between @in_StartDate and @in_StopDate
+		where (select top 1 CAST(CONVERT(CHAR(10),check_date,121) as datetime) from chk_con_bak where chk_con_bak.unid=chk_valu_bak.pkunid) between @in_StartDate and @in_StopDate
 		and isnull((select top 1 check_doctor from chk_con_bak where chk_con_bak.unid=chk_valu_bak.pkunid),'')=@check_doctor 
 		and Combin_Name is not null
 		and Combin_Name<>''
@@ -892,7 +892,7 @@ if @in_StaticType='按操作者'
 begin
   DECLARE Cur_operator Cursor For 
     select isnull(operator,'') FROM Chk_Con_BAK where 
-             check_date between @in_StartDate and @in_StopDate 
+             CAST(CONVERT(CHAR(10),check_date,121) as datetime) between @in_StartDate and @in_StopDate 
 	     group by isnull(operator,'')
 
   Open Cur_operator
@@ -911,7 +911,7 @@ begin
 		Combin_Name,
 		sum(getmoney) as tmpView_Getmoney
 		FROM chk_valu_bak 
-		where (select top 1 check_date from chk_con_bak where chk_con_bak.unid=chk_valu_bak.pkunid) between @in_StartDate and @in_StopDate
+		where (select top 1 CAST(CONVERT(CHAR(10),check_date,121) as datetime) from chk_con_bak where chk_con_bak.unid=chk_valu_bak.pkunid) between @in_StartDate and @in_StopDate
 		and isnull((select top 1 operator from chk_con_bak where chk_con_bak.unid=chk_valu_bak.pkunid),'')=@operator 
 		and Combin_Name is not null
 		and Combin_Name<>''
@@ -949,7 +949,7 @@ if @in_StaticType='按送检科室'--add by liuying 20100504
 begin
   DECLARE Cur_deptname Cursor For 
     select isnull(deptname,'') FROM Chk_Con_BAK where 
-             check_date between @in_StartDate and @in_StopDate 
+             CAST(CONVERT(CHAR(10),check_date,121) as datetime) between @in_StartDate and @in_StopDate 
 	     group by isnull(deptname,'')
 
   Open Cur_deptname
@@ -968,7 +968,7 @@ begin
 		Combin_Name,
 		sum(getmoney) as tmpView_Getmoney
 		FROM chk_valu_bak 
-		where (select top 1 check_date from chk_con_bak where chk_con_bak.unid=chk_valu_bak.pkunid) between @in_StartDate and @in_StopDate
+		where (select top 1 CAST(CONVERT(CHAR(10),check_date,121) as datetime) from chk_con_bak where chk_con_bak.unid=chk_valu_bak.pkunid) between @in_StartDate and @in_StopDate
 		and isnull((select top 1 deptname from chk_con_bak where chk_con_bak.unid=chk_valu_bak.pkunid),'')=@deptname 
 		and Combin_Name is not null
 		and Combin_Name<>''
@@ -1020,7 +1020,7 @@ begin
 	    cv.combin_name,
 	    sum(cv.getmoney) as tmpView_Getmoney 
 	    from chk_valu_bak cv 
-	    where (select top 1 cc.check_date from chk_con_bak cc where cc.unid=cv.pkunid) between @in_StartDate and @in_StopDate
+	    where (select top 1 CAST(CONVERT(CHAR(10),cc.check_date,121) as datetime) from chk_con_bak cc where cc.unid=cv.pkunid) between @in_StartDate and @in_StopDate
 	    and cv.Combin_Name is not null
 	    and cv.Combin_Name<>''
 	    and cv.itemvalue<>''
