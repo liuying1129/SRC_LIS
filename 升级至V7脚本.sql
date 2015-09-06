@@ -2752,6 +2752,24 @@ AND ISNULL(cc.report_doctor,'')<>''
 and cv.issure='1'
 and isnull(cv.itemvalue,'')<>''
 
+union all
+
+select	cv.valueid as RESULT_ID,
+	(select top 1 cvh.Urine1 from chk_valu_his cvh where cvh.valueid=cv.Surem2) as SAMPLE_NO,
+	cv.itemid as ITEM_CODE,
+	cv.name as ITEM_NAME,
+	cv.itemvalue as TEST_VALUE,
+	dbo.uf_Reference_Ranges(cv.min_value,cv.max_value) as TEXT_RANGE,
+	cv.unit as TEXT_DANWEI,
+	case dbo.uf_ValueAlarm(cv.itemid,cv.Min_value,cv.Max_value,cv.itemvalue) when 1 then 'L' WHEN 2 THEN 'H' ELSE 'N' END as TEXT_NOTE,
+	cc.Audit_Date as REPORT_DATE,
+	cc.report_doctor as REPORT_USER,
+	CV.COMBIN_NAME as FLAG_YQ
+from chk_con_bak cc,chk_valu_bak cv
+where cc.unid=cv.pkunid
+and isnull(cv.itemvalue,'')<>''
+and cc.check_date>getdate()-180
+
 GO
 SET QUOTED_IDENTIFIER OFF 
 GO
