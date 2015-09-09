@@ -2736,7 +2736,7 @@ CREATE VIEW view_UT_LIS_RESULT
 AS
 --LIS提供给标软PEIS的结果视图
 select	cv.valueid as RESULT_ID,
-	(select top 1 cvh.Urine1 from chk_valu_his cvh where cast(cvh.valueid as varchar)=cv.Surem2) as SAMPLE_NO,
+	cc.Caseno as SAMPLE_NO,
 	cv.itemid as ITEM_CODE,
 	cv.name as ITEM_NAME,
 	cv.itemvalue as TEST_VALUE,
@@ -2755,7 +2755,7 @@ and isnull(cv.itemvalue,'')<>''
 union all
 
 select	cv.valueid as RESULT_ID,
-	(select top 1 cvh.Urine1 from chk_valu_his cvh where cast(cvh.valueid as varchar)=cv.Surem2) as SAMPLE_NO,
+	cc.Caseno as SAMPLE_NO,
 	cv.itemid as ITEM_CODE,
 	cv.name as ITEM_NAME,
 	cv.itemvalue as TEST_VALUE,
