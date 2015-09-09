@@ -4132,18 +4132,23 @@ GO
 SET ANSI_NULLS ON 
 GO
 
---触发器TRIGGER_chk_con_PatientInfo_From_HisUnid创建脚本
+--该触发器拆分为Insert、Update两个
+if exists (select name from sysobjects where name='TRIGGER_chk_con_PatientInfo_From_HisUnid' and type='TR')
+  drop TRIGGER TRIGGER_chk_con_PatientInfo_From_HisUnid
+go
+
+--触发器TRIGGER_chk_con_PatientInfo_From_HisUnid_Insert创建脚本
 SET QUOTED_IDENTIFIER ON 
 GO
 SET ANSI_NULLS ON 
 GO
 
-if exists (select name from sysobjects where name='TRIGGER_chk_con_PatientInfo_From_HisUnid' and type='TR')
-  drop TRIGGER TRIGGER_chk_con_PatientInfo_From_HisUnid
+if exists (select name from sysobjects where name='TRIGGER_chk_con_PatientInfo_From_HisUnid_Insert' and type='TR')
+  drop TRIGGER TRIGGER_chk_con_PatientInfo_From_HisUnid_Insert
 go
 
-CREATE TRIGGER TRIGGER_chk_con_PatientInfo_From_HisUnid ON chk_con
-FOR UPDATE,Insert
+CREATE TRIGGER TRIGGER_chk_con_PatientInfo_From_HisUnid_Insert ON chk_con
+FOR Insert
 AS
 --根据His_Unid从chk_con_his取病人信息
   declare @ChkCon_unid int,@ChkCon_His_Unid varchar(50)
@@ -4175,6 +4180,60 @@ AS
          bedno=@bedno,deptname=@deptname,check_doctor=@check_doctor,
          report_date=@report_date,Diagnosetype=@Diagnosetype,flagetype=@flagetype,
          diagnose=@diagnose,typeflagcase=@typeflagcase,issure=@issure,
+         WorkCompany=@WorkCompany,WorkDepartment=@WorkDepartment,ifMarry=@ifMarry 
+  where unid=@ChkCon_unid  
+
+GO
+SET QUOTED_IDENTIFIER OFF 
+GO
+SET ANSI_NULLS ON 
+GO
+
+--触发器TRIGGER_chk_con_PatientInfo_From_HisUnid_Update创建脚本
+SET QUOTED_IDENTIFIER ON 
+GO
+SET ANSI_NULLS ON 
+GO
+
+if exists (select name from sysobjects where name='TRIGGER_chk_con_PatientInfo_From_HisUnid_Update' and type='TR')
+  drop TRIGGER TRIGGER_chk_con_PatientInfo_From_HisUnid_Update
+go
+
+CREATE TRIGGER TRIGGER_chk_con_PatientInfo_From_HisUnid_Update ON chk_con
+FOR Update
+AS
+--根据His_Unid从chk_con_his取病人信息
+--1、当His_Unid修改时，取病人信息
+--2、表示以下字段不允许修改，只会从CHK_CON_HIS中取
+  declare @ChkCon_unid int,@ChkCon_His_Unid varchar(50)
+  SELECT @ChkCon_unid=unid,@ChkCon_His_Unid=His_Unid FROM Inserted
+  
+  if @ChkCon_unid is null return
+  if @ChkCon_unid<=0 return
+  if @ChkCon_His_Unid is null return
+  if @ChkCon_His_Unid='' return
+
+  if not exists(select 1 from chk_con_his where cast(unid as varchar)=@ChkCon_His_Unid) return
+
+  declare @patientname varchar(50),@sex varchar(50),@age varchar(50),@Caseno varchar(50),
+          @bedno varchar(50),@deptname varchar(50),@check_doctor varchar(50),
+          @report_date datetime,@Diagnosetype varchar(50),@flagetype varchar(100),
+          @diagnose varchar(200),/*@typeflagcase varchar(50),@issure varchar(50),*/
+          @WorkCompany varchar(50),@WorkDepartment varchar(50),@ifMarry varchar(50)
+
+  select @patientname=patientname,@sex=sex,@age=age,@Caseno=Caseno,
+         @bedno=bedno,@deptname=deptname,@check_doctor=check_doctor,
+         @report_date=report_date,@Diagnosetype=Diagnosetype,@flagetype=flagetype,
+         @diagnose=diagnose,/*@typeflagcase=typeflagcase,@issure=issure,*/
+         @WorkCompany=WorkCompany,@WorkDepartment=WorkDepartment,@ifMarry=ifMarry 
+  from chk_con_his 
+  where cast(unid as varchar)=@ChkCon_His_Unid
+
+  update chk_con set 
+         patientname=@patientname,sex=@sex,age=@age,Caseno=@Caseno,
+         bedno=@bedno,deptname=@deptname,check_doctor=@check_doctor,
+         report_date=@report_date,Diagnosetype=@Diagnosetype,flagetype=@flagetype,
+         diagnose=@diagnose,/*typeflagcase=@typeflagcase,issure=@issure,*/
          WorkCompany=@WorkCompany,WorkDepartment=@WorkDepartment,ifMarry=@ifMarry 
   where unid=@ChkCon_unid  
 
