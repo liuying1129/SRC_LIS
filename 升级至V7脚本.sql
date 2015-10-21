@@ -3240,32 +3240,34 @@ go
 CREATE TRIGGER TRIGGER_chk_valu_Update_His_Mark ON chk_valu
 FOR Update
 AS
-  declare @issure varchar(10),@issure_Old varchar(10),@Surem2 varchar(15),@Surem2_Old varchar(15)
+  declare @issure varchar(10),@issure_Old varchar(10),@Surem2 varchar(15),@Surem2_Old varchar(15),@valueid int
 
-  SELECT @issure_Old=issure,@Surem2_Old=Surem2 FROM Deleted
+  --SELECT @issure_Old=issure,@Surem2_Old=Surem2 FROM Deleted
 
   DECLARE Cur1 Cursor For 
-    SELECT issure,Surem2 FROM Inserted
+    SELECT issure,Surem2,valueid FROM Inserted
   Open Cur1
-  FETCH NEXT FROM Cur1 INTO @issure,@Surem2
+  FETCH NEXT FROM Cur1 INTO @issure,@Surem2,@valueid
   WHILE @@FETCH_STATUS=0
   BEGIN
     if isnull(@Surem2,'')=''
     begin
-      FETCH NEXT FROM Cur1 INTO @issure,@Surem2
+      FETCH NEXT FROM Cur1 INTO @issure,@Surem2,@valueid
       continue
     end
 
     if cast(@Surem2 AS int)<=0
     begin
-      FETCH NEXT FROM Cur1 INTO @issure,@Surem2
+      FETCH NEXT FROM Cur1 INTO @issure,@Surem2,@valueid
       continue
     end
+
+    SELECT @issure_Old=issure,@Surem2_Old=Surem2 FROM Deleted where valueid=@valueid
 
     if (isnull(@issure_Old,'')=isnull(@issure,''))and(isnull(@Surem2_Old,'')=isnull(@Surem2,'')) 
     --如果可见标志、Chk_Valu_His.ValueId均没更改，则不处理
     begin
-      FETCH NEXT FROM Cur1 INTO @issure,@Surem2
+      FETCH NEXT FROM Cur1 INTO @issure,@Surem2,@valueid
       continue
     end
 
@@ -3275,7 +3277,7 @@ AS
     end else 
       update chk_valu_his set itemvalue=null where cast(valueid as varchar)=@Surem2 and isnull(itemvalue,'')='1'
 
-    FETCH NEXT FROM Cur1 INTO @issure,@Surem2
+    FETCH NEXT FROM Cur1 INTO @issure,@Surem2,@valueid
   END
   CLOSE Cur1
   DEALLOCATE Cur1
@@ -4132,12 +4134,67 @@ GO
 SET ANSI_NULLS ON 
 GO
 
---该触发器拆分为Insert、Update两个
+--触发器TRIGGER_chk_con_PatientInfo_From_HisUnid创建脚本
 if exists (select name from sysobjects where name='TRIGGER_chk_con_PatientInfo_From_HisUnid' and type='TR')
   drop TRIGGER TRIGGER_chk_con_PatientInfo_From_HisUnid
 go
 
+CREATE TRIGGER TRIGGER_chk_con_PatientInfo_From_HisUnid ON chk_con
+FOR Insert,Update
+AS
+--根据His_Unid从chk_con_his取病人信息
+  declare @ChkCon_unid int,@ChkCon_His_Unid varchar(50)
+  SELECT @ChkCon_unid=unid,@ChkCon_His_Unid=His_Unid FROM Inserted
+  
+  if @ChkCon_unid is null return
+  if @ChkCon_unid<=0 return
+  if @ChkCon_His_Unid is null return
+  if @ChkCon_His_Unid='' return
+
+  if not exists(select 1 from chk_con_his where cast(unid as varchar)=@ChkCon_His_Unid) return
+
+  declare @patientname varchar(50),@sex varchar(50),@age varchar(50),@Caseno varchar(50),
+          @bedno varchar(50),@deptname varchar(50),@check_doctor varchar(50),
+          @report_date datetime,@Diagnosetype varchar(50),@flagetype varchar(100),
+          @diagnose varchar(200),@typeflagcase varchar(50),@issure varchar(50),
+          @WorkCompany varchar(50),@WorkDepartment varchar(50),@ifMarry varchar(50)
+
+  select @patientname=patientname,@sex=sex,@age=age,@Caseno=Caseno,
+         @bedno=bedno,@deptname=deptname,@check_doctor=check_doctor,
+         @report_date=report_date,@Diagnosetype=Diagnosetype,@flagetype=flagetype,
+         @diagnose=diagnose,@typeflagcase=typeflagcase,@issure=issure,
+         @WorkCompany=WorkCompany,@WorkDepartment=WorkDepartment,@ifMarry=ifMarry 
+  from chk_con_his 
+  where cast(unid as varchar)=@ChkCon_His_Unid
+
+  if exists(select 1 from Deleted)--表示修改
+  begin
+    update chk_con set 
+         patientname=@patientname,sex=@sex,age=@age,Caseno=@Caseno,
+         bedno=@bedno,deptname=@deptname,check_doctor=@check_doctor,
+         report_date=@report_date,Diagnosetype=@Diagnosetype,flagetype=@flagetype,
+         diagnose=@diagnose,/*typeflagcase=@typeflagcase,issure=@issure,*/
+         WorkCompany=@WorkCompany,WorkDepartment=@WorkDepartment,ifMarry=@ifMarry 
+    where unid=@ChkCon_unid  
+  end else--表示插入
+  begin
+    update chk_con set 
+         patientname=@patientname,sex=@sex,age=@age,Caseno=@Caseno,
+         bedno=@bedno,deptname=@deptname,check_doctor=@check_doctor,
+         report_date=@report_date,Diagnosetype=@Diagnosetype,flagetype=@flagetype,
+         diagnose=@diagnose,typeflagcase=@typeflagcase,issure=@issure,
+         WorkCompany=@WorkCompany,WorkDepartment=@WorkDepartment,ifMarry=@ifMarry 
+    where unid=@ChkCon_unid  
+  end
+
+GO
+SET QUOTED_IDENTIFIER OFF 
+GO
+SET ANSI_NULLS ON 
+GO
+
 --触发器TRIGGER_chk_con_PatientInfo_From_HisUnid_Insert创建脚本
+--20151021用TRIGGER_chk_con_PatientInfo_From_HisUnid替代
 SET QUOTED_IDENTIFIER ON 
 GO
 SET ANSI_NULLS ON 
@@ -4147,7 +4204,7 @@ if exists (select name from sysobjects where name='TRIGGER_chk_con_PatientInfo_F
   drop TRIGGER TRIGGER_chk_con_PatientInfo_From_HisUnid_Insert
 go
 
-CREATE TRIGGER TRIGGER_chk_con_PatientInfo_From_HisUnid_Insert ON chk_con
+/*CREATE TRIGGER TRIGGER_chk_con_PatientInfo_From_HisUnid_Insert ON chk_con
 FOR Insert
 AS
 --根据His_Unid从chk_con_his取病人信息
@@ -4182,7 +4239,7 @@ AS
          diagnose=@diagnose,typeflagcase=@typeflagcase,issure=@issure,
          WorkCompany=@WorkCompany,WorkDepartment=@WorkDepartment,ifMarry=@ifMarry 
   where unid=@ChkCon_unid  
-
+*/
 GO
 SET QUOTED_IDENTIFIER OFF 
 GO
@@ -4190,6 +4247,7 @@ SET ANSI_NULLS ON
 GO
 
 --触发器TRIGGER_chk_con_PatientInfo_From_HisUnid_Update创建脚本
+--20151021用TRIGGER_chk_con_PatientInfo_From_HisUnid替代
 SET QUOTED_IDENTIFIER ON 
 GO
 SET ANSI_NULLS ON 
@@ -4199,7 +4257,7 @@ if exists (select name from sysobjects where name='TRIGGER_chk_con_PatientInfo_F
   drop TRIGGER TRIGGER_chk_con_PatientInfo_From_HisUnid_Update
 go
 
-CREATE TRIGGER TRIGGER_chk_con_PatientInfo_From_HisUnid_Update ON chk_con
+/*CREATE TRIGGER TRIGGER_chk_con_PatientInfo_From_HisUnid_Update ON chk_con
 FOR Update
 AS
 --根据His_Unid从chk_con_his取病人信息
@@ -4236,7 +4294,7 @@ AS
          diagnose=@diagnose,/*typeflagcase=@typeflagcase,issure=@issure,*/
          WorkCompany=@WorkCompany,WorkDepartment=@WorkDepartment,ifMarry=@ifMarry 
   where unid=@ChkCon_unid  
-
+*/
 GO
 SET QUOTED_IDENTIFIER OFF 
 GO
