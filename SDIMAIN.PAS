@@ -610,17 +610,6 @@ begin
   ADOtemp2.SQL.Text:='select Surem2 from chk_valu where pkunid='+sUnid+' group by Surem2';
   ADOtemp2.Open;
 
-  {sHis_Unid:=DBGrid1.DataSource.DataSet.fieldbyname('HisÎ¨Ò»±àºÅ').AsString;
-  if trim(sHis_Unid)<>'' then
-  begin
-    SS:='update chk_valu_his set itemvalue=null where cast(pkunid as varchar)='''+
-                        sHis_Unid+
-                        ''' and pkcombin_id in (select pkcombin_id from chk_valu where pkunid='+
-                        sUnid+
-                        ') and itemvalue=''1'' ';
-    ExecSQLCmd(LisConn,SS);
-  end;//}
-
   DBGrid1.DataSource.DataSet.Delete;
 
   while not ADOtemp2.Eof do

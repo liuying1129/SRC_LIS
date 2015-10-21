@@ -66,15 +66,18 @@ end;
 
 procedure TfrmBatchSpecNo.BitBtn1Click(Sender: TObject);
 var
-    ssql,sssql:string;
-    k:integer;
-    adotemp2,adotemp3,adotemp4:tadoquery;
-    xx:integer;
-    s0,s1,ss:string;
-    sTemp,LshRange:string;
-    pLshRange:Pchar;
+  ssql,sssql:string;
+  k:integer;
+  adotemp2,adotemp3,adotemp4,adotemp5:tadoquery;
+  xx:integer;
+  s0,s1,ss:string;
+  sTemp,LshRange:string;
+  pLshRange:Pchar;
   ini:tinifile;
   Save_Cursor:TCursor;
+
+  Surem2:STRING;
+  iSurem2:integer;
 begin
   Save_Cursor := Screen.Cursor;
   Screen.Cursor := crHourGlass;    { Show hourglass cursor }
@@ -193,8 +196,29 @@ begin
           if(SDIAppForm.ADObasic.FieldByName('…Û∫À’ﬂ').AsString=operator_name)
             OR(TRIM(SDIAppForm.ADObasic.FieldByName('…Û∫À’ﬂ').AsString)='') then
           begin
-              adotemp4.Delete;
-              CONTINUE;
+
+            adotemp5:=tadoquery.Create(nil);
+            adotemp5.Connection:=DM.ADOConnection1;
+            ADOtemp5.Close;
+            ADOtemp5.SQL.Clear;
+            ADOtemp5.SQL.Text:='select Surem2 from chk_valu where pkunid='+inttostr(xx)+' group by Surem2';
+            ADOtemp5.Open;
+
+            adotemp4.Delete;
+
+            while not ADOtemp5.Eof do
+            begin
+              Surem2:=ADOtemp5.fieldbyname('Surem2').AsString;
+              if Surem2='' then begin ADOtemp5.Next;continue; end;
+              if not trystrtoint(Surem2,iSurem2)then begin ADOtemp5.Next;continue; end;
+              if iSurem2<=0 then begin ADOtemp5.Next;continue; end;
+              if strtoint(ScalarSQLCmd(LisConn,'select count(*) from chk_valu where Surem2='''+Surem2+''' and issure=''1'' '))<=0 then
+                ExecSQLCmd(LisConn,'update chk_valu_his set itemvalue=null where cast(valueid as varchar)='''+Surem2+''' and isnull(itemvalue,'''')=''1'' ');
+              ADOtemp5.Next;
+            end;
+            ADOtemp5.Free;
+
+            CONTINUE;
           end ;
         adotemp4.Next;
     end;
