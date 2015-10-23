@@ -4276,13 +4276,13 @@ AS
   declare @patientname varchar(50),@sex varchar(50),@age varchar(50),@Caseno varchar(50),
           @bedno varchar(50),@deptname varchar(50),@check_doctor varchar(50),
           @report_date datetime,@Diagnosetype varchar(50),@flagetype varchar(100),
-          @diagnose varchar(200),/*@typeflagcase varchar(50),@issure varchar(50),*/
+          @diagnose varchar(200),
           @WorkCompany varchar(50),@WorkDepartment varchar(50),@ifMarry varchar(50)
 
   select @patientname=patientname,@sex=sex,@age=age,@Caseno=Caseno,
          @bedno=bedno,@deptname=deptname,@check_doctor=check_doctor,
          @report_date=report_date,@Diagnosetype=Diagnosetype,@flagetype=flagetype,
-         @diagnose=diagnose,/*@typeflagcase=typeflagcase,@issure=issure,*/
+         @diagnose=diagnose,
          @WorkCompany=WorkCompany,@WorkDepartment=WorkDepartment,@ifMarry=ifMarry 
   from chk_con_his 
   where cast(unid as varchar)=@ChkCon_His_Unid
@@ -4291,7 +4291,7 @@ AS
          patientname=@patientname,sex=@sex,age=@age,Caseno=@Caseno,
          bedno=@bedno,deptname=@deptname,check_doctor=@check_doctor,
          report_date=@report_date,Diagnosetype=@Diagnosetype,flagetype=@flagetype,
-         diagnose=@diagnose,/*typeflagcase=@typeflagcase,issure=@issure,*/
+         diagnose=@diagnose,
          WorkCompany=@WorkCompany,WorkDepartment=@WorkDepartment,ifMarry=@ifMarry 
   where unid=@ChkCon_unid  
 */
