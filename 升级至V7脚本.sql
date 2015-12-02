@@ -3949,6 +3949,7 @@ GO
 --根据病历号、样本类型、样本分隔符合并申请单
 --满足以下条件的申请单才参与合并
 --1、从接口传入的申请单；2、病历号不为空
+--20151202越秀中医PEIS要求采样时间一样的才合并
 CREATE PROCEDURE [dbo].[pro_MergeRequestBill] 
 AS
 
@@ -3956,7 +3957,8 @@ AS
 	select min(cch.unid) as unid,
                cch.caseno,
                isnull(cbi.specimentype_DfValue,'') as specimentype_DfValue,
-               isnull(cbi.itemtype,'') as itemtype
+               isnull(cbi.itemtype,'') as itemtype,
+	       isnull(cvh.TakeSampleTime,0) as TakeSampleTime
         from chk_con_his cch
         inner join chk_valu_his cvh on cch.unid=cvh.pkunid
         inner join combinitem cbi on cbi.id=cvh.pkcombin_id
@@ -3964,12 +3966,12 @@ AS
         and 
         isnull(cch.caseno,'')<>''--表示有病历号的申请单
         and (select count(*) from chk_valu_his cvh2 where cvh2.pkunid=cch.unid and isnull(cvh2.itemvalue,'')='1')<=0--表示未被LIS取过的申请单
-        group by cch.caseno,isnull(cbi.specimentype_DfValue,''),isnull(cbi.itemtype,'')
+        group by cch.caseno,isnull(cbi.specimentype_DfValue,''),isnull(cbi.itemtype,''),isnull(cvh.TakeSampleTime,0)
 
   Open Cur_WaitMergeRequestBill
 
-  Declare @Unid int,@CaseNo varchar(30),@SpecimenType varchar(60),@ItemType varchar(50)
-  FETCH NEXT FROM Cur_WaitMergeRequestBill INTO @Unid,@CaseNo,@SpecimenType,@ItemType
+  Declare @Unid int,@CaseNo varchar(30),@SpecimenType varchar(60),@ItemType varchar(50),@TakeSampleTime datetime
+  FETCH NEXT FROM Cur_WaitMergeRequestBill INTO @Unid,@CaseNo,@SpecimenType,@ItemType,@TakeSampleTime
   WHILE @@FETCH_STATUS=0
   BEGIN
     update chk_valu_his set pkunid=@Unid where valueid in (
@@ -3983,11 +3985,11 @@ AS
         and (select count(*) from chk_valu_his cvh2 where cvh2.pkunid=cch.unid and isnull(cvh2.itemvalue,'')='1')<=0--表示未被LIS取过的申请单
         --非当前申请单
         and cch.unid<>@Unid
-        --病历号、样本类型、样本分隔符一样的合并
-        and cch.caseno=@CaseNo and isnull(cbi.specimentype_DfValue,'')=isnull(@SpecimenType,'') and isnull(cbi.itemtype,'')=isnull(@ItemType,'')
+        --病历号、样本类型、样本分隔符、采样时间一样的合并
+        and cch.caseno=@CaseNo and isnull(cbi.specimentype_DfValue,'')=isnull(@SpecimenType,'') and isnull(cbi.itemtype,'')=isnull(@ItemType,'') and isnull(cvh.TakeSampleTime,0)=isnull(@TakeSampleTime,0)
       )
       
-    FETCH NEXT FROM Cur_WaitMergeRequestBill INTO @Unid,@CaseNo,@SpecimenType,@ItemType
+    FETCH NEXT FROM Cur_WaitMergeRequestBill INTO @Unid,@CaseNo,@SpecimenType,@ItemType,@TakeSampleTime
   END
   CLOSE Cur_WaitMergeRequestBill
   DEALLOCATE Cur_WaitMergeRequestBill
@@ -4018,6 +4020,7 @@ GO
 --根据样本类型、样本分隔符拆分申请单
 --满足以下条件的申请单才参与拆分
 --1、从接口传入的申请单；
+--20151202越秀中医PEIS要求按采样时间拆开
 CREATE PROCEDURE [dbo].[pro_SplitRequestBill] 
 AS
 
@@ -4049,7 +4052,7 @@ AS
 	from chk_valu_his cvh3 
 	    inner join combinitem cbi3 on cbi3.id=cvh3.pkcombin_id
 	    where cvh3.pkunid=@Unid
-	    group by isnull(cbi3.specimentype_DfValue,''),isnull(cbi3.itemtype,'')
+	    group by isnull(cbi3.specimentype_DfValue,''),isnull(cbi3.itemtype,''),isnull(cvh3.TakeSampleTime,0)
 	) as TempA
     if @Num_Value<=1
     begin
@@ -4063,23 +4066,23 @@ AS
     end
     
     DECLARE Cur_1 Cursor For 
-	select isnull(cbi3.specimentype_DfValue,''),isnull(cbi3.itemtype,'')
+	select isnull(cbi3.specimentype_DfValue,''),isnull(cbi3.itemtype,''),isnull(cvh3.TakeSampleTime,0)
 	from chk_valu_his cvh3 
 	    inner join combinitem cbi3 on cbi3.id=cvh3.pkcombin_id
 	    where cvh3.pkunid=@Unid
-	    group by isnull(cbi3.specimentype_DfValue,''),isnull(cbi3.itemtype,'')
+	    group by isnull(cbi3.specimentype_DfValue,''),isnull(cbi3.itemtype,''),isnull(cvh3.TakeSampleTime,0)
 
     Open Cur_1
-    Declare @specimentype_DfValue varchar(60),@itemtype varchar(50),@i int,@SCOPE_IDENTITY int
+    Declare @specimentype_DfValue varchar(60),@itemtype varchar(50),@i int,@SCOPE_IDENTITY int,@TakeSampleTime datetime
     set @i=0
-    FETCH NEXT FROM Cur_1 INTO @specimentype_DfValue,@itemtype
+    FETCH NEXT FROM Cur_1 INTO @specimentype_DfValue,@itemtype,@TakeSampleTime
     WHILE @@FETCH_STATUS=0
     BEGIN
       set @i=@i+1
       if @i=1
       begin
         update chk_con_his set flagetype=@specimentype_DfValue where unid=@Unid and isnull(flagetype,'')<>@specimentype_DfValue
-        FETCH NEXT FROM Cur_1 INTO @specimentype_DfValue,@itemtype
+        FETCH NEXT FROM Cur_1 INTO @specimentype_DfValue,@itemtype,@TakeSampleTime
         continue
       end
 
@@ -4090,8 +4093,9 @@ AS
 	where chk_valu_his.pkunid=@Unid 
 	and (select isnull(cbi5.specimentype_DfValue,'') from combinitem cbi5 where cbi5.id=chk_valu_his.pkcombin_id)=@specimentype_DfValue
 	and (select isnull(cbi6.itemtype,'') from combinitem cbi6 where cbi6.id=chk_valu_his.pkcombin_id)=@itemtype
+        and isnull(chk_valu_his.TakeSampleTime,0)=@TakeSampleTime
 
-      FETCH NEXT FROM Cur_1 INTO @specimentype_DfValue,@itemtype
+      FETCH NEXT FROM Cur_1 INTO @specimentype_DfValue,@itemtype,@TakeSampleTime
     END
     CLOSE Cur_1
     DEALLOCATE Cur_1
