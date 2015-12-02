@@ -176,7 +176,9 @@ begin
   Aadoquery.Close;
   Aadoquery.SQL.Clear;
                       //1 as 选择,默认是选择的.1--选择,非1--未选
-  Aadoquery.SQL.Text:='select cvh.pkcombin_id as 组合项目代码,cvh.combin_name as 组合项目名称,IfSel as 选择,combinitem.dept_DfValue as 默认工作组,combinitem.specimentype_DfValue as 默认样本类型,combinitem.itemtype as 样本分隔符,cvh.* from chk_valu_his cvh '+
+  Aadoquery.SQL.Text:='select cvh.pkcombin_id as 组合项目代码,cvh.combin_name as 组合项目名称,IfSel as 选择,combinitem.dept_DfValue as 默认工作组,combinitem.specimentype_DfValue as 默认样本类型,combinitem.itemtype as 样本分隔符,cvh.TakeSampleTime as 采样时间,'+
+                      ' cvh.* '+
+                      ' from chk_valu_his cvh '+
                       //sqlstr1+
                       ' left join combinitem on combinitem.id=cvh.pkcombin_id '+
                       ' where '+
@@ -425,7 +427,9 @@ VAR
 begin
   if not ADOQuery1.Active then exit;
   if ADOQuery1.RecordCount<=0 then exit;
-  
+
+  (Sender as TBitBtn).Enabled:=false;//防止重复"确定"
+
   ValetudinarianInfoId:=0;
   //j:=0;
   //ServerDate:=GetServerDate(DM.ADOConnection1);
@@ -469,6 +473,8 @@ begin
 
   SDIAppForm.UpdateADObasic;
   SDIAppForm.adobasic.Locate('唯一编号',ValetudinarianInfoId,[loCaseInsensitive]);
+
+  (Sender as TBitBtn).Enabled:=true;
 end;
 
 procedure TfrmShowChkConHis.DBGrid2DrawColumnCell(Sender: TObject;
@@ -530,9 +536,9 @@ VAR
 begin
   if key<>13 then exit;
 
-  if (Sender as TLabeledEdit).CanFocus then begin (Sender as TLabeledEdit).SetFocus;(Sender as TLabeledEdit).SelectAll; end;
-
   if (Sender as TLabeledEdit).Text='' then exit;
+
+  (Sender as TLabeledEdit).Enabled:=false;//为了防止没处理完又扫描下一个条码
 
   ServerDate:=GetServerDate(DM.ADOConnection1);
 
@@ -580,6 +586,9 @@ begin
     labelededit1.Text:=GetMaxCheckId(SDIAppForm.cbxConnChar.Text,ServerDate);
     //==========
   end;
+
+  (Sender as TLabeledEdit).Enabled:=true;
+  if (Sender as TLabeledEdit).CanFocus then begin (Sender as TLabeledEdit).SetFocus;(Sender as TLabeledEdit).SelectAll; end;
 end;
 
 procedure TfrmShowChkConHis.DBGrid1DrawColumnCell(Sender: TObject;
@@ -640,6 +649,7 @@ begin
   dbgrid2.Columns[3].Width:=70;//
   dbgrid2.Columns[4].Width:=85;
   dbgrid2.Columns[5].Width:=70;
+  dbgrid2.Columns[6].Width:=137;//采样时间
 end;
 
 procedure TfrmShowChkConHis.DBGrid1Exit(Sender: TObject);
