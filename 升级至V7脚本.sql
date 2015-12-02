@@ -1145,6 +1145,14 @@ IF NOT EXISTS (select 1 from syscolumns where name='Photo' and id=object_id('chk
   Alter table chk_valu_bak add Photo Image null
 go
 
+--20151202增加采样时间字段
+IF NOT EXISTS (select 1 from syscolumns where name='TakeSampleTime' and id=object_id('chk_valu'))
+  Alter table chk_valu add TakeSampleTime datetime null
+
+IF NOT EXISTS (select 1 from syscolumns where name='TakeSampleTime' and id=object_id('chk_valu_bak'))
+  Alter table chk_valu_bak add TakeSampleTime datetime null
+go
+
 --20140926创建表ItemExceptionValue
 if not exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[ItemExceptionValue]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
 create table ItemExceptionValue
@@ -2782,6 +2790,14 @@ IF NOT EXISTS (select 1 from syscolumns where name='IfSel' and id=object_id('chk
 IF NOT EXISTS (select 1 from syscolumns where name='IfSel' and id=object_id('chk_valu_his_bak'))
   Alter table chk_valu_his_bak add IfSel bit null--选择
 GO
+
+--20151202增加采样时间字段
+IF NOT EXISTS (select 1 from syscolumns where name='TakeSampleTime' and id=object_id('chk_valu_his'))
+  Alter table chk_valu_his add TakeSampleTime datetime null
+
+IF NOT EXISTS (select 1 from syscolumns where name='TakeSampleTime' and id=object_id('chk_valu_his_bak'))
+  Alter table chk_valu_his_bak add TakeSampleTime datetime null
+go
 
 --if exists (select name from sysobjects where name='TRIGGER_chk_con_His_DELETE' and type='TR')
 --  drop TRIGGER TRIGGER_chk_con_His_DELETE
