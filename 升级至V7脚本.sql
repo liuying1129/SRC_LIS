@@ -4321,6 +4321,16 @@ GO
 SET ANSI_NULLS ON 
 GO
 
+--20151205表ApiToken创建脚本
+if not exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[ApiToken]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
+CREATE TABLE ApiToken (
+	UserId varchar (20) primary key ,
+	Token varchar (50) NOT NULL ,
+	Mod_Date_Time datetime NULL ,
+	Create_Date_Time datetime NULL DEFAULT (getdate())
+) 
+GO
+
 --重新编译视图
 sp_refreshview  'dbo.view_chk_valu_All'
 GO
