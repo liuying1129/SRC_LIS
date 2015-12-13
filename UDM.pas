@@ -730,6 +730,7 @@ begin
   newconnstr := newconnstr + 'data source=' + datasource + ';';
   newconnstr := newconnstr + 'Initial Catalog=' + initialcatalog + ';';
   newconnstr := newconnstr + 'provider=' + 'SQLOLEDB.1' + ';';
+  newconnstr := newconnstr + 'Persist Security Info=True;';//连接SQL SERVER 2008时必需
   if ifIntegrated then
     newconnstr := newconnstr + 'Integrated Security=SSPI;';
   try
