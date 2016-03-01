@@ -730,7 +730,10 @@ begin
   newconnstr := newconnstr + 'data source=' + datasource + ';';
   newconnstr := newconnstr + 'Initial Catalog=' + initialcatalog + ';';
   newconnstr := newconnstr + 'provider=' + 'SQLOLEDB.1' + ';';
-  newconnstr := newconnstr + 'Persist Security Info=True;';//连接SQL SERVER 2008时必需
+  //Persist Security Info,表示ADO在数据库连接成功后是否保存密码信息
+  //ADO缺省为True,ADO.net缺省为False
+  //程序中会传ADOConnection信息给TADOLYQuery,故设置为True
+  newconnstr := newconnstr + 'Persist Security Info=True;';
   if ifIntegrated then
     newconnstr := newconnstr + 'Integrated Security=SSPI;';
   try
