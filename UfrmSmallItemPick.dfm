@@ -25,6 +25,7 @@ object frmSmallItemPick: TfrmSmallItemPick
     Align = alClient
     Color = clInfoBk
     Columns = 5
+    ImeName = #20013#25991'('#31616#20307') - '#19975#33021#20116#31508#36755#20837#27861
     ItemHeight = 14
     TabOrder = 0
   end
@@ -74,6 +75,7 @@ object frmSmallItemPick: TfrmSmallItemPick
       Font.Height = -14
       Font.Name = #23435#20307
       Font.Style = []
+      ImeName = #20013#25991'('#31616#20307') - '#19975#33021#20116#31508#36755#20837#27861
       LabelPosition = lpLeft
       ParentCtl3D = False
       ParentFont = False

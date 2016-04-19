@@ -260,7 +260,7 @@ object SDIAppForm: TSDIAppForm
         TabOrder = 0
         object Splitter2: TSplitter
           Left = 1
-          Top = 102
+          Top = 151
           Width = 417
           Height = 5
           Cursor = crVSplit
@@ -268,45 +268,21 @@ object SDIAppForm: TSDIAppForm
           Color = clBtnFace
           ParentColor = False
         end
-        object CheckListBox1: TCheckListBox
-          Left = 1
-          Top = 1
-          Width = 417
-          Height = 101
-          OnClickCheck = CheckListBox1ClickCheck
-          Align = alTop
-          BevelInner = bvNone
-          BevelKind = bkFlat
-          BorderStyle = bsNone
-          Color = 16767438
-          Columns = 3
-          Ctl3D = True
-          Font.Charset = ANSI_CHARSET
-          Font.Color = clWindowText
-          Font.Height = -13
-          Font.Name = #23435#20307
-          Font.Style = []
-          ImeName = #20013#25991'('#31616#20307') - '#19975#33021#20116#31508#36755#20837#27861
-          ItemHeight = 13
-          ParentCtl3D = False
-          ParentFont = False
-          TabOrder = 0
-        end
         object PageControl1: TPageControl
           Left = 1
-          Top = 107
+          Top = 156
           Width = 417
-          Height = 458
+          Height = 409
           ActivePage = TabSheet1
           Align = alClient
-          TabOrder = 1
+          TabOrder = 0
           object TabSheet1: TTabSheet
             Caption = #26816#39564#32467#26524
             object DBGrid2: TDBGrid
               Left = 0
               Top = 0
               Width = 409
-              Height = 430
+              Height = 381
               Align = alClient
               Color = 16767438
               Ctl3D = False
@@ -414,6 +390,72 @@ object SDIAppForm: TSDIAppForm
                 TabOrder = 1
                 OnClick = BitBtn2Click
               end
+            end
+          end
+        end
+        object PageControl2: TPageControl
+          Left = 1
+          Top = 1
+          Width = 417
+          Height = 150
+          ActivePage = TabSheet6
+          Align = alTop
+          TabOrder = 1
+          object TabSheet5: TTabSheet
+            Caption = #24120#29992#32452#21512#39033#30446
+            object clbCommUsed: TCheckListBox
+              Left = 0
+              Top = 0
+              Width = 409
+              Height = 122
+              OnClickCheck = clbCommUsedClickCheck
+              Align = alClient
+              BevelInner = bvNone
+              BevelKind = bkFlat
+              BorderStyle = bsNone
+              Color = 16767438
+              Columns = 3
+              Ctl3D = True
+              Font.Charset = ANSI_CHARSET
+              Font.Color = clWindowText
+              Font.Height = -13
+              Font.Name = #23435#20307
+              Font.Style = []
+              ImeName = #20013#25991'('#31616#20307') - '#19975#33021#20116#31508#36755#20837#27861
+              ItemHeight = 13
+              ParentCtl3D = False
+              ParentFont = False
+              PopupMenu = PopupMenu3
+              TabOrder = 0
+            end
+          end
+          object TabSheet6: TTabSheet
+            Caption = #22791#29992#32452#21512#39033#30446
+            ImageIndex = 1
+            object clbNoCommUsed: TCheckListBox
+              Left = 0
+              Top = 0
+              Width = 409
+              Height = 122
+              OnClickCheck = clbCommUsedClickCheck
+              Align = alClient
+              BevelInner = bvNone
+              BevelKind = bkFlat
+              BorderStyle = bsNone
+              Color = 16767438
+              Columns = 3
+              Ctl3D = True
+              Font.Charset = ANSI_CHARSET
+              Font.Color = clWindowText
+              Font.Height = -13
+              Font.Name = #23435#20307
+              Font.Style = []
+              ImeName = #20013#25991'('#31616#20307') - '#19975#33021#20116#31508#36755#20837#27861
+              ItemHeight = 13
+              ParentCtl3D = False
+              ParentFont = False
+              PopupMenu = PopupMenu3
+              TabOrder = 0
             end
           end
         end
@@ -1971,6 +2013,7 @@ object SDIAppForm: TSDIAppForm
     Top = 253
   end
   object PopupMenu1: TPopupMenu
+    AutoHotkeys = maManual
     Left = 548
     Top = 376
     object N40: TMenuItem
@@ -2161,5 +2204,14 @@ object SDIAppForm: TSDIAppForm
   object OpenPictureDialog1: TOpenPictureDialog
     Left = 632
     Top = 349
+  end
+  object PopupMenu3: TPopupMenu
+    AutoHotkeys = maManual
+    Left = 477
+    Top = 102
+    object N17: TMenuItem
+      Caption = #31227#38500
+      OnClick = N17Click
+    end
   end
 end

@@ -396,7 +396,7 @@ begin
   updateedit2;
 
   //=============更新主界面的组合项目CheckListBox=======================//
-  sdiappform.combinchecklistbox(sdiappform.CheckListBox1);
+  sdiappform.MakeCombinChecklistbox;
   sdiappform.update_Ado_dtl;
   //====================================================================//
 end;
@@ -477,7 +477,7 @@ begin
   updateEdit2;
   
         //=============更新主界面的组合项目CheckListBox=======================//
-        sdiappform.combinchecklistbox(sdiappform.CheckListBox1);
+        sdiappform.MakeCombinChecklistbox;
         sdiappform.update_Ado_dtl;
         //====================================================================//
 end;

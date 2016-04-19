@@ -63,15 +63,14 @@ const sqll=' select itemid as 项目代码,name as 名称 '+
 
     var adotemp3:tadoquery;
 begin
+     CheckListBox.Items.Clear;
+
      adotemp3:=tadoquery.Create(nil);
      adotemp3.Connection:=DM.ADOConnection1;
      adotemp3.Close;
      adotemp3.SQL.Clear;
      adotemp3.SQL.Text:=sqll;
      adotemp3.Open;
-     adotemp3.First;
-     CheckListBox.Items.Clear;
-
      while not adotemp3.Eof do
      begin
       CheckListBox.Items.Add(trim(adotemp3.fieldbyname('项目代码').AsString)+'   '+adotemp3.fieldbyname('名称').AsString);

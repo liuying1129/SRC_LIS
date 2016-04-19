@@ -5,7 +5,8 @@ interface
 uses
   WINDOWS,SysUtils, Classes, DB, ADODB,INIFILES,Dialogs{ShowMessage函数},Controls,
   ComCtrls, Buttons,StdCtrls, ExtCtrls,MENUS,DBGrids,StrUtils, FR_Class,
-  FR_DSet, FR_DBSet,Forms{Application变量},DBCtrls{DBEdit},Mask{TMaskEdit},Imm{ImmGetIMEFileName};
+  FR_DSet, FR_DBSet,Forms{Application变量},DBCtrls{DBEdit},Mask{TMaskEdit},Imm{ImmGetIMEFileName},
+  CheckLst{TCheckListBox};
 
 type
   PDescriptType=^TDescriptType;
@@ -142,6 +143,7 @@ procedure MakeDBGridColumnsAutoFixItsWidth(objDBGrid:TDBGrid);
 function GetMaxCheckId(const ACombin_ID:string;const AServerDate:tdate):string;//获取指定工作组、日期的下一个联机号
 function ExecSQLCmd(AConnectionString:string;ASQL:string):integer;
 function ScalarSQLCmd(AConnectionString:string;ASQL:string):string;
+procedure combinchecklistbox(CheckListBox:TCheckListBox);//将组合项目号及名称导入CheckListBox中
 
 implementation
 
@@ -911,6 +913,28 @@ begin
   Result:=Qry.Fields[0].AsString;
   Qry.Free;
   Conn.Free;
+end;
+
+procedure combinchecklistbox(CheckListBox:TCheckListBox);//将组合项目号及名称导入CheckListBox中
+const
+  sqll='select id,name from combinitem where sysname='''+SYSNAME+''' order by id';
+var
+  adotemp3:tadoquery;
+begin
+     CheckListBox.Items.Clear;
+
+     adotemp3:=tadoquery.Create(nil);
+     adotemp3.Connection:=DM.ADOConnection1;
+     adotemp3.Close;
+     adotemp3.SQL.Clear;
+     adotemp3.SQL.Text:=sqll;
+     adotemp3.Open;
+     while not adotemp3.Eof do
+     begin
+      CheckListBox.Items.Add(trim(adotemp3.fieldbyname('id').AsString)+'   '+adotemp3.fieldbyname('name').AsString);
+      adotemp3.Next;
+     end;
+     adotemp3.Free;
 end;
 
 end.

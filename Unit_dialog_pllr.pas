@@ -186,7 +186,7 @@ begin
   //LabeledEdit14.Text:=trim(uppercase(ini.ReadString('Interface','Áª»úºÅ·¶Î§×ÖÄ¸','s')));
   //ini.Free;
 
-  SDIAppForm.combinchecklistbox(CheckListBox1);
+  combinchecklistbox(CheckListBox1);
 
   if (not SDIAppForm.ADObasic.Active)or(SDIAppForm.ADObasic.RecordCount=0) then
     DateTimePicker1.DateTime:=date()

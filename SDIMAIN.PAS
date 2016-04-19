@@ -112,7 +112,6 @@ type
     Panel2: TPanel;
     Panel3: TPanel;
     Splitter2: TSplitter;
-    CheckListBox1: TCheckListBox;
     Panel7: TPanel;
     GroupBox1: TGroupBox;
     DBGrid1: TDBGrid;
@@ -218,6 +217,13 @@ type
     N82: TMenuItem;
     N83: TMenuItem;
     N84: TMenuItem;
+    PageControl2: TPageControl;
+    TabSheet5: TTabSheet;
+    TabSheet6: TTabSheet;
+    clbCommUsed: TCheckListBox;
+    clbNoCommUsed: TCheckListBox;
+    PopupMenu3: TPopupMenu;
+    N17: TMenuItem;
     procedure FileExit1Execute(Sender: TObject);
     procedure HelpAbout1Execute(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -240,7 +246,7 @@ type
       var ParValue: Variant);
     procedure DBGrid2KeyUp(Sender: TObject; var Key: Word;
       Shift: TShiftState);
-    procedure CheckListBox1ClickCheck(Sender: TObject);
+    procedure clbCommUsedClickCheck(Sender: TObject);
     procedure LJ1Click(Sender: TObject);
     procedure DBGrid2DrawColumnCell(Sender: TObject; const Rect: TRect;
       DataCol: Integer; Column: TColumn; State: TGridDrawState);
@@ -360,6 +366,7 @@ type
       Shift: TShiftState);
     procedure LabeledEdit4KeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
+    procedure N17Click(Sender: TObject);
   private
     procedure CheckTheListBox;//根据当前病人的结果在checklistbox1中打钩
     procedure WriteProfile;
@@ -386,7 +393,7 @@ type
       { Public declarations }
     ifnewadd:boolean;
     procedure FillBasic;
-    procedure combinchecklistbox(CheckListBox:TCheckListBox);
+    procedure MakeCombinChecklistbox;//将组合项目号及名称导入CheckListBox中
     procedure InsertOrDeleteVaue(const ComboItemID:string;const ifAddorDel:boolean;const checkunid:integer;const AChk_Valu_His_ValueId:integer);
     procedure updatedbgrid1;
     procedure update_Ado_dtl;
@@ -476,7 +483,8 @@ begin
   ADObasic.Connection := DM.ADOConnection1;
   ADO_print.Connection:=DM.ADOConnection1;
 
-  combinchecklistbox(CheckListBox1);
+  PageControl2.ActivePageIndex:=0;
+  MakeCombinChecklistbox;
 
   LoadGroupName(cbxConnChar,'select name from CommCode where TypeName=''检验组别'' AND SysName='''+SYSNAME+''' group by name');//ReadConfig要用到工作组框中的值,故放在ReadConfig前
 
@@ -925,7 +933,7 @@ begin
   n36.Checked:=configini.ReadBool('Interface','ifShowMinValue',true);{记录是否显示项目最小值}
   n47.Checked:=configini.ReadBool('Interface','ifShowMaxValue',true);{记录是否显示项目最大值}
   n49.Checked:=configini.ReadBool('Interface','ifShowUnit',true);{记录是否显示项目单位}
-  CheckListBox1.Height:=configini.ReadInteger('Interface','clbCombItemHeight',101);{记录组合项目选择框高度}
+  PageControl2.Height:=configini.ReadInteger('Interface','clbCombItemHeight',150);{记录组合项目选择框高度}
   Panel7.Width:=configini.ReadInteger('Interface','gridBaseInfoWidth',460);{记录基本信息框宽度}
   CheckBox1.Checked:=configini.ReadBool('Interface','ifContinuousEdit',false);{记录是否连续录入基本信息}
   PageControl1.ActivePageIndex:=configini.ReadInteger('Interface','ValueActivePageIndex',0);{记录结果框PageControl1的活动Page}
@@ -973,8 +981,8 @@ begin
   configini.WriteBool('Interface','ifShowMinValue',n36.Checked);{记录是否显示项目最小值}
   configini.WriteBool('Interface','ifShowMaxValue',n47.Checked);{记录是否显示项目最大值}
   configini.WriteBool('Interface','ifShowUnit',n49.Checked);{记录是否显示项目单位}
-  if CheckListBox1.Height<10 then CheckListBox1.Height:=10;
-  configini.WriteInteger('Interface','clbCombItemHeight',CheckListBox1.Height);{记录组合项目选择框高度}
+  if PageControl2.Height<60 then PageControl2.Height:=60;
+  configini.WriteInteger('Interface','clbCombItemHeight',PageControl2.Height);{记录组合项目选择框高度}
   configini.WriteInteger('Interface','gridBaseInfoWidth',Panel7.Width);{记录基本信息框宽度}
   configini.WriteBool('Interface','ifContinuousEdit',CheckBox1.Checked);{记录是否连续录入基本信息}
   configini.WriteInteger('Interface','ValueActivePageIndex',PageControl1.ActivePageIndex);{记录结果框PageControl1的活动Page}
@@ -1140,56 +1148,35 @@ begin
   VisibleColumn(dbgrid1,'流水号',OrderType<>'联机号');//按流水号排序时显示流水号,否则(联机号)不显示流水号
 end;
 
-procedure TSDIAppForm.combinchecklistbox(CheckListBox:TCheckListBox);//将组合项目号及名称导入CheckListBox中
-const sqll='select id,name from combinitem where sysname='''+SYSNAME+''' order by id';
-    var adotemp3:tadoquery;
-begin
-     adotemp3:=tadoquery.Create(nil);
-     adotemp3.Connection:=DM.ADOConnection1;
-     adotemp3.Close;
-     adotemp3.SQL.Clear;
-     adotemp3.SQL.Text:=sqll;
-     adotemp3.Open;
-     adotemp3.First;
-     CheckListBox.Items.Clear;
-
-     while not adotemp3.Eof do
-     begin
-      CheckListBox.Items.Add(trim(adotemp3.fieldbyname('id').AsString)+'   '+adotemp3.fieldbyname('name').AsString);
-      adotemp3.Next;
-     end;
-     adotemp3.Free;
-end;
-
-procedure TSDIAppForm.CheckListBox1ClickCheck(Sender: TObject);
+procedure TSDIAppForm.clbCommUsedClickCheck(Sender: TObject);
 var
       i,b,checkunid:integer;
       s2:string;
 begin
-      i:=CheckListBox1.ItemIndex;
+      i:=(Sender as TCheckListBox).ItemIndex;
 
         if (not dsbasic.DataSet.Active) or (dsbasic.DataSet.RecordCount < 1) then
         begin
           Application.MessageBox('请先录入基本信息', '提示信息',
             MB_OK + MB_ICONEXCLAMATION + MB_DEFBUTTON1 + MB_APPLMODAL);
-          CheckListBox1.Checked[i]:=false;
+          (Sender as TCheckListBox).Checked[i]:=false;
           exit;
         end;
 
       if not checkman then
       begin
-          CheckListBox1.Checked[i]:=not CheckListBox1.Checked[i];
+          (Sender as TCheckListBox).Checked[i]:=not (Sender as TCheckListBox).Checked[i];
           MESSAGEDLG('非您审核，无权修改!',MTINFORMATION,[MBOK],0);
           exit;
       end;
 
       checkunid:=dsbasic.DataSet.fieldbyname('唯一编号').AsInteger;
 
-      s2:=checklistbox1.Items.Strings[i];
+      s2:=(Sender as TCheckListBox).Items.Strings[i];
       b:=pos('   ',s2);
       s2:=copy(s2,1,b-1);
 
-      InsertOrDeleteVaue(s2,checklistbox1.Checked[i],checkunid,-1);
+      InsertOrDeleteVaue(s2,(Sender as TCheckListBox).Checked[i],checkunid,-1);
 end;
 
 procedure TSDIAppForm.LJ1Click(Sender: TObject);
@@ -1308,21 +1295,35 @@ begin
           ADObasic.FieldByName('唯一编号').AsInteger;
     ADOtemp2.Open;
 
-    for i:=0 to checklistbox1.Items.Count-1 do checklistbox1.Checked[i]:=false;
+    for i:=0 to clbCommUsed.Items.Count-1 do clbCommUsed.Checked[i]:=false;
+    for i:=0 to clbNoCommUsed.Items.Count-1 do clbNoCommUsed.Checked[i]:=false;
 
     while not ADOtemp2.Eof do
     begin
-      for i:=0 to checklistbox1.Items.Count-1 do
+      for i:=0 to clbCommUsed.Items.Count-1 do
       begin
-        ss:=checklistbox1.Items.Strings[i];
+        ss:=clbCommUsed.Items.Strings[i];
         b:=pos('   ',ss);
         sss:=copy(ss,1,b-1);
         if trim(ADOtemp2.FieldByName('组合项目号').AsString)=trim(sss) then
         begin
-          checklistbox1.Checked[i]:=true;
+          clbCommUsed.Checked[i]:=true;
           break;
         end;
       end;
+
+      for i:=0 to clbNoCommUsed.Items.Count-1 do
+      begin
+        ss:=clbNoCommUsed.Items.Strings[i];
+        b:=pos('   ',ss);
+        sss:=copy(ss,1,b-1);
+        if trim(ADOtemp2.FieldByName('组合项目号').AsString)=trim(sss) then
+        begin
+          clbNoCommUsed.Checked[i]:=true;
+          break;
+        end;
+      end;
+      
       ADOtemp2.Next;
     end;
 
@@ -1853,20 +1854,36 @@ begin
     exit;
   end;
 
-  for i:=0 to CheckListBox1.Count-1 do
+  for i:=0 to clbCommUsed.Count-1 do
   begin
-    ss:=checklistbox1.Items.Strings[i];
+    ss:=clbCommUsed.Items.Strings[i];
     b:=pos('   ',ss);
     sss:=copy(ss,1,b);
     if trim(sss)=trim(LabeledEdit13.Text) then
     begin
-        checklistbox1.Checked[i]:=not CheckListBox1.Checked[i];
+        clbCommUsed.Checked[i]:=not clbCommUsed.Checked[i];
 
-        InsertOrDeleteVaue(sss,checklistbox1.Checked[i],checkunid,-1);
+        InsertOrDeleteVaue(sss,clbCommUsed.Checked[i],checkunid,-1);
 
         break;
     end;  //if
   end;
+
+  for i:=0 to clbNoCommUsed.Count-1 do
+  begin
+    ss:=clbNoCommUsed.Items.Strings[i];
+    b:=pos('   ',ss);
+    sss:=copy(ss,1,b);
+    if trim(sss)=trim(LabeledEdit13.Text) then
+    begin
+        clbNoCommUsed.Checked[i]:=not clbNoCommUsed.Checked[i];
+
+        InsertOrDeleteVaue(sss,clbNoCommUsed.Checked[i],checkunid,-1);
+
+        break;
+    end;  //if
+  end;
+  
   if trim(LabeledEdit13.Text)<>'+' then
   begin
     tlabelededit(sender).Clear;
@@ -4309,6 +4326,85 @@ begin
   if trim(TLabeledEdit(Sender).Text)='6' then TLabeledEdit(Sender).Text:='男变女' else
   if trim(TLabeledEdit(Sender).Text)='9' then TLabeledEdit(Sender).Text:='未说明的性别';
   }
+end;
+
+procedure TSDIAppForm.MakeCombinChecklistbox;
+const
+  sqll='select id,name from combinitem where sysname='''+SYSNAME+''' order by id';
+var
+  adotemp3:tadoquery;
+  ini:tinifile;
+  bNoCommUsed:boolean;
+begin
+     clbCommUsed.Items.Clear;
+     clbNoCommUsed.Items.Clear;
+
+     adotemp3:=tadoquery.Create(nil);
+     adotemp3.Connection:=DM.ADOConnection1;
+     adotemp3.Close;
+     adotemp3.SQL.Clear;
+     adotemp3.SQL.Text:=sqll;
+     adotemp3.Open;
+     while not adotemp3.Eof do
+     begin
+      ini:=TINIFILE.Create(ChangeFileExt(Application.ExeName,'.ini'));
+      bNoCommUsed:=ini.ReadBool('备用组合项目',trim(adotemp3.fieldbyname('id').AsString),false);
+      ini.Free;
+
+      if bNoCommUsed then
+        clbNoCommUsed.Items.Add(trim(adotemp3.fieldbyname('id').AsString)+'   '+adotemp3.fieldbyname('name').AsString)
+      else clbCommUsed.Items.Add(trim(adotemp3.fieldbyname('id').AsString)+'   '+adotemp3.fieldbyname('name').AsString);
+      
+      adotemp3.Next;
+     end;
+     adotemp3.Free;
+end;
+
+procedure TSDIAppForm.N17Click(Sender: TObject);
+VAR
+  ini:tinifile;
+  i:integer;
+  s2:string;
+  b:integer;
+  CheckListBox:TCheckListBox;
+begin
+  if not (((Sender as TMenuItem).GetParentMenu as TPopupMenu).PopupComponent is TCheckListBox) then
+  begin
+    MESSAGEDLG('"移除"功能异常,请联系软件开发商!',mtError,[MBOK],0);
+    exit;
+  end;
+  
+  CheckListBox:=((Sender as TMenuItem).GetParentMenu as TPopupMenu).PopupComponent as TCheckListBox;
+
+  if CheckListBox.Items.Count<=0 then exit;
+  
+  i:=CheckListBox.ItemIndex;
+  if i<0 then
+  begin
+    MESSAGEDLG('请选择要移除的组合项目!',mtWarning,[MBOK],0);
+    exit;
+  end;
+
+  s2:=CheckListBox.Items.Strings[i];
+  b:=pos('   ',s2);
+  s2:=copy(s2,1,b-1);
+
+  if uppercase(CheckListBox.Name)=uppercase('clbCommUsed') then
+  begin
+      ini:=TINIFILE.Create(ChangeFileExt(Application.ExeName,'.ini'));
+      INI.WriteBool('备用组合项目',s2,TRUE);
+      ini.Free;
+  end else
+  begin
+      ini:=TINIFILE.Create(ChangeFileExt(Application.ExeName,'.ini'));
+      INI.DeleteKey('备用组合项目',s2);
+      ini.Free;
+  end;
+
+        //=============更新主界面的组合项目CheckListBox=======================//
+        MakeCombinChecklistbox;
+        CheckTheListBox;
+        //====================================================================//
 end;
 
 end.

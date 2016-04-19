@@ -72,7 +72,7 @@ begin
 
   LoadGroupName(ComboBox2,'select name from CommCode where TypeName=''样本类型'' group by name');//加载样本类型
 
-  SDIAppForm.combinchecklistbox(CheckListBox1);  
+  combinchecklistbox(CheckListBox1);  
 end;
 
 procedure TfrmCopyInfo.BitBtn2Click(Sender: TObject);
