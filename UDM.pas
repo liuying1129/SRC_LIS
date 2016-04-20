@@ -71,6 +71,7 @@ var
   SCSYDW:STRING;//授权使用单位
   MergePrintDays:integer;//历史结果合并打印的偏差天数
   MakeTjDescDays:integer;//生成体检结论、建议的偏差天数
+  bAppendMakeTjDesc:string;//是否允许追加生成体检结论
   SmoothNum:integer;//直方图光滑次数
   LisConn:string;//Lis连接字符串,MakeDBConn过程中被赋值,然后传入QC.DLL、CalcItemPro.dll
   OrderType:string;//基本信息排序方式

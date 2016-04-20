@@ -2951,6 +2951,7 @@ begin
 
   MergePrintDays:=strtointdef(ScalarSQLCmd(LisConn,'select Name from CommCode where TypeName=''系统代码'' and ReMark=''历史结果合并打印的偏差天数'' '),0);
   MakeTjDescDays:=strtointdef(ScalarSQLCmd(LisConn,'select Name from CommCode where TypeName=''系统代码'' and ReMark=''生成体检结论的偏差天数'' '),0);
+  bAppendMakeTjDesc:=ScalarSQLCmd(LisConn,'select Name from CommCode where TypeName=''系统代码'' and ReMark=''允许追加生成体检结论'' ');
 
   CONFIGINI:=TINIFILE.Create(ChangeFileExt(Application.ExeName,'.ini'));
 
@@ -4197,13 +4198,16 @@ begin
   adotemp11.clone(ADObasic);
   while not adotemp11.Eof do
   begin
-    RecNum:=strtoint(ScalarSQLCmd(LisConn,'select count(*) from chk_valu cv,clinicchkitem cci where cv.itemid=cci.itemid and cv.pkunid='+adotemp11.fieldbyname('唯一编号').AsString+' and cci.Reserve5 in (1,2) and isnull(cv.itemvalue,'''')<>'''' '));
-    if RecNum>0 then
+    if bAppendMakeTjDesc<>'是' then
     begin
-      ExecSQLCmd(LisConn,'update chk_valu set issure=1 where pkunid='+adotemp11.fieldbyname('唯一编号').AsString+' and isnull(issure,'''')<>''1'' and (select cci.Reserve5 from clinicchkitem cci where cci.itemid=chk_valu.itemid) in (1,2)');
+      RecNum:=strtoint(ScalarSQLCmd(LisConn,'select count(*) from chk_valu cv,clinicchkitem cci where cv.itemid=cci.itemid and cv.pkunid='+adotemp11.fieldbyname('唯一编号').AsString+' and cci.Reserve5 in (1,2) and isnull(cv.itemvalue,'''')<>'''' '));
+      if RecNum>0 then
+      begin
+        ExecSQLCmd(LisConn,'update chk_valu set issure=1 where pkunid='+adotemp11.fieldbyname('唯一编号').AsString+' and isnull(issure,'''')<>''1'' and (select cci.Reserve5 from clinicchkitem cci where cci.itemid=chk_valu.itemid) in (1,2)');
 
-      adotemp11.Next;
-      continue;
+        adotemp11.Next;
+        continue;
+      end;
     end;
     
     SingleMakeTjDescription(adotemp11.fieldbyname('唯一编号').AsInteger);
