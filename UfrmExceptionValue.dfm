@@ -3,12 +3,12 @@ object frmExceptionValue: TfrmExceptionValue
   Top = 122
   Width = 700
   Height = 500
-  Caption = #38750#25968#20540#32467#26524#36229#38480#20540#31649#29702
+  Caption = '非数值结果超限值管理'
   Color = clBtnFace
   Font.Charset = ANSI_CHARSET
   Font.Color = clWindowText
   Font.Height = -13
-  Font.Name = #23435#20307
+  Font.Name = '宋体'
   Font.Style = []
   OldCreateOrder = False
   Position = poScreenCenter
@@ -29,14 +29,14 @@ object frmExceptionValue: TfrmExceptionValue
       Top = 64
       Width = 52
       Height = 13
-      Caption = #21305#37197#26041#24335
+      Caption = '匹配方式'
     end
     object Label2: TLabel
       Left = 16
       Top = 168
       Width = 52
       Height = 13
-      Caption = #36229#38480#26631#35782
+      Caption = '超限标识'
     end
     object Label3: TLabel
       Left = 2
@@ -44,14 +44,14 @@ object frmExceptionValue: TfrmExceptionValue
       Width = 254
       Height = 143
       Caption = 
-        #20363#22914#65292#20057#32925#34920#38754#25239#21407#65292#24076#26395#32467#26524#20540#20026#13#8220#38451#24615#8221#26102#26174#31034#20559#39640#13#35774#32622#26041#26696'1'#65306#21305#37197#26041#24335#36873#25321#8220#24038#21305#37197#8221#65292#13#32467#26524#20540#22635#8220#38451#8221#65292#36229#38480#26631#35782#36873#25321#8220#20559#39640#8221 +
-        ','#13#21017#32467#26524#20540#20026#8220#38451#8221#24320#22836#26102#26174#31034#20026#20559#39640#13#35774#32622#26041#26696'2'#65306#21305#37197#26041#24335#36873#25321#8220#20840#21305#37197#8221#65292#13#32467#26524#20540#22635#8220#38451#24615#8221#65292#36229#38480#26631#35782#36873#25321#8220#20559#39640#8221','#13#21017#32467#26524#20540#31561 +
-        #20110#8220#38451#24615#8221#26102#26174#31034#20026#20559#39640#13#35774#32622#26041#26696'3'#65306#21305#37197#26041#24335#36873#25321#8220#27169#31946#21305#37197#8221#65292#13#32467#26524#20540#22635#8220#38451#24615#8221#65292#36229#38480#26631#35782#36873#25321#8220#20559#39640#8221','#13#21017#32467#26524#20540#21253#21547#8220#38451#24615#8221#26102 +
-        #26174#31034#20026#20559#39640
+        '例如，乙肝表面抗原，希望结果值为'#13'“阳性”时显示偏高'#13'设置方案1：匹配方式选择“左匹配”，'#13'结果值填“阳”，超限标识选择“偏高”' +
+        ','#13'则结果值为“阳”开头时显示为偏高'#13'设置方案2：匹配方式选择“全匹配”，'#13'结果值填“阳性”，超限标识选择“偏高”,'#13'则结果值等' +
+        '于“阳性”时显示为偏高'#13'设置方案3：匹配方式选择“模糊匹配”，'#13'结果值填“阳性”，超限标识选择“偏高”,'#13'则结果值包含“阳性”时' +
+        '显示为偏高'
       Font.Charset = ANSI_CHARSET
       Font.Color = clBlue
       Font.Height = -13
-      Font.Name = #23435#20307
+      Font.Name = '宋体'
       Font.Style = []
       ParentFont = False
     end
@@ -60,7 +60,7 @@ object frmExceptionValue: TfrmExceptionValue
       Top = 400
       Width = 75
       Height = 25
-      Caption = #26032#22686
+      Caption = '新增'
       TabOrder = 0
       OnClick = BitBtn1Click
     end
@@ -69,7 +69,7 @@ object frmExceptionValue: TfrmExceptionValue
       Top = 400
       Width = 75
       Height = 25
-      Caption = #20445#23384
+      Caption = '保存'
       TabOrder = 1
       OnClick = BitBtn2Click
     end
@@ -78,7 +78,7 @@ object frmExceptionValue: TfrmExceptionValue
       Top = 424
       Width = 75
       Height = 25
-      Caption = #21024#38500
+      Caption = '删除'
       TabOrder = 2
       OnClick = BitBtn3Click
     end
@@ -88,7 +88,7 @@ object frmExceptionValue: TfrmExceptionValue
       Width = 75
       Height = 25
       Cancel = True
-      Caption = #20851#38381'(ESC)'
+      Caption = '关闭(ESC)'
       TabOrder = 3
       OnClick = BitBtn4Click
     end
@@ -98,14 +98,13 @@ object frmExceptionValue: TfrmExceptionValue
       Width = 200
       Height = 21
       Style = csDropDownList
-      ImeName = #20013#25991'('#31616#20307') - '#19975#33021#20116#31508#36755#20837#27861
       ItemHeight = 13
       TabOrder = 4
       Items.Strings = (
-        #27169#31946#21305#37197
-        #24038#21305#37197
-        #21491#21305#37197
-        #20840#21305#37197)
+        '模糊匹配'
+        '左匹配'
+        '右匹配'
+        '全匹配')
     end
     object ComboBox2: TComboBox
       Left = 16
@@ -113,13 +112,12 @@ object frmExceptionValue: TfrmExceptionValue
       Width = 200
       Height = 21
       Style = csDropDownList
-      ImeName = #20013#25991'('#31616#20307') - '#19975#33021#20116#31508#36755#20837#27861
       ItemHeight = 13
       TabOrder = 5
       Items.Strings = (
         ''
-        #20559#20302
-        #20559#39640)
+        '偏低'
+        '偏高')
     end
     object LabeledEdit1: TLabeledEdit
       Left = 16
@@ -128,8 +126,7 @@ object frmExceptionValue: TfrmExceptionValue
       Height = 21
       EditLabel.Width = 39
       EditLabel.Height = 13
-      EditLabel.Caption = #32467#26524#20540
-      ImeName = #20013#25991'('#31616#20307') - '#19975#33021#20116#31508#36755#20837#27861
+      EditLabel.Caption = '结果值'
       TabOrder = 6
     end
   end
@@ -140,13 +137,12 @@ object frmExceptionValue: TfrmExceptionValue
     Height = 462
     Align = alClient
     DataSource = DataSource1
-    ImeName = #20013#25991'('#31616#20307') - '#19975#33021#20116#31508#36755#20837#27861
     ReadOnly = True
     TabOrder = 1
     TitleFont.Charset = ANSI_CHARSET
     TitleFont.Color = clWindowText
     TitleFont.Height = -13
-    TitleFont.Name = #23435#20307
+    TitleFont.Name = '宋体'
     TitleFont.Style = []
   end
   object DataSource1: TDataSource

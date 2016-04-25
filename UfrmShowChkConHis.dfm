@@ -3,14 +3,14 @@ object frmShowChkConHis: TfrmShowChkConHis
   Top = 122
   BorderIcons = [biSystemMenu, biMinimize]
   BorderStyle = bsSingle
-  Caption = #30003#35831#21333#26597#35810
+  Caption = '申请单查询'
   ClientHeight = 462
   ClientWidth = 684
   Color = clBtnFace
   Font.Charset = ANSI_CHARSET
   Font.Color = clWindowText
   Font.Height = -13
-  Font.Name = #23435#20307
+  Font.Name = '宋体'
   Font.Style = []
   KeyPreview = True
   OldCreateOrder = False
@@ -33,11 +33,11 @@ object frmShowChkConHis: TfrmShowChkConHis
       Top = 73
       Width = 366
       Height = 13
-      Caption = #27880':'#26465#30721#25195#25551#33258#21160#23548#20837#26102#21462#32852#26426#21495'(1)'#65292#21542#21017#21462#39044#32422#30331#35760#30340#32852#26426#21495
+      Caption = '注:条码扫描自动导入时取联机号(1)，否则取预约登记的联机号'
       Font.Charset = ANSI_CHARSET
       Font.Color = clBlue
       Font.Height = -13
-      Font.Name = #23435#20307
+      Font.Name = '宋体'
       Font.Style = []
       ParentFont = False
     end
@@ -46,7 +46,7 @@ object frmShowChkConHis: TfrmShowChkConHis
       Top = 1
       Width = 110
       Height = 25
-      Caption = #36873#21462#26597#35810#26465#20214'(&Q)'
+      Caption = '选取查询条件(&Q)'
       TabOrder = 0
       OnClick = BitBtnCommQryClick
     end
@@ -55,7 +55,7 @@ object frmShowChkConHis: TfrmShowChkConHis
       Top = 27
       Width = 110
       Height = 25
-      Caption = #30830#23450
+      Caption = '确定'
       TabOrder = 1
       OnClick = BitBtn2Click
     end
@@ -64,7 +64,7 @@ object frmShowChkConHis: TfrmShowChkConHis
       Top = 6
       Width = 161
       Height = 17
-      Caption = #24378#21046#35206#30422#24403#21069#25351#23450#30149#20154
+      Caption = '强制覆盖当前指定病人'
       TabOrder = 2
     end
     object CheckBox2: TCheckBox
@@ -72,7 +72,7 @@ object frmShowChkConHis: TfrmShowChkConHis
       Top = 32
       Width = 196
       Height = 17
-      Caption = #20165#36873#25321#24403#21069#24037#20316#32452#30340#32452#21512#39033#30446
+      Caption = '仅选择当前工作组的组合项目'
       TabOrder = 3
     end
     object LabeledEdit2: TLabeledEdit
@@ -82,8 +82,7 @@ object frmShowChkConHis: TfrmShowChkConHis
       Height = 21
       EditLabel.Width = 52
       EditLabel.Height = 13
-      EditLabel.Caption = #26465#30721#25195#25551
-      ImeName = #20013#25991'('#31616#20307') - '#19975#33021#20116#31508#36755#20837#27861
+      EditLabel.Caption = '条码扫描'
       LabelPosition = lpLeft
       TabOrder = 4
       OnKeyDown = LabeledEdit2KeyDown
@@ -93,7 +92,7 @@ object frmShowChkConHis: TfrmShowChkConHis
       Top = 56
       Width = 140
       Height = 17
-      Caption = '"'#30830#23450'"'#21518#20851#38381#31383#21475
+      Caption = '"确定"后关闭窗口'
       TabOrder = 5
     end
     object LabeledEdit3: TLabeledEdit
@@ -103,8 +102,7 @@ object frmShowChkConHis: TfrmShowChkConHis
       Height = 21
       EditLabel.Width = 65
       EditLabel.Height = 13
-      EditLabel.Caption = #26679#26412#36865#20132#20154
-      ImeName = #20013#25991'('#31616#20307') - '#19975#33021#20116#31508#36755#20837#27861
+      EditLabel.Caption = '样本送交人'
       LabelPosition = lpLeft
       TabOrder = 6
     end
@@ -115,8 +113,7 @@ object frmShowChkConHis: TfrmShowChkConHis
       Height = 21
       EditLabel.Width = 60
       EditLabel.Height = 13
-      EditLabel.Caption = #32852#26426#21495'(1)'
-      ImeName = #20013#25991'('#31616#20307') - '#19975#33021#20116#31508#36755#20837#27861
+      EditLabel.Caption = '联机号(1)'
       LabelPosition = lpLeft
       TabOrder = 7
     end
@@ -128,12 +125,11 @@ object frmShowChkConHis: TfrmShowChkConHis
     Height = 203
     Align = alClient
     DataSource = DataSource1
-    ImeName = #20013#25991'('#31616#20307') - '#19975#33021#20116#31508#36755#20837#27861
     TabOrder = 1
     TitleFont.Charset = ANSI_CHARSET
     TitleFont.Color = clWindowText
     TitleFont.Height = -13
-    TitleFont.Name = #23435#20307
+    TitleFont.Name = '宋体'
     TitleFont.Style = []
     OnCellClick = DBGrid1CellClick
     OnDrawColumnCell = DBGrid1DrawColumnCell
@@ -148,13 +144,12 @@ object frmShowChkConHis: TfrmShowChkConHis
     Height = 169
     Align = alBottom
     DataSource = DataSource2
-    ImeName = #20013#25991'('#31616#20307') - '#19975#33021#20116#31508#36755#20837#27861
     ReadOnly = True
     TabOrder = 2
     TitleFont.Charset = ANSI_CHARSET
     TitleFont.Color = clWindowText
     TitleFont.Height = -13
-    TitleFont.Name = #23435#20307
+    TitleFont.Name = '宋体'
     TitleFont.Style = []
     OnCellClick = DBGrid2CellClick
     OnDrawColumnCell = DBGrid2DrawColumnCell

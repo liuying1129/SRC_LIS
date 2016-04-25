@@ -3,12 +3,12 @@ object frmHisCombItem: TfrmHisCombItem
   Top = 122
   Width = 700
   Height = 500
-  Caption = #39033#30446#23545#29031
+  Caption = '项目对照'
   Color = clBtnFace
   Font.Charset = ANSI_CHARSET
   Font.Color = clWindowText
   Font.Height = -13
-  Font.Name = #23435#20307
+  Font.Name = '宋体'
   Font.Style = []
   OldCreateOrder = False
   Position = poScreenCenter
@@ -29,14 +29,14 @@ object frmHisCombItem: TfrmHisCombItem
       Top = 128
       Width = 78
       Height = 13
-      Caption = #22806#37096#31995#32479#26631#35782
+      Caption = '外部系统标识'
     end
     object BitBtn1: TBitBtn
       Left = 35
       Top = 400
       Width = 75
       Height = 25
-      Caption = #26032#22686
+      Caption = '新增'
       TabOrder = 0
       OnClick = BitBtn1Click
     end
@@ -45,7 +45,7 @@ object frmHisCombItem: TfrmHisCombItem
       Top = 400
       Width = 75
       Height = 25
-      Caption = #20445#23384
+      Caption = '保存'
       TabOrder = 1
       OnClick = BitBtn2Click
     end
@@ -54,7 +54,7 @@ object frmHisCombItem: TfrmHisCombItem
       Top = 424
       Width = 75
       Height = 25
-      Caption = #21024#38500
+      Caption = '删除'
       TabOrder = 2
       OnClick = BitBtn3Click
     end
@@ -65,8 +65,7 @@ object frmHisCombItem: TfrmHisCombItem
       Height = 21
       EditLabel.Width = 130
       EditLabel.Height = 13
-      EditLabel.Caption = #22806#37096#31995#32479#25910#36153#39033#30446#20195#30721
-      ImeName = #20013#25991'('#31616#20307') - '#19975#33021#20116#31508#36755#20837#27861
+      EditLabel.Caption = '外部系统收费项目代码'
       TabOrder = 3
     end
     object BitBtn4: TBitBtn
@@ -75,7 +74,7 @@ object frmHisCombItem: TfrmHisCombItem
       Width = 75
       Height = 25
       Cancel = True
-      Caption = #20851#38381'(ESC)'
+      Caption = '关闭(ESC)'
       TabOrder = 4
       OnClick = BitBtn4Click
     end
@@ -86,8 +85,7 @@ object frmHisCombItem: TfrmHisCombItem
       Height = 21
       EditLabel.Width = 130
       EditLabel.Height = 13
-      EditLabel.Caption = #22806#37096#31995#32479#25910#36153#39033#30446#21517#31216
-      ImeName = #20013#25991'('#31616#20307') - '#19975#33021#20116#31508#36755#20837#27861
+      EditLabel.Caption = '外部系统收费项目名称'
       TabOrder = 5
     end
     object ComboBox1: TComboBox
@@ -95,7 +93,6 @@ object frmHisCombItem: TfrmHisCombItem
       Top = 144
       Width = 177
       Height = 21
-      ImeName = #20013#25991'('#31616#20307') - '#19975#33021#20116#31508#36755#20837#27861
       ItemHeight = 13
       TabOrder = 6
       Items.Strings = (
@@ -110,13 +107,12 @@ object frmHisCombItem: TfrmHisCombItem
     Height = 462
     Align = alClient
     DataSource = DataSource1
-    ImeName = #20013#25991'('#31616#20307') - '#19975#33021#20116#31508#36755#20837#27861
     ReadOnly = True
     TabOrder = 1
     TitleFont.Charset = ANSI_CHARSET
     TitleFont.Color = clWindowText
     TitleFont.Height = -13
-    TitleFont.Name = #23435#20307
+    TitleFont.Name = '宋体'
     TitleFont.Style = []
   end
   object DataSource1: TDataSource

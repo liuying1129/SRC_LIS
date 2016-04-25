@@ -3,12 +3,12 @@ object frmCommQuery: TfrmCommQuery
   Top = 122
   Width = 794
   Height = 450
-  Caption = #26597#35810
+  Caption = '查询'
   Color = clSkyBlue
   Font.Charset = GB2312_CHARSET
   Font.Color = clWindowText
   Font.Height = -13
-  Font.Name = #23435#20307
+  Font.Name = '宋体'
   Font.Style = []
   OldCreateOrder = False
   Position = poScreenCenter
@@ -38,7 +38,7 @@ object frmCommQuery: TfrmCommQuery
       Top = 16
       Width = 33
       Height = 13
-      Caption = #20154#27425':'
+      Caption = '人次:'
     end
     object Label2: TLabel
       Left = 766
@@ -52,7 +52,7 @@ object frmCommQuery: TfrmCommQuery
       Top = 5
       Width = 110
       Height = 25
-      Caption = #36873#21462#26597#35810#26465#20214'(&Q)'
+      Caption = '选取查询条件(&Q)'
       TabOrder = 0
       OnClick = BitBtnCommQryClick
     end
@@ -62,7 +62,7 @@ object frmCommQuery: TfrmCommQuery
       Width = 70
       Height = 25
       Cancel = True
-      Caption = #20851#38381'(&R)'
+      Caption = '关闭(&R)'
       TabOrder = 1
       OnClick = BitBtnCommQryCloseClick
     end
@@ -71,7 +71,7 @@ object frmCommQuery: TfrmCommQuery
       Top = 5
       Width = 70
       Height = 25
-      Caption = #25171#21360'(&P)'
+      Caption = '打印(&P)'
       TabOrder = 2
       OnClick = BitBtn1Click
     end
@@ -80,7 +80,7 @@ object frmCommQuery: TfrmCommQuery
       Top = 5
       Width = 70
       Height = 25
-      Caption = #20998#32452#25171#21360
+      Caption = '分组打印'
       TabOrder = 3
       OnClick = BitBtn3Click
     end
@@ -89,7 +89,7 @@ object frmCommQuery: TfrmCommQuery
       Top = 5
       Width = 70
       Height = 25
-      Caption = #25209#37327#25171#21360
+      Caption = '批量打印'
       TabOrder = 4
       OnClick = BitBtn5Click
     end
@@ -98,12 +98,12 @@ object frmCommQuery: TfrmCommQuery
       Top = 1
       Width = 210
       Height = 30
-      Caption = #25209#25171#36873#39033'('#34920#31034#26597#35810#20869#23481#20840#37096#25171#21360')'
+      Caption = '批打选项(表示查询内容全部打印)'
       Columns = 2
       ItemIndex = 0
       Items.Strings = (
-        #25171#21360
-        #20998#32452#25171#21360)
+        '打印'
+        '分组打印')
       TabOrder = 5
     end
   end
@@ -116,7 +116,6 @@ object frmCommQuery: TfrmCommQuery
     Color = 16767438
     Ctl3D = False
     DataSource = MasterDataSource
-    ImeName = #20013#25991'('#31616#20307') - '#19975#33021#20116#31508#36755#20837#27861
     ParentCtl3D = False
     PopupMenu = PopupMenu1
     ReadOnly = True
@@ -124,7 +123,7 @@ object frmCommQuery: TfrmCommQuery
     TitleFont.Charset = GB2312_CHARSET
     TitleFont.Color = clWindowText
     TitleFont.Height = -13
-    TitleFont.Name = #23435#20307
+    TitleFont.Name = '宋体'
     TitleFont.Style = []
   end
   object pnlCommQryBotton: TPanel
@@ -140,11 +139,11 @@ object frmCommQuery: TfrmCommQuery
       Top = 7
       Width = 563
       Height = 13
-      Caption = #20462#25913#26041#27861':1'#12289#28857#20987#8220#20462#25913#8221#25353#38062'  2'#12289#22312#20449#24687#26694#20013#30452#25509#20462#25913'  3'#12289#28857#20987#21521#19979#38190#65292#20351#20809#26631#31163#24320#24050#20462#25913#34892
+      Caption = '修改方法:1、点击“修改”按钮  2、在信息框中直接修改  3、点击向下键，使光标离开已修改行'
       Font.Charset = GB2312_CHARSET
       Font.Color = clRed
       Font.Height = -13
-      Font.Name = #23435#20307
+      Font.Name = '宋体'
       Font.Style = []
       ParentFont = False
     end
@@ -153,7 +152,7 @@ object frmCommQuery: TfrmCommQuery
       Top = 1
       Width = 87
       Height = 25
-      Caption = #20462#25913#26816#39564#32467#26524
+      Caption = '修改检验结果'
       TabOrder = 0
       OnClick = BitBtn4Click
     end
@@ -162,7 +161,7 @@ object frmCommQuery: TfrmCommQuery
       Top = 1
       Width = 87
       Height = 25
-      Caption = #20462#25913#22522#26412#20449#24687
+      Caption = '修改基本信息'
       TabOrder = 1
       OnClick = BitBtn2Click
     end
@@ -176,14 +175,13 @@ object frmCommQuery: TfrmCommQuery
     Color = 16767438
     Ctl3D = False
     DataSource = DataSource1
-    ImeName = #20013#25991'('#31616#20307') - '#19975#33021#20116#31508#36755#20837#27861
     ParentCtl3D = False
     ReadOnly = True
     TabOrder = 3
     TitleFont.Charset = GB2312_CHARSET
     TitleFont.Color = clWindowText
     TitleFont.Height = -13
-    TitleFont.Name = #23435#20307
+    TitleFont.Name = '宋体'
     TitleFont.Style = []
     OnDrawColumnCell = DBGrid1DrawColumnCell
   end
@@ -245,7 +243,7 @@ object frmCommQuery: TfrmCommQuery
     Left = 464
     Top = 160
     object Excel1: TMenuItem
-      Caption = #23548#20986'Excel'
+      Caption = '导出Excel'
       OnClick = Excel1Click
     end
     object N4: TMenuItem

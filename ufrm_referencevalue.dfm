@@ -2,14 +2,14 @@ object frm_referencevalue: Tfrm_referencevalue
   Left = 238
   Top = 154
   BorderStyle = bsDialog
-  Caption = #21442#32771#20540#35774#32622
+  Caption = '参考值设置'
   ClientHeight = 466
   ClientWidth = 692
   Color = clSkyBlue
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -13
-  Font.Name = #23435#20307
+  Font.Name = '宋体'
   Font.Style = []
   KeyPreview = True
   OldCreateOrder = False
@@ -30,32 +30,32 @@ object frm_referencevalue: Tfrm_referencevalue
       Top = 40
       Width = 52
       Height = 13
-      Caption = #26679#26412#31867#22411
+      Caption = '样本类型'
     end
     object Label6: TLabel
       Left = 299
       Top = 43
       Width = 39
       Height = 13
-      Caption = #26368#23567#20540
+      Caption = '最小值'
     end
     object Label7: TLabel
       Left = 497
       Top = 43
       Width = 39
       Height = 13
-      Caption = #26368#22823#20540
+      Caption = '最大值'
     end
     object BitBtn1: TBitBtn
       Left = 19
       Top = 10
       Width = 90
       Height = 25
-      Caption = #26032#22686'F2'
+      Caption = '新增F2'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -13
-      Font.Name = #23435#20307
+      Font.Name = '宋体'
       Font.Style = []
       ParentFont = False
       TabOrder = 7
@@ -66,11 +66,11 @@ object frm_referencevalue: Tfrm_referencevalue
       Top = 10
       Width = 90
       Height = 25
-      Caption = #20445#23384'F3'
+      Caption = '保存F3'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -13
-      Font.Name = #23435#20307
+      Font.Name = '宋体'
       Font.Style = []
       ParentFont = False
       TabOrder = 6
@@ -81,11 +81,11 @@ object frm_referencevalue: Tfrm_referencevalue
       Top = 10
       Width = 90
       Height = 25
-      Caption = #21024#38500'F5'
+      Caption = '删除F5'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -13
-      Font.Name = #23435#20307
+      Font.Name = '宋体'
       Font.Style = []
       ParentFont = False
       TabOrder = 8
@@ -100,19 +100,18 @@ object frm_referencevalue: Tfrm_referencevalue
       Ctl3D = False
       EditLabel.Width = 26
       EditLabel.Height = 13
-      EditLabel.Caption = #24615#21035
+      EditLabel.Caption = '性别'
       EditLabel.Font.Charset = DEFAULT_CHARSET
       EditLabel.Font.Color = clWindowText
       EditLabel.Font.Height = -13
-      EditLabel.Font.Name = #23435#20307
+      EditLabel.Font.Name = '宋体'
       EditLabel.Font.Style = []
       EditLabel.ParentFont = False
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -13
-      Font.Name = #23435#20307
+      Font.Name = '宋体'
       Font.Style = []
-      ImeName = #20013#25991'('#31616#20307') - '#19975#33021#20116#31508#36755#20837#27861
       ParentCtl3D = False
       ParentFont = False
       TabOrder = 1
@@ -127,19 +126,18 @@ object frm_referencevalue: Tfrm_referencevalue
       Ctl3D = False
       EditLabel.Width = 52
       EditLabel.Height = 13
-      EditLabel.Caption = #24180#40836#19979#38480
+      EditLabel.Caption = '年龄下限'
       EditLabel.Font.Charset = DEFAULT_CHARSET
       EditLabel.Font.Color = clWindowText
       EditLabel.Font.Height = -13
-      EditLabel.Font.Name = #23435#20307
+      EditLabel.Font.Name = '宋体'
       EditLabel.Font.Style = []
       EditLabel.ParentFont = False
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -13
-      Font.Name = #23435#20307
+      Font.Name = '宋体'
       Font.Style = []
-      ImeName = #20013#25991'('#31616#20307') - '#19975#33021#20116#31508#36755#20837#27861
       ParentCtl3D = False
       ParentFont = False
       TabOrder = 2
@@ -154,19 +152,18 @@ object frm_referencevalue: Tfrm_referencevalue
       Ctl3D = False
       EditLabel.Width = 52
       EditLabel.Height = 13
-      EditLabel.Caption = #24180#40836#19978#38480
+      EditLabel.Caption = '年龄上限'
       EditLabel.Font.Charset = DEFAULT_CHARSET
       EditLabel.Font.Color = clWindowText
       EditLabel.Font.Height = -13
-      EditLabel.Font.Name = #23435#20307
+      EditLabel.Font.Name = '宋体'
       EditLabel.Font.Style = []
       EditLabel.ParentFont = False
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -13
-      Font.Name = #23435#20307
+      Font.Name = '宋体'
       Font.Style = []
-      ImeName = #20013#25991'('#31616#20307') - '#19975#33021#20116#31508#36755#20837#27861
       ParentCtl3D = False
       ParentFont = False
       TabOrder = 3
@@ -178,7 +175,7 @@ object frm_referencevalue: Tfrm_referencevalue
       Width = 90
       Height = 25
       Cancel = True
-      Caption = #20851#38381'(Esc)'
+      Caption = '关闭(Esc)'
       TabOrder = 9
       OnClick = BitBtn6Click
       NumGlyphs = 2
@@ -188,7 +185,6 @@ object frm_referencevalue: Tfrm_referencevalue
       Top = 56
       Width = 89
       Height = 21
-      ImeName = #20013#25991'('#31616#20307') - '#19975#33021#20116#31508#36755#20837#27861
       ItemHeight = 13
       TabOrder = 0
     end
@@ -197,7 +193,6 @@ object frm_referencevalue: Tfrm_referencevalue
       Top = 58
       Width = 190
       Height = 105
-      ImeName = #20013#25991'('#31616#20307') - '#19975#33021#20116#31508#36755#20837#27861
       ScrollBars = ssBoth
       TabOrder = 4
       WordWrap = False
@@ -207,7 +202,6 @@ object frm_referencevalue: Tfrm_referencevalue
       Top = 58
       Width = 190
       Height = 105
-      ImeName = #20013#25991'('#31616#20307') - '#19975#33021#20116#31508#36755#20837#27861
       ScrollBars = ssBoth
       TabOrder = 5
       WordWrap = False
@@ -229,12 +223,11 @@ object frm_referencevalue: Tfrm_referencevalue
       Align = alClient
       Color = 16767438
       DataSource = DataSource2
-      ImeName = #20013#25991'('#31616#20307') - '#19975#33021#20116#31508#36755#20837#27861
       TabOrder = 0
       TitleFont.Charset = DEFAULT_CHARSET
       TitleFont.Color = clWindowText
       TitleFont.Height = -13
-      TitleFont.Name = #23435#20307
+      TitleFont.Name = '宋体'
       TitleFont.Style = []
     end
     object Panel2: TPanel
@@ -250,11 +243,11 @@ object frm_referencevalue: Tfrm_referencevalue
         Top = 4
         Width = 209
         Height = 13
-        Caption = #27880':1'#12289#24615#21035#20026#31354#34920#31034#36866#29992#20110#25152#26377#24615#21035
+        Caption = '注:1、性别为空表示适用于所有性别'
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clRed
         Font.Height = -13
-        Font.Name = #23435#20307
+        Font.Name = '宋体'
         Font.Style = []
         ParentFont = False
       end
@@ -263,11 +256,11 @@ object frm_referencevalue: Tfrm_referencevalue
         Top = 20
         Width = 269
         Height = 13
-        Caption = '2'#12289#24180#40836#19979#38480#20026#31354#34920#31034'0'#23681#65292#19978#38480#20026#31354#34920#31034'200'#23681
+        Caption = '2、年龄下限为空表示0岁，上限为空表示200岁'
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clRed
         Font.Height = -13
-        Font.Name = #23435#20307
+        Font.Name = '宋体'
         Font.Style = []
         ParentFont = False
       end
@@ -276,11 +269,11 @@ object frm_referencevalue: Tfrm_referencevalue
         Top = 37
         Width = 189
         Height = 13
-        Caption = '3'#12289#26368#22823#20540#12289#26368#23567#20540#19981#35201#36755#20837#21333#20301
+        Caption = '3、最大值、最小值不要输入单位'
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clRed
         Font.Height = -13
-        Font.Name = #23435#20307
+        Font.Name = '宋体'
         Font.Style = []
         ParentFont = False
       end
@@ -289,11 +282,11 @@ object frm_referencevalue: Tfrm_referencevalue
         Top = 53
         Width = 241
         Height = 13
-        Caption = '4'#12289#26679#26412#31867#22411#20026#31354#34920#31034#36866#29992#20110#25152#26377#26679#26412#31867#22411
+        Caption = '4、样本类型为空表示适用于所有样本类型'
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clRed
         Font.Height = -13
-        Font.Name = #23435#20307
+        Font.Name = '宋体'
         Font.Style = []
         ParentFont = False
       end
@@ -302,11 +295,11 @@ object frm_referencevalue: Tfrm_referencevalue
         Top = 4
         Width = 244
         Height = 13
-        Caption = '5'#12289#26368#23567'/'#22823#20540#26694#65292'Ctrl+'#22238#36710#65292#21487#25442#34892#36755#20837
+        Caption = '5、最小/大值框，Ctrl+回车，可换行输入'
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clRed
         Font.Height = -13
-        Font.Name = #23435#20307
+        Font.Name = '宋体'
         Font.Style = []
         ParentFont = False
       end
