@@ -4331,6 +4331,32 @@ CREATE TABLE ApiToken (
 ) 
 GO
 
+--20160422用户访问应用程序记录表(用户信息收集)创建脚本
+if not exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[AppVisit]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
+create table AppVisit
+ (Unid int identity primary key,
+  SysName varchar (10) NULL,
+  PageName varchar (10) NULL,
+  IP varchar (20) NULL,
+  Customer varchar (50) NULL,
+  UserName varchar (20) NULL,
+  ActionName varchar (50) NULL,
+  ActionTime datetime NULL,
+  Remark varchar (100) NULL,
+  Reserve varchar(100) NULL,
+  Reserve2 varchar (200) NULL,
+  Reserve3 varchar (200) NULL,
+  Reserve4 varchar (200) NULL,
+  Reserve5 int NULL,
+  Reserve6 int NULL,
+  Reserve7 float NULL,
+  Reserve8 float NULL,
+  Reserve9 datetime NULL,
+  Reserve10 datetime NULL,
+  Create_Date_Time datetime NULL DEFAULT (getdate())
+)
+GO
+
 --重新编译视图
 sp_refreshview  'dbo.view_chk_valu_All'
 GO
