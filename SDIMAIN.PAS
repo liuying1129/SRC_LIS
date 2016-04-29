@@ -8,7 +8,8 @@ uses Windows,Messages, Classes,SysUtils, Graphics, Forms, Controls, Menus,
   DB,inifiles,FR_DBSet, FR_Class, LYAboutBox,Printers,
   StrUtils,  TeEngine, Series, TeeProcs, Chart,fr_chart,shellapi{ShellExecute}, 
   DateUtils, FR_DSet, ADOLYGetcode,Math,Jpeg,Variants, UfrmLocateRecord,
-  ExtDlgs, UADOLYQuery;
+  ExtDlgs, UADOLYQuery,HTTPApp{HTTPEncode},IdHashMessageDigest{TIdHashMessageDigest5},
+  IdHash{T4x4LongWordRecord};
 
 //==为了通过发送消息更新主窗体状态栏而增加==//
 const
@@ -474,6 +475,11 @@ begin
 end;
 
 procedure TSDIAppForm.FormShow(Sender: TObject);
+var
+  s3,sss:string;
+  t1:string;
+  MyMD5: TIdHashMessageDigest5;
+  Digest: T4x4LongWordRecord;
 begin
   if ifRegister then bRegister:=true else bRegister:=false;
   
@@ -498,6 +504,29 @@ begin
   if IdleTrackerInit then TimerIdleTracker.Enabled:=true else TimerIdleTracker.Enabled:=false;//要用到ReadConfig中的LoginTime参数
 
   LoadToolMenu(N65,'select name from CommCode where TypeName=''工具菜单'' order by ID');
+
+  //调用用户信息接口start
+  t1:=FormatDateTime('YYYY-MM-DD hh:nn:ss',now);
+  s3:='methodNum='+HTTPEncode(UTF8Encode('AIF015'));
+  s3:=s3+'&customer='+(HTTPEncode(UTF8Encode(SCSYDW)));
+  s3:=s3+'&actionTime='+HTTPEncode(UTF8Encode(t1));
+  s3:=s3+'&sysName='+HTTPEncode(UTF8Encode(SYSNAME));
+  s3:=s3+'&pageName='+HTTPEncode(UTF8Encode(Name));
+  s3:=s3+'&ip='+HTTPEncode(UTF8Encode('10.1.2.3'));
+  s3:=s3+'&userName='+HTTPEncode(UTF8Encode(operator_name));
+  s3:=s3+'&actionName='+HTTPEncode(UTF8Encode('Show'));
+
+  MyMD5 := TIdHashMessageDigest5.Create; 
+  Digest := MyMD5.HashValue('actionNameShowactionTime'+t1+'customer'+SCSYDW+'ip10.1.2.3methodNumAIF015pageName'+Name+'sysName'+SYSNAME+'userName'+operator_name);
+  sss:=MyMD5.AsHex(Digest);
+
+  s3:=s3+'&sign='+HTTPEncode(UTF8Encode(sss));
+
+  try
+    dm.IdHTTP1.Get(BASE_URL+'?'+s3);
+  except
+  end;
+  //调用用户信息接口stop
 end;
 
 procedure TSDIAppForm.ClearAll(CONST Clear_TYPE:integer);

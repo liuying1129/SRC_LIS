@@ -3,13 +3,13 @@ object SDIAppForm: TSDIAppForm
   Top = 21
   Width = 900
   Height = 705
-  Caption = '誉凯检验信息管理系统V7.0'
+  Caption = #35465#20975#26816#39564#20449#24687#31649#29702#31995#32479'V7.0'
   Color = clBtnFace
   Constraints.MinWidth = 130
   Font.Charset = GB2312_CHARSET
   Font.Color = clWindowText
   Font.Height = -13
-  Font.Name = '宋体'
+  Font.Name = #23435#20307
   Font.Style = []
   KeyPreview = True
   Menu = MainMenu1
@@ -53,7 +53,7 @@ object SDIAppForm: TSDIAppForm
       Font.Charset = GB2312_CHARSET
       Font.Color = clWindowText
       Font.Height = -13
-      Font.Name = '宋体'
+      Font.Name = #23435#20307
       Font.Style = []
       Images = ImageList1
       Indent = 5
@@ -70,8 +70,8 @@ object SDIAppForm: TSDIAppForm
         Top = 2
         Width = 76
         Height = 22
-        Hint = '根据姓名定位'
-        Caption = '查找检验单'
+        Hint = #26681#25454#22995#21517#23450#20301
+        Caption = #26597#25214#26816#39564#21333
         OnClick = SpeedButton1Click
       end
       object ToolButton2: TToolButton
@@ -87,7 +87,7 @@ object SDIAppForm: TSDIAppForm
         Top = 2
         Width = 75
         Height = 22
-        Caption = '新检验单F2'
+        Caption = #26032#26816#39564#21333'F2'
         OnClick = SpeedButton5Click
       end
       object ToolButton1: TSpeedButton
@@ -95,7 +95,7 @@ object SDIAppForm: TSDIAppForm
         Top = 2
         Width = 85
         Height = 22
-        Caption = '删除检验单F4'
+        Caption = #21024#38500#26816#39564#21333'F4'
         OnClick = ToolButton1Click
       end
       object suiButton8: TSpeedButton
@@ -103,7 +103,7 @@ object SDIAppForm: TSDIAppForm
         Top = 2
         Width = 47
         Height = 22
-        Caption = '刷新F5'
+        Caption = #21047#26032'F5'
         OnClick = suiButton8Click
       end
       object ToolButton4: TToolButton
@@ -119,7 +119,7 @@ object SDIAppForm: TSDIAppForm
         Top = 2
         Width = 47
         Height = 22
-        Caption = '审核F6'
+        Caption = #23457#26680'F6'
         OnClick = suiButton3Click
       end
       object suiButton4: TSpeedButton
@@ -127,7 +127,7 @@ object SDIAppForm: TSDIAppForm
         Top = 2
         Width = 75
         Height = 22
-        Caption = '取消审核F8'
+        Caption = #21462#28040#23457#26680'F8'
         OnClick = suiButton4Click
       end
       object ToolButton6: TToolButton
@@ -143,7 +143,7 @@ object SDIAppForm: TSDIAppForm
         Top = 2
         Width = 47
         Height = 22
-        Caption = '打印F7'
+        Caption = #25171#21360'F7'
         OnClick = ToolButton8Click
       end
       object suiButton1: TSpeedButton
@@ -151,7 +151,7 @@ object SDIAppForm: TSDIAppForm
         Top = 2
         Width = 75
         Height = 22
-        Caption = '分组打印F9'
+        Caption = #20998#32452#25171#21360'F9'
         OnClick = suiButton1Click
       end
       object ToolButton3: TToolButton
@@ -167,7 +167,7 @@ object SDIAppForm: TSDIAppForm
         Top = 2
         Width = 95
         Height = 22
-        Caption = '选取申请单F12'
+        Caption = #36873#21462#30003#35831#21333'F12'
         OnClick = SpeedButton2Click
       end
     end
@@ -191,7 +191,7 @@ object SDIAppForm: TSDIAppForm
       Font.Charset = ANSI_CHARSET
       Font.Color = 13583874
       Font.Height = -13
-      Font.Name = '宋体'
+      Font.Name = #23435#20307
       Font.Style = []
       ParentFont = False
       TabOrder = 0
@@ -200,11 +200,11 @@ object SDIAppForm: TSDIAppForm
         Top = 5
         Width = 189
         Height = 13
-        Caption = '输入+号表示转移到下一条检验单'
+        Caption = #36755#20837'+'#21495#34920#31034#36716#31227#21040#19979#19968#26465#26816#39564#21333
         Font.Charset = GB2312_CHARSET
         Font.Color = clRed
         Font.Height = -13
-        Font.Name = '宋体'
+        Font.Name = #23435#20307
         Font.Style = []
         ParentFont = False
       end
@@ -213,11 +213,11 @@ object SDIAppForm: TSDIAppForm
         Top = 0
         Width = 100
         Height = 22
-        Caption = '选取未分组项目'
+        Caption = #36873#21462#26410#20998#32452#39033#30446
         Font.Charset = ANSI_CHARSET
         Font.Color = clBlack
         Font.Height = -13
-        Font.Name = '宋体'
+        Font.Name = #23435#20307
         Font.Style = []
         ParentFont = False
         OnClick = suiButton7Click
@@ -230,11 +230,11 @@ object SDIAppForm: TSDIAppForm
         Ctl3D = False
         EditLabel.Width = 73
         EditLabel.Height = 13
-        EditLabel.Caption = '输入代码(&E)'
+        EditLabel.Caption = #36755#20837#20195#30721'(&E)'
         EditLabel.Font.Charset = DEFAULT_CHARSET
         EditLabel.Font.Color = clBlack
         EditLabel.Font.Height = -13
-        EditLabel.Font.Name = '宋体'
+        EditLabel.Font.Name = #23435#20307
         EditLabel.Font.Style = []
         EditLabel.ParentFont = False
         LabelPosition = lpLeft
@@ -276,7 +276,7 @@ object SDIAppForm: TSDIAppForm
           Align = alClient
           TabOrder = 0
           object TabSheet1: TTabSheet
-            Caption = '检验结果'
+            Caption = #26816#39564#32467#26524
             object DBGrid2: TDBGrid
               Left = 0
               Top = 0
@@ -292,7 +292,7 @@ object SDIAppForm: TSDIAppForm
               TitleFont.Charset = GB2312_CHARSET
               TitleFont.Color = clWindowText
               TitleFont.Height = -13
-              TitleFont.Name = '宋体'
+              TitleFont.Name = #23435#20307
               TitleFont.Style = []
               OnDrawColumnCell = DBGrid2DrawColumnCell
               OnDblClick = DBGrid2DblClick
@@ -302,7 +302,7 @@ object SDIAppForm: TSDIAppForm
             end
           end
           object TabSheet2: TTabSheet
-            Caption = '图像'
+            Caption = #22270#20687
             ImageIndex = 1
             object ScrollBoxPicture: TScrollBox
               Left = 0
@@ -314,7 +314,7 @@ object SDIAppForm: TSDIAppForm
             end
           end
           object TabSheet3: TTabSheet
-            Caption = '二维码'
+            Caption = #20108#32500#30721
             ImageIndex = 2
             object ImageBarcode2D: TImage
               Left = 0
@@ -325,7 +325,7 @@ object SDIAppForm: TSDIAppForm
             end
           end
           object TabSheet4: TTabSheet
-            Caption = '结果详情'
+            Caption = #32467#26524#35814#24773
             ImageIndex = 3
             object meValueDesc: TMemo
               Left = 0
@@ -348,11 +348,11 @@ object SDIAppForm: TSDIAppForm
                 Top = 23
                 Width = 136
                 Height = 13
-                Caption = '注:换行键:Ctrl+Enter'
+                Caption = #27880':'#25442#34892#38190':Ctrl+Enter'
                 Font.Charset = GB2312_CHARSET
                 Font.Color = clBlue
                 Font.Height = -13
-                Font.Name = '宋体'
+                Font.Name = #23435#20307
                 Font.Style = []
                 ParentFont = False
               end
@@ -361,11 +361,11 @@ object SDIAppForm: TSDIAppForm
                 Top = 6
                 Width = 52
                 Height = 13
-                Caption = '项目提示'
+                Caption = #39033#30446#25552#31034
                 Font.Charset = GB2312_CHARSET
                 Font.Color = clBlue
                 Font.Height = -13
-                Font.Name = '宋体'
+                Font.Name = #23435#20307
                 Font.Style = []
                 ParentFont = False
               end
@@ -374,7 +374,7 @@ object SDIAppForm: TSDIAppForm
                 Top = 7
                 Width = 100
                 Height = 25
-                Caption = '保存结果详情'
+                Caption = #20445#23384#32467#26524#35814#24773
                 TabOrder = 0
                 OnClick = BitBtn1Click
               end
@@ -383,7 +383,7 @@ object SDIAppForm: TSDIAppForm
                 Top = 7
                 Width = 75
                 Height = 25
-                Caption = '体检模板'
+                Caption = #20307#26816#27169#26495
                 TabOrder = 1
                 OnClick = BitBtn2Click
               end
@@ -399,7 +399,7 @@ object SDIAppForm: TSDIAppForm
           Align = alTop
           TabOrder = 1
           object TabSheet5: TTabSheet
-            Caption = '常用组合项目'
+            Caption = #24120#29992#32452#21512#39033#30446
             object clbCommUsed: TCheckListBox
               Left = 0
               Top = 0
@@ -416,7 +416,7 @@ object SDIAppForm: TSDIAppForm
               Font.Charset = ANSI_CHARSET
               Font.Color = clWindowText
               Font.Height = -13
-              Font.Name = '宋体'
+              Font.Name = #23435#20307
               Font.Style = []
               ItemHeight = 13
               ParentCtl3D = False
@@ -426,7 +426,7 @@ object SDIAppForm: TSDIAppForm
             end
           end
           object TabSheet6: TTabSheet
-            Caption = '备用组合项目'
+            Caption = #22791#29992#32452#21512#39033#30446
             ImageIndex = 1
             object clbNoCommUsed: TCheckListBox
               Left = 0
@@ -444,7 +444,7 @@ object SDIAppForm: TSDIAppForm
               Font.Charset = ANSI_CHARSET
               Font.Color = clWindowText
               Font.Height = -13
-              Font.Name = '宋体'
+              Font.Name = #23435#20307
               Font.Style = []
               ItemHeight = 13
               ParentCtl3D = False
@@ -470,7 +470,7 @@ object SDIAppForm: TSDIAppForm
       Width = 269
       Height = 589
       Align = alClient
-      Caption = '检验单列表(&Q)'
+      Caption = #26816#39564#21333#21015#34920'(&Q)'
       Color = 16767438
       ParentColor = False
       TabOrder = 0
@@ -490,7 +490,7 @@ object SDIAppForm: TSDIAppForm
         TitleFont.Charset = GB2312_CHARSET
         TitleFont.Color = clWindowText
         TitleFont.Height = -13
-        TitleFont.Name = '宋体'
+        TitleFont.Name = #23435#20307
         TitleFont.Style = []
         OnDrawColumnCell = DBGrid1DrawColumnCell
       end
@@ -509,7 +509,7 @@ object SDIAppForm: TSDIAppForm
           Top = 7
           Width = 65
           Height = 13
-          Caption = '选择工作组'
+          Caption = #36873#25321#24037#20316#32452
         end
         object cbxConnChar: TComboBox
           Tag = 101
@@ -534,7 +534,7 @@ object SDIAppForm: TSDIAppForm
       Width = 189
       Height = 589
       Align = alLeft
-      Caption = '基本信息录入'
+      Caption = #22522#26412#20449#24687#24405#20837
       Color = 16767438
       ParentColor = False
       PopupMenu = PopupMenu1
@@ -544,35 +544,35 @@ object SDIAppForm: TSDIAppForm
         Top = 297
         Width = 52
         Height = 13
-        Caption = '申请时间'
+        Caption = #30003#35831#26102#38388
       end
       object Label4: TLabel
         Left = 24
         Top = 339
         Width = 52
         Height = 13
-        Caption = '检查时间'
+        Caption = #26816#26597#26102#38388
       end
       object Label5: TLabel
         Left = 24
         Top = 277
         Width = 52
         Height = 13
-        Caption = '申请日期'
+        Caption = #30003#35831#26085#26399
       end
       object Label6: TLabel
         Left = 24
         Top = 319
         Width = 52
         Height = 13
-        Caption = '检查日期'
+        Caption = #26816#26597#26085#26399
       end
       object suiButton6: TBitBtn
         Left = 79
         Top = 539
         Width = 100
         Height = 22
-        Caption = '保存检验单F3'
+        Caption = #20445#23384#26816#39564#21333'F3'
         TabOrder = 25
         OnClick = suiButton6Click
       end
@@ -584,7 +584,7 @@ object SDIAppForm: TSDIAppForm
         Ctl3D = False
         EditLabel.Width = 39
         EditLabel.Height = 13
-        EditLabel.Caption = '联机号'
+        EditLabel.Caption = #32852#26426#21495
         LabelPosition = lpLeft
         ParentCtl3D = False
         TabOrder = 1
@@ -598,7 +598,7 @@ object SDIAppForm: TSDIAppForm
         Ctl3D = False
         EditLabel.Width = 72
         EditLabel.Height = 13
-        EditLabel.Caption = '门诊/住院号'
+        EditLabel.Caption = #38376#35786'/'#20303#38498#21495
         LabelPosition = lpLeft
         ParentCtl3D = False
         TabOrder = 2
@@ -612,7 +612,7 @@ object SDIAppForm: TSDIAppForm
         Ctl3D = False
         EditLabel.Width = 26
         EditLabel.Height = 13
-        EditLabel.Caption = '姓名'
+        EditLabel.Caption = #22995#21517
         ImeMode = imOpen
         LabelPosition = lpLeft
         ParentCtl3D = False
@@ -627,7 +627,7 @@ object SDIAppForm: TSDIAppForm
         Ctl3D = False
         EditLabel.Width = 26
         EditLabel.Height = 13
-        EditLabel.Caption = '年龄'
+        EditLabel.Caption = #24180#40836
         LabelPosition = lpLeft
         ParentCtl3D = False
         TabOrder = 5
@@ -641,7 +641,7 @@ object SDIAppForm: TSDIAppForm
         Ctl3D = False
         EditLabel.Width = 52
         EditLabel.Height = 13
-        EditLabel.Caption = '送检科室'
+        EditLabel.Caption = #36865#26816#31185#23460
         LabelPosition = lpLeft
         ParentCtl3D = False
         TabOrder = 6
@@ -655,7 +655,7 @@ object SDIAppForm: TSDIAppForm
         Ctl3D = False
         EditLabel.Width = 26
         EditLabel.Height = 13
-        EditLabel.Caption = '床号'
+        EditLabel.Caption = #24202#21495
         ImeMode = imOpen
         LabelPosition = lpLeft
         ParentCtl3D = False
@@ -669,7 +669,7 @@ object SDIAppForm: TSDIAppForm
         Ctl3D = False
         EditLabel.Width = 52
         EditLabel.Height = 13
-        EditLabel.Caption = '样本类型'
+        EditLabel.Caption = #26679#26412#31867#22411
         LabelPosition = lpLeft
         ParentCtl3D = False
         TabOrder = 9
@@ -683,7 +683,7 @@ object SDIAppForm: TSDIAppForm
         Ctl3D = False
         EditLabel.Width = 52
         EditLabel.Height = 13
-        EditLabel.Caption = '样本状态'
+        EditLabel.Caption = #26679#26412#29366#24577
         LabelPosition = lpLeft
         ParentCtl3D = False
         TabOrder = 10
@@ -697,7 +697,7 @@ object SDIAppForm: TSDIAppForm
         Ctl3D = False
         EditLabel.Width = 52
         EditLabel.Height = 13
-        EditLabel.Caption = '送检医生'
+        EditLabel.Caption = #36865#26816#21307#29983
         LabelPosition = lpLeft
         ParentCtl3D = False
         TabOrder = 8
@@ -720,7 +720,7 @@ object SDIAppForm: TSDIAppForm
         Ctl3D = False
         EditLabel.Width = 52
         EditLabel.Height = 13
-        EditLabel.Caption = '临床诊断'
+        EditLabel.Caption = #20020#24202#35786#26029
         LabelPosition = lpLeft
         ParentCtl3D = False
         TabOrder = 11
@@ -734,7 +734,7 @@ object SDIAppForm: TSDIAppForm
         Ctl3D = False
         EditLabel.Width = 26
         EditLabel.Height = 13
-        EditLabel.Caption = '性别'
+        EditLabel.Caption = #24615#21035
         LabelPosition = lpLeft
         ParentCtl3D = False
         TabOrder = 4
@@ -748,7 +748,7 @@ object SDIAppForm: TSDIAppForm
         Ctl3D = False
         EditLabel.Width = 26
         EditLabel.Height = 13
-        EditLabel.Caption = '备注'
+        EditLabel.Caption = #22791#27880
         ImeMode = imOpen
         LabelPosition = lpLeft
         ParentCtl3D = False
@@ -772,7 +772,7 @@ object SDIAppForm: TSDIAppForm
         Ctl3D = False
         EditLabel.Width = 39
         EditLabel.Height = 13
-        EditLabel.Caption = '流水号'
+        EditLabel.Caption = #27969#27700#21495
         LabelPosition = lpLeft
         ParentCtl3D = False
         TabOrder = 0
@@ -803,7 +803,7 @@ object SDIAppForm: TSDIAppForm
         Top = 563
         Width = 73
         Height = 17
-        Caption = '连续录入'
+        Caption = #36830#32493#24405#20837
         TabOrder = 26
       end
       object LabeledEdit12: TLabeledEdit
@@ -814,7 +814,7 @@ object SDIAppForm: TSDIAppForm
         Ctl3D = False
         EditLabel.Width = 52
         EditLabel.Height = 13
-        EditLabel.Caption = '优先级别'
+        EditLabel.Caption = #20248#20808#32423#21035
         LabelPosition = lpLeft
         ParentCtl3D = False
         TabOrder = 27
@@ -828,7 +828,7 @@ object SDIAppForm: TSDIAppForm
         Ctl3D = False
         EditLabel.Width = 26
         EditLabel.Height = 13
-        EditLabel.Caption = '工号'
+        EditLabel.Caption = #24037#21495
         LabelPosition = lpLeft
         ParentCtl3D = False
         TabOrder = 17
@@ -841,7 +841,7 @@ object SDIAppForm: TSDIAppForm
         Ctl3D = False
         EditLabel.Width = 52
         EditLabel.Height = 13
-        EditLabel.Caption = '所属公司'
+        EditLabel.Caption = #25152#23646#20844#21496
         ImeMode = imOpen
         LabelPosition = lpLeft
         ParentCtl3D = False
@@ -856,7 +856,7 @@ object SDIAppForm: TSDIAppForm
         Ctl3D = False
         EditLabel.Width = 52
         EditLabel.Height = 13
-        EditLabel.Caption = '所属部门'
+        EditLabel.Caption = #25152#23646#37096#38376
         LabelPosition = lpLeft
         ParentCtl3D = False
         TabOrder = 19
@@ -870,7 +870,7 @@ object SDIAppForm: TSDIAppForm
         Ctl3D = False
         EditLabel.Width = 26
         EditLabel.Height = 13
-        EditLabel.Caption = '工种'
+        EditLabel.Caption = #24037#31181
         LabelPosition = lpLeft
         ParentCtl3D = False
         TabOrder = 20
@@ -884,7 +884,7 @@ object SDIAppForm: TSDIAppForm
         Ctl3D = False
         EditLabel.Width = 26
         EditLabel.Height = 13
-        EditLabel.Caption = '婚否'
+        EditLabel.Caption = #23130#21542
         LabelPosition = lpLeft
         ParentCtl3D = False
         TabOrder = 21
@@ -898,7 +898,7 @@ object SDIAppForm: TSDIAppForm
         Ctl3D = False
         EditLabel.Width = 26
         EditLabel.Height = 13
-        EditLabel.Caption = '籍贯'
+        EditLabel.Caption = #31821#36143
         ImeMode = imOpen
         LabelPosition = lpLeft
         ParentCtl3D = False
@@ -912,7 +912,7 @@ object SDIAppForm: TSDIAppForm
         Ctl3D = False
         EditLabel.Width = 26
         EditLabel.Height = 13
-        EditLabel.Caption = '住址'
+        EditLabel.Caption = #20303#22336
         ImeMode = imOpen
         LabelPosition = lpLeft
         ParentCtl3D = False
@@ -926,7 +926,7 @@ object SDIAppForm: TSDIAppForm
         Ctl3D = False
         EditLabel.Width = 26
         EditLabel.Height = 13
-        EditLabel.Caption = '电话'
+        EditLabel.Caption = #30005#35805
         LabelPosition = lpLeft
         ParentCtl3D = False
         TabOrder = 24
@@ -943,21 +943,21 @@ object SDIAppForm: TSDIAppForm
         Width = 50
       end
       item
-        Text = '操作人员工号:'
+        Text = #25805#20316#20154#21592#24037#21495':'
         Width = 90
       end
       item
         Width = 100
       end
       item
-        Text = '操作人员姓名:'
+        Text = #25805#20316#20154#21592#22995#21517':'
         Width = 100
       end
       item
         Width = 70
       end
       item
-        Text = '授权使用单位:'
+        Text = #25480#26435#20351#29992#21333#20301':'
         Width = 100
       end
       item
@@ -1694,15 +1694,15 @@ object SDIAppForm: TSDIAppForm
     AfterScroll = ADObasicAfterScroll
     Parameters = <>
     SQL.Strings = (
-      'select checkid as 检验单号,patientname as 姓名,sex as 性别,'
-      '    age as 年龄,caseno as 病历号,bedno as 床号,deptname as 部门名称,'
+      'select checkid as '#26816#39564#21333#21495',patientname as '#22995#21517',sex as '#24615#21035','
+      '    age as '#24180#40836',caseno as '#30149#21382#21495',bedno as '#24202#21495',deptname as '#37096#38376#21517#31216','
       
-        '    check_date as 检查日期,check_doctor as 送检医生,report_doctor as 审核者' +
+        '    check_date as '#26816#26597#26085#26399',check_doctor as '#36865#26816#21307#29983',report_doctor as '#23457#26680#32773 +
         ','
-      '    report_date as 报告日期,'
-      '    operator as 操作者,printtimes as 打印次数,diagnosetype as 诊断类型,'
-      '    flagetype as 样本类型,diagnose as 临床诊断,typeflagcase as 样本情况,'
-      '    issure as 是否确认,unid as 唯一编号 from chk_con')
+      '    report_date as '#25253#21578#26085#26399','
+      '    operator as '#25805#20316#32773',printtimes as '#25171#21360#27425#25968',diagnosetype as '#35786#26029#31867#22411','
+      '    flagetype as '#26679#26412#31867#22411',diagnose as '#20020#24202#35786#26029',typeflagcase as '#26679#26412#24773#20917','
+      '    issure as '#26159#21542#30830#35748',unid as '#21807#19968#32534#21495' from chk_con')
     Left = 225
     Top = 183
   end
@@ -1728,14 +1728,14 @@ object SDIAppForm: TSDIAppForm
         Value = Null
       end>
     SQL.Strings = (
-      'select name 名称,english_name as 英文名,itemvalue as 检验结果,'
-      'itemvalue_hist as 最近检验结果,check_date_hist as 最近检验日期,'
-      'itemvalue_hist2 as 第二次检验结果,check_date_hist2 as 第二次检验日期,'
-      'itemvalue_hist3 as 第一次检验结果,check_date_hist3 as 第一次检验日期,        '
-      'unit as 单位,min_value as 最小值,'
-      'max_value as 最大值,printorder as 打印编号,issure as 是否确认,'
-      'itemid as 主项目编号,pkcombin_id as 组合项目号,valueid as 项目编号,'
-      'pkunid as 对应单号 from chk_valu')
+      'select name '#21517#31216',english_name as '#33521#25991#21517',itemvalue as '#26816#39564#32467#26524','
+      'itemvalue_hist as '#26368#36817#26816#39564#32467#26524',check_date_hist as '#26368#36817#26816#39564#26085#26399','
+      'itemvalue_hist2 as '#31532#20108#27425#26816#39564#32467#26524',check_date_hist2 as '#31532#20108#27425#26816#39564#26085#26399','
+      'itemvalue_hist3 as '#31532#19968#27425#26816#39564#32467#26524',check_date_hist3 as '#31532#19968#27425#26816#39564#26085#26399',        '
+      'unit as '#21333#20301',min_value as '#26368#23567#20540','
+      'max_value as '#26368#22823#20540',printorder as '#25171#21360#32534#21495',issure as '#26159#21542#30830#35748','
+      'itemid as '#20027#39033#30446#32534#21495',pkcombin_id as '#32452#21512#39033#30446#21495',valueid as '#39033#30446#32534#21495','
+      'pkunid as '#23545#24212#21333#21495' from chk_valu')
     Left = 225
     Top = 215
   end
@@ -1751,212 +1751,212 @@ object SDIAppForm: TSDIAppForm
     Left = 416
     Top = 375
     object File1: TMenuItem
-      Caption = '文件'
+      Caption = #25991#20214
       Hint = 'File related commands'
       object FileNewItem: TMenuItem
-        Caption = '重新登录'
+        Caption = #37325#26032#30331#24405
         OnClick = FileNewItemClick
       end
       object N1: TMenuItem
         Caption = '-'
       end
       object N32: TMenuItem
-        Caption = '数据库备份'
+        Caption = #25968#25454#24211#22791#20221
         OnClick = N32Click
       end
       object N19: TMenuItem
-        Caption = '数据库恢复'
+        Caption = #25968#25454#24211#24674#22797
         OnClick = N19Click
       end
       object N33: TMenuItem
         Caption = '-'
       end
       object FileOpenItem: TMenuItem
-        Caption = '退出系统'
+        Caption = #36864#20986#31995#32479
         OnClick = FileOpenItemClick
       end
     end
     object N2: TMenuItem
-      Caption = '信息录入'
+      Caption = #20449#24687#24405#20837
       object N3: TMenuItem
-        Caption = '批量信息录入'
+        Caption = #25209#37327#20449#24687#24405#20837
         OnClick = N3Click
       end
       object N26: TMenuItem
-        Caption = '结果批量修改'
+        Caption = #32467#26524#25209#37327#20462#25913
         OnClick = N26Click
       end
       object N34: TMenuItem
         Caption = '-'
       end
       object Excel2: TMenuItem
-        Caption = '从Excel导入病人信息'
+        Caption = #20174'Excel'#23548#20837#30149#20154#20449#24687
         OnClick = Excel2Click
       end
       object N35: TMenuItem
         Caption = '-'
       end
       object N16: TMenuItem
-        Caption = '复制工作组病人基本信息'
+        Caption = #22797#21046#24037#20316#32452#30149#20154#22522#26412#20449#24687
         OnClick = N16Click
       end
       object N67: TMenuItem
         Caption = '-'
       end
       object N46: TMenuItem
-        Caption = '批量删除'
+        Caption = #25209#37327#21024#38500
         OnClick = N46Click
       end
       object N10: TMenuItem
         Caption = '-'
       end
       object N4: TMenuItem
-        Caption = '结束当批检验工作'
+        Caption = #32467#26463#24403#25209#26816#39564#24037#20316
         OnClick = N4Click
       end
     end
     object N13: TMenuItem
-      Caption = '审核'
+      Caption = #23457#26680
       object N15: TMenuItem
-        Caption = '批量审核'
+        Caption = #25209#37327#23457#26680
         OnClick = N15Click
       end
     end
     object N18: TMenuItem
-      Caption = '查询统计'
+      Caption = #26597#35810#32479#35745
       object Q1: TMenuItem
-        Caption = '查询'
+        Caption = #26597#35810
         OnClick = Q1Click
       end
       object Excel1: TMenuItem
-        Caption = 'Excel格式查询'
+        Caption = 'Excel'#26684#24335#26597#35810
         OnClick = Excel1Click
       end
       object N27: TMenuItem
         Caption = '-'
       end
       object N20: TMenuItem
-        Caption = '统计'
+        Caption = #32479#35745
         OnClick = N20Click
       end
       object Y1: TMenuItem
-        Caption = '按组合项目统计'
+        Caption = #25353#32452#21512#39033#30446#32479#35745
         OnClick = Y1Click
       end
     end
     object N5: TMenuItem
-      Caption = '打印选择'
+      Caption = #25171#21360#36873#25321
       object N6: TMenuItem
         AutoHotkeys = maManual
-        Caption = '批量打印'
+        Caption = #25209#37327#25171#21360
         OnClick = N6Click
       end
       object N44: TMenuItem
-        Caption = '打印每日存根'
+        Caption = #25171#21360#27599#26085#23384#26681
         OnClick = N44Click
       end
       object N24: TMenuItem
         Caption = '-'
       end
       object N25: TMenuItem
-        Caption = '是否按组分页'
+        Caption = #26159#21542#25353#32452#20998#39029
         OnClick = N25Click
       end
       object N64: TMenuItem
-        Caption = '按姓名性别年龄合并'
+        Caption = #25353#22995#21517#24615#21035#24180#40836#21512#24182
         OnClick = N64Click
       end
       object N7: TMenuItem
         Caption = '-'
       end
       object N8: TMenuItem
-        Caption = '直接打印模式'
+        Caption = #30452#25509#25171#21360#27169#24335
         Checked = True
         RadioItem = True
         OnClick = N8Click
       end
       object N9: TMenuItem
-        Caption = '打印预览模式'
+        Caption = #25171#21360#39044#35272#27169#24335
         RadioItem = True
         OnClick = N9Click
       end
     end
     object N21: TMenuItem
-      Caption = '质量控制'
+      Caption = #36136#37327#25511#21046
       object LJ1: TMenuItem
-        Caption = '多值L-J质控图'
+        Caption = #22810#20540'L-J'#36136#25511#22270
         OnClick = LJ1Click
       end
     end
     object Edit1: TMenuItem
-      Caption = '系统设置'
+      Caption = #31995#32479#35774#32622
       Hint = 'Edit commands'
       object N42: TMenuItem
-        Caption = '通用代码'
+        Caption = #36890#29992#20195#30721
         OnClick = N42Click
       end
       object N30: TMenuItem
-        Caption = '人员设置'
+        Caption = #20154#21592#35774#32622
         OnClick = N30Click
       end
       object N28: TMenuItem
-        Caption = '项目设置'
+        Caption = #39033#30446#35774#32622
         OnClick = N28Click
       end
       object N14: TMenuItem
         Caption = '-'
       end
       object N41: TMenuItem
-        Caption = '实时显示传输数据'
+        Caption = #23454#26102#26174#31034#20256#36755#25968#25454
         OnClick = N41Click
       end
       object O1: TMenuItem
-        Caption = '选项'
+        Caption = #36873#39033
         OnClick = O1Click
       end
       object N12: TMenuItem
         Caption = '-'
       end
       object N50: TMenuItem
-        Caption = '显示项目英文名'
+        Caption = #26174#31034#39033#30446#33521#25991#21517
         OnClick = N50Click
       end
       object N36: TMenuItem
-        Caption = '显示项目下限'
+        Caption = #26174#31034#39033#30446#19979#38480
         OnClick = N36Click
       end
       object N47: TMenuItem
-        Caption = '显示项目上限'
+        Caption = #26174#31034#39033#30446#19978#38480
         OnClick = N47Click
       end
       object N49: TMenuItem
-        Caption = '显示项目单位'
+        Caption = #26174#31034#39033#30446#21333#20301
         OnClick = N49Click
       end
       object N62: TMenuItem
         Caption = '-'
       end
       object N63: TMenuItem
-        Caption = '体检模板类型设置'
+        Caption = #20307#26816#27169#26495#31867#22411#35774#32622
         OnClick = N63Click
       end
       object M1: TMenuItem
-        Caption = '体检模板设置'
+        Caption = #20307#26816#27169#26495#35774#32622
         OnClick = M1Click
       end
     end
     object N65: TMenuItem
-      Caption = '工具'
+      Caption = #24037#20855
     end
     object Help1: TMenuItem
-      Caption = '帮助'
+      Caption = #24110#21161
       Hint = 'Help topics'
       object N37: TMenuItem
-        Caption = '注册'
+        Caption = #27880#20876
         OnClick = N37Click
       end
       object HelpAboutItem: TMenuItem
-        Caption = '关于...'
+        Caption = #20851#20110'...'
         Hint = 
           'About|Displays program information, version number, and copyrigh' +
           't'
@@ -1984,104 +1984,104 @@ object SDIAppForm: TSDIAppForm
     Left = 548
     Top = 376
     object N40: TMenuItem
-      Caption = '启用/屏蔽信息框'
+      Caption = #21551#29992'/'#23631#34109#20449#24687#26694
     end
     object N38: TMenuItem
       Caption = '-'
     end
     object N31: TMenuItem
-      Caption = '流水号'
+      Caption = #27969#27700#21495
       OnClick = N31Click
     end
     object N39: TMenuItem
-      Caption = '门诊住院号'
+      Caption = #38376#35786#20303#38498#21495
       OnClick = N39Click
     end
     object N43: TMenuItem
-      Caption = '送检科室'
+      Caption = #36865#26816#31185#23460
       OnClick = N43Click
     end
     object N51: TMenuItem
-      Caption = '床号'
+      Caption = #24202#21495
       OnClick = N51Click
     end
     object N52: TMenuItem
-      Caption = '送检医生'
+      Caption = #36865#26816#21307#29983
       OnClick = N52Click
     end
     object N53: TMenuItem
-      Caption = '样本类型'
+      Caption = #26679#26412#31867#22411
       OnClick = N53Click
     end
     object N54: TMenuItem
-      Caption = '样本状态'
+      Caption = #26679#26412#29366#24577
       OnClick = N54Click
     end
     object N55: TMenuItem
-      Caption = '临床诊断'
+      Caption = #20020#24202#35786#26029
       OnClick = N55Click
     end
     object N56: TMenuItem
-      Caption = '申请日期'
+      Caption = #30003#35831#26085#26399
       OnClick = N56Click
     end
     object N57: TMenuItem
-      Caption = '申请时间'
+      Caption = #30003#35831#26102#38388
       OnClick = N57Click
     end
     object N58: TMenuItem
-      Caption = '检查日期'
+      Caption = #26816#26597#26085#26399
       OnClick = N58Click
     end
     object N59: TMenuItem
-      Caption = '检查时间'
+      Caption = #26816#26597#26102#38388
       OnClick = N59Click
     end
     object N61: TMenuItem
-      Caption = '备注'
+      Caption = #22791#27880
       OnClick = N61Click
     end
     object N77: TMenuItem
-      Caption = '工号'
+      Caption = #24037#21495
       OnClick = N77Click
     end
     object N78: TMenuItem
-      Caption = '所属公司'
+      Caption = #25152#23646#20844#21496
       OnClick = N78Click
     end
     object N79: TMenuItem
-      Caption = '所属部门'
+      Caption = #25152#23646#37096#38376
       OnClick = N79Click
     end
     object N80: TMenuItem
-      Caption = '所属工种'
+      Caption = #25152#23646#24037#31181
       OnClick = N80Click
     end
     object N81: TMenuItem
-      Caption = '婚否'
+      Caption = #23130#21542
       OnClick = N81Click
     end
     object N82: TMenuItem
-      Caption = '籍贯'
+      Caption = #31821#36143
       OnClick = N82Click
     end
     object N83: TMenuItem
-      Caption = '住址'
+      Caption = #20303#22336
       OnClick = N83Click
     end
     object N84: TMenuItem
-      Caption = '电话'
+      Caption = #30005#35805
       OnClick = N84Click
     end
     object N68: TMenuItem
       Caption = '-'
     end
     object N69: TMenuItem
-      Caption = '复制病人信息'
+      Caption = #22797#21046#30149#20154#20449#24687
       OnClick = N69Click
     end
     object N70: TMenuItem
-      Caption = '粘贴病人信息'
+      Caption = #31896#36148#30149#20154#20449#24687
       OnClick = N70Click
     end
   end
@@ -2091,18 +2091,18 @@ object SDIAppForm: TSDIAppForm
     Left = 584
     Top = 377
     object N29: TMenuItem
-      Caption = '生成体检结论'
+      Caption = #29983#25104#20307#26816#32467#35770
       OnClick = N29Click
     end
     object N76: TMenuItem
-      Caption = '单个生成体检结论'
+      Caption = #21333#20010#29983#25104#20307#26816#32467#35770
       OnClick = N76Click
     end
     object N22: TMenuItem
       Caption = '-'
     end
     object N11: TMenuItem
-      Caption = '更换组别'
+      Caption = #26356#25442#32452#21035
     end
     object N72: TMenuItem
       Caption = '-'
@@ -2143,28 +2143,28 @@ object SDIAppForm: TSDIAppForm
     Left = 632
     Top = 377
     object N71: TMenuItem
-      Caption = '新增图片项目'
+      Caption = #26032#22686#22270#29255#39033#30446
       OnClick = N71Click
     end
     object N66: TMenuItem
       Caption = '-'
     end
     object N23: TMenuItem
-      Caption = '修改项目图片'
+      Caption = #20462#25913#39033#30446#22270#29255
       OnClick = N23Click
     end
     object N45: TMenuItem
       Caption = '-'
     end
     object N48: TMenuItem
-      Caption = '删除项目图片'
+      Caption = #21024#38500#39033#30446#22270#29255
       OnClick = N48Click
     end
     object N73: TMenuItem
       Caption = '-'
     end
     object N74: TMenuItem
-      Caption = '显示项目图片'
+      Caption = #26174#31034#39033#30446#22270#29255
       OnClick = N74Click
     end
   end
@@ -2177,7 +2177,7 @@ object SDIAppForm: TSDIAppForm
     Left = 477
     Top = 102
     object N17: TMenuItem
-      Caption = '移除'
+      Caption = #31227#38500
       OnClick = N17Click
     end
   end
