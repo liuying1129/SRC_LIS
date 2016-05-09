@@ -2,14 +2,14 @@ object frmBatchSpecNo: TfrmBatchSpecNo
   Left = 194
   Top = 231
   BorderStyle = bsDialog
-  Caption = '范围输入'
+  Caption = #33539#22260#36755#20837
   ClientHeight = 198
   ClientWidth = 308
   Color = clSkyBlue
   Font.Charset = ANSI_CHARSET
   Font.Color = clWindowText
   Font.Height = -13
-  Font.Name = '宋体'
+  Font.Name = #23435#20307
   Font.Style = []
   KeyPreview = True
   OldCreateOrder = False
@@ -24,18 +24,18 @@ object frmBatchSpecNo: TfrmBatchSpecNo
     Top = 10
     Width = 52
     Height = 13
-    Caption = '检查日期'
+    Caption = #26816#26597#26085#26399
   end
   object Label5: TLabel
     Left = 45
     Top = 165
     Width = 167
     Height = 13
-    Caption = '注：1、范围格式如5,7-9,12'
+    Caption = #27880#65306'1'#12289#33539#22260#26684#24335#22914'5,7-9,12'
     Font.Charset = ANSI_CHARSET
     Font.Color = clRed
     Font.Height = -13
-    Font.Name = '宋体'
+    Font.Name = #23435#20307
     Font.Style = []
     ParentFont = False
   end
@@ -44,18 +44,18 @@ object frmBatchSpecNo: TfrmBatchSpecNo
     Top = 30
     Width = 52
     Height = 13
-    Caption = '优先级别'
+    Caption = #20248#20808#32423#21035
   end
   object Label3: TLabel
     Left = 206
     Top = 77
     Width = 104
     Height = 13
-    Caption = '小框中填联机字母'
+    Caption = #23567#26694#20013#22635#32852#26426#23383#27597
     Font.Charset = ANSI_CHARSET
     Font.Color = clRed
     Font.Height = -13
-    Font.Name = '宋体'
+    Font.Name = #23435#20307
     Font.Style = []
     ParentFont = False
   end
@@ -64,7 +64,7 @@ object frmBatchSpecNo: TfrmBatchSpecNo
     Top = 136
     Width = 75
     Height = 25
-    Caption = '确定'
+    Caption = #30830#23450
     TabOrder = 0
     OnClick = BitBtn1Click
   end
@@ -73,7 +73,7 @@ object frmBatchSpecNo: TfrmBatchSpecNo
     Top = 136
     Width = 75
     Height = 25
-    Caption = '关闭'
+    Caption = #20851#38381
     TabOrder = 1
     OnClick = BitBtn2Click
   end
@@ -82,12 +82,12 @@ object frmBatchSpecNo: TfrmBatchSpecNo
     Top = 97
     Width = 280
     Height = 36
-    Caption = '打印类型选择'
+    Caption = #25171#21360#31867#22411#36873#25321
     Columns = 3
     ItemIndex = 0
     Items.Strings = (
-      '打印'
-      '分组打印')
+      #25171#21360
+      #20998#32452#25171#21360)
     TabOrder = 2
   end
   object DateTimePicker1: TDateTimePicker
@@ -106,10 +106,10 @@ object frmBatchSpecNo: TfrmBatchSpecNo
     Height = 21
     ItemHeight = 13
     TabOrder = 4
-    Text = '常规'
+    Text = #24120#35268
     Items.Strings = (
-      '常规'
-      '急诊')
+      #24120#35268
+      #24613#35786)
   end
   object RadioGroup2: TRadioGroup
     Left = 10
@@ -118,8 +118,8 @@ object frmBatchSpecNo: TfrmBatchSpecNo
     Height = 50
     ItemIndex = 0
     Items.Strings = (
-      '流水号范围'
-      '联机号范围')
+      #27969#27700#21495#33539#22260
+      #32852#26426#21495#33539#22260)
     TabOrder = 5
     OnClick = RadioGroup2Click
   end
@@ -143,7 +143,7 @@ object frmBatchSpecNo: TfrmBatchSpecNo
     Top = 72
     Width = 21
     Height = 21
-    Hint = '联机字母'
+    Hint = #32852#26426#23383#27597
     Enabled = False
     TabOrder = 8
   end

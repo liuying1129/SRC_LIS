@@ -114,7 +114,7 @@ begin
     adotemp2:=tadoquery.Create(nil);
     adotemp2.Connection:=DM.ADOConnection1;
     ssql:=s0+' AND ((report_doctor IS NULL) OR (report_doctor='''')) ';
-    sssql:='select * from chk_valu where pkunid=:p_pkunid';
+    sssql:='select * from chk_valu where pkunid=:p_pkunid and issure=1 and ltrim(rtrim(isnull(itemvalue,'''')))<>'''' ';
     adotemp2.Close;
     adotemp2.SQL.Clear;
     adotemp2.SQL.Text:=ssql;

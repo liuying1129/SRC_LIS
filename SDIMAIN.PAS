@@ -894,16 +894,21 @@ end;
 
 procedure TSDIAppForm.suiButton3Click(Sender: TObject);
 var
-  unid:integer;
+  unid,RecNum:integer;
 begin
   if not ifhaspower(sender,powerstr_js_main) then exit;
 
   if not ADObasic.Active then exit;
   if ADObasic.RecordCount=0 then exit;
-  if not ado_dtl.Active then exit;//20080130
-  if ado_dtl.RecordCount=0 then exit;
 
-   unid:=ADObasic.fieldbyname('唯一编号').AsInteger;
+  unid:=ADObasic.fieldbyname('唯一编号').AsInteger;
+
+  RecNum:=strtoint(ScalarSQLCmd(LisConn,'select count(*) as RecNum from chk_valu where pkunid='+inttostr(unid)+' and issure=1 and ltrim(rtrim(isnull(itemvalue,'''')))<>'''' '));
+  if RecNum<=0 then
+  begin
+    MESSAGEDLG('无效结果,不允许审核!',mtError,[mbOK],0);
+    exit;
+  end;
 
    if (trim(adobasic.FieldByName('审核者').AsString)<>operator_name) and (trim(adobasic.FieldByName('审核者').AsString)<>'') then
    begin
