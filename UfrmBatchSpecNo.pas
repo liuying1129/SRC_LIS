@@ -66,9 +66,9 @@ end;
 
 procedure TfrmBatchSpecNo.BitBtn1Click(Sender: TObject);
 var
-  ssql,sssql:string;
+  ssql:string;
   k:integer;
-  adotemp2,adotemp3,adotemp4,adotemp5:tadoquery;
+  adotemp2,adotemp4,adotemp5:tadoquery;
   xx:integer;
   s0,s1,ss:string;
   sTemp,LshRange:string;
@@ -78,6 +78,7 @@ var
 
   Surem2:STRING;
   iSurem2:integer;
+  RecNum:integer;
 begin
   Save_Cursor := Screen.Cursor;
   Screen.Cursor := crHourGlass;    { Show hourglass cursor }
@@ -114,7 +115,6 @@ begin
     adotemp2:=tadoquery.Create(nil);
     adotemp2.Connection:=DM.ADOConnection1;
     ssql:=s0+' AND ((report_doctor IS NULL) OR (report_doctor='''')) ';
-    sssql:='select * from chk_valu where pkunid=:p_pkunid and issure=1 and ltrim(rtrim(isnull(itemvalue,'''')))<>'''' ';
     adotemp2.Close;
     adotemp2.SQL.Clear;
     adotemp2.SQL.Text:=ssql;
@@ -123,20 +123,13 @@ begin
     adotemp2.first;     //需要审核的数据集(病人基本信息)
     while not adotemp2.Eof do
     begin
-      adotemp3:=tadoquery.Create(nil);
-      adotemp3.Connection:=DM.ADOConnection1;
-      adotemp3.Close;
-      adotemp3.SQL.Clear;
-      adotemp3.SQL.Text:=sssql;
-      adotemp3.Parameters.ParamByName('p_pkunid').Value:=adotemp2.fieldbyname('unid').Value;
-      adotemp3.Open;//需要审核的数据集(病人检验结果)
-      if adotemp3.RecordCount=0 then
+      RecNum:=strtoint(ScalarSQLCmd(LisConn,'select count(*) as RecNum from chk_valu where pkunid='+adotemp2.fieldbyname('unid').AsString+' and issure=1 and ltrim(rtrim(isnull(itemvalue,'''')))<>'''' '));
+      
+      if RecNum<=0 then//adotemp3.RecordCount=0
       begin
-        adotemp3.Free;
         adotemp2.next;
         continue;//不审核没有检验结果的项目
       end;
-      adotemp3.Free;
 
       ExecSQLCmd(LisConn,'update chk_con set report_doctor='''+operator_name+''',Audit_Date=getdate() where unid='+adotemp2.fieldbyname('unid').AsString);
 
