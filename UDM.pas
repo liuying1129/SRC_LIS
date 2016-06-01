@@ -32,7 +32,8 @@ const
   sDBALIAS='ALIAS_SHHJ';
   CGYXJB='常规';//常规优先级别字符串
 	BASE_URL='http://211.97.0.5:8080/YkAPI/service';
-  
+
+  //BUG:选取申请单功能，选取查询条件时，不能用“条码号”、“选择”做为查询条件
                                               //1 as 选择,默认是选择的.1--选择,非1--未选
   SHOW_CHK_CON_HIS='select cch.checkid as 联机号,dbo.uf_GetExtBarcode(cch.unid) as 条码号,1 as 选择,cch.lsh as 样本号,cch.patientname as 姓名,'+
         ' cch.caseno as 病历号,cch.sex as 性别,'+
