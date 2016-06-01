@@ -225,6 +225,8 @@ type
     clbNoCommUsed: TCheckListBox;
     PopupMenu3: TPopupMenu;
     N17: TMenuItem;
+    N60: TMenuItem;
+    N75: TMenuItem;
     procedure FileExit1Execute(Sender: TObject);
     procedure HelpAbout1Execute(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -297,7 +299,6 @@ type
     procedure cbxConnCharEnter(Sender: TObject);
     procedure LabeledEdit15KeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
-    procedure DBGrid2DblClick(Sender: TObject);
     procedure Excel1Click(Sender: TObject);
     procedure N43Click(Sender: TObject);
     procedure N51Click(Sender: TObject);
@@ -368,6 +369,7 @@ type
     procedure LabeledEdit4KeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure N17Click(Sender: TObject);
+    procedure N75Click(Sender: TObject);
   private
     procedure CheckTheListBox;//根据当前病人的结果在checklistbox1中打钩
     procedure WriteProfile;
@@ -2691,74 +2693,6 @@ begin
   if not ifhaspower(sender,powerstr_js_main) then LabeledEdit1.SetFocus;//无权限则cbxConnChar失去焦点
 end;
 
-procedure TSDIAppForm.DBGrid2DblClick(Sender: TObject);
-var
-  Nname,Ssex,Qitemid,QitemName,Cbirthday:string;
-  adotemp11,adotemp66:tadoquery;
-  sHistorySeries,sCurSeries,Cage,Creport_date:string;
-  //sHistorySeries格式:项目名称#$1当前结果日期#$2当前结果#$3历史结果1日期#$2历史结果1#$3...历史结果n日期#$2历史结果n#$3
-  ifHasHistoricalValue:boolean;
-begin
-  if not ADObasic.Active then exit;
-  if ADObasic.RecordCount=0 then exit;
-
-  if not ADO_dtl.Active then exit;
-  if ADO_dtl.RecordCount=0 then exit;
-
-  adotemp11:=tadoquery.Create(nil);
-  adotemp11.Connection:=DM.ADOConnection1;
-  adotemp11.SQL.Clear;
-  adotemp11.SQL.Text:='select dbo.uf_ifHasHistoricalValue('+ADO_dtl.fieldbyname('唯一编号').AsString+') as ifHasHistoricalValue ';
-  adotemp11.Open;
-  ifHasHistoricalValue:=adotemp11.fieldbyname('ifHasHistoricalValue').AsBoolean;
-  adotemp11.Free;
-
-  if not ifHasHistoricalValue then exit;//用该自定义函数判断是否有历史结果
-
-  //=====================当前病人的基本信息===================================//
-  Qitemid:=trim(ADO_dtl.fieldbyname('项目编号').AsString);
-  QitemName:=trim(ADO_dtl.fieldbyname('名称').AsString);
-  Nname:=trim(ADObasic.fieldbyname('姓名').AsString);
-  Ssex:=trim(ADObasic.fieldbyname('性别').AsString);
-  Creport_date:=ADObasic.fieldbyname('申请日期').AsString;
-  Cage:=trim(ADObasic.fieldbyname('年龄').AsString);
-  //==========================================================================//
-
-  //=================当前病人的生日===========================================//
-  Cbirthday:=ScalarSQLCmd(LisConn,'select dbo.uf_GetBirthday('''+Cage+''','''+Creport_date+''') as Cbirthday ');
-  //==========================================================================//
-
-  sCurSeries:=QitemName+#$1+trim(ADObasic.fieldbyname('检查日期').AsString)+#$2+trim(ADO_dtl.fieldbyname('检验结果').AsString)+#$3;
-  sHistorySeries:=sCurSeries;
-
-  adotemp66:=tadoquery.Create(nil);
-  adotemp66.Connection:=DM.ADOConnection1;
-  adotemp66.SQL.Clear;
-  //该SQL语句与dbo.uf_ifHasHistoricalValue中的相应语句相同
-  adotemp66.SQL.Text:='select z.check_date,f.itemvalue from chk_con_bak Z,chk_valu_bak F '+
-   'where z.unid=f.pkunid and '+
-   'z.patientname='''+Nname+''' and '+
-   'z.sex='''+Ssex+''' and '+
-   'datepart(yyyy,dbo.uf_GetBirthday(z.age,z.report_date))=datepart(yyyy,'''+Cbirthday+''') and '+
-   'f.itemid='''+Qitemid+''' and '+
-   'z.check_date is not null and '+
-   'z.check_date<>'''' and '+
-   'z.check_date<>0 and '+
-   'f.itemvalue is not null and '+
-   'f.itemvalue<>'''' '+
-   ' order by z.check_date desc ';//隐藏了LEGEND，故需此句来按顺序手动显示文字说明
-  adotemp66.Open;
-  while not adotemp66.Eof do
-  begin
-    sHistorySeries:=sHistorySeries+trim(adotemp66.fieldbyname('check_date').AsString)+#$2+trim(adotemp66.fieldbyname('itemvalue').AsString)+#$3;
-    adotemp66.Next;
-  end;
-  adotemp66.Free;
-
-  if sHistorySeries<>sCurSeries then//有历史结果则显示出来,但不一定有曲线（非数字结果无曲线）
-    frmHistoryResult(sHistorySeries).ShowModal;
-end;
-
 procedure TSDIAppForm.Excel1Click(Sender: TObject);
 begin
   if not ifhaspower(sender,powerstr_js_main) then exit;
@@ -4443,6 +4377,84 @@ begin
         MakeCombinChecklistbox;
         CheckTheListBox;
         //====================================================================//
+end;
+
+procedure TSDIAppForm.N75Click(Sender: TObject);
+var
+  Nname,Ssex,Qitemid,QitemName,Cbirthday:string;
+  adotemp11,adotemp66:tadoquery;
+  sHistorySeries,sCurSeries,Cage,Creport_date:string;
+  //sHistorySeries格式:项目名称#$1当前结果日期#$2当前结果#$3历史结果1日期#$2历史结果1#$3...历史结果n日期#$2历史结果n#$3
+  ifHasHistoricalValue:boolean;
+  Save_Cursor:TCursor;
+begin
+  if not ADObasic.Active then exit;
+  if ADObasic.RecordCount=0 then exit;
+
+  if not ADO_dtl.Active then exit;
+  if ADO_dtl.RecordCount=0 then exit;
+
+  Save_Cursor := Screen.Cursor;
+  Screen.Cursor := crHourGlass;
+  
+  adotemp11:=tadoquery.Create(nil);
+  adotemp11.Connection:=DM.ADOConnection1;
+  adotemp11.SQL.Clear;
+  adotemp11.SQL.Text:='select dbo.uf_ifHasHistoricalValue('+ADO_dtl.fieldbyname('唯一编号').AsString+') as ifHasHistoricalValue ';
+  adotemp11.Open;
+  ifHasHistoricalValue:=adotemp11.fieldbyname('ifHasHistoricalValue').AsBoolean;
+  adotemp11.Free;
+
+  if not ifHasHistoricalValue then//用该自定义函数判断是否有历史结果
+  begin
+    Screen.Cursor := Save_Cursor;  { Always restore to normal }
+    exit;
+  end;
+
+  //=====================当前病人的基本信息===================================//
+  Qitemid:=trim(ADO_dtl.fieldbyname('项目编号').AsString);
+  QitemName:=trim(ADO_dtl.fieldbyname('名称').AsString);
+  Nname:=trim(ADObasic.fieldbyname('姓名').AsString);
+  Ssex:=trim(ADObasic.fieldbyname('性别').AsString);
+  Creport_date:=ADObasic.fieldbyname('申请日期').AsString;
+  Cage:=trim(ADObasic.fieldbyname('年龄').AsString);
+  //==========================================================================//
+
+  //=================当前病人的生日===========================================//
+  Cbirthday:=ScalarSQLCmd(LisConn,'select dbo.uf_GetBirthday('''+Cage+''','''+Creport_date+''') as Cbirthday ');
+  //==========================================================================//
+
+  sCurSeries:=QitemName+#$1+trim(ADObasic.fieldbyname('检查日期').AsString)+#$2+trim(ADO_dtl.fieldbyname('检验结果').AsString)+#$3;
+  sHistorySeries:=sCurSeries;
+
+  adotemp66:=tadoquery.Create(nil);
+  adotemp66.Connection:=DM.ADOConnection1;
+  adotemp66.SQL.Clear;
+  //该SQL语句与dbo.uf_ifHasHistoricalValue中的相应语句相同
+  adotemp66.SQL.Text:='select z.check_date,f.itemvalue from chk_con_bak Z,chk_valu_bak F '+
+   'where z.unid=f.pkunid and '+
+   'z.patientname='''+Nname+''' and '+
+   'z.sex='''+Ssex+''' and '+
+   'datepart(yyyy,dbo.uf_GetBirthday(z.age,z.report_date))=datepart(yyyy,'''+Cbirthday+''') and '+
+   'f.itemid='''+Qitemid+''' and '+
+   'z.check_date is not null and '+
+   'z.check_date<>'''' and '+
+   'z.check_date<>0 and '+
+   'f.itemvalue is not null and '+
+   'f.itemvalue<>'''' '+
+   ' order by z.check_date desc ';//隐藏了LEGEND，故需此句来按顺序手动显示文字说明
+  adotemp66.Open;
+  while not adotemp66.Eof do
+  begin
+    sHistorySeries:=sHistorySeries+trim(adotemp66.fieldbyname('check_date').AsString)+#$2+trim(adotemp66.fieldbyname('itemvalue').AsString)+#$3;
+    adotemp66.Next;
+  end;
+  adotemp66.Free;
+
+  Screen.Cursor := Save_Cursor;  { Always restore to normal }
+
+  if sHistorySeries<>sCurSeries then//有历史结果则显示出来,但不一定有曲线（非数字结果无曲线）
+    frmHistoryResult(sHistorySeries).ShowModal;
 end;
 
 end.

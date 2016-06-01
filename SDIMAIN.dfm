@@ -295,7 +295,6 @@ object SDIAppForm: TSDIAppForm
               TitleFont.Name = #23435#20307
               TitleFont.Style = []
               OnDrawColumnCell = DBGrid2DrawColumnCell
-              OnDblClick = DBGrid2DblClick
               OnExit = DBGrid2Exit
               OnKeyDown = DBGrid2KeyDown
               OnKeyUp = DBGrid2KeyUp
@@ -2166,6 +2165,13 @@ object SDIAppForm: TSDIAppForm
     object N74: TMenuItem
       Caption = #26174#31034#39033#30446#22270#29255
       OnClick = N74Click
+    end
+    object N60: TMenuItem
+      Caption = '-'
+    end
+    object N75: TMenuItem
+      Caption = #21382#21490#32467#26524
+      OnClick = N75Click
     end
   end
   object OpenPictureDialog1: TOpenPictureDialog
