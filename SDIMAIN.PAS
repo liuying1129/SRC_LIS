@@ -725,6 +725,7 @@ end;
 procedure TSDIAppForm.ToolButton8Click(Sender: TObject);
 var
   strsqlPrint:string;
+  sUnid,sReport_Doctor,sCombin_Id:string;
   
   //对姓别性别年龄的合并项做打印标记 变量
   sPatientname,sSex,sAge:string;
@@ -732,29 +733,35 @@ var
 begin
   if not ifhaspower(sender,powerstr_js_main) then exit;
 
-   if not ADObasic.Active then exit;
-   if ADObasic.RecordCount=0 then exit;
+  if not ADObasic.Active then exit;
+  if ADObasic.RecordCount=0 then exit;
 
+  sUnid:=adobasic.fieldbyname('唯一编号').AsString;//防止点击打印后，马上将光标移到另一条病人信息上。故写在最前面
+  sReport_Doctor:=trim(ADObasic.FieldByName('审核者').AsString);
+  sCombin_Id:=adobasic.FieldByName('组别').AsString;
+
+  sPatientname:=trim(adobasic.fieldbyname('姓名').AsString);
+  sSex:=adobasic.fieldbyname('性别').AsString;
+  sAge:=adobasic.fieldbyname('年龄').AsString;
+  
    if not ifAutoCheck then  //打印前要检查是否已被审核
    begin
-     if trim(ADObasic.FieldByName('审核者').AsString)='' then
+     if sReport_Doctor='' then
      begin
       MessageBox(Handle, '请先审核！', '系统提示', MB_ICONASTERISK);
       exit;
      end;
    end;
 
-  //Insert_XLB_NUM:=0;
-
-  if (adobasic.FieldByName('组别').AsString=WorkGroup_T1)
+  if (sCombin_Id=WorkGroup_T1)
     and frReport1.LoadFromFile(TempFile_T1) then//加载模板文件是不区分大小写的.空字符串将加载失败
   begin
   end else
-  if (adobasic.FieldByName('组别').AsString=WorkGroup_T2)
+  if (sCombin_Id=WorkGroup_T2)
     and frReport1.LoadFromFile(TempFile_T2) then
   begin
   end else
-  if (adobasic.FieldByName('组别').AsString=WorkGroup_T3)
+  if (sCombin_Id=WorkGroup_T3)
     and frReport1.LoadFromFile(TempFile_T3) then
   begin
   end else
@@ -767,9 +774,6 @@ begin
     exit;
   end;
 
-  sPatientname:=trim(adobasic.fieldbyname('姓名').AsString);
-  sSex:=adobasic.fieldbyname('性别').AsString;
-  sAge:=adobasic.fieldbyname('年龄').AsString;
   if (N64.Checked)and(sPatientname<>'') then//按姓别性别年龄合并打印//只有存在姓名时才合并
     strsqlPrint:='select cv.itemid as 项目代码,cv.name as 名称,cv.english_name as 英文名,'+
           ' cv.itemvalue as 检验结果,'+
@@ -795,7 +799,7 @@ begin
           ' min(printorder) as 打印编号,'+
           ' min(pkcombin_id) as 组合项目号, '+
           ' Reserve1,Reserve2,Dosage1,Dosage2,Reserve5,Reserve6,Reserve7,Reserve8,Reserve9,Reserve10 '+
-          ' from chk_valu where pkunid='+adobasic.fieldbyname('唯一编号').AsString+
+          ' from chk_valu where pkunid='+sUnid+
           ' and chk_valu.issure=1 and ltrim(rtrim(isnull(itemvalue,'''')))<>'''' '+
           ' group by itemid,name,english_name,itemvalue,min_value,max_value,unit, '+
           ' Reserve1,Reserve2,Dosage1,Dosage2,Reserve5,Reserve6,Reserve7,Reserve8,Reserve9,Reserve10 '+
@@ -1937,29 +1941,36 @@ var
   strsqlPrint:string;
   frGH: TfrBandView;//分组头
 
+  sUnid,sReport_Doctor:string;
+
   //对姓别性别年龄的合并项做打印标记 变量
   adotemp22:tadoquery;
   SelSql:string;
   unid,printtimes:integer;
-  report_doctor,sql,ss,sPrinttimes,sReport_doctor:string;
+  report_doctor,sql,ss,sPrinttimes,sReport_doctor2:string;
   sPatientname,sSex,sAge,sMergePrintWorkGroupRange:string;
   //===============================  
 begin
   if not ifhaspower(sender,powerstr_js_main) then exit;
 
-   if not ADObasic.Active then exit;
-   if ADObasic.RecordCount=0 then exit;
-   
+  if not ADObasic.Active then exit;
+  if ADObasic.RecordCount=0 then exit;
+
+  sUnid:=adobasic.fieldbyname('唯一编号').AsString;//防止点击打印后，马上将光标移到另一条病人信息上。故写在最前面
+  sReport_Doctor:=trim(ADObasic.FieldByName('审核者').AsString);
+
+  sPatientname:=trim(adobasic.fieldbyname('姓名').AsString);
+  sSex:=adobasic.fieldbyname('性别').AsString;
+  sAge:=adobasic.fieldbyname('年龄').AsString;
+  
    if not ifAutoCheck then  //打印前要检查是否已被审核
    begin
-     if ADObasic.FieldByName('审核者').AsString='' then
+     if sReport_Doctor='' then
      begin
       MessageBox(Handle, '请先审核！', '系统提示', MB_ICONASTERISK);
       exit;
      end;
    end;
-
-  //Insert_XLB_NUM:=0;
 
   if frReport1.LoadFromFile(TempFile_Group) then
   begin
@@ -1982,9 +1993,6 @@ begin
   else
     frGH.Prop['formnewpage'] := false;
 
-  sPatientname:=trim(adobasic.fieldbyname('姓名').AsString);
-  sSex:=adobasic.fieldbyname('性别').AsString;
-  sAge:=adobasic.fieldbyname('年龄').AsString;
   if MergePrintWorkGroupRange<>'' then
     sMergePrintWorkGroupRange:=' and cc.combin_id in ('+MergePrintWorkGroupRange+') ';
   if (N64.Checked)and(sPatientname<>'') then//按姓别性别年龄合并打印//只有存在姓名时才合并
@@ -2009,7 +2017,7 @@ begin
     ' cv.itemid as 项目代码 '+//cci.Reserve3,
     ' from chk_valu cv '+
     ' left join clinicchkitem cci on cci.itemid=cv.itemid '+
-    ' where cv.pkunid='+adobasic.fieldbyname('唯一编号').AsString+
+    ' where cv.pkunid='+sUnid+
     ' and cv.issure=1 and ltrim(rtrim(isnull(itemvalue,'''')))<>'''' '+
     ' order by cv.pkcombin_id,cv.printorder ';//组合项目号,打印编号 '
   ADO_print.Close;
@@ -2021,7 +2029,7 @@ begin
   //对姓别性别年龄的合并项做打印标记
   if (N64.Checked)and(sPatientname<>'') then
   begin
-    SelSql:='select unid,printtimes,report_doctor from chk_con where Patientname='''+sPatientname+''' and sex='''+sSex+''' and age='''+sAge+''' and isnull(Patientname,'''')<>'''' and unid<>'+adobasic.fieldbyname('唯一编号').AsString;
+    SelSql:='select unid,printtimes,report_doctor from chk_con where Patientname='''+sPatientname+''' and sex='''+sSex+''' and age='''+sAge+''' and isnull(Patientname,'''')<>'''' and unid<>'+sUnid;
     adotemp22:=tadoquery.Create(nil);
     adotemp22.Connection:=DM.ADOConnection1;
     adotemp22.Close;
@@ -2035,12 +2043,12 @@ begin
       report_doctor:=trim(adotemp22.fieldbyname('report_doctor').AsString);
 
       if printtimes=0 then sPrinttimes:=' printtimes='+inttostr(printtimes+1) else sPrinttimes:='';//修改打印次数
-      if(ifAutoCheck)and(report_doctor='') then sReport_doctor:=' report_doctor='''+operator_name+''',Audit_Date=getdate() ' else sReport_doctor:='';//修改审核者
+      if(ifAutoCheck)and(report_doctor='') then sReport_doctor2:=' report_doctor='''+operator_name+''',Audit_Date=getdate() ' else sReport_doctor2:='';//修改审核者
 
-      if(sPrinttimes='')and(sReport_doctor='')then begin adotemp22.Next;continue; end;
-      if(sPrinttimes<>'')and(sReport_doctor<>'')then ss:=',' else ss:='';
+      if(sPrinttimes='')and(sReport_doctor2='')then begin adotemp22.Next;continue; end;
+      if(sPrinttimes<>'')and(sReport_doctor2<>'')then ss:=',' else ss:='';
 
-      sql:='update chk_con set '+sPrinttimes+ss+sReport_doctor+' where unid='+inttostr(unid);
+      sql:='update chk_con set '+sPrinttimes+ss+sReport_doctor2+' where unid='+inttostr(unid);
       ExecSQLCmd(LisConn,sql);
 
       adotemp22.Next;

@@ -152,22 +152,32 @@ procedure TfrmCommQuery.BitBtn1Click(Sender: TObject);
 var
   strsqlPrint:string;
 
+  sUnid,sCombin_Id:string;
+
   //对姓别性别年龄的合并项做打印标记 变量
   sPatientname,sSex,sAge,sCheck_Date:string;
   //===============================  
 begin
-   if not ADObasic.Active then exit;
-   if ADObasic.RecordCount=0 then exit;
+  if not ADObasic.Active then exit;
+  if ADObasic.RecordCount=0 then exit;
 
-  if (adobasic.FieldByName('组别').AsString=WorkGroup_T1)
+  sUnid:=adobasic.fieldbyname('唯一编号').AsString;//防止点击打印后，马上将光标移到另一条病人信息上。故写在最前面
+  sCombin_Id:=adobasic.FieldByName('组别').AsString;  
+
+  sPatientname:=trim(adobasic.fieldbyname('姓名').AsString);
+  sSex:=adobasic.fieldbyname('性别').AsString;
+  sAge:=adobasic.fieldbyname('年龄').AsString;
+  sCheck_Date:=FormatDateTime('yyyy-mm-dd',adobasic.fieldbyname('检查日期').AsDateTime);
+  
+  if (sCombin_Id=WorkGroup_T1)
     and (frReport1.LoadFromFile(TempFile_T1)) then
   begin
   end else
-  if (adobasic.FieldByName('组别').AsString=WorkGroup_T2)
+  if (sCombin_Id=WorkGroup_T2)
     and (frReport1.LoadFromFile(TempFile_T2)) then
   begin
   end else
-  if (adobasic.FieldByName('组别').AsString=WorkGroup_T3)
+  if (sCombin_Id=WorkGroup_T3)
     and (frReport1.LoadFromFile(TempFile_T3)) then
   begin
   end else
@@ -180,10 +190,6 @@ begin
     exit;
   end;
 
-  sPatientname:=trim(adobasic.fieldbyname('姓名').AsString);
-  sSex:=adobasic.fieldbyname('性别').AsString;
-  sAge:=adobasic.fieldbyname('年龄').AsString;
-  sCheck_Date:=FormatDateTime('yyyy-mm-dd',adobasic.fieldbyname('检查日期').AsDateTime);
   if (SDIAppForm.N64.Checked)and(sPatientname<>'') then//按姓别性别年龄合并打印//只有存在姓名时才合并
     strsqlPrint:='select cv.itemid as 项目代码,cv.name as 名称,cv.english_name as 英文名,'+
           ' cv.itemvalue as 检验结果,'+
@@ -212,7 +218,7 @@ begin
             ' min(pkcombin_id) as 组合项目号, '+
             ' Reserve1,Reserve2,Dosage1,Dosage2,Reserve5,Reserve6,Reserve7,Reserve8,Reserve9,Reserve10 '+
             ' from chk_valu_bak '+
-            ' where pkunid='+masterDataSource.DataSet.fieldbyname('唯一编号').AsString+
+            ' where pkunid='+sUnid+
             ' and ltrim(rtrim(isnull(itemvalue,'''')))<>'''' '+
             ' group by itemid,name,english_name,itemvalue,min_value,max_value,unit, '+
             ' Reserve1,Reserve2,Dosage1,Dosage2,Reserve5,Reserve6,Reserve7,Reserve8,Reserve9,Reserve10 '+
@@ -324,13 +330,22 @@ var
   strsqlPrint:string;
   frGH: TfrBandView;//分组头
 
+  sUnid:string;
+
   //对姓别性别年龄的合并项做打印标记 变量
   sPatientname,sSex,sAge,sCheck_Date,sMergePrintWorkGroupRange:string;
   //===============================  
 begin
-   if not ADObasic.Active then exit;
-   if ADObasic.RecordCount=0 then exit;
+  if not ADObasic.Active then exit;
+  if ADObasic.RecordCount=0 then exit;
 
+  sUnid:=adobasic.fieldbyname('唯一编号').AsString;//防止点击打印后，马上将光标移到另一条病人信息上。故写在最前面
+  
+  sPatientname:=trim(adobasic.fieldbyname('姓名').AsString);
+  sSex:=adobasic.fieldbyname('性别').AsString;
+  sAge:=adobasic.fieldbyname('年龄').AsString;
+  sCheck_Date:=FormatDateTime('yyyy-mm-dd',adobasic.fieldbyname('检查日期').AsDateTime);
+  
   if frReport1.LoadFromFile(TempFile_Group) then
   begin
   end else
@@ -352,10 +367,6 @@ begin
   else
     frGH.Prop['formnewpage'] := false;
 
-  sPatientname:=trim(adobasic.fieldbyname('姓名').AsString);
-  sSex:=adobasic.fieldbyname('性别').AsString;
-  sAge:=adobasic.fieldbyname('年龄').AsString;
-  sCheck_Date:=FormatDateTime('yyyy-mm-dd',adobasic.fieldbyname('检查日期').AsDateTime);
   if MergePrintWorkGroupRange<>'' then
     sMergePrintWorkGroupRange:=' and cc.combin_id in ('+MergePrintWorkGroupRange+') ';
   if (SDIAppForm.N64.Checked)and(sPatientname<>'') then//按姓别性别年龄合并打印//只有存在姓名时才合并
@@ -382,7 +393,7 @@ begin
     ' cv.itemid as 项目代码 '+//cci.Reserve3,
     ' from chk_valu_bak cv '+
     ' left join clinicchkitem cci on cci.itemid=cv.itemid '+
-    ' where cv.pkunid='+masterDataSource.DataSet.fieldbyname('唯一编号').AsString+
+    ' where cv.pkunid='+sUnid+
     ' and cv.issure=1 and ltrim(rtrim(isnull(itemvalue,'''')))<>'''' '+
     ' order by cv.pkcombin_id,cv.printorder ';//组合项目号,打印编号 '
   ADO_print.Close;
