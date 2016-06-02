@@ -225,15 +225,17 @@ VAR
   //pFlagetype:string;
   sWorkGroup:string;
 
-  stringTemp1,stringTemp2:string;
+  stringTemp1,stringTemp2,stringTemp3,stringTemp4:string;
 
-  adotemp2,adotemp3,adotemp22,adotemp33,adotemp44:tadoquery;
+  adotemp2,{adotemp3,}adotemp22,adotemp33{,adotemp44}:tadoquery;
   His_Unid_Unid{,i},Chk_Valu_His_ValueId:integer;
   //ifSelect:boolean;
   //ini:tinifile;
   //ServerDate:TDate;
   sCheckId:string;
 begin
+  WriteLog(pchar('选取申请单,开始增加申请单,申请单唯一编号:'+inttostr(AChk_Con_His_Unid)+',联机号:'+ACheckId));
+
   His_Unid_Unid:=0;
   //if not ADOQuery1.Active then exit;
   //if ADOQuery1.RecordCount=0 then exit;
@@ -244,12 +246,20 @@ begin
   adotemp33.SQL.Clear;
   adotemp33.SQL.Text:='select * from chk_con_his cch where cch.unid='+inttostr(AChk_Con_His_Unid);
   adotemp33.Open ;
-  if adotemp33.RecordCount<=0 then begin adotemp33.Free;result:=0;exit; end;
+  if adotemp33.RecordCount<=0 then
+  begin
+    adotemp33.Free;
+    result:=0;
+    WriteLog(pchar('选取申请单,增加申请单结束,申请单唯一编号:'+inttostr(AChk_Con_His_Unid)+',联机号:'+ACheckId+',预约登记中无该唯一编号'));
+    exit;
+  end;
 
   //pUNID:=ADOQuery1.fieldbyname('唯一编号').AsInteger;
   //pFlagetype:=ADOQuery1.fieldbyname('样本类型').AsString;
   //pFlagetype:=adotemp33.fieldbyname('flagetype').AsString;
 
+  adotemp33.Free;
+  
   if CheckBox1.Checked then
   begin
     His_Unid_Unid:=SDIAppForm.adobasic.fieldbyname('唯一编号').AsInteger;
@@ -260,8 +270,9 @@ begin
         ''',Stature=getdate() '+
         ' Where unid='+inttostr(His_Unid_Unid);
     ExecSQLCmd(LisConn,stringTemp1);
+  
+    WriteLog(pchar('选取申请单,增加申请单,强制覆盖当前指定病人,申请单唯一编号:'+inttostr(AChk_Con_His_Unid)+',联机号:'+ACheckId+',LIS唯一编号:'+inttostr(His_Unid_Unid)));
   end;
-  adotemp33.Free;
 
   adotemp22:=tadoquery.Create(nil);
   adotemp22.Connection:=DM.ADOConnection1;
@@ -281,7 +292,12 @@ begin
       end;
     end;//}
     //if not ifSelect then begin adotemp22.Next;continue;end;//如果未选择，则跳过
-    if not adotemp22.FieldByName('选择').AsBoolean then begin adotemp22.Next;continue;end;//如果未选择，则跳过
+    if not adotemp22.FieldByName('选择').AsBoolean then
+    begin
+      WriteLog(pchar('选取申请单,增加申请单,申请单唯一编号:'+inttostr(AChk_Con_His_Unid)+',联机号:'+ACheckId+',预约登记ValueId:'+adotemp22.fieldbyname('ValueId').AsString+',未选择,跳过'));
+      adotemp22.Next;
+      continue;
+    end;//如果未选择，则跳过
 
     Chk_Valu_His_ValueId:=adotemp22.fieldbyname('ValueId').AsInteger;
 
@@ -290,6 +306,7 @@ begin
     begin
       if sWorkGroup<>SDIAppForm.cbxConnChar.Text then
       begin
+        WriteLog(pchar('选取申请单,增加申请单,申请单唯一编号:'+inttostr(AChk_Con_His_Unid)+',联机号:'+ACheckId+',预约登记ValueId:'+adotemp22.fieldbyname('ValueId').AsString+',非当前工作组的组合项目,跳过'));
         adotemp22.Next;
         continue;
       end;
@@ -298,29 +315,39 @@ begin
 
     if His_Unid_Unid=0 then
     begin
-      adotemp44:=tadoquery.Create(nil);
-      adotemp44.Connection:=DM.ADOConnection1;
-      adotemp44.Close;
-      adotemp44.SQL.Clear;
-      adotemp44.SQL.Text:='select vcca.unid as His_Unid_Unid from Chk_Con vcca '+
+      //adotemp44:=tadoquery.Create(nil);
+      //adotemp44.Connection:=DM.ADOConnection1;
+      //adotemp44.Close;
+      //adotemp44.SQL.Clear;
+      //adotemp44.SQL.Text
+      stringTemp3:='select vcca.unid as His_Unid_Unid from Chk_Con vcca '+
                           'inner join chk_valu vcva on vcca.unid=vcva.pkunid '+
                           'inner join chk_valu_his cvh on cvh.pkunid=vcca.his_unid and cvh.pkcombin_id=vcva.pkcombin_id '+
                           ' and cvh.ValueID='+adotemp22.fieldbyname('ValueID').AsString;
-      adotemp44.Open ;
-      His_Unid_Unid:=adotemp44.fieldbyname('His_Unid_Unid').AsInteger;
-      adotemp44.Free;
+      //adotemp44.Open ;
+      //His_Unid_Unid:=adotemp44.fieldbyname('His_Unid_Unid').AsInteger;
+      //adotemp44.Free;
+
+      His_Unid_Unid:=strtointdef(ScalarSQLCmd(LisConn,stringTemp3),0); 
+      
+      WriteLog(pchar('选取申请单,增加申请单,申请单唯一编号:'+inttostr(AChk_Con_His_Unid)+',联机号:'+ACheckId+',LIS唯一编号1:'+inttostr(His_Unid_Unid)));
     end;
         
     if His_Unid_Unid=0 then
     begin
-      adotemp3:=tadoquery.Create(nil);
-      adotemp3.Connection:=DM.ADOConnection1;
-      adotemp3.Close;
-      adotemp3.SQL.Clear;
-      adotemp3.SQL.Add('select Unid as His_Unid_Unid from chk_con where combin_id='''+sWorkGroup+''' and his_unid='+inttostr(AChk_Con_His_Unid));
-      adotemp3.Open ;
-      His_Unid_Unid:=adotemp3.fieldbyname('His_Unid_Unid').AsInteger;
-      adotemp3.Free;
+      //adotemp3:=tadoquery.Create(nil);
+      //adotemp3.Connection:=DM.ADOConnection1;
+      //adotemp3.Close;
+      //adotemp3.SQL.Clear;
+      //adotemp3.SQL.Add(
+      stringTemp4:='select Unid as His_Unid_Unid from chk_con where combin_id='''+sWorkGroup+''' and his_unid='+inttostr(AChk_Con_His_Unid);//);
+      //adotemp3.Open ;
+      //His_Unid_Unid:=adotemp3.fieldbyname('His_Unid_Unid').AsInteger;
+      //adotemp3.Free;
+      
+      His_Unid_Unid:=strtointdef(ScalarSQLCmd(LisConn,stringTemp4),0);
+      
+      WriteLog(pchar('选取申请单,增加申请单,申请单唯一编号:'+inttostr(AChk_Con_His_Unid)+',联机号:'+ACheckId+',LIS唯一编号2:'+inttostr(His_Unid_Unid)));
     end;
 
     if His_Unid_Unid=0 then
@@ -348,6 +375,8 @@ begin
       His_Unid_Unid:=adotemp2.fieldbyname('Insert_Identity').AsInteger;
       adotemp2.Free;
 
+      WriteLog(pchar('选取申请单,增加申请单,申请单唯一编号:'+inttostr(AChk_Con_His_Unid)+',联机号:'+sCheckId+',LIS唯一编号3:'+inttostr(His_Unid_Unid)));
+
       //保存当前联机号
       //if trim(sWorkGroup)<>'' then
       //begin
@@ -360,13 +389,17 @@ begin
       //==============
     end;
 
+    WriteLog(pchar('选取申请单,增加申请单,开始插入检验项目,申请单唯一编号:'+inttostr(AChk_Con_His_Unid)+',组合项目代码:'+adotemp22.fieldbyname('组合项目代码').AsString+',LIS唯一编号:'+inttostr(His_Unid_Unid)+',预约登记ValueId'+inttostr(Chk_Valu_His_ValueId)));
     sdiappform.InsertOrDeleteVaue(adotemp22.fieldbyname('组合项目代码').AsString,true,His_Unid_Unid,Chk_Valu_His_ValueId);//插入检验项目
-    
+    WriteLog(pchar('选取申请单,增加申请单,插入检验项目结束,申请单唯一编号:'+inttostr(AChk_Con_His_Unid)+',组合项目代码:'+adotemp22.fieldbyname('组合项目代码').AsString+',LIS唯一编号:'+inttostr(His_Unid_Unid)+',预约登记ValueId'+inttostr(Chk_Valu_His_ValueId)));
+
     adotemp22.Next;
   end;
   adotemp22.Free;
   
   result:=His_Unid_Unid;
+  
+  WriteLog(pchar('选取申请单,增加申请单结束,申请单唯一编号:'+inttostr(AChk_Con_His_Unid)+',联机号:'+ACheckId+',LIS唯一编号:'+inttostr(His_Unid_Unid)));
 end;
 
 procedure TfrmShowChkConHis.ADOQuery1AfterOpen(DataSet: TDataSet);
@@ -540,6 +573,8 @@ begin
 
   (Sender as TLabeledEdit).Enabled:=false;//为了防止没处理完又扫描下一个条码
 
+  WriteLog(pchar('选取申请单,开始'));
+
   ServerDate:=GetServerDate(DM.ADOConnection1);
 
   ADOQuery1.Close;
@@ -547,6 +582,8 @@ begin
   ADOQuery1.SQL.Text:=SHOW_CHK_CON_HIS+' where dbo.uf_GetExtBarcode(cch.unid) like ''%,'+(Sender as TLabeledEdit).Text+',%'' ';
   ADOQuery1.Open;
 
+  WriteLog(pchar('选取申请单,查询样本条码,数量:'+inttostr(ADOQuery1.RecordCount)));
+  
   adotemp22:=tadoquery.Create(nil);
   adotemp22.clone(ADOQuery1);
   ArCheckBoxValue:=nil;
@@ -585,7 +622,11 @@ begin
     //获取联机号
     labelededit1.Text:=GetMaxCheckId(SDIAppForm.cbxConnChar.Text,ServerDate);
     //==========
+    
+    WriteLog(pchar('选取申请单,获取下一个联机号:'+labelededit1.Text));
   end;
+
+  WriteLog(pchar('选取申请单,结束'));
 
   (Sender as TLabeledEdit).Enabled:=true;
   if (Sender as TLabeledEdit).CanFocus then begin (Sender as TLabeledEdit).SetFocus;(Sender as TLabeledEdit).SelectAll; end;
