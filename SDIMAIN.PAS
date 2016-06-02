@@ -2150,13 +2150,17 @@ begin
         adotemp3.SQL.Clear;
         adotemp3.SQL.Text:='select ItemUnid from CombSChkItem where CombUnid=(select top 1 Unid from combinitem where Id='''+s2+''') ';
         adotemp3.Open;
+        WriteLog(pchar('增加组合项目,组合项目编号:'+s2+',预约登记ValueId:'+inttostr(AChk_Valu_His_ValueId)+',LIS唯一编号:'+inttostr(checkunid)+',该组合项目有小项目数量:'+inttostr(adotemp3.RecordCount)));
         while not adotemp3.Eof do  //adotemp3是该组合项目的所有检验项目
         begin
           ItemUnid:=adotemp3.fieldbyname('ItemUnid').AsInteger;
+          WriteLog(pchar('增加组合项目,组合项目编号:'+s2+',预约登记ValueId:'+inttostr(AChk_Valu_His_ValueId)+',LIS唯一编号:'+inttostr(checkunid)+',小项目ItemUnid:'+inttostr(ItemUnid)));
           SingleInsertVaue(ComboItemID,checkunid,ItemUnid,AChk_Valu_His_ValueId);
           adotemp3.Next;
         end;
         adotemp3.Free;
+
+        WriteLog(pchar('增加组合项目结束,组合项目编号:'+s2+',预约登记ValueId:'+inttostr(AChk_Valu_His_ValueId)+',LIS唯一编号:'+inttostr(checkunid)));
 
         addOrEditCalcItem(pchar(LisConn),pchar(s2),checkunid);//增加计算项目
 
@@ -2333,6 +2337,8 @@ var
   s2,itemid,strsql:string;
   bFirst:boolean;
 begin
+  WriteLog(pchar('开始增加小项目,组合项目编号:'+ComboItemID+',预约登记ValueId:'+inttostr(AChk_Valu_His_ValueId)+',LIS唯一编号:'+inttostr(checkunid)+',小项目ItemUnid:'+inttostr(ItemUnid)));
+
   adotemp3:=tadoquery.Create(nil);
   adotemp3.Connection:=DM.ADOConnection1;
   adotemp3.Close;
@@ -2342,6 +2348,7 @@ begin
   IF ADOTEMP3.RecordCount=0 THEN
   BEGIN
     ADOTEMP3.Free;
+    WriteLog(pchar('增加小项目,组合项目编号:'+ComboItemID+',预约登记ValueId:'+inttostr(AChk_Valu_His_ValueId)+',LIS唯一编号:'+inttostr(checkunid)+',小项目ItemUnid:'+inttostr(ItemUnid)+',不存在该ItemUnid,退出'));
     EXIT;
   END;
   
@@ -2363,7 +2370,11 @@ begin
   begin
     bFirst:=false;
 
-    if trim(adotemp4.FieldByName('itemid').AsString)=itemid then break;
+    if trim(adotemp4.FieldByName('itemid').AsString)=itemid then
+    begin
+      WriteLog(pchar('增加小项目,组合项目编号:'+ComboItemID+',预约登记ValueId:'+inttostr(AChk_Valu_His_ValueId)+',LIS唯一编号:'+inttostr(checkunid)+',小项目Itemid:'+Itemid+'已存在,break'));
+      break;
+    end;
     adotemp4.Next;
     if(adotemp4.Eof)then   //表示病人检验结果集中没有该检验项目
     begin
@@ -2372,9 +2383,12 @@ begin
         inttostr(checkunid)+',1,''' +s2+''','''+itemid+''','''+inttostr(AChk_Valu_His_ValueId)+''''+
         ' ) ';
       ExecSQLCmd(LisConn,strsql);
+      WriteLog(pchar('增加小项目,组合项目编号:'+ComboItemID+',预约登记ValueId:'+inttostr(AChk_Valu_His_ValueId)+',LIS唯一编号:'+inttostr(checkunid)+',小项目itemid:'+itemid+',插入成功'));
     end;
   end;
   adotemp4.Free;
+  
+  WriteLog(pchar('增加小项目结束,组合项目编号:'+ComboItemID+',预约登记ValueId:'+inttostr(AChk_Valu_His_ValueId)+',LIS唯一编号:'+inttostr(checkunid)+',小项目ItemUnid:'+inttostr(ItemUnid)));
 end;
 
 procedure TSDIAppForm.DBGrid2Exit(Sender: TObject);

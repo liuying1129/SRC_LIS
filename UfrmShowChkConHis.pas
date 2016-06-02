@@ -518,22 +518,24 @@ VAR
   ini:tinifile;
 
   Chk_Con_His_Unid:integer;
-  sCheckId:string;
+  sCheckId,sExtBarcode:string;
 begin
   if key<>13 then exit;
 
-  if (Sender as TLabeledEdit).Text='' then exit;
+  sExtBarcode:=(Sender as TLabeledEdit).Text;
+
+  if sExtBarcode='' then exit;
 
   (Sender as TLabeledEdit).Enabled:=false;//为了防止没处理完又扫描下一个条码
 
   sCheckId:=LabeledEdit1.Text;
   ServerDate:=GetServerDate(DM.ADOConnection1);
 
-  WriteLog(pchar('选取申请单,开始,联机号:'+sCheckId));
+  WriteLog(pchar('选取申请单,开始,联机号:'+sCheckId+',条码:'+sExtBarcode));
 
   ADOQuery1.Close;
   ADOQuery1.SQL.Clear;
-  ADOQuery1.SQL.Text:=SHOW_CHK_CON_HIS+' where dbo.uf_GetExtBarcode(cch.unid) like ''%,'+(Sender as TLabeledEdit).Text+',%'' ';
+  ADOQuery1.SQL.Text:=SHOW_CHK_CON_HIS+' where dbo.uf_GetExtBarcode(cch.unid) like ''%,'+sExtBarcode+',%'' ';
   ADOQuery1.Open;
   RecNum:=ADOQuery1.RecordCount;
   Chk_Con_His_Unid:=0;//没用。为了不让编译时报Warning:Variable 'Chk_Con_His_Unid' might not have been initialized
@@ -583,7 +585,7 @@ begin
     WriteLog(pchar('选取申请单,获取下一个联机号:'+labelededit1.Text));
   end;
 
-  WriteLog(pchar('选取申请单,结束'));
+  WriteLog(pchar('选取申请单,结束,条码:'+sExtBarcode));
 
   (Sender as TLabeledEdit).Enabled:=true;
   if (Sender as TLabeledEdit).CanFocus then begin (Sender as TLabeledEdit).SetFocus;(Sender as TLabeledEdit).SelectAll; end;
