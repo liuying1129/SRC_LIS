@@ -2140,6 +2140,8 @@ begin
       if ifAddorDel then
       //==========================增加插入=================================//
       begin
+        WriteLog(pchar('开始增加组合项目,组合项目编号:'+s2+',预约登记ValueId:'+inttostr(AChk_Valu_His_ValueId)+',LIS唯一编号:'+inttostr(checkunid)));
+        
         ExecSQLCmd(LisConn,'update chk_valu set issure=1 where pkunid='+inttostr(checkunid)+' and pkcombin_id='+s2);
 
         adotemp3:=tadoquery.Create(nil);
@@ -3723,16 +3725,7 @@ begin
 end;
 
 procedure TSDIAppForm.SpeedButton2Click(Sender: TObject);
-//var
-//  ADOLYQuery1:TADOLYQuery;
 begin
-//  adolyquery1:=TADOLYQuery.create(nil);
-//  adolyquery1.DataBaseType:=dbtMSSQL;
-//  adolyquery1.Connection:=DM.ADOConnection1;
-//  adolyquery1.SelectString:=SHOW_CHK_CON_HIS;
-//  if adolyquery1.Execute then frmShowChkConHis(adolyquery1.ResultSelect).ShowModal;
-//  adolyquery1.Free;
-
   frmShowChkConHis('').ShowModal;
 end;
 

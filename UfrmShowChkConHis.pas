@@ -78,7 +78,6 @@ function frmShowChkConHis(const PQuery:string):TfrmShowChkConHis;    {动态创建窗
 begin
   if ffrmShowChkConHis=nil then ffrmShowChkConHis:=TfrmShowChkConHis.Create(application.mainform);
   result:=ffrmShowChkConHis;
-  //frmShowChkConHis.pPQuery:=PQuery;
 end;
 
 procedure TfrmShowChkConHis.FormClose(Sender: TObject;
@@ -221,24 +220,17 @@ end;
 
 function TfrmShowChkConHis.Add_Chk_Con_Valu_His(const AChk_Con_His_Unid:integer;const ACheckId:string):integer;
 VAR
-  //Punid : integer;
-  //pFlagetype:string;
   sWorkGroup:string;
 
   stringTemp1,stringTemp2,stringTemp3,stringTemp4:string;
 
-  adotemp2,{adotemp3,}adotemp22,adotemp33{,adotemp44}:tadoquery;
-  His_Unid_Unid{,i},Chk_Valu_His_ValueId:integer;
-  //ifSelect:boolean;
-  //ini:tinifile;
-  //ServerDate:TDate;
+  adotemp2,adotemp22,adotemp33:tadoquery;
+  His_Unid_Unid,Chk_Valu_His_ValueId:integer;
   sCheckId:string;
 begin
-  WriteLog(pchar('选取申请单,开始增加申请单,申请单唯一编号:'+inttostr(AChk_Con_His_Unid)+',联机号:'+ACheckId));
+  WriteLog(pchar('开始增加申请单,申请单唯一编号:'+inttostr(AChk_Con_His_Unid)+',联机号:'+ACheckId));
 
   His_Unid_Unid:=0;
-  //if not ADOQuery1.Active then exit;
-  //if ADOQuery1.RecordCount=0 then exit;
 
   adotemp33:=tadoquery.Create(nil);
   adotemp33.Connection:=DM.ADOConnection1;
@@ -250,14 +242,9 @@ begin
   begin
     adotemp33.Free;
     result:=0;
-    WriteLog(pchar('选取申请单,增加申请单结束,申请单唯一编号:'+inttostr(AChk_Con_His_Unid)+',联机号:'+ACheckId+',预约登记中无该唯一编号'));
+    WriteLog(pchar('增加申请单结束,申请单唯一编号:'+inttostr(AChk_Con_His_Unid)+',联机号:'+ACheckId+',预约登记中无该唯一编号'));
     exit;
   end;
-
-  //pUNID:=ADOQuery1.fieldbyname('唯一编号').AsInteger;
-  //pFlagetype:=ADOQuery1.fieldbyname('样本类型').AsString;
-  //pFlagetype:=adotemp33.fieldbyname('flagetype').AsString;
-
   adotemp33.Free;
   
   if CheckBox1.Checked then
@@ -271,42 +258,34 @@ begin
         ' Where unid='+inttostr(His_Unid_Unid);
     ExecSQLCmd(LisConn,stringTemp1);
   
-    WriteLog(pchar('选取申请单,增加申请单,强制覆盖当前指定病人,申请单唯一编号:'+inttostr(AChk_Con_His_Unid)+',联机号:'+ACheckId+',LIS唯一编号:'+inttostr(His_Unid_Unid)));
+    WriteLog(pchar('增加申请单,强制覆盖当前指定病人LIS unid:'+inttostr(His_Unid_Unid)+',申请单唯一编号:'+inttostr(AChk_Con_His_Unid)));
   end;
 
   adotemp22:=tadoquery.Create(nil);
   adotemp22.Connection:=DM.ADOConnection1;
   Query_Chk_Valu_His(adotemp22,AChk_Con_His_Unid);
-  //adotemp22:=tadoquery.Create(nil);
-  //adotemp22.clone(ADOQuery2);
+
+  WriteLog(pchar('增加申请单,申请单唯一编号:'+inttostr(AChk_Con_His_Unid)+',待处理组合项目数量:'+inttostr(adotemp22.RecordCount)));
+
   while not adotemp22.Eof do
   begin
     if not CheckBox1.Checked then His_Unid_Unid:=0;
-    {ifSelect:=false;
-    for i :=0  to adotemp22.RecordCount-1 do//循环ArCheckBoxValue
+    
+    Chk_Valu_His_ValueId:=adotemp22.fieldbyname('ValueId').AsInteger;
+
+    if not adotemp22.FieldByName('选择').AsBoolean then//如果未选择，则跳过
     begin
-      if (ArCheckBoxValue[i,1]=adotemp22.fieldbyname('ValueID').AsInteger)and(ArCheckBoxValue[i,0]=1) then
-      begin
-        ifSelect:=true;
-        break;
-      end;
-    end;//}
-    //if not ifSelect then begin adotemp22.Next;continue;end;//如果未选择，则跳过
-    if not adotemp22.FieldByName('选择').AsBoolean then
-    begin
-      WriteLog(pchar('选取申请单,增加申请单,申请单唯一编号:'+inttostr(AChk_Con_His_Unid)+',联机号:'+ACheckId+',预约登记ValueId:'+adotemp22.fieldbyname('ValueId').AsString+',未选择,跳过'));
+      WriteLog(pchar('增加申请单,申请单唯一编号:'+inttostr(AChk_Con_His_Unid)+',联机号:'+ACheckId+',预约登记ValueId:'+inttostr(Chk_Valu_His_ValueId)+',未选择,跳过'));
       adotemp22.Next;
       continue;
-    end;//如果未选择，则跳过
-
-    Chk_Valu_His_ValueId:=adotemp22.fieldbyname('ValueId').AsInteger;
+    end;
 
     sWorkGroup:=adotemp22.fieldbyname('默认工作组').AsString;
     if CheckBox2.Checked then//勾选该选项，则只有默认工作组等于当前工作组时才会导入
     begin
       if sWorkGroup<>SDIAppForm.cbxConnChar.Text then
       begin
-        WriteLog(pchar('选取申请单,增加申请单,申请单唯一编号:'+inttostr(AChk_Con_His_Unid)+',联机号:'+ACheckId+',预约登记ValueId:'+adotemp22.fieldbyname('ValueId').AsString+',非当前工作组的组合项目,跳过'));
+        WriteLog(pchar('增加申请单,申请单唯一编号:'+inttostr(AChk_Con_His_Unid)+',联机号:'+ACheckId+',预约登记ValueId:'+inttostr(Chk_Valu_His_ValueId)+',非当前工作组的组合项目,跳过'));
         adotemp22.Next;
         continue;
       end;
@@ -315,39 +294,23 @@ begin
 
     if His_Unid_Unid=0 then
     begin
-      //adotemp44:=tadoquery.Create(nil);
-      //adotemp44.Connection:=DM.ADOConnection1;
-      //adotemp44.Close;
-      //adotemp44.SQL.Clear;
-      //adotemp44.SQL.Text
       stringTemp3:='select vcca.unid as His_Unid_Unid from Chk_Con vcca '+
                           'inner join chk_valu vcva on vcca.unid=vcva.pkunid '+
                           'inner join chk_valu_his cvh on cvh.pkunid=vcca.his_unid and cvh.pkcombin_id=vcva.pkcombin_id '+
-                          ' and cvh.ValueID='+adotemp22.fieldbyname('ValueID').AsString;
-      //adotemp44.Open ;
-      //His_Unid_Unid:=adotemp44.fieldbyname('His_Unid_Unid').AsInteger;
-      //adotemp44.Free;
+                          ' and cvh.ValueID='+inttostr(Chk_Valu_His_ValueId);//adotemp22.fieldbyname('ValueID').AsString;
 
       His_Unid_Unid:=strtointdef(ScalarSQLCmd(LisConn,stringTemp3),0); 
       
-      WriteLog(pchar('选取申请单,增加申请单,申请单唯一编号:'+inttostr(AChk_Con_His_Unid)+',联机号:'+ACheckId+',LIS唯一编号1:'+inttostr(His_Unid_Unid)));
+      WriteLog(pchar('增加申请单,申请单唯一编号:'+inttostr(AChk_Con_His_Unid)+',联机号:'+ACheckId+',预约登记ValueId:'+inttostr(Chk_Valu_His_ValueId)+',LIS唯一编号1:'+inttostr(His_Unid_Unid)));
     end;
         
     if His_Unid_Unid=0 then
     begin
-      //adotemp3:=tadoquery.Create(nil);
-      //adotemp3.Connection:=DM.ADOConnection1;
-      //adotemp3.Close;
-      //adotemp3.SQL.Clear;
-      //adotemp3.SQL.Add(
-      stringTemp4:='select Unid as His_Unid_Unid from chk_con where combin_id='''+sWorkGroup+''' and his_unid='+inttostr(AChk_Con_His_Unid);//);
-      //adotemp3.Open ;
-      //His_Unid_Unid:=adotemp3.fieldbyname('His_Unid_Unid').AsInteger;
-      //adotemp3.Free;
+      stringTemp4:='select Unid as His_Unid_Unid from chk_con where combin_id='''+sWorkGroup+''' and his_unid='+inttostr(AChk_Con_His_Unid);
       
       His_Unid_Unid:=strtointdef(ScalarSQLCmd(LisConn,stringTemp4),0);
       
-      WriteLog(pchar('选取申请单,增加申请单,申请单唯一编号:'+inttostr(AChk_Con_His_Unid)+',联机号:'+ACheckId+',LIS唯一编号2:'+inttostr(His_Unid_Unid)));
+      WriteLog(pchar('增加申请单,申请单唯一编号:'+inttostr(AChk_Con_His_Unid)+',联机号:'+ACheckId+',LIS唯一编号2:'+inttostr(His_Unid_Unid)));
     end;
 
     if His_Unid_Unid=0 then
@@ -375,23 +338,10 @@ begin
       His_Unid_Unid:=adotemp2.fieldbyname('Insert_Identity').AsInteger;
       adotemp2.Free;
 
-      WriteLog(pchar('选取申请单,增加申请单,申请单唯一编号:'+inttostr(AChk_Con_His_Unid)+',联机号:'+sCheckId+',LIS唯一编号3:'+inttostr(His_Unid_Unid)));
-
-      //保存当前联机号
-      //if trim(sWorkGroup)<>'' then
-      //begin
-        //ServerDate:=GetServerDate(DM.ADOConnection1);
-        //ini:=tinifile.Create(ChangeFileExt(Application.ExeName,'.ini'));
-        //ini.WriteDate(sWorkGroup,'检查日期',ServerDate);
-        //ini.WriteString(sWorkGroup,'联机号',ACheckId);
-        //ini.Free;
-      //end;
-      //==============
+      WriteLog(pchar('增加申请单,申请单唯一编号:'+inttostr(AChk_Con_His_Unid)+',联机号:'+sCheckId+',LIS唯一编号3:'+inttostr(His_Unid_Unid)));
     end;
 
-    WriteLog(pchar('选取申请单,增加申请单,开始插入检验项目,申请单唯一编号:'+inttostr(AChk_Con_His_Unid)+',组合项目代码:'+adotemp22.fieldbyname('组合项目代码').AsString+',LIS唯一编号:'+inttostr(His_Unid_Unid)+',预约登记ValueId'+inttostr(Chk_Valu_His_ValueId)));
     sdiappform.InsertOrDeleteVaue(adotemp22.fieldbyname('组合项目代码').AsString,true,His_Unid_Unid,Chk_Valu_His_ValueId);//插入检验项目
-    WriteLog(pchar('选取申请单,增加申请单,插入检验项目结束,申请单唯一编号:'+inttostr(AChk_Con_His_Unid)+',组合项目代码:'+adotemp22.fieldbyname('组合项目代码').AsString+',LIS唯一编号:'+inttostr(His_Unid_Unid)+',预约登记ValueId'+inttostr(Chk_Valu_His_ValueId)));
 
     adotemp22.Next;
   end;
@@ -399,7 +349,7 @@ begin
   
   result:=His_Unid_Unid;
   
-  WriteLog(pchar('选取申请单,增加申请单结束,申请单唯一编号:'+inttostr(AChk_Con_His_Unid)+',联机号:'+ACheckId+',LIS唯一编号:'+inttostr(His_Unid_Unid)));
+  WriteLog(pchar('增加申请单结束,申请单唯一编号:'+inttostr(AChk_Con_His_Unid)+',联机号:'+ACheckId+',LIS唯一编号:'+inttostr(His_Unid_Unid)));
 end;
 
 procedure TfrmShowChkConHis.ADOQuery1AfterOpen(DataSet: TDataSet);
@@ -562,10 +512,13 @@ end;
 procedure TfrmShowChkConHis.LabeledEdit2KeyDown(Sender: TObject;
   var Key: Word; Shift: TShiftState);
 VAR
-  ValetudinarianInfoId,i,j:integer;
+  ValetudinarianInfoId,i,j,RecNum:integer;
   ServerDate:tdate;
   adotemp22:TAdoquery;
   ini:tinifile;
+
+  Chk_Con_His_Unid:integer;
+  sCheckId:string;
 begin
   if key<>13 then exit;
 
@@ -573,16 +526,20 @@ begin
 
   (Sender as TLabeledEdit).Enabled:=false;//为了防止没处理完又扫描下一个条码
 
-  WriteLog(pchar('选取申请单,开始'));
-
+  sCheckId:=LabeledEdit1.Text;
   ServerDate:=GetServerDate(DM.ADOConnection1);
+
+  WriteLog(pchar('选取申请单,开始,联机号:'+sCheckId));
 
   ADOQuery1.Close;
   ADOQuery1.SQL.Clear;
   ADOQuery1.SQL.Text:=SHOW_CHK_CON_HIS+' where dbo.uf_GetExtBarcode(cch.unid) like ''%,'+(Sender as TLabeledEdit).Text+',%'' ';
   ADOQuery1.Open;
+  RecNum:=ADOQuery1.RecordCount;
+  Chk_Con_His_Unid:=0;//没用。为了不让编译时报Warning:Variable 'Chk_Con_His_Unid' might not have been initialized
+  if RecNum=1 then Chk_Con_His_Unid:=ADOQuery1.fieldbyname('唯一编号').AsInteger;
 
-  WriteLog(pchar('选取申请单,查询样本条码,数量:'+inttostr(ADOQuery1.RecordCount)));
+  WriteLog(pchar('选取申请单,查询样本条码,数量:'+inttostr(RecNum)));
   
   adotemp22:=tadoquery.Create(nil);
   adotemp22.clone(ADOQuery1);
@@ -602,9 +559,9 @@ begin
   end;
   adotemp22.Free;
 
-  if ADOQuery1.RecordCount=1 then
+  if RecNum=1 then
   begin
-    ValetudinarianInfoId:=Add_Chk_Con_Valu_His(ADOQuery1.fieldbyname('唯一编号').AsInteger,LabeledEdit1.Text);
+    ValetudinarianInfoId:=Add_Chk_Con_Valu_His(Chk_Con_His_Unid,sCheckId);
 
     SDIAppForm.UpdateADObasic;
     SDIAppForm.adobasic.Locate('唯一编号',ValetudinarianInfoId,[loCaseInsensitive]);
@@ -614,7 +571,7 @@ begin
     begin
       ini:=tinifile.Create(ChangeFileExt(Application.ExeName,'.ini'));
       ini.WriteDate(SDIAppForm.cbxConnChar.Text,'检查日期',ServerDate);
-      ini.WriteString(SDIAppForm.cbxConnChar.Text,'联机号',LabeledEdit1.Text);
+      ini.WriteString(SDIAppForm.cbxConnChar.Text,'联机号',sCheckId);
       ini.Free;
     end;
     //==============
