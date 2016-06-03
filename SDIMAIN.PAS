@@ -2333,9 +2333,9 @@ end;
 procedure TSDIAppForm.SingleInsertVaue(const ComboItemID: string;
   const checkunid, ItemUnid: integer;const AChk_Valu_His_ValueId:integer);
 var
-  adotemp3,adotemp4:tadoquery;
-  s2,itemid,strsql:string;
-  bFirst:boolean;
+  adotemp3{,adotemp4}:tadoquery;
+  s2,itemid,strsql,strsql2:string;
+  //bFirst:boolean;
 begin
   WriteLog(pchar('开始增加小项目,组合项目编号:'+ComboItemID+',预约登记ValueId:'+inttostr(AChk_Valu_His_ValueId)+',LIS唯一编号:'+inttostr(checkunid)+',小项目ItemUnid:'+inttostr(ItemUnid)));
 
@@ -2356,7 +2356,7 @@ begin
   itemid:=trim(adotemp3.fieldbyname('itemid').AsString);
   ADOTEMP3.Free;
 
-  bFirst:=true;
+  {bFirst:=true;
 
   adotemp4:=tadoquery.Create(nil);
   adotemp4.Connection:=DM.ADOConnection1;
@@ -2386,8 +2386,20 @@ begin
       WriteLog(pchar('增加小项目,组合项目编号:'+ComboItemID+',预约登记ValueId:'+inttostr(AChk_Valu_His_ValueId)+',LIS唯一编号:'+inttostr(checkunid)+',小项目itemid:'+itemid+',插入成功'));
     end;
   end;
-  adotemp4.Free;
-  
+  adotemp4.Free;//}
+
+  strsql2:='select count(*) from chk_valu where pkunid='+inttostr(checkunid)+' and pkcombin_id='''+ComboItemID+''' and itemid='''+itemid+''' ';
+  if strtoint(ScalarSQLCmd(LisConn,strsql2))<=0 then
+  begin
+    strsql := 'insert into chk_valu(pkunid,issure,pkcombin_id,itemid,Surem2) ' +
+      ' values( ' +
+      inttostr(checkunid)+',1,''' +s2+''','''+itemid+''','''+inttostr(AChk_Valu_His_ValueId)+''''+
+      ' ) ';
+    ExecSQLCmd(LisConn,strsql);
+    WriteLog(pchar('增加小项目,组合项目编号:'+ComboItemID+',预约登记ValueId:'+inttostr(AChk_Valu_His_ValueId)+',LIS唯一编号:'+inttostr(checkunid)+',小项目itemid:'+itemid+',插入成功'));
+  end else
+    WriteLog(pchar('增加小项目,组合项目编号:'+ComboItemID+',预约登记ValueId:'+inttostr(AChk_Valu_His_ValueId)+',LIS唯一编号:'+inttostr(checkunid)+',小项目Itemid:'+Itemid+'已存在,跳过'));
+
   WriteLog(pchar('增加小项目结束,组合项目编号:'+ComboItemID+',预约登记ValueId:'+inttostr(AChk_Valu_His_ValueId)+',LIS唯一编号:'+inttostr(checkunid)+',小项目ItemUnid:'+inttostr(ItemUnid)));
 end;
 
