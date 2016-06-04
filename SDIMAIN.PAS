@@ -379,7 +379,7 @@ type
     procedure GetCopyData (var Msg: TWmCopyData);message WM_COPYDATA;
     function CheckMan: boolean;
     procedure ClearAll(CONST Clear_TYPE:integer);
-    procedure SingleInsertVaue(const ComboItemID:string;const checkunid,ItemUnid:integer;const AChk_Valu_His_ValueId:integer);//插入指定UNID（ItemUnid）的项目到结果表中
+    //procedure SingleInsertVaue(const ComboItemID:string;const checkunid,ItemUnid:integer;const AChk_Valu_His_ValueId:integer);//插入指定UNID（ItemUnid）的项目到结果表中
     //==为了通过发送消息更新主窗体状态栏而增加==//
     procedure WMUpdateTextStatus(var message:twmupdatetextstatus);  {WM_UPDATETEXTSTATUS消息处理函数}
                                               message WM_UPDATETEXTSTATUS;
@@ -1190,33 +1190,32 @@ end;
 
 procedure TSDIAppForm.clbCommUsedClickCheck(Sender: TObject);
 var
-      i,b,checkunid:integer;
-      s2:string;
+  i,b,checkunid:integer;
+  s2:string;
 begin
-      i:=(Sender as TCheckListBox).ItemIndex;
+  i:=(Sender as TCheckListBox).ItemIndex;
 
-        if (not dsbasic.DataSet.Active) or (dsbasic.DataSet.RecordCount < 1) then
-        begin
-          Application.MessageBox('请先录入基本信息', '提示信息',
-            MB_OK + MB_ICONEXCLAMATION + MB_DEFBUTTON1 + MB_APPLMODAL);
-          (Sender as TCheckListBox).Checked[i]:=false;
-          exit;
-        end;
+  if (not dsbasic.DataSet.Active) or (dsbasic.DataSet.RecordCount < 1) then
+  begin
+    Application.MessageBox('请先录入基本信息', '提示信息',MB_OK + MB_ICONEXCLAMATION + MB_DEFBUTTON1 + MB_APPLMODAL);
+    (Sender as TCheckListBox).Checked[i]:=false;
+    exit;
+  end;
 
-      if not checkman then
-      begin
-          (Sender as TCheckListBox).Checked[i]:=not (Sender as TCheckListBox).Checked[i];
-          MESSAGEDLG('非您审核，无权修改!',MTINFORMATION,[MBOK],0);
-          exit;
-      end;
+  if not checkman then
+  begin
+    (Sender as TCheckListBox).Checked[i]:=not (Sender as TCheckListBox).Checked[i];
+    MESSAGEDLG('非您审核，无权修改!',MTINFORMATION,[MBOK],0);
+    exit;
+  end;
 
-      checkunid:=dsbasic.DataSet.fieldbyname('唯一编号').AsInteger;
+  checkunid:=dsbasic.DataSet.fieldbyname('唯一编号').AsInteger;
 
-      s2:=(Sender as TCheckListBox).Items.Strings[i];
-      b:=pos('   ',s2);
-      s2:=copy(s2,1,b-1);
+  s2:=(Sender as TCheckListBox).Items.Strings[i];
+  b:=pos('   ',s2);
+  s2:=copy(s2,1,b-1);
 
-      InsertOrDeleteVaue(s2,(Sender as TCheckListBox).Checked[i],checkunid,-1);
+  InsertOrDeleteVaue(s2,(Sender as TCheckListBox).Checked[i],checkunid,-1);
 end;
 
 procedure TSDIAppForm.LJ1Click(Sender: TObject);
@@ -2131,69 +2130,95 @@ end;
 
 procedure TSDIAppForm.InsertOrDeleteVaue(const ComboItemID:string;const ifAddorDel:boolean;const checkunid:integer;const AChk_Valu_His_ValueId:integer);
 var
-      adotemp3,adotemp5: tadoquery;
-      s2:string;
-      ItemUnid:integer;
+  adotemp3,adotemp33: tadoquery;
+  s2,itemid,{strsql2,}strsql:string;
+  //ItemUnid:integer;
+  sAA:TStrings;
 begin
-      s2:=trim(ComboItemID);
+  s2:=trim(ComboItemID);
 
-      if ifAddorDel then
-      //==========================增加插入=================================//
-      begin
-        WriteLog(pchar('开始增加组合项目,组合项目编号:'+s2+',预约登记ValueId:'+inttostr(AChk_Valu_His_ValueId)+',LIS唯一编号:'+inttostr(checkunid)));
+  if ifAddorDel then
+  //==========================增加插入=================================//
+  begin
+    WriteLog(pchar('开始增加组合项目,组合项目编号:'+s2+',预约登记ValueId:'+inttostr(AChk_Valu_His_ValueId)+',LIS唯一编号:'+inttostr(checkunid)));
         
-        ExecSQLCmd(LisConn,'update chk_valu set issure=1 where pkunid='+inttostr(checkunid)+' and pkcombin_id='+s2);
+    ExecSQLCmd(LisConn,'update chk_valu set issure=1 where pkunid='+inttostr(checkunid)+' and pkcombin_id='+s2);
 
-        adotemp3:=tadoquery.Create(nil);
-        adotemp3.Connection:=DM.ADOConnection1;
-        adotemp3.Close;
-        adotemp3.SQL.Clear;
-        adotemp3.SQL.Text:='select ItemUnid from CombSChkItem where CombUnid=(select top 1 Unid from combinitem where Id='''+s2+''') ';
-        adotemp3.Open;
-        WriteLog(pchar('增加组合项目,组合项目编号:'+s2+',预约登记ValueId:'+inttostr(AChk_Valu_His_ValueId)+',LIS唯一编号:'+inttostr(checkunid)+',该组合项目有小项目数量:'+inttostr(adotemp3.RecordCount)));
-        while not adotemp3.Eof do  //adotemp3是该组合项目的所有检验项目
-        begin
-          ItemUnid:=adotemp3.fieldbyname('ItemUnid').AsInteger;
-          WriteLog(pchar('增加组合项目,组合项目编号:'+s2+',预约登记ValueId:'+inttostr(AChk_Valu_His_ValueId)+',LIS唯一编号:'+inttostr(checkunid)+',小项目ItemUnid:'+inttostr(ItemUnid)));
-          SingleInsertVaue(ComboItemID,checkunid,ItemUnid,AChk_Valu_His_ValueId);
-          adotemp3.Next;
-        end;
-        adotemp3.Free;
+    //将病人检验项目表放入sAA中 start
+    adotemp33:=tadoquery.Create(nil);
+    adotemp33.Connection:=DM.ADOConnection1;
+    adotemp33.Close;
+    adotemp33.SQL.Clear;
+    adotemp33.SQL.Text:='select * from chk_valu where pkunid='+inttostr(checkunid)+' and pkcombin_id='''+ComboItemID+''' ';
+    adotemp33.Open;
+    sAA:=TStringList.Create;
+    while not adotemp33.Eof do
+    begin
+      sAA.Add(adotemp33.fieldbyname('itemid').AsString);
+      adotemp33.Next;
+    end;
+    adotemp33.Free;
+    //将病人检验项目表放入sAA中 end
 
-        WriteLog(pchar('增加组合项目结束,组合项目编号:'+s2+',预约登记ValueId:'+inttostr(AChk_Valu_His_ValueId)+',LIS唯一编号:'+inttostr(checkunid)));
+    adotemp3:=tadoquery.Create(nil);
+    adotemp3.Connection:=DM.ADOConnection1;
+    adotemp3.Close;
+    adotemp3.SQL.Clear;
+    adotemp3.SQL.Text:='select cci.unid,cci.itemid from combinitem ci '+
+                       'inner join CombSChkItem csci on csci.CombUnid=ci.Unid '+
+                       'inner join clinicchkitem cci on cci.unid=csci.ItemUnid '+
+                       'where ci.Id='''+s2+''' ';
+    //'select ItemUnid from CombSChkItem where CombUnid=(select top 1 Unid from combinitem where Id='''+s2+''') ';
+    adotemp3.Open;
+    WriteLog(pchar('增加组合项目,组合项目编号:'+s2+',预约登记ValueId:'+inttostr(AChk_Valu_His_ValueId)+',LIS唯一编号:'+inttostr(checkunid)+',该组合项目有小项目数量:'+inttostr(adotemp3.RecordCount)));
+    while not adotemp3.Eof do//adotemp3是该组合项目的所有检验项目
+    begin
+      //ItemUnid:=adotemp3.fieldbyname('Unid').AsInteger;
+      itemid:=trim(adotemp3.fieldbyname('itemid').AsString);
 
-        addOrEditCalcItem(pchar(LisConn),pchar(s2),checkunid);//增加计算项目
+      //增加单个小项目start
+      //SingleInsertVaue(ComboItemID,checkunid,ItemUnid,AChk_Valu_His_ValueId);
 
-        addOrEditCalcValu(pchar(LisConn),checkunid,false,'');//更新计算项目
-      end  //if ifAddorDel
-        //===============================================================================//
-      else
+      //strsql2:='select count(*) from chk_valu where pkunid='+inttostr(checkunid)+' and pkcombin_id='''+ComboItemID+''' and itemid='''+itemid+''' ';
+      //if strtoint(ScalarSQLCmd(LisConn,strsql2))<=0 then
+      if sAA.IndexOf(itemid)<0 then
       begin
-      //======================减少删除==================================================//
-        ExecSQLCmd(LisConn,'update chk_valu set issure=0 where pkunid='+inttostr(checkunid)+' and pkcombin_id='+s2);
+        strsql := 'insert into chk_valu(pkunid,issure,pkcombin_id,itemid,Surem2) ' +
+          ' values( ' +
+          inttostr(checkunid)+',1,''' +s2+''','''+itemid+''','''+inttostr(AChk_Valu_His_ValueId)+''''+
+          ' ) ';
+        ExecSQLCmd(LisConn,strsql);
+        sAA.Add(itemid);
+        WriteLog(pchar('增加小项目,组合项目编号:'+ComboItemID+',预约登记ValueId:'+inttostr(AChk_Valu_His_ValueId)+',LIS唯一编号:'+inttostr(checkunid)+',小项目itemid:'+itemid+',插入成功'));
+      end else
+        WriteLog(pchar('增加小项目,组合项目编号:'+ComboItemID+',预约登记ValueId:'+inttostr(AChk_Valu_His_ValueId)+',LIS唯一编号:'+inttostr(checkunid)+',小项目Itemid:'+Itemid+'已存在,跳过'));
+      //增加单个小项目stop
 
-        adotemp5:=tadoquery.Create(nil);
-        adotemp5.Connection:=DM.ADOConnection1;
-        adotemp5.Close;
-        adotemp5.SQL.Clear;
-        adotemp5.SQL.Text:='select * from chk_valu where pkunid=:P_pkunid and issure=1';
-        adotemp5.Parameters.ParamByName('P_pkunid').Value:=checkunid;
-        adotemp5.Open;
-        if adotemp5.RecordCount=0 then //检验结果全部删除后取消审核
-        begin
-          adotemp5.Close;
-          adotemp5.SQL.Clear;
-          adotemp5.SQL.Text:='update chk_con set report_doctor=:P_report_doctor,Audit_Date=null where unid=:P_unid';
-          adotemp5.Parameters.ParamByName('P_report_doctor').Value:='';
-          adotemp5.Parameters.ParamByName('P_unid').Value:=checkunid;
-          adotemp5.ExecSQL;
-        end;
-        adotemp5.Free;
-      end;
+      adotemp3.Next;
+    end;
+    adotemp3.Free;
+    sAA.Free;
 
-      ADO_dtl.Close;
-      ADO_dtl.Parameters.ParamByName('pkunid').Value := checkunid;
-      ADO_dtl.Open;
+    WriteLog(pchar('增加组合项目结束,组合项目编号:'+s2+',预约登记ValueId:'+inttostr(AChk_Valu_His_ValueId)+',LIS唯一编号:'+inttostr(checkunid)));
+
+    addOrEditCalcItem(pchar(LisConn),pchar(s2),checkunid);//增加计算项目
+
+    addOrEditCalcValu(pchar(LisConn),checkunid,false,'');//更新计算项目
+  end  //if ifAddorDel
+    //===============================================================================//
+  else
+  begin
+  //======================减少删除==================================================//
+    ExecSQLCmd(LisConn,'update chk_valu set issure=0 where pkunid='+inttostr(checkunid)+' and pkcombin_id='''+s2+''' ');
+
+    //检验结果全部删除后取消审核
+    if strtoint(ScalarSQLCmd(LisConn,'select count(*) from chk_valu where pkunid='+inttostr(checkunid)+' and issure=1'))<=0 then
+      ExecSQLCmd(LisConn,'update chk_con set report_doctor='''',Audit_Date=null where unid='+inttostr(checkunid));
+  end;
+
+  ADO_dtl.Close;
+  ADO_dtl.Parameters.ParamByName('pkunid').Value := checkunid;
+  ADO_dtl.Open;
 end;
 
 procedure TSDIAppForm.DBGrid2KeyDown(Sender: TObject; var Key: Word;
@@ -2330,10 +2355,10 @@ begin
     (sender as TLabeledEdit).Text:=rightstr('0000'+trim((sender as TLabeledEdit).Text),4);
 end;
 
-procedure TSDIAppForm.SingleInsertVaue(const ComboItemID: string;
+{procedure TSDIAppForm.SingleInsertVaue(const ComboItemID: string;
   const checkunid, ItemUnid: integer;const AChk_Valu_His_ValueId:integer);
 var
-  adotemp3{,adotemp4}:tadoquery;
+  adotemp3}{,adotemp4}{:tadoquery;
   s2,itemid,strsql,strsql2:string;
   //bFirst:boolean;
 begin
@@ -2354,7 +2379,7 @@ begin
   
   s2:=trim(ComboItemID);
   itemid:=trim(adotemp3.fieldbyname('itemid').AsString);
-  ADOTEMP3.Free;
+  ADOTEMP3.Free;//}
 
   {bFirst:=true;
 
@@ -2388,7 +2413,7 @@ begin
   end;
   adotemp4.Free;//}
 
-  strsql2:='select count(*) from chk_valu where pkunid='+inttostr(checkunid)+' and pkcombin_id='''+ComboItemID+''' and itemid='''+itemid+''' ';
+  {strsql2:='select count(*) from chk_valu where pkunid='+inttostr(checkunid)+' and pkcombin_id='''+ComboItemID+''' and itemid='''+itemid+''' ';
   if strtoint(ScalarSQLCmd(LisConn,strsql2))<=0 then
   begin
     strsql := 'insert into chk_valu(pkunid,issure,pkcombin_id,itemid,Surem2) ' +
@@ -2401,7 +2426,7 @@ begin
     WriteLog(pchar('增加小项目,组合项目编号:'+ComboItemID+',预约登记ValueId:'+inttostr(AChk_Valu_His_ValueId)+',LIS唯一编号:'+inttostr(checkunid)+',小项目Itemid:'+Itemid+'已存在,跳过'));
 
   WriteLog(pchar('增加小项目结束,组合项目编号:'+ComboItemID+',预约登记ValueId:'+inttostr(AChk_Valu_His_ValueId)+',LIS唯一编号:'+inttostr(checkunid)+',小项目ItemUnid:'+inttostr(ItemUnid)));
-end;
+end;//}
 
 procedure TSDIAppForm.DBGrid2Exit(Sender: TObject);
 begin
