@@ -1195,7 +1195,7 @@ var
 begin
   i:=(Sender as TCheckListBox).ItemIndex;
 
-  if (not dsbasic.DataSet.Active) or (dsbasic.DataSet.RecordCount < 1) then
+  if (not dsbasic.DataSet.Active) or (dsbasic.DataSet.RecordCount <= 0) then
   begin
     Application.MessageBox('请先录入基本信息', '提示信息',MB_OK + MB_ICONEXCLAMATION + MB_DEFBUTTON1 + MB_APPLMODAL);
     (Sender as TCheckListBox).Checked[i]:=false;
@@ -1866,22 +1866,20 @@ var b,i,checkunid:integer;
 begin
   if key<>13 then EXIT;
 
-        if (not dsbasic.DataSet.Active) or (dsbasic.DataSet.RecordCount < 1) then
-        begin
-          Application.MessageBox('请先录入基本信息', '提示信息',
-            MB_OK + MB_ICONEXCLAMATION + MB_DEFBUTTON1 + MB_APPLMODAL);
-          exit;
-        end;
+  if (not dsbasic.DataSet.Active) or (dsbasic.DataSet.RecordCount <= 0) then
+  begin
+    Application.MessageBox('请先录入基本信息', '提示信息',MB_OK + MB_ICONEXCLAMATION + MB_DEFBUTTON1 + MB_APPLMODAL);
+    exit;
+  end;
 
-      checkunid:=dsbasic.DataSet.fieldbyname('唯一编号').AsInteger;
-
+  checkunid:=dsbasic.DataSet.fieldbyname('唯一编号').AsInteger;
 
   //===================输入'+',是最后条则新增，否则移到下一条============//
   if trim(LabeledEdit13.Text)='+' then
   begin
-      ADObasic.Next;
-      if LabeledEdit2.CanFocus then  LabeledEdit2.SetFocus else LabeledEdit3.SetFocus;
-      exit;
+    ADObasic.Next;
+    if LabeledEdit2.CanFocus then  LabeledEdit2.SetFocus else LabeledEdit3.SetFocus;
+    exit;
   end;
   //==================================================//
 
