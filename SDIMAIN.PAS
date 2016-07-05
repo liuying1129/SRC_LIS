@@ -519,10 +519,10 @@ begin
   s3:=s3+'&actionName='+HTTPEncode(UTF8Encode('Show'));
 
   MyMD5 := TIdHashMessageDigest5.Create; 
-  Digest := MyMD5.HashValue('actionNameShowactionTime'+t1+'customer'+SCSYDW+'ip10.1.2.3methodNumAIF015pageName'+Name+'sysName'+SYSNAME+'userName'+operator_name);
+  Digest := MyMD5.HashValue(HTTPEncode(UTF8Encode('actionNameShowactionTime'+t1+'customer'+SCSYDW+'ip10.1.2.3methodNumAIF015pageName'+Name+'sysName'+SYSNAME+'userName'+operator_name)));
   sss:=MyMD5.AsHex(Digest);
 
-  s3:=s3+'&sign='+HTTPEncode(UTF8Encode(sss));
+  s3:=s3+'&sign='+sss;
 
   try
     dm.IdHTTP1.Get(BASE_URL+'?'+s3);
