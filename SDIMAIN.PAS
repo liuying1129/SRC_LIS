@@ -478,11 +478,11 @@ end;
 
 procedure TSDIAppForm.FormShow(Sender: TObject);
 var
-  s3,sss:string;
-  t1:string;
+  s3,sign:string;
+  //t1:string;
   MyMD5: TIdHashMessageDigest5;
   Digest: T4x4LongWordRecord;
-  s4:string;
+  s1,sort_params:string;
 begin
   if ifRegister then bRegister:=true else bRegister:=false;
   
@@ -509,7 +509,8 @@ begin
   LoadToolMenu(N65,'select name from CommCode where TypeName=''工具菜单'' order by ID');
 
   //调用用户信息接口start
-  t1:=FormatDateTime('YYYY-MM-DD hh:nn:ss',now);
+  //t1:=FormatDateTime('YYYY-MM-DD hh:nn:ss',now);
+  s1:='insert into AppVisit (SysName,PageName,IP,Customer,UserName,ActionName,ActionTime) values ('''+SYSNAME+''','''+Name+''','''+'10.1.2.3'+''','''+SCSYDW+''','''+operator_name+''','''+'Show'+''',getdate())';
   s3:='methodNum='+HTTPEncode(UTF8Encode('AIF012'));
   //s3:=s3+'&customer='+(HTTPEncode(UTF8Encode(SCSYDW)));
   //s3:=s3+'&actionTime='+HTTPEncode(UTF8Encode(t1));
@@ -518,18 +519,19 @@ begin
   //s3:=s3+'&ip='+HTTPEncode(UTF8Encode('10.1.2.3'));
   //s3:=s3+'&userName='+HTTPEncode(UTF8Encode(operator_name));
   //s3:=s3+'&actionName='+HTTPEncode(UTF8Encode('Show'));
-  s3:=s3+'&sql='+HTTPEncode(UTF8Encode('insert into AppVisit (Customer) values (''中国医院'')'));
+  s3:=s3+'&sql='+HTTPEncode(UTF8Encode(s1));
 
   MyMD5 := TIdHashMessageDigest5.Create; 
   //Digest := MyMD5.HashValue(HTTPEncode(UTF8Encode('actionNameShowactionTime'+t1+'customer'+SCSYDW+'ip10.1.2.3methodNumAIF015pageName'+Name+'sysName'+SYSNAME+'userName'+operator_name)));
-  s4:=HTTPEncode(UTF8Encode('methodNumAIF012sqlinsert into AppVisit (Customer) values (''中国医院'')'));
-  s4:=StringReplace(s4,'''','%27',[rfReplaceAll, rfIgnoreCase]);
-  s4:=StringReplace(s4,'(','%28',[rfReplaceAll, rfIgnoreCase]);
-  s4:=StringReplace(s4,')','%29',[rfReplaceAll, rfIgnoreCase]);
-  Digest := MyMD5.HashValue(s4);
-  sss:=MyMD5.AsHex(Digest);
+  sort_params:=HTTPEncode(UTF8Encode('methodNumAIF012sql'+s1));
+  sort_params:=StringReplace(sort_params,'!','%21',[rfReplaceAll, rfIgnoreCase]);
+  sort_params:=StringReplace(sort_params,'''','%27',[rfReplaceAll, rfIgnoreCase]);
+  sort_params:=StringReplace(sort_params,'(','%28',[rfReplaceAll, rfIgnoreCase]);
+  sort_params:=StringReplace(sort_params,')','%29',[rfReplaceAll, rfIgnoreCase]);
+  Digest := MyMD5.HashValue(sort_params);
+  sign:=MyMD5.AsHex(Digest);
 
-  s3:=s3+'&sign='+sss;
+  s3:=s3+'&sign='+sign;
 
   try
     dm.IdHTTP1.Get(BASE_URL+'?'+s3);
