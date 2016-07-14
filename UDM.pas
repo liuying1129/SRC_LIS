@@ -6,8 +6,7 @@ uses
   WINDOWS,SysUtils, Classes, DB, ADODB,INIFILES,Dialogs{ShowMessageº¯Êý},Controls,
   ComCtrls, Buttons,StdCtrls, ExtCtrls,MENUS,DBGrids,StrUtils, FR_Class,
   FR_DSet, FR_DBSet,Forms{Application±äÁ¿},DBCtrls{DBEdit},Mask{TMaskEdit},Imm{ImmGetIMEFileName},
-  CheckLst, IdBaseComponent, IdComponent, IdTCPConnection, IdTCPClient,
-  IdHTTP{TCheckListBox};
+  CheckLst{TCheckListBox};
 
 type
   PDescriptType=^TDescriptType;
@@ -19,7 +18,6 @@ type
 type
   TDM = class(TDataModule)
     ADOConnection1: TADOConnection;
-    IdHTTP1: TIdHTTP;
     procedure DataModuleCreate(Sender: TObject);
   private
     { Private declarations }

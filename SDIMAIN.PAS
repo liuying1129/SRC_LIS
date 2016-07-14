@@ -9,7 +9,8 @@ uses Windows,Messages, Classes,SysUtils, Graphics, Forms, Controls, Menus,
   StrUtils,  TeEngine, Series, TeeProcs, Chart,fr_chart,shellapi{ShellExecute}, 
   DateUtils, FR_DSet, ADOLYGetcode,Math,Jpeg,Variants, UfrmLocateRecord,
   ExtDlgs, UADOLYQuery,HTTPApp{HTTPEncode},IdHashMessageDigest{TIdHashMessageDigest5},
-  IdHash{T4x4LongWordRecord};
+  IdHash, IdBaseComponent, IdComponent, IdTCPConnection, IdTCPClient,
+  IdHTTP{T4x4LongWordRecord};
 
 //==为了通过发送消息更新主窗体状态栏而增加==//
 const
@@ -484,6 +485,7 @@ var
   Digest: T4x4LongWordRecord;
   s1,sort_params:string;
   RespData:TStringStream;
+  IdHTTP_Tmp1:TIdHTTP;
 begin
   if ifRegister then bRegister:=true else bRegister:=false;
   
@@ -534,13 +536,15 @@ begin
 
   s3:=s3+'&sign='+sign;
 
+  IdHTTP_Tmp1:=TIdHTTP.Create(nil);
   RespData:=TStringStream.Create('');
   try
-    dm.IdHTTP1.Get(BASE_URL+'?'+s3,RespData);
+    IdHTTP_Tmp1.Get(BASE_URL+'?'+s3,RespData);
     //showmessage(UTF8Decode(RespData.DataString));//返回信息//IdHTTP是同步的
   except
   end;
   RespData.Free;
+  IdHTTP_Tmp1.Free;
   //调用用户信息接口stop
 end;
 
