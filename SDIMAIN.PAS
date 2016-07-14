@@ -483,6 +483,7 @@ var
   MyMD5: TIdHashMessageDigest5;
   Digest: T4x4LongWordRecord;
   s1,sort_params:string;
+  RespData:TStringStream;
 begin
   if ifRegister then bRegister:=true else bRegister:=false;
   
@@ -533,10 +534,13 @@ begin
 
   s3:=s3+'&sign='+sign;
 
+  RespData:=TStringStream.Create('');
   try
-    dm.IdHTTP1.Get(BASE_URL+'?'+s3);
+    dm.IdHTTP1.Get(BASE_URL+'?'+s3,RespData);
+    //showmessage(UTF8Decode(RespData.DataString));//返回信息//IdHTTP是同步的
   except
   end;
+  RespData.Free;
   //调用用户信息接口stop
 end;
 
