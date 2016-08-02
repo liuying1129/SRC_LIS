@@ -2180,6 +2180,26 @@ GO
 
 --GO
 
+--20160802视图view_Chk_Con_All创建脚本
+IF EXISTS (SELECT * FROM sys.views WHERE object_id = OBJECT_ID(N'[dbo].[view_Chk_Con_All]'))
+DROP VIEW [dbo].[view_Chk_Con_All]
+GO
+
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER OFF
+GO
+
+CREATE  VIEW [dbo].[view_Chk_Con_All]
+  AS
+  SELECT chk_con.*,0 as ifCompleted
+  FROM chk_con
+  UNION ALL
+  SELECT chk_con_bak.*,1 as ifCompleted
+  FROM chk_con_bak
+  
+GO
 
 --存储过程pro_StaticHBV创建脚本
 if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[pro_StaticHBV]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
