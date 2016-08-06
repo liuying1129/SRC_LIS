@@ -291,7 +291,7 @@ begin
     if parname='籍贯' then ParValue:=trim(ADObasic.fieldbyname('籍贯').AsString);
     if parname='住址' then ParValue:=trim(ADObasic.fieldbyname('住址').AsString);
     if parname='电话' then ParValue:=trim(ADObasic.fieldbyname('电话').AsString);
-    if parname='舒张压' then ParValue:=trim(ADObasic.fieldbyname('舒张压').AsString);
+    {if parname='舒张压' then ParValue:=trim(ADObasic.fieldbyname('舒张压').AsString);
     if parname='收缩压' then ParValue:=trim(ADObasic.fieldbyname('收缩压').AsString);
     if parname='左眼视力' then ParValue:=trim(ADObasic.fieldbyname('左眼视力').AsString);
     if parname='右眼视力' then ParValue:=trim(ADObasic.fieldbyname('右眼视力').AsString);
@@ -309,7 +309,7 @@ begin
     if parname='心电图' then ParValue:=ADObasic.fieldbyname('心电图').AsString;
     if parname='检验' then ParValue:=ADObasic.fieldbyname('检验').AsString;
     if parname='结论' then ParValue:=ADObasic.fieldbyname('结论').AsString;
-    if parname='建议' then ParValue:=ADObasic.fieldbyname('建议').AsString;
+    if parname='建议' then ParValue:=ADObasic.fieldbyname('建议').AsString;//}
 end;
 
 procedure TfrmCommQuery.BitBtn2Click(Sender: TObject);
