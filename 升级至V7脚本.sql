@@ -4377,9 +4377,9 @@ create table AppVisit
 )
 GO
 
---20160806获取打印报告单次数
-if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[uf_GetPrintLabNum]') and xtype in (N'FN', N'IF', N'TF'))
-drop function [dbo].[uf_GetPrintLabNum]
+--20160806报告单是否已打印,用于报告单颜色提示
+if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[uf_GetPrintLabInfo]') and xtype in (N'FN', N'IF', N'TF'))
+drop function [dbo].[uf_GetPrintLabInfo]
 GO
 
 SET QUOTED_IDENTIFIER ON 
@@ -4387,11 +4387,9 @@ GO
 SET ANSI_NULLS ON 
 GO
 
-CREATE FUNCTION [dbo].[uf_GetPrintLabNum]
+CREATE FUNCTION [dbo].[uf_GetPrintLabInfo]
 (
-  @Unid int,--Chk_Con或chk_con_bak的unid
-  @Reserve2 varchar(100),
-  @OpType varchar(50)
+  @Unid int--Chk_Con或chk_con_bak的unid
 )  
 RETURNS int AS  
 BEGIN 
