@@ -2117,6 +2117,7 @@ object SDIAppForm: TSDIAppForm
     RebuildPrinter = False
     OnGetValue = frReport1GetValue
     OnBeforePrint = frReport1BeforePrint
+    OnPrintReport = frReport1PrintReport
     Left = 483
     Top = 375
     ReportForm = {19000000}

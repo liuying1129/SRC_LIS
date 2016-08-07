@@ -59,6 +59,7 @@ type
     procedure frReport1BeforePrint(Memo: TStringList; View: TfrView);
     procedure BitBtn5Click(Sender: TObject);
     procedure Excel1Click(Sender: TObject);
+    procedure frReport1PrintReport;
   private
     { Private declarations }
   public
@@ -689,6 +690,18 @@ begin
     adotemp11.Free;
   end;
   //加载血流变曲线、直方图、散点图 stop
+end;
+
+procedure TfrmCommQuery.frReport1PrintReport;
+var
+  unid:integer;
+begin
+  if not ADObasic.Active then exit;
+  if not ADObasic.RecordCount=0 then exit;
+
+  unid:=ADObasic.fieldbyname('唯一编号').AsInteger;
+  
+  ExecSQLCmd(LisConn,'insert into pix_tran (pkunid,Reserve1,Reserve2,OpType) values ('+inttostr(unid)+','''+operator_name+''',''Class_Print'',''Lab'')');
 end;
 
 procedure TfrmCommQuery.BitBtn5Click(Sender: TObject);

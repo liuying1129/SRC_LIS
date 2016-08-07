@@ -371,6 +371,7 @@ type
       Shift: TShiftState);
     procedure N17Click(Sender: TObject);
     procedure N75Click(Sender: TObject);
+    procedure frReport1PrintReport;
   private
     procedure CheckTheListBox;//根据当前病人的结果在checklistbox1中打钩
     procedure WriteProfile;
@@ -3570,6 +3571,18 @@ begin
   ExecSQLCmd(LisConn,'update chk_con set '+sPrinttimes+ss+sReport_doctor+' where unid='+inttostr(unid));
 
   adobasic.Refresh;//打印后要显示红色、更新显示审核者
+end;
+
+procedure TSDIAppForm.frReport1PrintReport;
+var
+  unid:integer;
+begin
+  if not ADObasic.Active then exit;
+  if not ADObasic.RecordCount=0 then exit;
+
+  unid:=ADObasic.fieldbyname('唯一编号').AsInteger;
+  
+  ExecSQLCmd(LisConn,'insert into pix_tran (pkunid,Reserve1,Reserve2,OpType) values ('+inttostr(unid)+','''+operator_name+''',''Class_Print'',''Lab'')');
 end;
 
 procedure TSDIAppForm.LabeledEdit3Change(Sender: TObject);

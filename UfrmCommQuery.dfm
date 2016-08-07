@@ -206,6 +206,7 @@ object frmCommQuery: TfrmCommQuery
     RebuildPrinter = False
     OnGetValue = frReport1GetValue
     OnBeforePrint = frReport1BeforePrint
+    OnPrintReport = frReport1PrintReport
     Left = 304
     Top = 80
     ReportForm = {19000000}
