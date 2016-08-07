@@ -3442,6 +3442,8 @@ begin
   if not ADObasic.RecordCount=0 then exit;
 
   unid:=ADObasic.fieldbyname('唯一编号').AsInteger;
+  printtimes:=ADObasic.fieldbyname('打印次数').AsInteger;
+  report_doctor:=trim(ADObasic.fieldbyname('审核者').AsString);
 
   //加载血流变曲线、直方图、散点图 start
   if(View is TfrChartView)and(pos('CURVE',uppercase(View.Name))>0)then
@@ -3559,9 +3561,6 @@ begin
   //加载血流变曲线、直方图、散点图 stop
 
   //可能要打印审核者，故只能在BeforePrint事件中处理.(其实在PrintReport中处理更合理)
-  printtimes:=ADObasic.fieldbyname('打印次数').AsInteger;
-  report_doctor:=trim(ADObasic.fieldbyname('审核者').AsString);
-
   if printtimes=0 then sPrinttimes:=' printtimes='+inttostr(printtimes+1) else sPrinttimes:='';//修改打印次数
   if(ifAutoCheck)and(report_doctor='') then sReport_doctor:=' report_doctor='''+operator_name+''',Audit_Date=getdate() ' else sReport_doctor:='';//修改审核者
    
