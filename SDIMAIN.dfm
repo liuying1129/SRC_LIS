@@ -24,7 +24,7 @@ object SDIAppForm: TSDIAppForm
   object Splitter1: TSplitter
     Left = 460
     Top = 37
-    Height = 591
+    Height = 590
   end
   object CoolBar1: TCoolBar
     Left = 0
@@ -176,7 +176,7 @@ object SDIAppForm: TSDIAppForm
     Left = 463
     Top = 37
     Width = 421
-    Height = 591
+    Height = 590
     Align = alClient
     BevelOuter = bvNone
     ParentColor = True
@@ -247,14 +247,14 @@ object SDIAppForm: TSDIAppForm
       Left = 0
       Top = 23
       Width = 421
-      Height = 568
+      Height = 567
       Align = alClient
       TabOrder = 1
       object Panel3: TPanel
         Left = 1
         Top = 1
         Width = 419
-        Height = 566
+        Height = 565
         Align = alClient
         TabOrder = 0
         object Splitter2: TSplitter
@@ -271,7 +271,7 @@ object SDIAppForm: TSDIAppForm
           Left = 1
           Top = 156
           Width = 417
-          Height = 409
+          Height = 408
           ActivePage = TabSheet1
           Align = alClient
           TabOrder = 0
@@ -281,7 +281,7 @@ object SDIAppForm: TSDIAppForm
               Left = 0
               Top = 0
               Width = 409
-              Height = 381
+              Height = 380
               Align = alClient
               Color = 16767438
               Ctl3D = False
@@ -460,14 +460,14 @@ object SDIAppForm: TSDIAppForm
     Left = 0
     Top = 37
     Width = 460
-    Height = 591
+    Height = 590
     Align = alLeft
     TabOrder = 2
     object GroupBox1: TGroupBox
       Left = 190
       Top = 1
       Width = 269
-      Height = 589
+      Height = 588
       Align = alClient
       Caption = #26816#39564#21333#21015#34920'(&Q)'
       Color = 16767438
@@ -477,7 +477,7 @@ object SDIAppForm: TSDIAppForm
         Left = 2
         Top = 42
         Width = 265
-        Height = 545
+        Height = 544
         Align = alClient
         Color = 16767438
         Ctl3D = False
@@ -531,7 +531,7 @@ object SDIAppForm: TSDIAppForm
       Left = 1
       Top = 1
       Width = 189
-      Height = 589
+      Height = 588
       Align = alLeft
       Caption = #22522#26412#20449#24687#24405#20837
       Color = 16767438
@@ -934,7 +934,7 @@ object SDIAppForm: TSDIAppForm
   end
   object StatusBar1: TStatusBar
     Left = 0
-    Top = 628
+    Top = 627
     Width = 884
     Height = 19
     Panels = <

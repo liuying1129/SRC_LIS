@@ -3422,8 +3422,8 @@ procedure TSDIAppForm.frReport1BeforePrint(Memo: TStringList;
   View: TfrView);
 var
   adotemp11:tadoquery;
-  unid,printtimes:integer;
-  report_doctor,ss,sPrinttimes,sReport_doctor:string;
+  unid:integer;
+  report_doctor:string;
   
   strsqlPrint,strEnglishName,strHistogram,strXTitle:string;
   MS:tmemorystream;
@@ -3442,7 +3442,6 @@ begin
   if not ADObasic.RecordCount=0 then exit;
 
   unid:=ADObasic.fieldbyname('唯一编号').AsInteger;
-  printtimes:=ADObasic.fieldbyname('打印次数').AsInteger;
   report_doctor:=trim(ADObasic.fieldbyname('审核者').AsString);
 
   //加载血流变曲线、直方图、散点图 start
@@ -3561,25 +3560,28 @@ begin
   //加载血流变曲线、直方图、散点图 stop
 
   //可能要打印审核者，故只能在BeforePrint事件中处理.(其实在PrintReport中处理更合理)
-  if printtimes=0 then sPrinttimes:=' printtimes='+inttostr(printtimes+1) else sPrinttimes:='';//修改打印次数
-  if(ifAutoCheck)and(report_doctor='') then sReport_doctor:=' report_doctor='''+operator_name+''',Audit_Date=getdate() ' else sReport_doctor:='';//修改审核者
-   
-  if(sPrinttimes='')and(sReport_doctor='')then exit;
-  if(sPrinttimes<>'')and(sReport_doctor<>'')then ss:=',' else ss:='';
-
-  ExecSQLCmd(LisConn,'update chk_con set '+sPrinttimes+ss+sReport_doctor+' where unid='+inttostr(unid));
-
-  adobasic.Refresh;//打印后要显示红色、更新显示审核者
+  if(ifAutoCheck)and(report_doctor='') then//修改审核者
+  begin
+    ExecSQLCmd(LisConn,'update chk_con set report_doctor='''+operator_name+''',Audit_Date=getdate() where unid='+inttostr(unid));
+    adobasic.Refresh;//更新显示审核者
+  end;
 end;
 
 procedure TSDIAppForm.frReport1PrintReport;
 var
-  unid:integer;
+  unid,printtimes:integer;
 begin
   if not ADObasic.Active then exit;
   if not ADObasic.RecordCount=0 then exit;
 
   unid:=ADObasic.fieldbyname('唯一编号').AsInteger;
+  printtimes:=ADObasic.fieldbyname('打印次数').AsInteger;
+
+  if printtimes=0 then//修改打印次数
+  begin
+    ExecSQLCmd(LisConn,'update chk_con set printtimes='+inttostr(printtimes+1)+' where unid='+inttostr(unid));
+    adobasic.Refresh;//打印后要显示红色
+  end;
   
   ExecSQLCmd(LisConn,'insert into pix_tran (pkunid,Reserve1,Reserve2,OpType) values ('+inttostr(unid)+','''+operator_name+''',''Class_Print'',''Lab'')');
 end;
