@@ -119,7 +119,7 @@ begin
     ' WorkCompany as 所属公司,WorkDepartment as 所属部门,WorkCategory as 工种,WorkID as 工号,ifMarry as 婚否,OldAddress as 籍贯,Address as 住址,Telephone as 电话, '+
     ' PushPress as 舒张压,PullPress as 收缩压,LeftEyesight as 左眼视力,RightEyesight as 右眼视力,Stature as 身高,Weight as 体重, '+
     ' TjJiWangShi as 既往史,TjJiaZuShi as 家族史,TjNeiKe as 内科,TjWaiKe as 外科,TjWuGuanKe as 五官科,TjFuKe as 妇科,TjLengQiangGuang as 冷强光,TjXGuang as X光,TjBChao as B超,TjXinDianTu as 心电图,TjJianYan as 检验,TjDescription as 结论,TJAdvice as 建议, '+
-    ' unid as 唯一编号 '+//printtimes as 打印次数,
+    ' printtimes as 打印次数,unid as 唯一编号 '+
     ' from chk_con_bak ';
   
   lyquery1.Connection:=DM.ADOConnection1;
@@ -694,12 +694,16 @@ end;
 
 procedure TfrmCommQuery.frReport1PrintReport;
 var
-  unid:integer;
+  unid,printtimes:integer;
 begin
   if not ADObasic.Active then exit;
   if not ADObasic.RecordCount=0 then exit;
 
   unid:=ADObasic.fieldbyname('唯一编号').AsInteger;
+  printtimes:=ADObasic.fieldbyname('打印次数').AsInteger;
+  
+  if printtimes=0 then//修改打印次数
+    ExecSQLCmd(LisConn,'update chk_con_bak set printtimes='+inttostr(printtimes+1)+' where unid='+inttostr(unid));
   
   ExecSQLCmd(LisConn,'insert into pix_tran (pkunid,Reserve1,Reserve2,OpType) values ('+inttostr(unid)+','''+operator_name+''',''Class_Print'',''Lab'')');
 end;

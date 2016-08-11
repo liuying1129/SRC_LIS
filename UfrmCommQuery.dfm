@@ -128,7 +128,7 @@ object frmCommQuery: TfrmCommQuery
   end
   object pnlCommQryBotton: TPanel
     Left = 0
-    Top = 386
+    Top = 385
     Width = 778
     Height = 26
     Align = alBottom
@@ -170,7 +170,7 @@ object frmCommQuery: TfrmCommQuery
     Left = 0
     Top = 278
     Width = 778
-    Height = 108
+    Height = 107
     Align = alClient
     Color = 16767438
     Ctl3D = False
