@@ -422,7 +422,8 @@ begin
   while not adotemp22.Eof do
   begin
     ifSelect:=false;
-    for i :=0  to ADOQuery1.RecordCount-1 do//循环ArCheckBoxValue
+    //for i :=0  to ADOQuery1.RecordCount-1 do//循环ArCheckBoxValue
+    for i :=LOW(ArCheckBoxValue)  to HIGH(ArCheckBoxValue) do//循环ArCheckBoxValue
     begin
       if (ArCheckBoxValue[i,1]=adotemp22.fieldbyname('唯一编号').AsInteger)and(ArCheckBoxValue[i,0]=1) then
       begin
