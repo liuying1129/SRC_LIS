@@ -623,10 +623,11 @@ procedure TfrmShowChkConHis.DBGrid1CellClick(Column: TColumn);
 var
   iUNID,i:INTEGER;
 begin
+  if not Column.Grid.DataSource.DataSet.Active then exit;  
   if Column.Field.FieldName <>'选择' then exit;
 
-  iUNID:=DBGrid1.DataSource.DataSet.FieldByName('唯一编号').AsInteger;
-  for i :=0  to DBGrid1.DataSource.DataSet.RecordCount-1 do
+  iUNID:=Column.Grid.DataSource.DataSet.FieldByName('唯一编号').AsInteger;
+  for i :=low(ArCheckBoxValue)  to high(ArCheckBoxValue) do//循环ArCheckBoxValue
   begin
     if ArCheckBoxValue[i,1]=iUNID then
     begin
@@ -634,11 +635,7 @@ begin
       DBGrid1.Refresh;//调用DBGrid1DrawColumnCell事件
       break;
     end;
-  end;//}
-
-  //ADOQuery1.Edit;
-  //ADOQuery1.FieldByName('选择').AsBoolean:=not ADOQuery1.FieldByName('选择').AsBoolean;
-  //ADOQuery1.Post;
+  end;
 end;
 
 procedure TfrmShowChkConHis.ADOQuery2AfterOpen(DataSet: TDataSet);
