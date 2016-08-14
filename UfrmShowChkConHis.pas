@@ -632,7 +632,7 @@ begin
     if ArCheckBoxValue[i,1]=iUNID then
     begin
       ArCheckBoxValue[i,0]:=ifThen(ArCheckBoxValue[i,0]=1,0,1);
-      DBGrid1.Refresh;//调用DBGrid1DrawColumnCell事件
+      Column.Grid.Refresh;//调用DBGrid1DrawColumnCell事件
       break;
     end;
   end;
