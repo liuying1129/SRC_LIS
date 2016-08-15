@@ -2181,7 +2181,7 @@ GO
 --GO
 
 --20160802视图view_Chk_Con_All创建脚本
-IF EXISTS (SELECT * FROM sys.views WHERE object_id = OBJECT_ID(N'[dbo].[view_Chk_Con_All]'))
+IF EXISTS (SELECT * FROM dbo.sysobjects where id = OBJECT_ID(N'[dbo].[view_Chk_Con_All]') and OBJECTPROPERTY(id, N'IsView') = 1)
 DROP VIEW [dbo].[view_Chk_Con_All]
 GO
 
