@@ -86,6 +86,9 @@ type
     ComboBox1: TComboBox;
     Label21: TLabel;
     BitBtn16: TBitBtn;
+    Label22: TLabel;
+    Label23: TLabel;
+    Label24: TLabel;
     procedure FormCreate(Sender: TObject);
     procedure BitBtn1Click(Sender: TObject);
     procedure BitBtn2Click(Sender: TObject);
@@ -639,10 +642,11 @@ procedure TfrmItemSetup.DBGrid1DrawColumnCell(Sender: TObject;
 var
   caculexpress:string;
   COMMWORD:string;
+  ItemUnid:string;
 begin
   //================用不同的颜色区分手工、机器、计算项目======================//
-  caculexpress:=trim(ADOQuery1.fieldbyname('计算公式').AsString);
-  COMMWORD:=trim(ADOQuery1.fieldbyname('联机字母').AsString);
+  caculexpress:=trim(tdbgrid(sender).DataSource.DataSet.fieldbyname('计算公式').AsString);
+  COMMWORD:=trim(tdbgrid(sender).DataSource.DataSet.fieldbyname('联机字母').AsString);
   IF caculexpress<>'' then
     tdbgrid(sender).Canvas.Brush.Color:=$00aad5d5;
   IF COMMWORD<>'' then
@@ -650,6 +654,18 @@ begin
   IF (COMMWORD<>'')and(caculexpress<>'') then
     tdbgrid(sender).Canvas.Brush.Color:=clred;
   tdbgrid(sender).DefaultDrawColumnCell(rect,datacol,column,state);
+  //==========================================================================//
+
+  //====================蓝色字体表示不属于任何组合项目========================//
+  if datacol=0 then //项目代码列
+  begin
+    ItemUnid:=tdbgrid(sender).DataSource.DataSet.fieldbyname('Unid').AsString;
+    if strtoint(ScalarSQLCmd(LisConn,'select count(*) from CombSChkItem where ItemUnid='+ItemUnid))<=0 then
+    begin
+      tdbgrid(sender).Canvas.Font.Color:=clBlue;
+      tdbgrid(sender).DefaultDrawColumnCell(rect,datacol,column,state);
+    end;
+  end;
   //==========================================================================//
 end;
 

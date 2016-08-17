@@ -1272,10 +1272,10 @@ begin
   //======================检验结果超出参考范围时变化颜色======================//
   if (datacol=4) then
   begin
-    ItemChnName:=trim(ADO_dtl.fieldbyname('项目编号').AsString);
-    cur_value:=trim(ADO_dtl.fieldbyname('检验结果').AsString);
-    min_value:=trim(ADO_dtl.fieldbyname('最小值').AsString);
-    max_value:=trim(ADO_dtl.fieldbyname('最大值').AsString);
+    ItemChnName:=trim(tdbgrid(sender).DataSource.DataSet.fieldbyname('项目编号').AsString);
+    cur_value:=trim(tdbgrid(sender).DataSource.DataSet.fieldbyname('检验结果').AsString);
+    min_value:=trim(tdbgrid(sender).DataSource.DataSet.fieldbyname('最小值').AsString);
+    max_value:=trim(tdbgrid(sender).DataSource.DataSet.fieldbyname('最大值').AsString);
 
     adotemp22:=Tadoquery.Create(nil);
     adotemp22.Connection:=dm.ADOConnection1;
@@ -1325,7 +1325,7 @@ begin
   //======================修改过的检验结果变化颜色============================//
   if (datacol=4) then
   begin
-    IsEdited:=ADO_dtl.fieldbyname('修改标志').AsString;
+    IsEdited:=tdbgrid(sender).DataSource.DataSet.fieldbyname('修改标志').AsString;
     if IsEdited='1' then
     begin
       (Sender as TDBGrid).Canvas.Pen.Color := clRed; //定义画笔颜色(绿色)
@@ -1445,7 +1445,7 @@ begin
    //======================打印过的流水号变化颜色======================//
     if datacol=2 then //姓名列,因为流水号列有可能隐藏
     begin
-      strPrintTimes:=ADObasic.fieldbyname('打印次数').AsString;
+      strPrintTimes:=tdbgrid(sender).DataSource.DataSet.fieldbyname('打印次数').AsString;
       PrintTimes:=strtointdef(strPrintTimes,0);
       IF PrintTimes<>0 then
       begin
@@ -1458,7 +1458,7 @@ begin
    //=====================常规与急诊用颜色区分=======================//
     if datacol=1 then //联机号列
     begin
-      Diagnosetype:=ADObasic.fieldbyname('优先级别').AsString;
+      Diagnosetype:=tdbgrid(sender).DataSource.DataSet.fieldbyname('优先级别').AsString;
       IF Diagnosetype<>CGYXJB then
       begin
         tdbgrid(sender).Canvas.Font.Color:=clblue;

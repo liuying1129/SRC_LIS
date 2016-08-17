@@ -3,12 +3,12 @@ object frmItemSetup: TfrmItemSetup
   Top = 108
   Width = 920
   Height = 570
-  Caption = '项目设置'
+  Caption = #39033#30446#35774#32622
   Color = 16767438
   Font.Charset = ANSI_CHARSET
   Font.Color = clWindowText
   Font.Height = -13
-  Font.Name = '宋体'
+  Font.Name = #23435#20307
   Font.Style = []
   KeyPreview = True
   OldCreateOrder = False
@@ -22,9 +22,9 @@ object frmItemSetup: TfrmItemSetup
     Left = 0
     Top = 0
     Width = 328
-    Height = 532
+    Height = 531
     Align = alLeft
-    Caption = '细项目设置'
+    Caption = #32454#39033#30446#35774#32622
     TabOrder = 0
     object Panel5: TPanel
       Left = 2
@@ -38,11 +38,11 @@ object frmItemSetup: TfrmItemSetup
         Top = 203
         Width = 302
         Height = 13
-        Caption = '注:1、仪器项目则"仪器字母"与"联机标识"为必填项'
+        Caption = #27880':1'#12289#20202#22120#39033#30446#21017'"'#20202#22120#23383#27597'"'#19982'"'#32852#26426#26631#35782'"'#20026#24517#22635#39033
         Font.Charset = ANSI_CHARSET
         Font.Color = clBlue
         Font.Height = -13
-        Font.Name = '宋体'
+        Font.Name = #23435#20307
         Font.Style = []
         ParentFont = False
       end
@@ -51,11 +51,11 @@ object frmItemSetup: TfrmItemSetup
         Top = 220
         Width = 203
         Height = 13
-        Caption = '2、计算项目则"计算公式"为必填项'
+        Caption = '2'#12289#35745#31639#39033#30446#21017'"'#35745#31639#20844#24335'"'#20026#24517#22635#39033
         Font.Charset = ANSI_CHARSET
         Font.Color = clBlue
         Font.Height = -13
-        Font.Name = '宋体'
+        Font.Name = #23435#20307
         Font.Style = []
         ParentFont = False
       end
@@ -67,7 +67,7 @@ object frmItemSetup: TfrmItemSetup
         Ctl3D = False
         EditLabel.Width = 52
         EditLabel.Height = 13
-        EditLabel.Caption = '项目代码'
+        EditLabel.Caption = #39033#30446#20195#30721
         EditLabel.Transparent = True
         LabelPosition = lpLeft
         ParentCtl3D = False
@@ -81,7 +81,7 @@ object frmItemSetup: TfrmItemSetup
         Ctl3D = False
         EditLabel.Width = 26
         EditLabel.Height = 13
-        EditLabel.Caption = '名称'
+        EditLabel.Caption = #21517#31216
         EditLabel.Transparent = True
         ImeMode = imOpen
         LabelPosition = lpLeft
@@ -96,7 +96,7 @@ object frmItemSetup: TfrmItemSetup
         Ctl3D = False
         EditLabel.Width = 52
         EditLabel.Height = 13
-        EditLabel.Caption = '英文名称'
+        EditLabel.Caption = #33521#25991#21517#31216
         EditLabel.Transparent = True
         LabelPosition = lpLeft
         ParentCtl3D = False
@@ -110,7 +110,7 @@ object frmItemSetup: TfrmItemSetup
         Ctl3D = False
         EditLabel.Width = 26
         EditLabel.Height = 13
-        EditLabel.Caption = '单位'
+        EditLabel.Caption = #21333#20301
         EditLabel.Transparent = True
         LabelPosition = lpLeft
         ParentCtl3D = False
@@ -124,7 +124,7 @@ object frmItemSetup: TfrmItemSetup
         Ctl3D = False
         EditLabel.Width = 26
         EditLabel.Height = 13
-        EditLabel.Caption = '价格'
+        EditLabel.Caption = #20215#26684
         EditLabel.Transparent = True
         LabelPosition = lpLeft
         ParentCtl3D = False
@@ -138,7 +138,7 @@ object frmItemSetup: TfrmItemSetup
         Ctl3D = False
         EditLabel.Width = 52
         EditLabel.Height = 13
-        EditLabel.Caption = '计算公式'
+        EditLabel.Caption = #35745#31639#20844#24335
         EditLabel.Transparent = True
         LabelPosition = lpLeft
         ParentCtl3D = False
@@ -152,7 +152,7 @@ object frmItemSetup: TfrmItemSetup
         Ctl3D = False
         EditLabel.Width = 52
         EditLabel.Height = 13
-        EditLabel.Caption = '联机标识'
+        EditLabel.Caption = #32852#26426#26631#35782
         LabelPosition = lpLeft
         ParentCtl3D = False
         TabOrder = 8
@@ -162,7 +162,7 @@ object frmItemSetup: TfrmItemSetup
         Top = 127
         Width = 100
         Height = 25
-        Caption = '新增'
+        Caption = #26032#22686
         TabOrder = 10
         OnClick = BitBtn1Click
       end
@@ -171,7 +171,7 @@ object frmItemSetup: TfrmItemSetup
         Top = 127
         Width = 100
         Height = 25
-        Caption = '保存'
+        Caption = #20445#23384
         TabOrder = 9
         OnClick = BitBtn2Click
       end
@@ -180,7 +180,7 @@ object frmItemSetup: TfrmItemSetup
         Top = 127
         Width = 100
         Height = 25
-        Caption = '删除'
+        Caption = #21024#38500
         TabOrder = 11
         OnClick = BitBtn3Click
       end
@@ -192,7 +192,7 @@ object frmItemSetup: TfrmItemSetup
         Ctl3D = False
         EditLabel.Width = 52
         EditLabel.Height = 13
-        EditLabel.Caption = '仪器字母'
+        EditLabel.Caption = #20202#22120#23383#27597
         LabelPosition = lpLeft
         ParentCtl3D = False
         TabOrder = 7
@@ -202,8 +202,8 @@ object frmItemSetup: TfrmItemSetup
         Top = 176
         Width = 80
         Height = 25
-        Hint = '双击项目可快速的设置参考值'
-        Caption = '参考值设置'
+        Hint = #21452#20987#39033#30446#21487#24555#36895#30340#35774#32622#21442#32771#20540
+        Caption = #21442#32771#20540#35774#32622
         ParentShowHint = False
         ShowHint = True
         TabOrder = 13
@@ -217,7 +217,7 @@ object frmItemSetup: TfrmItemSetup
         Ctl3D = False
         EditLabel.Width = 26
         EditLabel.Height = 13
-        EditLabel.Caption = '顺序'
+        EditLabel.Caption = #39034#24207
         EditLabel.Transparent = True
         LabelPosition = lpLeft
         ParentCtl3D = False
@@ -228,7 +228,7 @@ object frmItemSetup: TfrmItemSetup
         Top = 151
         Width = 100
         Height = 25
-        Caption = '查找'
+        Caption = #26597#25214
         TabOrder = 12
         OnClick = BitBtn11Click
       end
@@ -237,7 +237,7 @@ object frmItemSetup: TfrmItemSetup
         Top = 176
         Width = 80
         Height = 25
-        Caption = '导出参考值'
+        Caption = #23548#20986#21442#32771#20540
         ParentShowHint = False
         ShowHint = False
         TabOrder = 14
@@ -248,7 +248,7 @@ object frmItemSetup: TfrmItemSetup
         Top = 151
         Width = 100
         Height = 25
-        Caption = '常见结果'
+        Caption = #24120#35265#32467#26524
         TabOrder = 15
         OnClick = BitBtn13Click
       end
@@ -257,7 +257,7 @@ object frmItemSetup: TfrmItemSetup
         Top = 151
         Width = 100
         Height = 25
-        Caption = '扩展字段'
+        Caption = #25193#23637#23383#27573
         TabOrder = 16
         OnClick = BitBtn15Click
       end
@@ -266,7 +266,7 @@ object frmItemSetup: TfrmItemSetup
         Top = 176
         Width = 140
         Height = 25
-        Caption = '非数值结果超限值管理'
+        Caption = #38750#25968#20540#32467#26524#36229#38480#20540#31649#29702
         TabOrder = 17
         OnClick = BitBtn16Click
       end
@@ -275,7 +275,7 @@ object frmItemSetup: TfrmItemSetup
       Left = 2
       Top = 257
       Width = 324
-      Height = 273
+      Height = 272
       Align = alClient
       DataSource = DataSource1
       ReadOnly = True
@@ -283,7 +283,7 @@ object frmItemSetup: TfrmItemSetup
       TitleFont.Charset = ANSI_CHARSET
       TitleFont.Color = clWindowText
       TitleFont.Height = -13
-      TitleFont.Name = '宋体'
+      TitleFont.Name = #23435#20307
       TitleFont.Style = []
       OnDrawColumnCell = DBGrid1DrawColumnCell
       OnDblClick = DBGrid1DblClick
@@ -293,15 +293,15 @@ object frmItemSetup: TfrmItemSetup
     Left = 328
     Top = 0
     Width = 576
-    Height = 532
+    Height = 531
     Align = alClient
-    Caption = '组合项目设置'
+    Caption = #32452#21512#39033#30446#35774#32622
     TabOrder = 1
     object Panel1: TPanel
       Left = 2
       Top = 15
       Width = 262
-      Height = 515
+      Height = 514
       Align = alLeft
       TabOrder = 0
       object Label1: TLabel
@@ -309,11 +309,11 @@ object frmItemSetup: TfrmItemSetup
         Top = 3
         Width = 13
         Height = 13
-        Caption = '当'
+        Caption = #24403
         Font.Charset = ANSI_CHARSET
         Font.Color = clBlue
         Font.Height = -13
-        Font.Name = '宋体'
+        Font.Name = #23435#20307
         Font.Style = []
         ParentFont = False
       end
@@ -322,11 +322,11 @@ object frmItemSetup: TfrmItemSetup
         Top = 18
         Width = 13
         Height = 13
-        Caption = '前'
+        Caption = #21069
         Font.Charset = ANSI_CHARSET
         Font.Color = clBlue
         Font.Height = -13
-        Font.Name = '宋体'
+        Font.Name = #23435#20307
         Font.Style = []
         ParentFont = False
       end
@@ -335,11 +335,11 @@ object frmItemSetup: TfrmItemSetup
         Top = 34
         Width = 13
         Height = 13
-        Caption = '组'
+        Caption = #32452
         Font.Charset = ANSI_CHARSET
         Font.Color = clBlue
         Font.Height = -13
-        Font.Name = '宋体'
+        Font.Name = #23435#20307
         Font.Style = []
         ParentFont = False
       end
@@ -348,11 +348,11 @@ object frmItemSetup: TfrmItemSetup
         Top = 49
         Width = 13
         Height = 13
-        Caption = '合'
+        Caption = #21512
         Font.Charset = ANSI_CHARSET
         Font.Color = clBlue
         Font.Height = -13
-        Font.Name = '宋体'
+        Font.Name = #23435#20307
         Font.Style = []
         ParentFont = False
       end
@@ -361,11 +361,11 @@ object frmItemSetup: TfrmItemSetup
         Top = 65
         Width = 13
         Height = 13
-        Caption = '项'
+        Caption = #39033
         Font.Charset = ANSI_CHARSET
         Font.Color = clBlue
         Font.Height = -13
-        Font.Name = '宋体'
+        Font.Name = #23435#20307
         Font.Style = []
         ParentFont = False
       end
@@ -374,11 +374,11 @@ object frmItemSetup: TfrmItemSetup
         Top = 81
         Width = 13
         Height = 13
-        Caption = '目'
+        Caption = #30446
         Font.Charset = ANSI_CHARSET
         Font.Color = clBlue
         Font.Height = -13
-        Font.Name = '宋体'
+        Font.Name = #23435#20307
         Font.Style = []
         ParentFont = False
       end
@@ -387,11 +387,11 @@ object frmItemSetup: TfrmItemSetup
         Top = 96
         Width = 13
         Height = 13
-        Caption = '的'
+        Caption = #30340
         Font.Charset = ANSI_CHARSET
         Font.Color = clBlue
         Font.Height = -13
-        Font.Name = '宋体'
+        Font.Name = #23435#20307
         Font.Style = []
         ParentFont = False
       end
@@ -400,11 +400,11 @@ object frmItemSetup: TfrmItemSetup
         Top = 112
         Width = 13
         Height = 13
-        Caption = '检'
+        Caption = #26816
         Font.Charset = ANSI_CHARSET
         Font.Color = clBlue
         Font.Height = -13
-        Font.Name = '宋体'
+        Font.Name = #23435#20307
         Font.Style = []
         ParentFont = False
       end
@@ -413,11 +413,11 @@ object frmItemSetup: TfrmItemSetup
         Top = 127
         Width = 13
         Height = 13
-        Caption = '验'
+        Caption = #39564
         Font.Charset = ANSI_CHARSET
         Font.Color = clBlue
         Font.Height = -13
-        Font.Name = '宋体'
+        Font.Name = #23435#20307
         Font.Style = []
         ParentFont = False
       end
@@ -426,11 +426,11 @@ object frmItemSetup: TfrmItemSetup
         Top = 143
         Width = 13
         Height = 13
-        Caption = '项'
+        Caption = #39033
         Font.Charset = ANSI_CHARSET
         Font.Color = clBlue
         Font.Height = -13
-        Font.Name = '宋体'
+        Font.Name = #23435#20307
         Font.Style = []
         ParentFont = False
       end
@@ -439,29 +439,68 @@ object frmItemSetup: TfrmItemSetup
         Top = 159
         Width = 13
         Height = 13
-        Caption = '目'
+        Caption = #30446
         Font.Charset = ANSI_CHARSET
         Font.Color = clBlue
         Font.Height = -13
-        Font.Name = '宋体'
+        Font.Name = #23435#20307
+        Font.Style = []
+        ParentFont = False
+      end
+      object Label22: TLabel
+        Left = 2
+        Top = 353
+        Width = 78
+        Height = 13
+        Caption = #34013#33394#23383#20307#39033#30446
+        Font.Charset = ANSI_CHARSET
+        Font.Color = clBlue
+        Font.Height = -13
+        Font.Name = #23435#20307
+        Font.Style = []
+        ParentFont = False
+      end
+      object Label23: TLabel
+        Left = 1
+        Top = 366
+        Width = 78
+        Height = 13
+        Caption = #34920#31034#19981#23646#20110#20219
+        Font.Charset = ANSI_CHARSET
+        Font.Color = clBlue
+        Font.Height = -13
+        Font.Name = #23435#20307
+        Font.Style = []
+        ParentFont = False
+      end
+      object Label24: TLabel
+        Left = 2
+        Top = 379
+        Width = 39
+        Height = 13
+        Caption = #20309#32452#21512
+        Font.Charset = ANSI_CHARSET
+        Font.Color = clBlue
+        Font.Height = -13
+        Font.Name = #23435#20307
         Font.Style = []
         ParentFont = False
       end
       object BitBtn9: TBitBtn
         Left = 3
-        Top = 305
+        Top = 299
         Width = 75
         Height = 25
-        Caption = '单条增加->'
+        Caption = #21333#26465#22686#21152'->'
         TabOrder = 0
         OnClick = BitBtn9Click
       end
       object BitBtn10: TBitBtn
         Left = 3
-        Top = 329
+        Top = 323
         Width = 75
         Height = 25
-        Caption = '<-单条删除'
+        Caption = '<-'#21333#26465#21024#38500
         TabOrder = 1
         OnClick = BitBtn10Click
       end
@@ -469,7 +508,7 @@ object frmItemSetup: TfrmItemSetup
         Left = 80
         Top = 1
         Width = 181
-        Height = 513
+        Height = 512
         Align = alRight
         DataSource = DataSource4
         ReadOnly = True
@@ -477,7 +516,7 @@ object frmItemSetup: TfrmItemSetup
         TitleFont.Charset = ANSI_CHARSET
         TitleFont.Color = clWindowText
         TitleFont.Height = -13
-        TitleFont.Name = '宋体'
+        TitleFont.Name = #23435#20307
         TitleFont.Style = []
         OnDrawColumnCell = DBGrid4DrawColumnCell
       end
@@ -486,42 +525,42 @@ object frmItemSetup: TfrmItemSetup
         Top = 174
         Width = 77
         Height = 121
-        Caption = '图例'
+        Caption = #22270#20363
         TabOrder = 3
         object Label14: TLabel
           Left = 23
           Top = 18
           Width = 52
           Height = 13
-          Caption = '手工项目'
+          Caption = #25163#24037#39033#30446
         end
         object Label15: TLabel
           Left = 23
           Top = 62
           Width = 52
           Height = 13
-          Caption = '计算项目'
+          Caption = #35745#31639#39033#30446
         end
         object Label16: TLabel
           Left = 23
           Top = 40
           Width = 52
           Height = 13
-          Caption = '机器项目'
+          Caption = #26426#22120#39033#30446
         end
         object Label17: TLabel
           Left = 23
           Top = 84
           Width = 52
           Height = 13
-          Caption = '机器并计'
+          Caption = #26426#22120#24182#35745
         end
         object Label19: TLabel
           Left = 23
           Top = 102
           Width = 39
           Height = 13
-          Caption = '算项目'
+          Caption = #31639#39033#30446
         end
         object Panel2: TPanel
           Left = 4
@@ -562,9 +601,9 @@ object frmItemSetup: TfrmItemSetup
       end
       object Memo1: TMemo
         Left = 2
-        Top = 371
+        Top = 392
         Width = 76
-        Height = 129
+        Height = 120
         Color = clBtnFace
         Enabled = False
         TabOrder = 4
@@ -574,7 +613,7 @@ object frmItemSetup: TfrmItemSetup
       Left = 264
       Top = 15
       Width = 310
-      Height = 515
+      Height = 514
       Align = alClient
       TabOrder = 1
       object Panel4: TPanel
@@ -589,21 +628,21 @@ object frmItemSetup: TfrmItemSetup
           Top = 81
           Width = 78
           Height = 13
-          Caption = '默认样本类型'
+          Caption = #40664#35748#26679#26412#31867#22411
         end
         object Label20: TLabel
           Left = 10
           Top = 43
           Width = 65
           Height = 13
-          Caption = '默认工作组'
+          Caption = #40664#35748#24037#20316#32452
         end
         object Label21: TLabel
           Left = 132
           Top = 118
           Width = 52
           Height = 13
-          Caption = '所属部门'
+          Caption = #25152#23646#37096#38376
         end
         object LabeledEdit1combin: TLabeledEdit
           Left = 10
@@ -613,7 +652,7 @@ object frmItemSetup: TfrmItemSetup
           Ctl3D = False
           EditLabel.Width = 78
           EditLabel.Height = 13
-          EditLabel.Caption = '组合项目代码'
+          EditLabel.Caption = #32452#21512#39033#30446#20195#30721
           EditLabel.Transparent = True
           ParentCtl3D = False
           TabOrder = 0
@@ -626,7 +665,7 @@ object frmItemSetup: TfrmItemSetup
           Ctl3D = False
           EditLabel.Width = 26
           EditLabel.Height = 13
-          EditLabel.Caption = '名称'
+          EditLabel.Caption = #21517#31216
           EditLabel.Transparent = True
           ImeMode = imOpen
           ParentCtl3D = False
@@ -640,7 +679,7 @@ object frmItemSetup: TfrmItemSetup
           Ctl3D = False
           EditLabel.Width = 26
           EditLabel.Height = 13
-          EditLabel.Caption = '说明'
+          EditLabel.Caption = #35828#26126
           EditLabel.Transparent = True
           ParentCtl3D = False
           TabOrder = 3
@@ -650,7 +689,7 @@ object frmItemSetup: TfrmItemSetup
           Top = 154
           Width = 96
           Height = 25
-          Caption = '新增组合项目'
+          Caption = #26032#22686#32452#21512#39033#30446
           TabOrder = 5
           OnClick = BitBtn5Click
         end
@@ -659,7 +698,7 @@ object frmItemSetup: TfrmItemSetup
           Top = 154
           Width = 96
           Height = 25
-          Caption = '保存组合项目'
+          Caption = #20445#23384#32452#21512#39033#30446
           TabOrder = 4
           OnClick = BitBtn6Click
         end
@@ -668,7 +707,7 @@ object frmItemSetup: TfrmItemSetup
           Top = 154
           Width = 96
           Height = 25
-          Caption = '删除组合项目'
+          Caption = #21024#38500#32452#21512#39033#30446
           TabOrder = 6
           OnClick = BitBtn7Click
         end
@@ -677,7 +716,7 @@ object frmItemSetup: TfrmItemSetup
           Top = 178
           Width = 96
           Height = 25
-          Caption = '导出组合项目'
+          Caption = #23548#20986#32452#21512#39033#30446
           TabOrder = 7
           OnClick = BitBtn4Click
         end
@@ -690,7 +729,7 @@ object frmItemSetup: TfrmItemSetup
           Ctl3D = False
           EditLabel.Width = 26
           EditLabel.Height = 13
-          EditLabel.Caption = '价格'
+          EditLabel.Caption = #20215#26684
           EditLabel.Transparent = True
           Enabled = False
           ParentCtl3D = False
@@ -704,7 +743,7 @@ object frmItemSetup: TfrmItemSetup
           Ctl3D = False
           EditLabel.Width = 65
           EditLabel.Height = 13
-          EditLabel.Caption = '样本分隔符'
+          EditLabel.Caption = #26679#26412#20998#38548#31526
           EditLabel.Transparent = True
           ImeMode = imOpen
           ParentCtl3D = False
@@ -731,7 +770,7 @@ object frmItemSetup: TfrmItemSetup
           Top = 178
           Width = 96
           Height = 25
-          Caption = '项目对照'
+          Caption = #39033#30446#23545#29031
           TabOrder = 11
           OnClick = BitBtn14Click
         end
@@ -749,7 +788,7 @@ object frmItemSetup: TfrmItemSetup
         Left = 1
         Top = 206
         Width = 308
-        Height = 308
+        Height = 307
         Align = alClient
         Color = 16767438
         DataSource = DataSource2
@@ -758,7 +797,7 @@ object frmItemSetup: TfrmItemSetup
         TitleFont.Charset = ANSI_CHARSET
         TitleFont.Color = clWindowText
         TitleFont.Height = -13
-        TitleFont.Name = '宋体'
+        TitleFont.Name = #23435#20307
         TitleFont.Style = []
       end
     end
