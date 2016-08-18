@@ -220,6 +220,7 @@ object SDIAppForm: TSDIAppForm
         Font.Name = #23435#20307
         Font.Style = []
         ParentFont = False
+        Visible = False
         OnClick = suiButton7Click
       end
       object LabeledEdit13: TLabeledEdit

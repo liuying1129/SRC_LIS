@@ -677,8 +677,8 @@ var
   COMMWORD:string;
 begin
   //================用不同的颜色区分手工、机器、计算项目======================//
-  caculexpress:=trim(ADOQuery4.fieldbyname('caculexpress').AsString);
-  COMMWORD:=trim(ADOQuery4.fieldbyname('COMMWORD').AsString);
+  caculexpress:=trim(TDBGrid(Sender).DataSource.DataSet.fieldbyname('caculexpress').AsString);
+  COMMWORD:=trim(TDBGrid(Sender).DataSource.DataSet.fieldbyname('COMMWORD').AsString);
   IF caculexpress<>'' then
     tdbgrid(sender).Canvas.Brush.Color:=$00aad5d5;
   IF COMMWORD<>'' then
