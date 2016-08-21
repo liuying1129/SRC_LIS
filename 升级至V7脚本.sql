@@ -3688,7 +3688,7 @@ begin
   insert into CommCode(TypeName,ID,Name,Reserve,Reserve2) values ('工具菜单',055,'串口调试助手','UartAssist.exe','')
   insert into CommCode(TypeName,ID,Name,Reserve,Reserve2) values ('工具菜单',060,'网络调试助手','NetAssist.exe','')
   insert into CommCode(TypeName,ID,Name,Reserve,Reserve2) values ('工具菜单',070,'-','','')
-  insert into CommCode(TypeName,ID,Name,Reserve,Reserve2) values ('工具菜单',075,'操作手册','检验系统操作手册.doc','')
+  insert into CommCode(TypeName,ID,Name,Reserve,Reserve2) values ('工具菜单',075,'操作手册','检验系统操作手册.pdf','')
 end
 GO
 
