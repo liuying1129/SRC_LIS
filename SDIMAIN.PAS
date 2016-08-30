@@ -2225,6 +2225,8 @@ begin
   else
   begin
   //======================减少删除==================================================//
+    WriteLog(pchar('删除组合项目,组合项目编号:'+s2+',LIS唯一编号:'+inttostr(checkunid)));
+
     ExecSQLCmd(LisConn,'update chk_valu set issure=0 where pkunid='+inttostr(checkunid)+' and pkcombin_id='''+s2+''' ');
 
     //检验结果全部删除后取消审核
