@@ -19,23 +19,6 @@ create table CombSChkItem
   ItemUnid int not null
 )
 
---CommCodeType--20100125删除CommCodeType表,故注释
---if not exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[CommCodeType]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
---begin
---create table CommCodeType
---(
---  Name varchar(30) not null primary key
---)
---insert into CommCodeType values('临床诊断')
---insert into CommCodeType values('结果快捷码')
---insert into CommCodeType values('部门')
---insert into CommCodeType values('细菌')
---insert into CommCodeType values('检验组别')
---insert into CommCodeType values('备注')
---insert into CommCodeType values('样本类型')
---insert into CommCodeType values('样本状态')
---end
-
 --CommCode
 if not exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[CommCode]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
 create table CommCode
@@ -1848,25 +1831,6 @@ begin
 end
 go
 
---CommCodeType--20100125删除CommCodeType表,故注释
---if not exists (select * from dbo.CommCodeType where Name = '所属公司')
---begin
---insert into CommCodeType values('所属公司')
---end
-
---CommCodeType
---if not exists (select * from dbo.CommCodeType where Name = '所属部门')
---begin
---insert into CommCodeType values('所属部门')
---end
-
---CommCodeType
---if not exists (select * from dbo.CommCodeType where Name = '工种')
---begin
---insert into CommCodeType values('工种')
---end
---go
-
 
 --触发器TRIGGER_chk_con_CKZ_Update创建脚本
 SET QUOTED_IDENTIFIER ON 
@@ -2667,17 +2631,6 @@ GO
 if exists (select name from sysobjects where name='TRIGGER_chk_con_his_BarCode_insert' and type='TR')
   drop TRIGGER TRIGGER_chk_con_his_BarCode_insert
 go
-
---CREATE TRIGGER TRIGGER_chk_con_his_BarCode_insert ON chk_con_his
---FOR INSERT
---AS
---20100125生成条码号码
---  declare @unid int
---  SELECT @unid=unid FROM Inserted
---  if (@unid is null) return --表示没找到刚刚插入的记录
---  update chk_con_his set LSH=RIGHT('00000000'+convert(varchar,@unid % 9999),4) where UNid=@unid
---go
-
 
 --触发器TRIGGER_chk_con_his_CommCode创建脚本20101223
 SET QUOTED_IDENTIFIER ON 
