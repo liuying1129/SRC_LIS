@@ -4347,7 +4347,7 @@ GO
 if not exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[AppVisit]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
 create table AppVisit
  (Unid int identity primary key,
-  SysName varchar (10) NULL,
+  SysName varchar (20) NULL,
   PageName varchar (10) NULL,
   IP varchar (20) NULL,
   Customer varchar (50) NULL,
