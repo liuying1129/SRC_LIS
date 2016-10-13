@@ -2964,7 +2964,7 @@ GO
 SET ANSI_NULLS ON 
 GO
 
---20160907获取指定病人的组合项目串。用于集中打印时界面显示
+/*--20160907获取指定病人的组合项目串。用于集中打印时界面显示
 if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[uf_GetPatientCombName]') and xtype in (N'FN', N'IF', N'TF'))
 drop function [dbo].[uf_GetPatientCombName]
 GO
@@ -3001,7 +3001,7 @@ GO
 SET QUOTED_IDENTIFIER OFF 
 GO
 SET ANSI_NULLS ON 
-GO
+GO*/
 
 if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[view_Show_chk_Con_His]') and OBJECTPROPERTY(id, N'IsView') = 1)
 drop view [dbo].[view_Show_chk_Con_His]
