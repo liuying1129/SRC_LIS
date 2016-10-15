@@ -2964,44 +2964,44 @@ GO
 SET ANSI_NULLS ON 
 GO
 
-/*--20160907获取指定病人的组合项目串。用于集中打印时界面显示
-if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[uf_GetPatientCombName]') and xtype in (N'FN', N'IF', N'TF'))
-drop function [dbo].[uf_GetPatientCombName]
-GO
+--20160907获取指定病人的组合项目串。用于集中打印时界面显示
+--if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[uf_GetPatientCombName]') and xtype in (N'FN', N'IF', N'TF'))
+--drop function [dbo].[uf_GetPatientCombName]
+--GO
 
-SET QUOTED_IDENTIFIER ON 
-GO
-SET ANSI_NULLS ON 
-GO
+--SET QUOTED_IDENTIFIER ON 
+--GO
+--SET ANSI_NULLS ON 
+--GO
 
-create FUNCTION uf_GetPatientCombName
-(
-  @ifCompleted int,--0:未结束的(chk_valu);1:已结束的(chk_valu_bak)
-  @Unid int --病人的UNID
-)  
-RETURNS varchar(500) AS  
-BEGIN 
-  declare @ret varchar(500)
-  set @ret=''
-  if @ifCompleted=1 
-    select @ret=@ret+','+combin_Name from chk_valu_bak
-      WHERE PkUnid=@Unid and issure=1 and ltrim(rtrim(isnull(itemvalue,'')))<>'' 
-      GROUP BY combin_Name 
-  else 
-    select @ret=@ret+','+combin_Name from chk_valu 
-      WHERE PkUnid=@Unid and issure=1 and ltrim(rtrim(isnull(itemvalue,'')))<>'' 
-      GROUP BY combin_Name 
+--create FUNCTION uf_GetPatientCombName
+--(
+--  @ifCompleted int,--0:未结束的(chk_valu);1:已结束的(chk_valu_bak)
+--  @Unid int --病人的UNID
+--)  
+--RETURNS varchar(500) AS  
+--BEGIN 
+--  declare @ret varchar(500)
+--  set @ret=''
+--  if @ifCompleted=1 
+--    select @ret=@ret+','+combin_Name from chk_valu_bak
+--      WHERE PkUnid=@Unid and issure=1 and ltrim(rtrim(isnull(itemvalue,'')))<>'' 
+--      GROUP BY combin_Name 
+--  else 
+--    select @ret=@ret+','+combin_Name from chk_valu 
+--      WHERE PkUnid=@Unid and issure=1 and ltrim(rtrim(isnull(itemvalue,'')))<>'' 
+--      GROUP BY combin_Name 
     
-  set @ret=stuff(@ret,1,1,'')
+--  set @ret=stuff(@ret,1,1,'')
 
-  return @ret
-END
+--  return @ret
+--END
 
-GO
-SET QUOTED_IDENTIFIER OFF 
-GO
-SET ANSI_NULLS ON 
-GO*/
+--GO
+--SET QUOTED_IDENTIFIER OFF 
+--GO
+--SET ANSI_NULLS ON 
+--GO
 
 if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[view_Show_chk_Con_His]') and OBJECTPROPERTY(id, N'IsView') = 1)
 drop view [dbo].[view_Show_chk_Con_His]
