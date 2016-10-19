@@ -148,6 +148,7 @@ function GetMaxCheckId(const ACombin_ID:string;const AServerDate:tdate):string;/
 function ExecSQLCmd(AConnectionString:string;ASQL:string):integer;
 function ScalarSQLCmd(AConnectionString:string;ASQL:string):string;
 procedure combinchecklistbox(CheckListBox:TCheckListBox);//将组合项目号及名称导入CheckListBox中
+function StopTime: integer; //返回没有键盘和鼠标事件的时间
 
 implementation
 
@@ -939,6 +940,15 @@ begin
       adotemp3.Next;
      end;
      adotemp3.Free;
+end;
+
+function StopTime: integer; //返回没有键盘和鼠标事件的时间
+var
+  LInput: TLastInputInfo;
+begin
+  LInput.cbSize := SizeOf(TLastInputInfo);
+  GetLastInputInfo(LInput);
+  Result := (GetTickCount() - LInput.dwTime) div 1000;  //微秒换成秒
 end;
 
 end.

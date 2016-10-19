@@ -3529,7 +3529,8 @@ end;
 procedure TSDIAppForm.TimerIdleTrackerTimer(Sender: TObject);
 begin
 //×Ô¶¯µ¯³öµÇÂ¼´°¿Ú
-  if(GetTickCount-IdleTrackerGetLastTickCount>LoginTime*1000)and(FindWindow(PCHAR('TfrmLogin'),PCHAR('µÇÂ¼'))=0) then
+//  if(GetTickCount-IdleTrackerGetLastTickCount>LoginTime*1000)and(FindWindow(PCHAR('TfrmLogin'),PCHAR('µÇÂ¼'))=0) then
+  if (StopTime>LoginTime) and (FindWindow(PCHAR('TfrmLogin'),PCHAR('µÇÂ¼'))=0) then
     frmLogin.ShowModal;
 end;
 
