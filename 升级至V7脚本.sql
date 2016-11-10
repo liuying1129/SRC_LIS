@@ -1193,31 +1193,52 @@ BEGIN
   if @HighOrLowFlag in (1,2) return @HighOrLowFlag
   --20140926非数值结果异常值管理stop
 
+  --20161110参考值支持“大于”、“小于”、“大于等于”、“小于等于” start
+  declare @min_value_temp varchar(50),@max_value_temp varchar(50)
+  
+  set @min_value_temp=@min_value
+  set @max_value_temp=@max_value
+  
+  if LEFT(@min_value,1) in ('≤','＜','<')
+  begin
+	set @min_value_temp='-99999999999999999999999999999999999999'
+	set @max_value_temp=SUBSTRING(@min_value,2,999999999)
+  end
+  
+  if LEFT(@min_value,1) in ('≥','＞','>')
+  begin
+	set @min_value_temp=SUBSTRING(@min_value,2,999999999)
+	set @max_value_temp='99999999999999999999999999999999999999'
+  end
+  
+  if LEFT(@max_value,1) in ('≤','＜','<')
+  begin
+	set @min_value_temp='-99999999999999999999999999999999999999'
+	set @max_value_temp=SUBSTRING(@max_value,2,999999999)
+  end
+  
+  if LEFT(@max_value,1) in ('≥','＞','>')
+  begin
+	set @min_value_temp=SUBSTRING(@max_value,2,999999999)
+	set @max_value_temp='99999999999999999999999999999999999999'
+  end    
+  --20161110参考值支持“大于”、“小于”、“大于等于”、“小于等于” stop
+
   declare @min_value_float float,@max_value_float float,@cur_value_float float,@re_Alarm int
 
-  --if isnull(@cur_value,'')='' return 0
-  
-  --IF (ltrim(rtrim(@ItemChnName))='RH')
-  --begin
-  --  if(charindex('阴',@cur_value)<>0)and((charindex('性',@cur_value)<>0)) return 2
-  --end
-  --else IF (charindex('阳',@cur_value)<>0)and((charindex('性',@cur_value)<>0)) return 2
-
-  --IF charindex('+',@cur_value)<>0 return 2
-
-  if(ISNUMERIC(@min_value)=0)or(ISNUMERIC(@max_value)=0)or(ISNUMERIC(@cur_value)=0) return 0
+  if(ISNUMERIC(@min_value_temp)=0)or(ISNUMERIC(@max_value_temp)=0)or(ISNUMERIC(@cur_value)=0) return 0
   --类似ISNUMERIC('-   0')返回1,但下面的CONVERT转换报错。这样的情况也应返回0
-  if CHARINDEX(' ',ltrim(rtrim(@min_value)))<>0 return 0
-  if CHARINDEX(' ',ltrim(rtrim(@max_value)))<>0 return 0
+  if CHARINDEX(' ',ltrim(rtrim(@min_value_temp)))<>0 return 0
+  if CHARINDEX(' ',ltrim(rtrim(@max_value_temp)))<>0 return 0
   if CHARINDEX(' ',ltrim(rtrim(@cur_value)))<>0 return 0
   
   --ISNUMERIC('-'),ISNUMERIC('+')均返回1,但下面的CONVERT转换报错。这样的情况也应返回0
-  if (ltrim(rtrim(@min_value))='+')or(ltrim(rtrim(@min_value))='-')or(ltrim(rtrim(@min_value))='.')or(ltrim(rtrim(@min_value))='+.')or(ltrim(rtrim(@min_value))='-.') return 0
-  if (ltrim(rtrim(@max_value))='+')or(ltrim(rtrim(@max_value))='-')or(ltrim(rtrim(@max_value))='.')or(ltrim(rtrim(@max_value))='+.')or(ltrim(rtrim(@max_value))='-.') return 0
+  if (ltrim(rtrim(@min_value_temp))='+')or(ltrim(rtrim(@min_value_temp))='-')or(ltrim(rtrim(@min_value_temp))='.')or(ltrim(rtrim(@min_value_temp))='+.')or(ltrim(rtrim(@min_value_temp))='-.') return 0
+  if (ltrim(rtrim(@max_value_temp))='+')or(ltrim(rtrim(@max_value_temp))='-')or(ltrim(rtrim(@max_value_temp))='.')or(ltrim(rtrim(@max_value_temp))='+.')or(ltrim(rtrim(@max_value_temp))='-.') return 0
   if (ltrim(rtrim(@cur_value))='+')or(ltrim(rtrim(@cur_value))='-')or(ltrim(rtrim(@cur_value))='.')or(ltrim(rtrim(@cur_value))='+.')or(ltrim(rtrim(@cur_value))='-.') return 0
 
-  SELECT @min_value_float=CONVERT(float, @min_value)
-  SELECT @max_value_float=CONVERT(float, @max_value)
+  SELECT @min_value_float=CONVERT(float, @min_value_temp)
+  SELECT @max_value_float=CONVERT(float, @max_value_temp)
   SELECT @cur_value_float=CONVERT(float, @cur_value)
 
   set @re_Alarm=0
