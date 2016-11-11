@@ -3885,6 +3885,51 @@ END
 
 GO
 
+--生成参考范围函数，用于报告显示 20161111
+if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[uf_Reference_Value_B1]') and xtype in (N'FN', N'IF', N'TF'))
+drop function [dbo].[uf_Reference_Value_B1]
+GO
+
+CREATE  FUNCTION uf_Reference_Value_B1
+(
+  @Min_value varchar(250),
+  @Max_value varchar(250)
+)  
+RETURNS varchar(510) AS  
+BEGIN 
+  if isnull(@Min_value,'')=isnull(@Max_value,'') return ''
+   
+  if isnull(@Min_value,'')='' or isnull(@Max_value,'')='' return ''
+
+  if isnull(@Min_value,'')<>isnull(@Max_value,'') return @Min_value
+
+  return ''
+END
+
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[uf_Reference_Value_B2]') and xtype in (N'FN', N'IF', N'TF'))
+drop function [dbo].[uf_Reference_Value_B2]
+GO
+
+CREATE  FUNCTION uf_Reference_Value_B2
+(
+  @Min_value varchar(250),
+  @Max_value varchar(250)
+)  
+RETURNS varchar(510) AS  
+BEGIN 
+  if isnull(@Min_value,'')=isnull(@Max_value,'') return @Min_value
+   
+  if isnull(@Min_value,'')='' or isnull(@Max_value,'')='' return isnull(@Min_value,'')+isnull(@Max_value,'')
+
+  if isnull(@Min_value,'')<>isnull(@Max_value,'') return '--'+@Max_value
+
+  return ''
+END
+
+GO
+
 --20140906质控修改
 if EXISTS (select 1 from information_schema.columns where table_name = 'QCGHEAD' and column_name='qc_month' and data_type='varchar')
 begin
