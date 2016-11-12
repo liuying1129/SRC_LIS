@@ -1202,24 +1202,24 @@ BEGIN
   if LEFT(@min_value,1) in ('≤','＜','<')
   begin
 	set @min_value_temp='-99999999999999999999999999999999999999'
-	set @max_value_temp=SUBSTRING(@min_value,2,999999999)
+	set @max_value_temp=SUBSTRING(@min_value,2,8000)
   end
   
   if LEFT(@min_value,1) in ('≥','＞','>')
   begin
-	set @min_value_temp=SUBSTRING(@min_value,2,999999999)
+	set @min_value_temp=SUBSTRING(@min_value,2,8000)
 	set @max_value_temp='99999999999999999999999999999999999999'
   end
   
   if LEFT(@max_value,1) in ('≤','＜','<')
   begin
 	set @min_value_temp='-99999999999999999999999999999999999999'
-	set @max_value_temp=SUBSTRING(@max_value,2,999999999)
+	set @max_value_temp=SUBSTRING(@max_value,2,8000)
   end
   
   if LEFT(@max_value,1) in ('≥','＞','>')
   begin
-	set @min_value_temp=SUBSTRING(@max_value,2,999999999)
+	set @min_value_temp=SUBSTRING(@max_value,2,8000)
 	set @max_value_temp='99999999999999999999999999999999999999'
   end    
   --20161110参考值支持“大于”、“小于”、“大于等于”、“小于等于” stop
