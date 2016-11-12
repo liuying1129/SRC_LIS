@@ -39,6 +39,7 @@ type
     Label6: TLabel;
     Label7: TLabel;
     Label8: TLabel;
+    Edit2: TEdit;
     procedure FormShow(Sender: TObject);
     procedure BitBtn1Click(Sender: TObject);
     procedure LabeledEdit2Exit(Sender: TObject);
