@@ -305,8 +305,8 @@ object frmItemSetup: TfrmItemSetup
       Align = alLeft
       TabOrder = 0
       object Label1: TLabel
-        Left = 64
-        Top = 3
+        Left = 47
+        Top = 2
         Width = 13
         Height = 13
         Caption = #24403
@@ -318,8 +318,8 @@ object frmItemSetup: TfrmItemSetup
         ParentFont = False
       end
       object Label2: TLabel
-        Left = 64
-        Top = 18
+        Left = 47
+        Top = 17
         Width = 13
         Height = 13
         Caption = #21069
@@ -331,8 +331,8 @@ object frmItemSetup: TfrmItemSetup
         ParentFont = False
       end
       object Label3: TLabel
-        Left = 64
-        Top = 34
+        Left = 47
+        Top = 33
         Width = 13
         Height = 13
         Caption = #32452
@@ -344,8 +344,8 @@ object frmItemSetup: TfrmItemSetup
         ParentFont = False
       end
       object Label5: TLabel
-        Left = 64
-        Top = 49
+        Left = 47
+        Top = 48
         Width = 13
         Height = 13
         Caption = #21512
@@ -357,8 +357,8 @@ object frmItemSetup: TfrmItemSetup
         ParentFont = False
       end
       object Label6: TLabel
-        Left = 64
-        Top = 65
+        Left = 47
+        Top = 64
         Width = 13
         Height = 13
         Caption = #39033
@@ -370,8 +370,8 @@ object frmItemSetup: TfrmItemSetup
         ParentFont = False
       end
       object Label7: TLabel
-        Left = 64
-        Top = 81
+        Left = 47
+        Top = 80
         Width = 13
         Height = 13
         Caption = #30446
@@ -384,7 +384,7 @@ object frmItemSetup: TfrmItemSetup
       end
       object Label8: TLabel
         Left = 64
-        Top = 96
+        Top = 2
         Width = 13
         Height = 13
         Caption = #30340
@@ -397,7 +397,7 @@ object frmItemSetup: TfrmItemSetup
       end
       object Label9: TLabel
         Left = 64
-        Top = 112
+        Top = 17
         Width = 13
         Height = 13
         Caption = #26816
@@ -410,7 +410,7 @@ object frmItemSetup: TfrmItemSetup
       end
       object Label10: TLabel
         Left = 64
-        Top = 127
+        Top = 32
         Width = 13
         Height = 13
         Caption = #39564
@@ -423,7 +423,7 @@ object frmItemSetup: TfrmItemSetup
       end
       object Label11: TLabel
         Left = 64
-        Top = 143
+        Top = 48
         Width = 13
         Height = 13
         Caption = #39033
@@ -436,7 +436,7 @@ object frmItemSetup: TfrmItemSetup
       end
       object Label12: TLabel
         Left = 64
-        Top = 159
+        Top = 64
         Width = 13
         Height = 13
         Caption = #30446
@@ -447,38 +447,12 @@ object frmItemSetup: TfrmItemSetup
         Font.Style = []
         ParentFont = False
       end
-      object Label22: TLabel
-        Left = 2
-        Top = 353
-        Width = 78
+      object Label25: TLabel
+        Left = 48
+        Top = 95
+        Width = 28
         Height = 13
-        Caption = #34013#33394#23383#20307#39033#30446
-        Font.Charset = ANSI_CHARSET
-        Font.Color = clBlue
-        Font.Height = -13
-        Font.Name = #23435#20307
-        Font.Style = []
-        ParentFont = False
-      end
-      object Label23: TLabel
-        Left = 1
-        Top = 366
-        Width = 78
-        Height = 13
-        Caption = #34920#31034#19981#23646#20110#20219
-        Font.Charset = ANSI_CHARSET
-        Font.Color = clBlue
-        Font.Height = -13
-        Font.Name = #23435#20307
-        Font.Style = []
-        ParentFont = False
-      end
-      object Label24: TLabel
-        Left = 2
-        Top = 379
-        Width = 39
-        Height = 13
-        Caption = #20309#32452#21512
+        Caption = '===>'
         Font.Charset = ANSI_CHARSET
         Font.Color = clBlue
         Font.Height = -13
@@ -522,9 +496,9 @@ object frmItemSetup: TfrmItemSetup
       end
       object GroupBox1: TGroupBox
         Left = 2
-        Top = 174
+        Top = 112
         Width = 77
-        Height = 121
+        Height = 158
         Caption = #22270#20363
         TabOrder = 3
         object Label14: TLabel
@@ -562,6 +536,32 @@ object frmItemSetup: TfrmItemSetup
           Height = 13
           Caption = #31639#39033#30446
         end
+        object Label23: TLabel
+          Left = 23
+          Top = 121
+          Width = 52
+          Height = 13
+          Caption = #19981#23646#20110#20219
+          Font.Charset = ANSI_CHARSET
+          Font.Color = clBlack
+          Font.Height = -13
+          Font.Name = #23435#20307
+          Font.Style = []
+          ParentFont = False
+        end
+        object Label24: TLabel
+          Left = 23
+          Top = 137
+          Width = 39
+          Height = 13
+          Caption = #20309#32452#21512
+          Font.Charset = ANSI_CHARSET
+          Font.Color = clBlack
+          Font.Height = -13
+          Font.Name = #23435#20307
+          Font.Style = []
+          ParentFont = False
+        end
         object Panel2: TPanel
           Left = 4
           Top = 16
@@ -598,12 +598,28 @@ object frmItemSetup: TfrmItemSetup
           Color = clRed
           TabOrder = 3
         end
+        object Panel9: TPanel
+          Left = 4
+          Top = 119
+          Width = 17
+          Height = 17
+          BevelInner = bvRaised
+          Caption = #23383
+          Color = clWindow
+          Font.Charset = ANSI_CHARSET
+          Font.Color = clBlue
+          Font.Height = -13
+          Font.Name = #23435#20307
+          Font.Style = []
+          ParentFont = False
+          TabOrder = 4
+        end
       end
       object Memo1: TMemo
         Left = 2
-        Top = 392
+        Top = 377
         Width = 76
-        Height = 120
+        Height = 135
         Color = clBtnFace
         Enabled = False
         TabOrder = 4

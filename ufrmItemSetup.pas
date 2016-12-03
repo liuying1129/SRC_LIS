@@ -86,7 +86,8 @@ type
     ComboBox1: TComboBox;
     Label21: TLabel;
     BitBtn16: TBitBtn;
-    Label22: TLabel;
+    Label25: TLabel;
+    Panel9: TPanel;
     Label23: TLabel;
     Label24: TLabel;
     procedure FormCreate(Sender: TObject);
@@ -645,15 +646,18 @@ var
   ItemUnid:string;
 begin
   //================用不同的颜色区分手工、机器、计算项目======================//
-  caculexpress:=trim(tdbgrid(sender).DataSource.DataSet.fieldbyname('计算公式').AsString);
-  COMMWORD:=trim(tdbgrid(sender).DataSource.DataSet.fieldbyname('联机字母').AsString);
-  IF caculexpress<>'' then
-    tdbgrid(sender).Canvas.Brush.Color:=$00aad5d5;
-  IF COMMWORD<>'' then
-    tdbgrid(sender).Canvas.Brush.Color:=clLime;
-  IF (COMMWORD<>'')and(caculexpress<>'') then
-    tdbgrid(sender).Canvas.Brush.Color:=clred;
-  tdbgrid(sender).DefaultDrawColumnCell(rect,datacol,column,state);
+  if datacol=1 then //名称列
+  begin
+    caculexpress:=trim(tdbgrid(sender).DataSource.DataSet.fieldbyname('计算公式').AsString);
+    COMMWORD:=trim(tdbgrid(sender).DataSource.DataSet.fieldbyname('联机字母').AsString);
+    IF caculexpress<>'' then
+      tdbgrid(sender).Canvas.Brush.Color:=$00aad5d5;
+    IF COMMWORD<>'' then
+      tdbgrid(sender).Canvas.Brush.Color:=clLime;
+    IF (COMMWORD<>'')and(caculexpress<>'') then
+      tdbgrid(sender).Canvas.Brush.Color:=clred;
+    tdbgrid(sender).DefaultDrawColumnCell(rect,datacol,column,state);
+  end;
   //==========================================================================//
 
   //====================蓝色字体表示不属于任何组合项目========================//
@@ -677,15 +681,18 @@ var
   COMMWORD:string;
 begin
   //================用不同的颜色区分手工、机器、计算项目======================//
-  caculexpress:=trim(TDBGrid(Sender).DataSource.DataSet.fieldbyname('caculexpress').AsString);
-  COMMWORD:=trim(TDBGrid(Sender).DataSource.DataSet.fieldbyname('COMMWORD').AsString);
-  IF caculexpress<>'' then
-    tdbgrid(sender).Canvas.Brush.Color:=$00aad5d5;
-  IF COMMWORD<>'' then
-    tdbgrid(sender).Canvas.Brush.Color:=clLime;
-  IF (COMMWORD<>'')and(caculexpress<>'') then
-    tdbgrid(sender).Canvas.Brush.Color:=clred;
-  tdbgrid(sender).DefaultDrawColumnCell(rect,datacol,column,state);
+  if datacol=1 then //名称列
+  begin
+    caculexpress:=trim(TDBGrid(Sender).DataSource.DataSet.fieldbyname('caculexpress').AsString);
+    COMMWORD:=trim(TDBGrid(Sender).DataSource.DataSet.fieldbyname('COMMWORD').AsString);
+    IF caculexpress<>'' then
+      tdbgrid(sender).Canvas.Brush.Color:=$00aad5d5;
+    IF COMMWORD<>'' then
+      tdbgrid(sender).Canvas.Brush.Color:=clLime;
+    IF (COMMWORD<>'')and(caculexpress<>'') then
+      tdbgrid(sender).Canvas.Brush.Color:=clred;
+    tdbgrid(sender).DefaultDrawColumnCell(rect,datacol,column,state);
+  end;
   //==========================================================================//
 end;
 
