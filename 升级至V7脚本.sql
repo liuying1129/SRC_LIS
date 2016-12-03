@@ -1,23 +1,16 @@
 use YKLis
 go
 
---删除关系FK_worker_department
-if exists(select OBJECTPROPERTY(o.id,N'IsSystemTable') from sysobjects o where o.name = N'FK_worker_department' and user_name(o.uid) = N'dbo')
-ALTER TABLE dbo.worker
-	DROP CONSTRAINT FK_worker_department
+---------------表相关操作---------------
 
---删除关系FK_clinicchkitem_combinitem
-if exists(select OBJECTPROPERTY(o.id,N'IsSystemTable') from sysobjects o where o.name = N'FK_clinicchkitem_combinitem' and user_name(o.uid) = N'dbo')
-ALTER TABLE dbo.clinicchkitem
-	DROP CONSTRAINT FK_clinicchkitem_combinitem
+--20120528,nvarchar(30)->varchar(100),超级用户记录中的该字段存放试用版有效期
+alter table worker alter column account_limit varchar(100) Null
+GO
 
---CombSChkItem
-if not exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[CombSChkItem]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
-create table CombSChkItem
- (Unid int identity primary key,
-  CombUnid int not null,
-  ItemUnid int not null
-)
+--Worker
+IF not EXISTS (select 1 from syscolumns where name='ShowAllTj' and id=object_id('Worker'))
+  Alter table Worker add ShowAllTj varchar(2) null
+GO
 
 --CommCode
 if not exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[CommCode]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
@@ -31,6 +24,7 @@ create table CommCode
   Remark varchar(100) null,
   Reserve varchar(100) null
 )
+GO
 
 --20120511,临床诊断,char(50)->varchar(200)
 alter table CommCode alter column ID varchar(200) Not Null
@@ -44,6 +38,32 @@ GO
 alter table CommCode alter column WBM varchar(200) null
 GO
 --20100315 stop
+
+--CommCode 20110414
+IF not EXISTS (select 1 from syscolumns where name='Reserve2' and id=object_id('CommCode'))
+  Alter table CommCode add Reserve2 varchar(200) null
+IF not EXISTS (select 1 from syscolumns where name='Reserve3' and id=object_id('CommCode'))
+  Alter table CommCode add Reserve3 varchar(200) null
+IF not EXISTS (select 1 from syscolumns where name='Reserve4' and id=object_id('CommCode'))
+  Alter table CommCode add Reserve4 varchar(200) null
+IF not EXISTS (select 1 from syscolumns where name='Reserve5' and id=object_id('CommCode'))
+  Alter table CommCode add Reserve5 int null
+IF not EXISTS (select 1 from syscolumns where name='Reserve6' and id=object_id('CommCode'))
+  Alter table CommCode add Reserve6 int null
+IF not EXISTS (select 1 from syscolumns where name='Reserve7' and id=object_id('CommCode'))
+  Alter table CommCode add Reserve7 float null
+IF not EXISTS (select 1 from syscolumns where name='Reserve8' and id=object_id('CommCode'))
+  Alter table CommCode add Reserve8 float null
+IF not EXISTS (select 1 from syscolumns where name='Reserve9' and id=object_id('CommCode'))
+  Alter table CommCode add Reserve9 datetime null
+IF not EXISTS (select 1 from syscolumns where name='Reserve10' and id=object_id('CommCode'))
+  Alter table CommCode add Reserve10 datetime null
+GO
+
+--CommCode 20140411
+IF not EXISTS (select 1 from syscolumns where name='SysName' and id=object_id('CommCode'))
+  Alter table CommCode add SysName varchar(10) null
+GO
 
 if not exists(select * from sysindexes where name='IX_CommCode')
 begin
@@ -62,6 +82,36 @@ CREATE UNIQUE NONCLUSTERED INDEX IX_CommCode ON dbo.CommCode
   insert into CommCode(TypeName,ID,Name,PYM,WBM) select '样本类型',ID,Name,PINYIN,WBM from specimentype
   insert into CommCode(TypeName,ID,Name,PYM,WBM) select '样本状态',ID,Name,PINYIN,WBM from specimencase
 end
+
+--CommValue 20110607
+if not exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[CommValue]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
+create table CommValue
+ (Unid int identity primary key,
+  ItemUnid int not null,
+  sValue varchar(100) not null,
+  dfValue bit null
+)
+GO
+
+--PIX_TRAN 20111123
+if not exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[PIX_TRAN]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
+CREATE TABLE PIX_TRAN (
+	UNID int IDENTITY primary key,
+	PKUNID int NULL ,
+	Reserve1 varchar(100)  NULL ,
+	Reserve2 varchar(100)  NULL ,
+	Reserve3 varchar(100)  NULL ,
+	Reserve4 varchar(100)  NULL ,
+	Reserve5 datetime  NULL ,
+	CREATE_DATE_TIME datetime NULL DEFAULT (getdate()),
+	OpType varchar(50)  NULL 
+) 
+GO
+
+SET QUOTED_IDENTIFIER ON 
+GO
+SET ANSI_NULLS ON 
+GO
 
 --combinitem
 IF not EXISTS (select 1 from syscolumns where name='itemtype' and id=object_id('combinitem'))
@@ -97,14 +147,31 @@ begin
   Alter table combinitem add Unid int IDENTITY PRIMARY key
 end
 
+--combinitem 20140410
+IF not EXISTS (select 1 from syscolumns where name='Department' and id=object_id('combinitem'))
+  Alter table combinitem add Department varchar(50) null
+GO
+
+--combinitem 20140411
+IF not EXISTS (select 1 from syscolumns where name='SysName' and id=object_id('combinitem'))
+  Alter table combinitem add SysName varchar(10) null
+GO
+
 if not exists(select * from sysindexes where name='IX_combinitem')
   CREATE UNIQUE NONCLUSTERED INDEX [IX_combinitem] ON [dbo].[combinitem] 
   (
 	[id] ASC
   )
-
 go
 
+--CombSChkItem
+if not exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[CombSChkItem]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
+create table CombSChkItem
+ (Unid int identity primary key,
+  CombUnid int not null,
+  ItemUnid int not null
+)
+GO
 
 --将数据插入到CombSChkItem表中 start
 --combinitem中增加unid字段之后
@@ -180,50 +247,683 @@ IF EXISTS (select 1 from syscolumns where name='Dosage1' and id=object_id('clini
 --2015-05-30从varchar(15)改为varchar(100),使之能容纳酶标仪ELX800的计算公式
 IF EXISTS (select 1 from syscolumns where name='Dosage2' and id=object_id('clinicchkitem'))
   alter table clinicchkitem alter column Dosage2 varchar(100) null
+  
+--修改表clinicchkitem
+IF NOT EXISTS (select 1 from syscolumns where name='CFXS' and id=object_id('clinicchkitem'))
+begin
+  Alter table clinicchkitem add CFXS varchar(10) null--乘法系数
+end
+
+IF NOT EXISTS (select 1 from syscolumns where name='JFXS' and id=object_id('clinicchkitem'))
+begin
+  Alter table clinicchkitem add JFXS varchar(10) null--加法系数
+end
+go
+
+ALTER TABLE clinicchkitem ALTER COLUMN PYM varchar(15)
+ALTER TABLE clinicchkitem ALTER COLUMN WBM varchar(15)
+go  
+
+--修改表clinicchkitem--20081027
+IF NOT EXISTS (select 1 from syscolumns where name='ChkMethod' and id=object_id('clinicchkitem'))
+begin
+  Alter table clinicchkitem add ChkMethod varchar(30) null--检验方法
+end
+
+--修改表clinicchkitem--20140312
+IF NOT EXISTS (select 1 from syscolumns where name='Reserve1' and id=object_id('clinicchkitem'))
+begin
+  Alter table clinicchkitem add Reserve1 varchar(200) null--保留字段1
+end
+
+IF NOT EXISTS (select 1 from syscolumns where name='Reserve2' and id=object_id('clinicchkitem'))
+begin
+  Alter table clinicchkitem add Reserve2 varchar(200) null--保留字段2
+end
+
+IF NOT EXISTS (select 1 from syscolumns where name='Reserve3' and id=object_id('clinicchkitem'))
+begin
+  Alter table clinicchkitem add Reserve3 varchar(200) null--保留字段3
+end
+
+IF NOT EXISTS (select 1 from syscolumns where name='Reserve4' and id=object_id('clinicchkitem'))
+begin
+  Alter table clinicchkitem add Reserve4 varchar(200) null--保留字段4
+end
+
+IF NOT EXISTS (select 1 from syscolumns where name='Reserve5' and id=object_id('clinicchkitem'))
+begin
+  Alter table clinicchkitem add Reserve5 int null--保留字段5
+end
+
+IF NOT EXISTS (select 1 from syscolumns where name='Reserve6' and id=object_id('clinicchkitem'))
+begin
+  Alter table clinicchkitem add Reserve6 int null--保留字段6
+end
+
+IF NOT EXISTS (select 1 from syscolumns where name='Reserve7' and id=object_id('clinicchkitem'))
+begin
+  Alter table clinicchkitem add Reserve7 float null--保留字段7
+end
+
+IF NOT EXISTS (select 1 from syscolumns where name='Reserve8' and id=object_id('clinicchkitem'))
+begin
+  Alter table clinicchkitem add Reserve8 float null--保留字段8
+end
+
+IF NOT EXISTS (select 1 from syscolumns where name='Reserve9' and id=object_id('clinicchkitem'))
+begin
+  Alter table clinicchkitem add Reserve9 datetime null--保留字段9
+end
+
+IF NOT EXISTS (select 1 from syscolumns where name='Reserve10' and id=object_id('clinicchkitem'))
+begin
+  Alter table clinicchkitem add Reserve10 datetime null--保留字段10
+end
+
+--2014-04-16 使之能容纳项目超限的建议
+alter table clinicchkitem alter column Reserve1 varchar(300) null
+alter table clinicchkitem alter column Reserve2 varchar(300) null
+GO
+
+--clinicchkitem 20140411
+IF not EXISTS (select 1 from syscolumns where name='SysName' and id=object_id('clinicchkitem'))
+  Alter table clinicchkitem add SysName varchar(10) null
+GO
 
 if not exists(select * from sysindexes where name='IX_clinicchkitem')
 CREATE UNIQUE NONCLUSTERED INDEX [IX_clinicchkitem] ON [dbo].[clinicchkitem] 
 (
 	[itemid] ASC
 ) 
-
---创建clinicchkitem与CombSChkItem之间的关系
-if not exists(select OBJECTPROPERTY(o.id,N'IsSystemTable') from sysobjects o where o.name = N'FK_CombSChkItem_clinicchkitem' and user_name(o.uid) = N'dbo')
-ALTER TABLE dbo.CombSChkItem ADD CONSTRAINT
-	FK_CombSChkItem_clinicchkitem FOREIGN KEY
-	(
-	ItemUnid
-	) REFERENCES dbo.clinicchkitem
-	(
-	unid
-	) ON UPDATE CASCADE
-	 ON DELETE CASCADE
-
---创建combinitem与CombSChkItem之间的关系
-if not exists(select OBJECTPROPERTY(o.id,N'IsSystemTable') from sysobjects o where o.name = N'FK_CombSChkItem_combinitem' and user_name(o.uid) = N'dbo')
-ALTER TABLE dbo.CombSChkItem ADD CONSTRAINT
-	FK_CombSChkItem_combinitem FOREIGN KEY
-	(
-	CombUnid
-	) REFERENCES dbo.combinitem
-	(
-	unid
-	) ON UPDATE CASCADE
-	 ON DELETE CASCADE
-
+	 
+--修改表referencevalue
+IF NOT EXISTS (select 1 from syscolumns where name='flagetype' and id=object_id('referencevalue'))
+begin
+  Alter table referencevalue add flagetype varchar(50) null--样本类型
+end
 go
 
---创建clinicchkitem与referencevalue之间的关系
-if not exists(select OBJECTPROPERTY(o.id,N'IsSystemTable') from sysobjects o where o.name = N'FK_referencevalue_clinicchkitem' and user_name(o.uid) = N'dbo')
-ALTER TABLE dbo.referencevalue ADD CONSTRAINT
-	FK_referencevalue_clinicchkitem FOREIGN KEY
+alter table referencevalue alter column minvalue varchar(250) null
+alter table referencevalue alter column maxvalue varchar(250) null
+GO
+
+--20140926创建表ItemExceptionValue
+if not exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[ItemExceptionValue]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
+create table ItemExceptionValue
+ (Unid int identity primary key,
+  ItemUnid int not null,
+  MatchMode int not null,--0：模糊匹配；1：左匹配；2：右匹配；3：全匹配
+  ItemValue varchar(100) not null,
+  HighOrLowFlag int Not Null--1：偏低；2：偏高
+)
+GO	 
+	 
+IF EXISTS (select 1 from syscolumns where name='itemvalue_hist' and id=object_id('chk_valu'))
+Alter table chk_valu drop column itemvalue_hist
+go
+
+IF EXISTS (select 1 from syscolumns where name='check_date_hist' and id=object_id('chk_valu'))
+Alter table chk_valu drop column check_date_hist
+go
+
+IF EXISTS (select 1 from syscolumns where name='itemvalue_hist' and id=object_id('chk_valu_bak'))
+Alter table chk_valu_bak drop column itemvalue_hist
+go
+
+IF EXISTS (select 1 from syscolumns where name='check_date_hist' and id=object_id('chk_valu_bak'))
+Alter table chk_valu_bak drop column check_date_hist
+go
+
+--从EXCEL导入信息时要用到，故要保留
+--IF EXISTS (select 1 from syscolumns where name='DNH' and id=object_id('chk_con'))
+--Alter table chk_con drop column DNH
+--go
+
+--IF EXISTS (select 1 from syscolumns where name='DNH' and id=object_id('chk_con_bak'))
+--Alter table chk_con_bak drop column DNH
+--go
+
+--从varchar(30)改为varchar(500),使之能容纳交叉配血、血流变诊断意见、体检结论、建议等结果值
+alter table chk_valu alter column itemvalue varchar(500) null
+alter table chk_valu_bak alter column itemvalue varchar(500) null
+GO
+
+--从varchar(3000)改为varchar(4000),使之能容纳ActDiff直方图数据
+alter table chk_valu alter column histogram varchar(4000) null
+alter table chk_valu_bak alter column histogram varchar(4000) null
+GO
+
+--2010-05-03从varchar(15)改为varchar(100),使之能容纳直方图X轴的Title
+alter table chk_valu alter column Dosage1 varchar(100) null
+alter table chk_valu_bak alter column Dosage1 varchar(100) null
+GO
+
+--2015-05-30从varchar(15)改为varchar(100),使之能容纳酶标仪ELX800的计算公式
+alter table chk_valu alter column Dosage2 varchar(100) null
+alter table chk_valu_bak alter column Dosage2 varchar(100) null
+GO
+
+--2012-03-08从varchar(30)改为varchar(50),越秀区中医医院的组合项目特长
+alter table chk_valu alter column combin_Name varchar(50) null
+alter table chk_valu_bak alter column combin_Name varchar(50) null
+GO
+
+IF NOT EXISTS (select 1 from syscolumns where name='Photo' and id=object_id('chk_valu'))
+  Alter table chk_valu add Photo Image null
+
+IF NOT EXISTS (select 1 from syscolumns where name='Photo' and id=object_id('chk_valu_bak'))
+  Alter table chk_valu_bak add Photo Image null
+go
+
+--20151202增加采样时间字段
+IF NOT EXISTS (select 1 from syscolumns where name='TakeSampleTime' and id=object_id('chk_valu'))
+  Alter table chk_valu add TakeSampleTime datetime null
+
+IF NOT EXISTS (select 1 from syscolumns where name='TakeSampleTime' and id=object_id('chk_valu_bak'))
+  Alter table chk_valu_bak add TakeSampleTime datetime null
+go
+
+IF NOT EXISTS (select 1 from syscolumns where name='IsEdited' and id=object_id('chk_valu'))
+  Alter table chk_valu add IsEdited int null
+
+IF NOT EXISTS (select 1 from syscolumns where name='IsEdited' and id=object_id('chk_valu_bak'))
+  Alter table chk_valu_bak add IsEdited int null
+GO
+
+--修改表chk_valu--20081027
+IF NOT EXISTS (select 1 from syscolumns where name='ChkMethod' and id=object_id('chk_valu'))
+begin
+  Alter table chk_valu add ChkMethod varchar(30) null--检验方法
+end
+
+--修改表chk_valu_bak--20081027
+IF NOT EXISTS (select 1 from syscolumns where name='ChkMethod' and id=object_id('chk_valu_bak'))
+begin
+  Alter table chk_valu_bak add ChkMethod varchar(30) null--检验方法
+end
+
+--20141123
+IF NOT EXISTS (select 1 from syscolumns where name='Reserve1' and id=object_id('chk_valu'))
+  Alter table chk_valu add Reserve1 varchar(300) null--保留字段1
+
+IF NOT EXISTS (select 1 from syscolumns where name='Reserve1' and id=object_id('chk_valu_bak'))
+  Alter table chk_valu_bak add Reserve1 varchar(300) null--保留字段1
+
+IF NOT EXISTS (select 1 from syscolumns where name='Reserve2' and id=object_id('chk_valu'))
+  Alter table chk_valu add Reserve2 varchar(300) null--保留字段2
+
+IF NOT EXISTS (select 1 from syscolumns where name='Reserve2' and id=object_id('chk_valu_bak'))
+  Alter table chk_valu_bak add Reserve2 varchar(300) null--保留字段2
+
+--保留字段3为Dosage1
+--保留字段4为Dosage2
+
+IF NOT EXISTS (select 1 from syscolumns where name='Reserve5' and id=object_id('chk_valu'))
+  Alter table chk_valu add Reserve5 int null--保留字段5
+
+IF NOT EXISTS (select 1 from syscolumns where name='Reserve5' and id=object_id('chk_valu_bak'))
+  Alter table chk_valu_bak add Reserve5 int null--保留字段5
+
+IF NOT EXISTS (select 1 from syscolumns where name='Reserve6' and id=object_id('chk_valu'))
+  Alter table chk_valu add Reserve6 int null--保留字段6
+
+IF NOT EXISTS (select 1 from syscolumns where name='Reserve6' and id=object_id('chk_valu_bak'))
+  Alter table chk_valu_bak add Reserve6 int null--保留字段6
+
+IF NOT EXISTS (select 1 from syscolumns where name='Reserve7' and id=object_id('chk_valu'))
+  Alter table chk_valu add Reserve7 float null--保留字段7
+
+IF NOT EXISTS (select 1 from syscolumns where name='Reserve7' and id=object_id('chk_valu_bak'))
+  Alter table chk_valu_bak add Reserve7 float null--保留字段7
+
+IF NOT EXISTS (select 1 from syscolumns where name='Reserve8' and id=object_id('chk_valu'))
+  Alter table chk_valu add Reserve8 float null--保留字段8
+
+IF NOT EXISTS (select 1 from syscolumns where name='Reserve8' and id=object_id('chk_valu_bak'))
+  Alter table chk_valu_bak add Reserve8 float null--保留字段8
+
+IF NOT EXISTS (select 1 from syscolumns where name='Reserve9' and id=object_id('chk_valu'))
+  Alter table chk_valu add Reserve9 datetime null--保留字段9
+
+IF NOT EXISTS (select 1 from syscolumns where name='Reserve9' and id=object_id('chk_valu_bak'))
+  Alter table chk_valu_bak add Reserve9 datetime null--保留字段9
+
+IF NOT EXISTS (select 1 from syscolumns where name='Reserve10' and id=object_id('chk_valu'))
+  Alter table chk_valu add Reserve10 datetime null--保留字段10
+
+IF NOT EXISTS (select 1 from syscolumns where name='Reserve10' and id=object_id('chk_valu_bak'))
+  Alter table chk_valu_bak add Reserve10 datetime null--保留字段10
+GO
+
+--20081211,市政要求的细菌参考值很长,故50->250
+alter table chk_valu alter column Min_value varchar(250) null
+alter table chk_valu alter column Max_value varchar(250) null
+alter table chk_valu_bak alter column Min_value varchar(250) null
+alter table chk_valu_bak alter column Max_value varchar(250) null
+GO
+
+alter table chk_con alter column TjJiWangShi varchar(300) null
+alter table chk_con_bak alter column TjJiWangShi varchar(300) null
+alter table chk_con alter column TjJiaZuShi varchar(300) null
+alter table chk_con_bak alter column TjJiaZuShi varchar(300) null
+alter table chk_con alter column TjNeiKe varchar(300) null
+alter table chk_con_bak alter column TjNeiKe varchar(300) null
+alter table chk_con alter column TjWaiKe varchar(300) null
+alter table chk_con_bak alter column TjWaiKe varchar(300) null
+alter table chk_con alter column TjWuGuanKe varchar(300) null
+alter table chk_con_bak alter column TjWuGuanKe varchar(300) null
+alter table chk_con alter column TjFuKe varchar(300) null
+alter table chk_con_bak alter column TjFuKe varchar(300) null
+alter table chk_con alter column TjLengQiangGuang varchar(300) null
+alter table chk_con_bak alter column TjLengQiangGuang varchar(300) null
+alter table chk_con alter column TjXGuang varchar(300) null
+alter table chk_con_bak alter column TjXGuang varchar(300) null
+alter table chk_con alter column TjBChao varchar(300) null
+alter table chk_con_bak alter column TjBChao varchar(300) null
+alter table chk_con alter column TjXinDianTu varchar(300) null
+alter table chk_con_bak alter column TjXinDianTu varchar(300) null
+alter table chk_con alter column TJAdvice varchar(300) null
+alter table chk_con_bak alter column TJAdvice varchar(300) null
+GO
+
+--修改表chk_con
+IF NOT EXISTS (select 1 from syscolumns where name='TjJianYan' and id=object_id('chk_con'))
+begin
+  Alter table chk_con add TjJianYan varchar(300) null--检验
+end
+
+--修改表chk_con_bak
+IF NOT EXISTS (select 1 from syscolumns where name='TjJianYan' and id=object_id('chk_con_bak'))
+begin
+  Alter table chk_con_bak add TjJianYan varchar(300) null--检验
+end
+go
+
+--修改表chk_con--20120222
+IF NOT EXISTS (select 1 from syscolumns where name='Audit_Date' and id=object_id('chk_con'))
+begin
+  Alter table chk_con add Audit_Date datetime null--审核时间
+end
+
+--修改表chk_con_bak--20120222
+IF NOT EXISTS (select 1 from syscolumns where name='Audit_Date' and id=object_id('chk_con_bak'))
+begin
+  Alter table chk_con_bak add Audit_Date datetime null--审核时间
+end
+go
+
+--20120228,越秀区中医医院导入诊疗卡号,故10->30
+alter table chk_con alter column Caseno varchar(30) null
+alter table chk_con_bak alter column Caseno varchar(30) null
+GO
+
+--20120511,临床诊断,char(50)->varchar(200)
+alter table chk_con alter column diagnose varchar(200) null
+alter table chk_con_bak alter column diagnose varchar(200) null
+GO
+
+--20150517增加标本发送人、接收人、接收时间
+--PushPress（原舒张压）用作 发送人
+--PullPress（原收缩压）用作 接收人
+--Stature（原身高）用作 接收时间
+alter table chk_con alter column Stature datetime Null
+GO
+
+alter table chk_con_bak alter column Stature datetime Null
+GO
+
+--20140906质控修改
+if EXISTS (select 1 from information_schema.columns where table_name = 'QCGHEAD' and column_name='qc_month' and data_type='varchar')
+begin
+  DELETE FROM QCGHEAD WHERE qc_month='AA'--处理历史数据
+  alter table qcghead alter column qc_year int NOT NULL
+  alter table qcghead alter column qc_month int NOT NULL
+end
+GO
+
+IF not EXISTS (select 1 from syscolumns where name='itemid' and id=object_id('qcghead'))
+  Alter table qcghead add itemid varchar(10) null
+GO
+
+--处理历史数据
+update qcghead set itemid='-1' where itemid is null
+GO
+
+Alter table qcghead alter column itemid varchar(10) NOT null
+GO
+
+alter table qcghead alter column itemname varchar(30) null
+GO
+
+--创建qcghead.itemid不能为空字符串的约束
+if not exists(select OBJECTPROPERTY(o.id,N'IsSystemTable') from sysobjects o where o.name = N'CK_qcghead_ITEMID' and user_name(o.uid) = N'dbo')
+ALTER TABLE qcghead ADD CONSTRAINT CK_qcghead_ITEMID CHECK (len(itemID) > 0)
+GO
+
+--HisCombItem 20110611
+if not exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[HisCombItem]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
+create table HisCombItem
+ (Unid int identity primary key,
+  CombUnid int not null,
+  HisItem varchar(20) not null,
+  HisItemName varchar(50) null
+)
+GO
+
+--20150719增加字段
+IF NOT EXISTS (select 1 from syscolumns where name='ExtSystemId' and id=object_id('HisCombItem'))
+  Alter table HisCombItem add ExtSystemId varchar(50) null
+
+IF NOT EXISTS (select 1 from syscolumns where name='Create_Date_Time' and id=object_id('HisCombItem'))
+  Alter table HisCombItem add Create_Date_Time datetime null DEFAULT (getdate())
+GO
+
+if not exists(select * from sysindexes where name='IX_HisCombItem')
+begin
+CREATE UNIQUE NONCLUSTERED INDEX IX_HisCombItem ON dbo.HisCombItem
 	(
-	id
-	) REFERENCES dbo.clinicchkitem
-	(
-	itemid
-	) ON UPDATE CASCADE
-	 ON DELETE CASCADE
+	CombUnid,
+	HisItem
+	) ON [PRIMARY]
+end
+GO
+
+--20100125打印条码标签工作站的病人基本信息表
+if not exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[chk_con_his]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
+begin
+CREATE TABLE chk_con_his (
+     Unid int identity primary key,
+	[checkid] [varchar] (50) NULL ,
+	[patientname] [varchar] (14) NULL ,
+	[sex] [varchar] (8) NULL ,
+	[age] [varchar] (14) NULL ,
+	[Caseno] [varchar] (10) NULL ,
+	[bedno] [varchar] (10) NULL ,
+	[deptname] [varchar] (40) NULL ,
+	[check_date] [datetime] NULL DEFAULT (getdate()) ,
+	[check_doctor] [varchar] (14) NULL ,
+	[report_date] [datetime] NULL ,
+	[report_doctor] [varchar] (14) NULL ,
+	[operator] [varchar] (14) NULL ,
+	[printtimes] [datetime] NULL ,--int->datetime 20110613
+	[Diagnosetype] [varchar] (4) NULL ,
+	[flagetype] [varchar] (60) NULL ,
+	[diagnose] [char] (50) NULL ,
+	[typeflagcase] [char] (30) NULL ,
+	[issure] [varchar] (50) NULL ,
+	[combin_id] [varchar] (30) NULL ,
+	[LSH] [varchar] (8) NULL ,
+	[GermName] [varchar] (50) NULL ,
+	[His_Unid] [varchar] (50) NULL ,
+	[His_MzOrZy] [varchar] (50) NULL ,
+	[WorkDepartment] [varchar] (50) NULL ,
+	[WorkCategory] [varchar] (50) NULL ,
+	[WorkID] [varchar] (50) NULL ,
+	[ifMarry] [varchar] (8) NULL ,
+	[OldAddress] [varchar] (100) NULL ,
+	[Address] [varchar] (100) NULL ,
+	[Telephone] [varchar] (100) NULL ,
+	[TjDescription] [varchar] (500) NULL ,
+	[WorkCompany] [varchar] (50) NULL ,
+	[PushPress] [varchar] (50) NULL ,
+	[PullPress] [varchar] (50) NULL ,
+	[LeftEyesight] [varchar] (50) NULL ,
+	[RightEyesight] [varchar] (50) NULL ,
+	[Stature] [varchar] (50) NULL ,
+	[Weight] [varchar] (50) NULL ,
+	[TjJiWangShi] [varchar] (300) NULL ,
+	[TjJiaZuShi] [varchar] (300) NULL ,
+	[TjNeiKe] [varchar] (300) NULL ,
+	[TjWaiKe] [varchar] (300) NULL ,
+	[TjWuGuanKe] [varchar] (300) NULL ,
+	[TjFuKe] [varchar] (300) NULL ,
+	[TjLengQiangGuang] [varchar] (300) NULL ,
+	[TjXGuang] [varchar] (300) NULL ,
+	[TjBChao] [varchar] (300) NULL ,
+	[TjXinDianTu] [varchar] (300) NULL ,
+	[TJAdvice] [varchar] (300) NULL ,
+	[TjJianYan] [varchar] (300) NULL ,
+	[DNH] [varchar] (30) NULL 
+)
+
+CREATE TABLE chk_valu_his (
+     valueid int identity primary key,
+	[pkunid] [int] NOT NULL ,
+	[pkcombin_id] [varchar] (10) not NULL ,--null->not null 20110611
+	[itemid] [varchar] (10) NULL ,
+	[Name] [varchar] (30) NULL ,
+	[english_name] [varchar] (30) NULL ,
+	[itemvalue] [varchar] (60) NULL ,
+	[Unit] [varchar] (30) NULL ,
+	[Min_value] [varchar] (20) NULL ,
+	[Max_value] [varchar] (20) NULL ,
+	[printorder] [int] NULL ,
+	[getmoney] [money] NULL ,
+	[issure] [varchar] (10) NULL ,
+	[histogram] [varchar] (3000) NULL ,
+	[combin_Name] [varchar] (30) NULL ,
+	[Dosage1] [varchar] (100) NULL ,
+	[Dosage2] [varchar] (15) NULL ,
+	[Surem1] [varchar] (15) NULL ,
+	[Surem2] [varchar] (15) NULL ,
+	[Urine1] [varchar] (15) NULL ,
+	[Urine2] [varchar] (15) NULL ,
+	[Photo] [image] NULL ,
+	[IsEdited] [int] NULL 
+)
+
+CREATE TABLE chk_con_his_bak (
+     Unid int primary key,
+	[checkid] [varchar] (50) NULL ,
+	[patientname] [varchar] (14) NULL ,
+	[sex] [varchar] (8) NULL ,
+	[age] [varchar] (14) NULL ,
+	[Caseno] [varchar] (10) NULL ,
+	[bedno] [varchar] (10) NULL ,
+	[deptname] [varchar] (40) NULL ,
+	[check_date] [datetime] NULL ,
+	[check_doctor] [varchar] (14) NULL ,
+	[report_date] [datetime] NULL ,
+	[report_doctor] [varchar] (14) NULL ,
+	[operator] [varchar] (14) NULL ,
+	[printtimes] [datetime] NULL ,--int->datetime 20110613
+	[Diagnosetype] [varchar] (4) NULL ,
+	[flagetype] [varchar] (60) NULL ,
+	[diagnose] [char] (50) NULL ,
+	[typeflagcase] [char] (30) NULL ,
+	[issure] [varchar] (50) NULL ,
+	[combin_id] [varchar] (30) NULL ,
+	[LSH] [varchar] (8) NULL ,
+	[GermName] [varchar] (50) NULL ,
+	[His_Unid] [varchar] (50) NULL ,
+	[His_MzOrZy] [varchar] (50) NULL ,
+	[WorkDepartment] [varchar] (50) NULL ,
+	[WorkCategory] [varchar] (50) NULL ,
+	[WorkID] [varchar] (50) NULL ,
+	[ifMarry] [varchar] (8) NULL ,
+	[OldAddress] [varchar] (100) NULL ,
+	[Address] [varchar] (100) NULL ,
+	[Telephone] [varchar] (100) NULL ,
+	[TjDescription] [varchar] (500) NULL ,
+	[WorkCompany] [varchar] (50) NULL ,
+	[PushPress] [varchar] (50) NULL ,
+	[PullPress] [varchar] (50) NULL ,
+	[LeftEyesight] [varchar] (50) NULL ,
+	[RightEyesight] [varchar] (50) NULL ,
+	[Stature] [varchar] (50) NULL ,
+	[Weight] [varchar] (50) NULL ,
+	[TjJiWangShi] [varchar] (300) NULL ,
+	[TjJiaZuShi] [varchar] (300) NULL ,
+	[TjNeiKe] [varchar] (300) NULL ,
+	[TjWaiKe] [varchar] (300) NULL ,
+	[TjWuGuanKe] [varchar] (300) NULL ,
+	[TjFuKe] [varchar] (300) NULL ,
+	[TjLengQiangGuang] [varchar] (300) NULL ,
+	[TjXGuang] [varchar] (300) NULL ,
+	[TjBChao] [varchar] (300) NULL ,
+	[TjXinDianTu] [varchar] (300) NULL ,
+	[TJAdvice] [varchar] (300) NULL ,
+	[TjJianYan] [varchar] (300) NULL ,
+	[DNH] [varchar] (30) NULL 
+)
+
+CREATE TABLE chk_valu_his_bak (
+     valueid int primary key,
+	[pkunid] [int] NOT NULL ,
+	[pkcombin_id] [varchar] (10) not NULL ,--null->not null 20110611
+	[itemid] [varchar] (10) NULL ,
+	[Name] [varchar] (30) NULL ,
+	[english_name] [varchar] (30) NULL ,
+	[itemvalue] [varchar] (60) NULL ,
+	[Unit] [varchar] (30) NULL ,
+	[Min_value] [varchar] (20) NULL ,
+	[Max_value] [varchar] (20) NULL ,
+	[printorder] [int] NULL ,
+	[getmoney] [money] NULL ,
+	[issure] [varchar] (10) NULL ,
+	[histogram] [varchar] (3000) NULL ,
+	[combin_Name] [varchar] (30) NULL ,
+	[Dosage1] [varchar] (100) NULL ,
+	[Dosage2] [varchar] (15) NULL ,
+	[Surem1] [varchar] (15) NULL ,
+	[Surem2] [varchar] (15) NULL ,
+	[Urine1] [varchar] (15) NULL ,
+	[Urine2] [varchar] (15) NULL ,
+	[Photo] [image] NULL ,
+	[IsEdited] [int] NULL 
+)
+
+end
+GO
+
+--2015-06-11从varchar(15)改为varchar(50),使之能容纳HIS申请单号
+alter table chk_valu_his alter column Surem1 varchar(50) null
+alter table chk_valu_his_bak alter column Surem1 varchar(50) null
+GO
+
+--2015-06-11从varchar(15)改为varchar(50),使之能容纳HIS组合项目号
+alter table chk_valu_his alter column Surem2 varchar(50) null
+alter table chk_valu_his_bak alter column Surem2 varchar(50) null
+GO
+
+IF NOT EXISTS (select 1 from syscolumns where name='IfSel' and id=object_id('chk_valu_his'))
+  Alter table chk_valu_his add IfSel bit null DEFAULT (1)--选择
+
+IF NOT EXISTS (select 1 from syscolumns where name='IfSel' and id=object_id('chk_valu_his_bak'))
+  Alter table chk_valu_his_bak add IfSel bit null--选择
+GO
+
+--20151202增加采样时间字段
+IF NOT EXISTS (select 1 from syscolumns where name='TakeSampleTime' and id=object_id('chk_valu_his'))
+  Alter table chk_valu_his add TakeSampleTime datetime null
+
+IF NOT EXISTS (select 1 from syscolumns where name='TakeSampleTime' and id=object_id('chk_valu_his_bak'))
+  Alter table chk_valu_his_bak add TakeSampleTime datetime null
+go
+
+--修改表chk_con_his--20120313
+IF NOT EXISTS (select 1 from syscolumns where name='Audit_Date' and id=object_id('chk_con_his'))
+begin
+  Alter table chk_con_his add Audit_Date datetime null--审核时间
+end
+
+--修改表chk_con_his_bak--20120313
+IF NOT EXISTS (select 1 from syscolumns where name='Audit_Date' and id=object_id('chk_con_his_bak'))
+begin
+  Alter table chk_con_his_bak add Audit_Date datetime null--审核时间
+end
+go
+
+--20120228,越秀区中医医院导入诊疗卡号,故10->30
+alter table chk_con_his alter column Caseno varchar(30) null
+alter table chk_con_his_bak alter column Caseno varchar(30) null
+GO
+
+--2012-03-08从varchar(30)改为varchar(50),越秀区中医医院的组合项目特长
+alter table chk_valu_his alter column combin_Name varchar(50) null
+alter table chk_valu_his_bak alter column combin_Name varchar(50) null
+GO
+
+--20120511,临床诊断,char(50)->varchar(200)
+alter table chk_con_his alter column diagnose varchar(200) null
+alter table chk_con_his_bak alter column diagnose varchar(200) null
+GO
+
+--20151205表ApiToken创建脚本
+if not exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[ApiToken]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
+CREATE TABLE ApiToken (
+	UserId varchar (20) primary key ,
+	Token varchar (50) NOT NULL ,
+	Mod_Date_Time datetime NULL ,
+	Create_Date_Time datetime NULL DEFAULT (getdate())
+) 
+GO
+
+--20160422用户访问应用程序记录表(用户信息收集)创建脚本
+if not exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[AppVisit]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
+create table AppVisit
+ (Unid int identity primary key,
+  SysName varchar (20) NULL,
+  PageName varchar (10) NULL,
+  IP varchar (20) NULL,
+  Customer varchar (50) NULL,
+  UserName varchar (20) NULL,
+  ActionName varchar (50) NULL,
+  ActionTime datetime NULL,
+  Remark varchar (100) NULL,
+  Reserve varchar(100) NULL,
+  Reserve2 varchar (200) NULL,
+  Reserve3 varchar (200) NULL,
+  Reserve4 varchar (200) NULL,
+  Reserve5 int NULL,
+  Reserve6 int NULL,
+  Reserve7 float NULL,
+  Reserve8 float NULL,
+  Reserve9 datetime NULL,
+  Reserve10 datetime NULL,
+  Create_Date_Time datetime NULL DEFAULT (getdate())
+)
+GO
+
+--20141123打算删除这些字段，考虑到PEIS可能在用这些字段，暂不删除
+/*
+IF EXISTS (select 1 from syscolumns where name='Reserve3' and id=object_id('clinicchkitem'))
+  Alter table clinicchkitem drop column Reserve3
+IF EXISTS (select 1 from syscolumns where name='Reserve4' and id=object_id('clinicchkitem'))
+  Alter table clinicchkitem drop column Reserve4
+IF EXISTS (select 1 from syscolumns where name='Surem1' and id=object_id('clinicchkitem'))
+  Alter table clinicchkitem drop column Surem1
+IF EXISTS (select 1 from syscolumns where name='Surem2' and id=object_id('clinicchkitem'))
+  Alter table clinicchkitem drop column Surem2
+IF EXISTS (select 1 from syscolumns where name='Urine1' and id=object_id('clinicchkitem'))
+  Alter table clinicchkitem drop column Urine1
+IF EXISTS (select 1 from syscolumns where name='Urine2' and id=object_id('clinicchkitem'))
+  Alter table clinicchkitem drop column Urine2
+IF EXISTS (select 1 from syscolumns where name='ChkMethod' and id=object_id('clinicchkitem'))
+  Alter table clinicchkitem drop column ChkMethod
+IF EXISTS (select 1 from syscolumns where name='Surem1' and id=object_id('chk_valu'))
+  Alter table chk_valu drop column Surem1
+IF EXISTS (select 1 from syscolumns where name='Surem2' and id=object_id('chk_valu'))
+  Alter table chk_valu drop column Surem2
+IF EXISTS (select 1 from syscolumns where name='Urine1' and id=object_id('chk_valu'))
+  Alter table chk_valu drop column Urine1
+IF EXISTS (select 1 from syscolumns where name='Urine2' and id=object_id('chk_valu'))
+  Alter table chk_valu drop column Urine2
+IF EXISTS (select 1 from syscolumns where name='ChkMethod' and id=object_id('chk_valu'))
+  Alter table chk_valu drop column ChkMethod
+IF EXISTS (select 1 from syscolumns where name='Surem1' and id=object_id('chk_valu_bak'))
+  Alter table chk_valu_bak drop column Surem1
+IF EXISTS (select 1 from syscolumns where name='Surem2' and id=object_id('chk_valu_bak'))
+  Alter table chk_valu_bak drop column Surem2
+IF EXISTS (select 1 from syscolumns where name='Urine1' and id=object_id('chk_valu_bak'))
+  Alter table chk_valu_bak drop column Urine1
+IF EXISTS (select 1 from syscolumns where name='Urine2' and id=object_id('chk_valu_bak'))
+  Alter table chk_valu_bak drop column Urine2
+IF EXISTS (select 1 from syscolumns where name='ChkMethod' and id=object_id('chk_valu_bak'))
+  Alter table chk_valu_bak drop column ChkMethod
+*/
+--GO
 
 --删除表ChkStatus
 if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[ChkStatus]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
@@ -288,6 +988,160 @@ if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[specimenca
 if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[specimentype]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
   drop table [dbo].[specimentype]
 
+---------------表关系相关操作---------------
+
+--创建CommValue与clinicchkitem之间的关系
+if not exists(select OBJECTPROPERTY(o.id,N'IsSystemTable') from sysobjects o where o.name = N'FK_CommValue_clinicchkitem' and user_name(o.uid) = N'dbo')
+ALTER TABLE dbo.CommValue ADD CONSTRAINT
+	FK_CommValue_clinicchkitem FOREIGN KEY
+	(
+	ItemUnid
+	) REFERENCES dbo.clinicchkitem
+	(
+	unid
+	) ON UPDATE CASCADE
+	 ON DELETE CASCADE
+go
+
+--创建clinicchkitem与CombSChkItem之间的关系
+if not exists(select OBJECTPROPERTY(o.id,N'IsSystemTable') from sysobjects o where o.name = N'FK_CombSChkItem_clinicchkitem' and user_name(o.uid) = N'dbo')
+ALTER TABLE dbo.CombSChkItem ADD CONSTRAINT
+	FK_CombSChkItem_clinicchkitem FOREIGN KEY
+	(
+	ItemUnid
+	) REFERENCES dbo.clinicchkitem
+	(
+	unid
+	) ON UPDATE CASCADE
+	 ON DELETE CASCADE
+
+--创建combinitem与CombSChkItem之间的关系
+if not exists(select OBJECTPROPERTY(o.id,N'IsSystemTable') from sysobjects o where o.name = N'FK_CombSChkItem_combinitem' and user_name(o.uid) = N'dbo')
+ALTER TABLE dbo.CombSChkItem ADD CONSTRAINT
+	FK_CombSChkItem_combinitem FOREIGN KEY
+	(
+	CombUnid
+	) REFERENCES dbo.combinitem
+	(
+	unid
+	) ON UPDATE CASCADE
+	 ON DELETE CASCADE
+
+go
+
+--创建clinicchkitem与referencevalue之间的关系
+if not exists(select OBJECTPROPERTY(o.id,N'IsSystemTable') from sysobjects o where o.name = N'FK_referencevalue_clinicchkitem' and user_name(o.uid) = N'dbo')
+ALTER TABLE dbo.referencevalue ADD CONSTRAINT
+	FK_referencevalue_clinicchkitem FOREIGN KEY
+	(
+	id
+	) REFERENCES dbo.clinicchkitem
+	(
+	itemid
+	) ON UPDATE CASCADE
+	 ON DELETE CASCADE
+GO
+
+--20140926创建ItemExceptionValue与clinicchkitem之间的关系
+if not exists(select OBJECTPROPERTY(o.id,N'IsSystemTable') from sysobjects o where o.name = N'FK_ItemExceptionValue_clinicchkitem' and user_name(o.uid) = N'dbo')
+ALTER TABLE dbo.ItemExceptionValue ADD CONSTRAINT
+	FK_ItemExceptionValue_clinicchkitem FOREIGN KEY
+	(
+	ItemUnid
+	) REFERENCES dbo.clinicchkitem
+	(
+	unid
+	) ON UPDATE CASCADE
+	 ON DELETE CASCADE
+GO
+
+--创建HisCombItem与combinitem之间的关系
+if not exists(select OBJECTPROPERTY(o.id,N'IsSystemTable') from sysobjects o where o.name = N'FK_HisCombItem_combinitem' and user_name(o.uid) = N'dbo')
+ALTER TABLE dbo.HisCombItem ADD CONSTRAINT
+	FK_HisCombItem_combinitem FOREIGN KEY
+	(
+	CombUnid
+	) REFERENCES dbo.combinitem
+	(
+	unid
+	) ON UPDATE CASCADE
+	 ON DELETE CASCADE
+go
+
+--创建chk_con_his与chk_valu_his之间的关系
+ALTER TABLE dbo.chk_valu_his ADD CONSTRAINT
+	FK_chk_valu_his_chk_con_his FOREIGN KEY
+	(
+	pkunid
+	) REFERENCES dbo.chk_con_his
+	(
+	unid
+	) ON UPDATE CASCADE
+	 ON DELETE CASCADE
+GO
+
+--删除关系FK_worker_department
+if exists(select OBJECTPROPERTY(o.id,N'IsSystemTable') from sysobjects o where o.name = N'FK_worker_department' and user_name(o.uid) = N'dbo')
+ALTER TABLE dbo.worker
+	DROP CONSTRAINT FK_worker_department
+GO
+
+--删除关系FK_clinicchkitem_combinitem
+if exists(select OBJECTPROPERTY(o.id,N'IsSystemTable') from sysobjects o where o.name = N'FK_clinicchkitem_combinitem' and user_name(o.uid) = N'dbo')
+ALTER TABLE dbo.clinicchkitem
+	DROP CONSTRAINT FK_clinicchkitem_combinitem
+GO
+
+---------------函数相关操作---------------
+
+if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[uf_GetPy]') and xtype in (N'FN', N'IF', N'TF'))
+drop function [dbo].[uf_GetPy]
+GO
+
+SET QUOTED_IDENTIFIER ON 
+GO
+SET ANSI_NULLS ON 
+GO
+
+CREATE  function uf_GetPy
+(
+@str nvarchar(4000)
+)
+returns nvarchar(4000)
+as
+begin
+declare @strlen int,@re nvarchar(4000)
+declare @t table(chr nchar(1) collate Chinese_PRC_CI_AS,letter nchar(1))
+insert into @t(chr,letter)
+  select '吖','A' union all select '八','B' union all
+  select '嚓','C' union all select '咑','D' union all
+  select '妸','E' union all select '发','F' union all
+  select '旮','G' union all select '铪','H' union all
+  select '丌','J' union all select '咔','K' union all
+  select '垃','L' union all select '嘸','M' union all
+  select '拏','N' union all select '噢','O' union all
+  select '妑','P' union all select '七','Q' union all
+  select '呥','R' union all select '仨','S' union all
+  select '他','T' union all select '屲','W' union all
+  select '夕','X' union all select '丫','Y' union all
+  select '帀','Z'
+  select @strlen=len(@str),@re=''
+  while @strlen>0
+  begin
+  select top 1 @re=letter+@re,@strlen=@strlen-1
+  from @t a where chr<=substring(@str,@strlen,1)
+  order by chr desc
+  if @@rowcount=0
+  select @re=substring(@str,@strlen,1)+@re,@strlen=@strlen-1
+  end
+  return(@re)
+end
+
+GO
+SET QUOTED_IDENTIFIER OFF 
+GO
+SET ANSI_NULLS ON 
+GO
 
 --20150616根据LIS组合项目得到对应的HIS项目串
 if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[uf_GetHisCombItem]') and xtype in (N'FN', N'IF', N'TF'))
@@ -349,156 +1203,6 @@ GO
 SET ANSI_NULLS ON 
 GO
 
---存储过程pro_PrintCombinItem创建脚本
-if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[pro_PrintCombinItem]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
-drop procedure [dbo].[pro_PrintCombinItem]
-GO
-
-SET QUOTED_IDENTIFIER ON 
-GO
-SET ANSI_NULLS ON 
-GO
-
---打印/导出组合项目
-CREATE PROCEDURE [dbo].[pro_PrintCombinItem] 
-AS
-
-CREATE TABLE #temp01
-(
-   Unid int IDENTITY PRIMARY KEY,
-   ItemName varchar(70) null,
-   ItemEName varchar(50) null,
-   itemUnit varchar(50) null,
-   ItemPrice Money null,
-   ItemDefault varchar(100) null
-)
-
-DECLARE Cur_combinitem Cursor For 
-	select Unid,Name from combinitem order by ID
-
-Open Cur_combinitem
-
-Declare @Unid int,@Name varchar(60)
-FETCH NEXT FROM Cur_combinitem INTO @Unid,@Name
-WHILE @@FETCH_STATUS=0
-BEGIN
-  --插入组合项目名
-  insert into #temp01 (ItemName,ItemDefault) values (@Name+'(组合项目)',dbo.uf_GetHisCombItem(@Unid))
-  --插入项目信息
-  insert into #temp01 (ItemName,ItemEName,itemUnit,ItemPrice,ItemDefault)
-    select (select top 1 name from clinicchkitem A where A.unid=ItemUnid),
-           (select top 1 english_name from clinicchkitem B where B.unid=ItemUnid),
-	   (select top 1 unit from clinicchkitem C where C.unid=ItemUnid),
-	   (select top 1 price from clinicchkitem D where D.unid=ItemUnid),
-	   dbo.uf_GetCommValue(ItemUnid) 
-    from CombSChkItem where CombUnid=@unid
-
-  FETCH NEXT FROM Cur_combinitem INTO @Unid,@Name
-END
-CLOSE Cur_combinitem
-DEALLOCATE Cur_combinitem
-
-select 
-   --Unid int IDENTITY PRIMARY KEY,
-   ItemName 名称,
-   ItemEName 英文名,
-   itemUnit 单位,
-   ItemPrice 价格,
-   ItemDefault 常见结果
-from #temp01
-
-GO
-SET QUOTED_IDENTIFIER OFF 
-GO
-SET ANSI_NULLS ON 
-GO
-
---删除触发器TRIGGER_chk_con_SCJG_Update
-if exists (select name from sysobjects where name='TRIGGER_chk_con_SCJG_Update' and type='TR')
-  drop TRIGGER TRIGGER_chk_con_SCJG_Update
-go
-
---删除触发器TRIGGER_chk_valu_SCJG_insert
-if exists (select name from sysobjects where name='TRIGGER_chk_valu_SCJG_insert' and type='TR')
-  drop TRIGGER TRIGGER_chk_valu_SCJG_insert
-go
-
-IF EXISTS (select 1 from syscolumns where name='itemvalue_hist' and id=object_id('chk_valu'))
-Alter table chk_valu drop column itemvalue_hist
-go
-
-IF EXISTS (select 1 from syscolumns where name='check_date_hist' and id=object_id('chk_valu'))
-Alter table chk_valu drop column check_date_hist
-go
-
-IF EXISTS (select 1 from syscolumns where name='itemvalue_hist' and id=object_id('chk_valu_bak'))
-Alter table chk_valu_bak drop column itemvalue_hist
-go
-
-IF EXISTS (select 1 from syscolumns where name='check_date_hist' and id=object_id('chk_valu_bak'))
-Alter table chk_valu_bak drop column check_date_hist
-go
-
---从EXCEL导入信息时要用到，故要保留
---IF EXISTS (select 1 from syscolumns where name='DNH' and id=object_id('chk_con'))
---Alter table chk_con drop column DNH
---go
-
---IF EXISTS (select 1 from syscolumns where name='DNH' and id=object_id('chk_con_bak'))
---Alter table chk_con_bak drop column DNH
---go
-
-
-if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[uf_GetPy]') and xtype in (N'FN', N'IF', N'TF'))
-drop function [dbo].[uf_GetPy]
-GO
-
-SET QUOTED_IDENTIFIER ON 
-GO
-SET ANSI_NULLS ON 
-GO
-
-CREATE  function uf_GetPy
-(
-@str nvarchar(4000)
-)
-returns nvarchar(4000)
-as
-begin
-declare @strlen int,@re nvarchar(4000)
-declare @t table(chr nchar(1) collate Chinese_PRC_CI_AS,letter nchar(1))
-insert into @t(chr,letter)
-  select '吖','A' union all select '八','B' union all
-  select '嚓','C' union all select '咑','D' union all
-  select '妸','E' union all select '发','F' union all
-  select '旮','G' union all select '铪','H' union all
-  select '丌','J' union all select '咔','K' union all
-  select '垃','L' union all select '嘸','M' union all
-  select '拏','N' union all select '噢','O' union all
-  select '妑','P' union all select '七','Q' union all
-  select '呥','R' union all select '仨','S' union all
-  select '他','T' union all select '屲','W' union all
-  select '夕','X' union all select '丫','Y' union all
-  select '帀','Z'
-  select @strlen=len(@str),@re=''
-  while @strlen>0
-  begin
-  select top 1 @re=letter+@re,@strlen=@strlen-1
-  from @t a where chr<=substring(@str,@strlen,1)
-  order by chr desc
-  if @@rowcount=0
-  select @re=substring(@str,@strlen,1)+@re,@strlen=@strlen-1
-  end
-  return(@re)
-end
-
-GO
-SET QUOTED_IDENTIFIER OFF 
-GO
-SET ANSI_NULLS ON 
-GO
-
-
 if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[uf_ifHasHistoricalValue]') and xtype in (N'FN', N'IF', N'TF'))
 drop function [dbo].[uf_ifHasHistoricalValue]
 GO
@@ -510,7 +1214,7 @@ GO
 
 --是否存在历史结果
 --有则返回1,否则返回0
-CREATE   FUNCTION uf_ifHasHistoricalValue
+CREATE FUNCTION uf_ifHasHistoricalValue
 (
   @ValueUnid int
 )  
@@ -563,7 +1267,7 @@ GO
 
 --返回年龄的实数值(分钟值)
 --2006-01-05年龄传入'成'则默认为18岁
-CREATE         FUNCTION uf_GetAgeReal
+CREATE FUNCTION uf_GetAgeReal
 (
   @ageStr varchar(50)--ageStr='1岁2月3天4小时5分钟'
 )  
@@ -661,7 +1365,7 @@ GO
 
 --返回生日
 --2006-01-05年龄传入'成'则默认为18岁
-CREATE      FUNCTION uf_GetBirthday
+CREATE FUNCTION uf_GetBirthday
 (
   @ageStr varchar(50),--ageStr='1岁2月3日4小时5分钟'
   @op_date datetime --送检日期
@@ -752,6 +1456,415 @@ GO
 ------------------------------
 if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[uf_GetNextXxNo]') and xtype in (N'FN', N'IF', N'TF'))
 drop function [dbo].[uf_GetNextXxNo]
+GO
+
+--函数uf_ValueAlarm创建脚本
+if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[uf_ValueAlarm]') and xtype in (N'FN', N'IF', N'TF'))
+drop function [dbo].[uf_ValueAlarm]
+GO
+
+SET QUOTED_IDENTIFIER ON 
+GO
+SET ANSI_NULLS ON 
+GO
+
+CREATE FUNCTION dbo.uf_ValueAlarm
+(
+  --20140926修改程序,@ItemChnName传入的值改为项目编码ItemId
+  @ItemChnName varchar(50),--项目的中文名.20070128增加,以便特殊项目的报警.如RH血型,中国的实际情况是大多数人为阳性
+  @min_value varchar(50),
+  @max_value varchar(50),
+  @cur_value varchar(50)
+)  
+RETURNS int AS  
+BEGIN 
+  --20140926非数值结果异常值管理start
+  declare @HighOrLowFlag int
+
+  select @HighOrLowFlag=iev.HighOrLowFlag from ItemExceptionValue iev,clinicchkitem cci where iev.itemunid=cci.unid and cci.itemid=@ItemChnName and iev.MatchMode=0 and @cur_value like '%'+iev.ItemValue+'%'
+  if @HighOrLowFlag in (1,2) return @HighOrLowFlag
+  select @HighOrLowFlag=iev.HighOrLowFlag from ItemExceptionValue iev,clinicchkitem cci where iev.itemunid=cci.unid and cci.itemid=@ItemChnName and iev.MatchMode=1 and @cur_value like iev.ItemValue+'%'
+  if @HighOrLowFlag in (1,2) return @HighOrLowFlag
+  select @HighOrLowFlag=iev.HighOrLowFlag from ItemExceptionValue iev,clinicchkitem cci where iev.itemunid=cci.unid and cci.itemid=@ItemChnName and iev.MatchMode=2 and @cur_value like '%'+iev.ItemValue
+  if @HighOrLowFlag in (1,2) return @HighOrLowFlag
+  select @HighOrLowFlag=iev.HighOrLowFlag from ItemExceptionValue iev,clinicchkitem cci where iev.itemunid=cci.unid and cci.itemid=@ItemChnName and iev.MatchMode=3 and @cur_value = iev.ItemValue
+  if @HighOrLowFlag in (1,2) return @HighOrLowFlag
+  --20140926非数值结果异常值管理stop
+
+  --20161110参考值支持“大于”、“小于”、“大于等于”、“小于等于” start
+  declare @min_value_temp varchar(50),@max_value_temp varchar(50)
+  
+  set @min_value_temp=@min_value
+  set @max_value_temp=@max_value
+  
+  if LEFT(@min_value,1) in ('≤','＜','<')
+  begin
+	set @min_value_temp='-99999999999999999999999999999999999999'
+	set @max_value_temp=SUBSTRING(@min_value,2,8000)
+  end
+  
+  if LEFT(@min_value,1) in ('≥','＞','>')
+  begin
+	set @min_value_temp=SUBSTRING(@min_value,2,8000)
+	set @max_value_temp='99999999999999999999999999999999999999'
+  end
+  
+  if LEFT(@max_value,1) in ('≤','＜','<')
+  begin
+	set @min_value_temp='-99999999999999999999999999999999999999'
+	set @max_value_temp=SUBSTRING(@max_value,2,8000)
+  end
+  
+  if LEFT(@max_value,1) in ('≥','＞','>')
+  begin
+	set @min_value_temp=SUBSTRING(@max_value,2,8000)
+	set @max_value_temp='99999999999999999999999999999999999999'
+  end    
+  --20161110参考值支持“大于”、“小于”、“大于等于”、“小于等于” stop
+
+  declare @min_value_float float,@max_value_float float,@cur_value_float float,@re_Alarm int
+
+  if(ISNUMERIC(@min_value_temp)=0)or(ISNUMERIC(@max_value_temp)=0)or(ISNUMERIC(@cur_value)=0) return 0
+  --类似ISNUMERIC('-   0')返回1,但下面的CONVERT转换报错。这样的情况也应返回0
+  if CHARINDEX(' ',ltrim(rtrim(@min_value_temp)))<>0 return 0
+  if CHARINDEX(' ',ltrim(rtrim(@max_value_temp)))<>0 return 0
+  if CHARINDEX(' ',ltrim(rtrim(@cur_value)))<>0 return 0
+  
+  --ISNUMERIC('-'),ISNUMERIC('+')均返回1,但下面的CONVERT转换报错。这样的情况也应返回0
+  if (ltrim(rtrim(@min_value_temp))='+')or(ltrim(rtrim(@min_value_temp))='-')or(ltrim(rtrim(@min_value_temp))='.')or(ltrim(rtrim(@min_value_temp))='+.')or(ltrim(rtrim(@min_value_temp))='-.') return 0
+  if (ltrim(rtrim(@max_value_temp))='+')or(ltrim(rtrim(@max_value_temp))='-')or(ltrim(rtrim(@max_value_temp))='.')or(ltrim(rtrim(@max_value_temp))='+.')or(ltrim(rtrim(@max_value_temp))='-.') return 0
+  if (ltrim(rtrim(@cur_value))='+')or(ltrim(rtrim(@cur_value))='-')or(ltrim(rtrim(@cur_value))='.')or(ltrim(rtrim(@cur_value))='+.')or(ltrim(rtrim(@cur_value))='-.') return 0
+
+  SELECT @min_value_float=CONVERT(float, @min_value_temp)
+  SELECT @max_value_float=CONVERT(float, @max_value_temp)
+  SELECT @cur_value_float=CONVERT(float, @cur_value)
+
+  set @re_Alarm=0
+      if @cur_value_float<@min_value_float 
+        return 1
+      else if @cur_value_float>@max_value_float 
+        return 2 
+  return @re_Alarm
+END
+
+GO
+SET QUOTED_IDENTIFIER OFF 
+GO
+SET ANSI_NULLS ON 
+GO
+
+--生成参考范围函数 20140412
+if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[uf_Reference_Ranges]') and xtype in (N'FN', N'IF', N'TF'))
+drop function [dbo].[uf_Reference_Ranges]
+GO
+
+CREATE  FUNCTION uf_Reference_Ranges
+(
+  @Min_value varchar(250),
+  @Max_value varchar(250)
+)  
+RETURNS varchar(510) AS  
+BEGIN 
+  if isnull(@Min_value,'')=isnull(@Max_value,'') return @Min_value
+   
+  if isnull(@Min_value,'')<>''and isnull(@Max_value,'')='' return @Min_value
+
+  if isnull(@Min_value,'')=''and isnull(@Max_value,'')<>'' return @Max_value
+
+  if isnull(@Min_value,'')<>isnull(@Max_value,'') return @Min_value+'--'+@Max_value
+
+  return null
+END
+
+GO
+
+--生成参考范围函数，用于报告显示 20161111
+if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[uf_Reference_Value_B1]') and xtype in (N'FN', N'IF', N'TF'))
+drop function [dbo].[uf_Reference_Value_B1]
+GO
+
+CREATE  FUNCTION uf_Reference_Value_B1
+(
+  @Min_value varchar(250),
+  @Max_value varchar(250)
+)  
+RETURNS varchar(510) AS  
+BEGIN 
+  if isnull(@Min_value,'')=isnull(@Max_value,'') return ''
+   
+  if isnull(@Min_value,'')='' or isnull(@Max_value,'')='' return ''
+
+  if isnull(@Min_value,'')<>isnull(@Max_value,'') return @Min_value
+
+  return ''
+END
+
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[uf_Reference_Value_B2]') and xtype in (N'FN', N'IF', N'TF'))
+drop function [dbo].[uf_Reference_Value_B2]
+GO
+
+CREATE  FUNCTION uf_Reference_Value_B2
+(
+  @Min_value varchar(250),
+  @Max_value varchar(250)
+)  
+RETURNS varchar(510) AS  
+BEGIN 
+  if isnull(@Min_value,'')=isnull(@Max_value,'') return @Min_value
+   
+  if isnull(@Min_value,'')='' or isnull(@Max_value,'')='' return isnull(@Min_value,'')+isnull(@Max_value,'')
+
+  if isnull(@Min_value,'')<>isnull(@Max_value,'') return '--'+@Max_value
+
+  return ''
+END
+
+GO
+
+--20150729
+if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[uf_Peis_Br_Barcode]') and xtype in (N'FN', N'IF', N'TF'))
+drop function [dbo].[uf_Peis_Br_Barcode]
+GO
+
+SET QUOTED_IDENTIFIER ON 
+GO
+SET ANSI_NULLS ON 
+GO
+
+CREATE FUNCTION uf_Peis_Br_Barcode
+--得到标软公司体检系统的条码
+(
+  @chk_con_his_unid int
+)  
+RETURNS varchar(500) AS  
+BEGIN 
+  declare @ret varchar(500)
+  set @ret=''
+  select @ret=@ret+','+Urine1+Urine2 from chk_con_his cch,chk_valu_his cvh WHERE cch.unid=cvh.pkunid and cch.unid=@chk_con_his_unid group by Urine1,Urine2
+  set @ret=stuff(@ret,1,1,'')
+
+  return @ret
+END
+
+GO
+SET QUOTED_IDENTIFIER OFF 
+GO
+SET ANSI_NULLS ON 
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[uf_GetExtBarcode]') and xtype in (N'FN', N'IF', N'TF'))
+drop function [dbo].[uf_GetExtBarcode]
+GO
+
+SET QUOTED_IDENTIFIER ON 
+GO
+SET ANSI_NULLS ON 
+GO
+
+CREATE FUNCTION uf_GetExtBarcode
+--获取条码号
+(
+  @chk_con_his_unid int
+)  
+RETURNS varchar(500) AS  
+BEGIN 
+  declare @ret varchar(500),@tempS1 varchar(500)
+
+  select @tempS1=dbo.uf_Peis_Br_Barcode(@chk_con_his_unid)
+
+  if isnull(@tempS1,'')='' 
+    set @ret=@chk_con_his_unid
+  else set @ret=@tempS1
+
+  select @ret=','+@ret+','
+
+  return @ret
+END
+
+GO
+SET QUOTED_IDENTIFIER OFF 
+GO
+SET ANSI_NULLS ON 
+GO
+
+--20150728
+if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[uf_GetHisStationCombName]') and xtype in (N'FN', N'IF', N'TF'))
+drop function [dbo].[uf_GetHisStationCombName]
+GO
+
+SET QUOTED_IDENTIFIER ON 
+GO
+SET ANSI_NULLS ON 
+GO
+
+create FUNCTION uf_GetHisStationCombName
+(
+  @Unid int --HisStation病人的UNID
+)  
+RETURNS varchar(500) AS  
+BEGIN 
+  declare @ret varchar(500)
+  set @ret=''
+  select @ret=@ret+','+combin_Name from chk_valu_his WHERE PkUnid=@Unid
+  set @ret=stuff(@ret,1,1,'')
+
+  return @ret
+END
+
+GO
+SET QUOTED_IDENTIFIER OFF 
+GO
+SET ANSI_NULLS ON 
+GO
+
+--20160907获取指定病人的组合项目串。用于集中打印时界面显示
+--if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[uf_GetPatientCombName]') and xtype in (N'FN', N'IF', N'TF'))
+--drop function [dbo].[uf_GetPatientCombName]
+--GO
+
+--SET QUOTED_IDENTIFIER ON 
+--GO
+--SET ANSI_NULLS ON 
+--GO
+
+--create FUNCTION uf_GetPatientCombName
+--(
+--  @ifCompleted int,--0:未结束的(chk_valu);1:已结束的(chk_valu_bak)
+--  @Unid int --病人的UNID
+--)  
+--RETURNS varchar(500) AS  
+--BEGIN 
+--  declare @ret varchar(500)
+--  set @ret=''
+--  if @ifCompleted=1 
+--    select @ret=@ret+','+combin_Name from chk_valu_bak
+--      WHERE PkUnid=@Unid and issure=1 and ltrim(rtrim(isnull(itemvalue,'')))<>'' 
+--      GROUP BY combin_Name 
+--  else 
+--    select @ret=@ret+','+combin_Name from chk_valu 
+--      WHERE PkUnid=@Unid and issure=1 and ltrim(rtrim(isnull(itemvalue,'')))<>'' 
+--      GROUP BY combin_Name 
+    
+--  set @ret=stuff(@ret,1,1,'')
+
+--  return @ret
+--END
+
+--GO
+--SET QUOTED_IDENTIFIER OFF 
+--GO
+--SET ANSI_NULLS ON 
+--GO
+
+--20150808获取最新流水号
+if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[uf_GetNextSerialNum]') and xtype in (N'FN', N'IF', N'TF'))
+drop function [dbo].[uf_GetNextSerialNum]
+GO
+
+SET QUOTED_IDENTIFIER ON 
+GO
+SET ANSI_NULLS ON 
+GO
+
+CREATE FUNCTION uf_GetNextSerialNum
+(
+  @WorkGroup varchar(30), --工作组
+  @CHECK_DATE varchar(10),--检查日期,YYYY-MM-DD
+  @Diagnosetype varchar(10) --优先级别
+)  
+RETURNS varchar(50) AS  
+BEGIN 
+  --获取最新流水号
+
+  if isnull(@Diagnosetype,'')<>'常规' and isnull(@Diagnosetype,'')<>'急诊' and isnull(@Diagnosetype,'')<>'加急'
+    set @Diagnosetype='常规'
+
+  declare @MaxSerialNum varchar(50),@ret varchar(50)
+
+  select @MaxSerialNum=max(right('0000'+lsh,4)) from chk_con 
+  WHERE CONVERT(CHAR(10),check_date,121)=@CHECK_DATE
+  AND combin_id=@WorkGroup
+  and Diagnosetype=@Diagnosetype
+
+  if isnumeric(@MaxSerialNum)=1
+    set @ret=right('0000'+cast(cast(@MaxSerialNum as int)+1 as varchar),4)     
+  else set @ret='0001'
+
+  return @ret
+END
+
+GO
+SET QUOTED_IDENTIFIER OFF 
+GO
+SET ANSI_NULLS ON 
+GO
+
+---------------存储过程相关操作---------------
+
+--存储过程pro_PrintCombinItem创建脚本
+if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[pro_PrintCombinItem]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+drop procedure [dbo].[pro_PrintCombinItem]
+GO
+
+SET QUOTED_IDENTIFIER ON 
+GO
+SET ANSI_NULLS ON 
+GO
+
+--打印/导出组合项目
+CREATE PROCEDURE [dbo].[pro_PrintCombinItem] 
+AS
+
+CREATE TABLE #temp01
+(
+   Unid int IDENTITY PRIMARY KEY,
+   ItemName varchar(70) null,
+   ItemEName varchar(50) null,
+   itemUnit varchar(50) null,
+   ItemPrice Money null,
+   ItemDefault varchar(100) null
+)
+
+DECLARE Cur_combinitem Cursor For 
+	select Unid,Name from combinitem order by ID
+
+Open Cur_combinitem
+
+Declare @Unid int,@Name varchar(60)
+FETCH NEXT FROM Cur_combinitem INTO @Unid,@Name
+WHILE @@FETCH_STATUS=0
+BEGIN
+  --插入组合项目名
+  insert into #temp01 (ItemName,ItemDefault) values (@Name+'(组合项目)',dbo.uf_GetHisCombItem(@Unid))
+  --插入项目信息
+  insert into #temp01 (ItemName,ItemEName,itemUnit,ItemPrice,ItemDefault)
+    select (select top 1 name from clinicchkitem A where A.unid=ItemUnid),
+           (select top 1 english_name from clinicchkitem B where B.unid=ItemUnid),
+	   (select top 1 unit from clinicchkitem C where C.unid=ItemUnid),
+	   (select top 1 price from clinicchkitem D where D.unid=ItemUnid),
+	   dbo.uf_GetCommValue(ItemUnid) 
+    from CombSChkItem where CombUnid=@unid
+
+  FETCH NEXT FROM Cur_combinitem INTO @Unid,@Name
+END
+CLOSE Cur_combinitem
+DEALLOCATE Cur_combinitem
+
+select 
+   --Unid int IDENTITY PRIMARY KEY,
+   ItemName 名称,
+   ItemEName 英文名,
+   itemUnit 单位,
+   ItemPrice 价格,
+   ItemDefault 常见结果
+from #temp01
+
+GO
+SET QUOTED_IDENTIFIER OFF 
+GO
+SET ANSI_NULLS ON 
 GO
 
 if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[pro_StaticCombItem]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
@@ -1079,175 +2192,6 @@ select
    ItemID 工号,
    ItemName 名称
 from #temp01
-
-GO
-SET QUOTED_IDENTIFIER OFF 
-GO
-SET ANSI_NULLS ON 
-GO
-
---从varchar(30)改为varchar(500),使之能容纳交叉配血、血流变诊断意见、体检结论、建议等结果值
-alter table chk_valu alter column itemvalue varchar(500) null
-alter table chk_valu_bak alter column itemvalue varchar(500) null
-GO
-
---从varchar(3000)改为varchar(4000),使之能容纳ActDiff直方图数据
-alter table chk_valu alter column histogram varchar(4000) null
-alter table chk_valu_bak alter column histogram varchar(4000) null
-GO
-
---2010-05-03从varchar(15)改为varchar(100),使之能容纳直方图X轴的Title
-alter table chk_valu alter column Dosage1 varchar(100) null
-alter table chk_valu_bak alter column Dosage1 varchar(100) null
-GO
-
---2015-05-30从varchar(15)改为varchar(100),使之能容纳酶标仪ELX800的计算公式
-alter table chk_valu alter column Dosage2 varchar(100) null
-alter table chk_valu_bak alter column Dosage2 varchar(100) null
-GO
-
---2012-03-08从varchar(30)改为varchar(50),越秀区中医医院的组合项目特长
-alter table chk_valu alter column combin_Name varchar(50) null
-alter table chk_valu_bak alter column combin_Name varchar(50) null
-GO
-
---2015-06-11从varchar(15)改为varchar(50),使之能容纳HIS申请单号
-alter table chk_valu_his alter column Surem1 varchar(50) null
-alter table chk_valu_his_bak alter column Surem1 varchar(50) null
-GO
-
---2015-06-11从varchar(15)改为varchar(50),使之能容纳HIS组合项目号
-alter table chk_valu_his alter column Surem2 varchar(50) null
-alter table chk_valu_his_bak alter column Surem2 varchar(50) null
-GO
-
-IF NOT EXISTS (select 1 from syscolumns where name='Photo' and id=object_id('chk_valu'))
-  Alter table chk_valu add Photo Image null
-
-IF NOT EXISTS (select 1 from syscolumns where name='Photo' and id=object_id('chk_valu_bak'))
-  Alter table chk_valu_bak add Photo Image null
-go
-
---20151202增加采样时间字段
-IF NOT EXISTS (select 1 from syscolumns where name='TakeSampleTime' and id=object_id('chk_valu'))
-  Alter table chk_valu add TakeSampleTime datetime null
-
-IF NOT EXISTS (select 1 from syscolumns where name='TakeSampleTime' and id=object_id('chk_valu_bak'))
-  Alter table chk_valu_bak add TakeSampleTime datetime null
-go
-
---20140926创建表ItemExceptionValue
-if not exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[ItemExceptionValue]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
-create table ItemExceptionValue
- (Unid int identity primary key,
-  ItemUnid int not null,
-  MatchMode int not null,--0：模糊匹配；1：左匹配；2：右匹配；3：全匹配
-  ItemValue varchar(100) not null,
-  HighOrLowFlag int Not Null--1：偏低；2：偏高
-)
-GO
-
---20140926创建ItemExceptionValue与clinicchkitem之间的关系
-if not exists(select OBJECTPROPERTY(o.id,N'IsSystemTable') from sysobjects o where o.name = N'FK_ItemExceptionValue_clinicchkitem' and user_name(o.uid) = N'dbo')
-ALTER TABLE dbo.ItemExceptionValue ADD CONSTRAINT
-	FK_ItemExceptionValue_clinicchkitem FOREIGN KEY
-	(
-	ItemUnid
-	) REFERENCES dbo.clinicchkitem
-	(
-	unid
-	) ON UPDATE CASCADE
-	 ON DELETE CASCADE
-GO
-
---函数uf_ValueAlarm创建脚本
-if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[uf_ValueAlarm]') and xtype in (N'FN', N'IF', N'TF'))
-drop function [dbo].[uf_ValueAlarm]
-GO
-
-SET QUOTED_IDENTIFIER ON 
-GO
-SET ANSI_NULLS ON 
-GO
-
-CREATE FUNCTION dbo.uf_ValueAlarm
-(
-  --20140926修改程序,@ItemChnName传入的值改为项目编码ItemId
-  @ItemChnName varchar(50),--项目的中文名.20070128增加,以便特殊项目的报警.如RH血型,中国的实际情况是大多数人为阳性
-  @min_value varchar(50),
-  @max_value varchar(50),
-  @cur_value varchar(50)
-)  
-RETURNS int AS  
-BEGIN 
-  --20140926非数值结果异常值管理start
-  declare @HighOrLowFlag int
-
-  select @HighOrLowFlag=iev.HighOrLowFlag from ItemExceptionValue iev,clinicchkitem cci where iev.itemunid=cci.unid and cci.itemid=@ItemChnName and iev.MatchMode=0 and @cur_value like '%'+iev.ItemValue+'%'
-  if @HighOrLowFlag in (1,2) return @HighOrLowFlag
-  select @HighOrLowFlag=iev.HighOrLowFlag from ItemExceptionValue iev,clinicchkitem cci where iev.itemunid=cci.unid and cci.itemid=@ItemChnName and iev.MatchMode=1 and @cur_value like iev.ItemValue+'%'
-  if @HighOrLowFlag in (1,2) return @HighOrLowFlag
-  select @HighOrLowFlag=iev.HighOrLowFlag from ItemExceptionValue iev,clinicchkitem cci where iev.itemunid=cci.unid and cci.itemid=@ItemChnName and iev.MatchMode=2 and @cur_value like '%'+iev.ItemValue
-  if @HighOrLowFlag in (1,2) return @HighOrLowFlag
-  select @HighOrLowFlag=iev.HighOrLowFlag from ItemExceptionValue iev,clinicchkitem cci where iev.itemunid=cci.unid and cci.itemid=@ItemChnName and iev.MatchMode=3 and @cur_value = iev.ItemValue
-  if @HighOrLowFlag in (1,2) return @HighOrLowFlag
-  --20140926非数值结果异常值管理stop
-
-  --20161110参考值支持“大于”、“小于”、“大于等于”、“小于等于” start
-  declare @min_value_temp varchar(50),@max_value_temp varchar(50)
-  
-  set @min_value_temp=@min_value
-  set @max_value_temp=@max_value
-  
-  if LEFT(@min_value,1) in ('≤','＜','<')
-  begin
-	set @min_value_temp='-99999999999999999999999999999999999999'
-	set @max_value_temp=SUBSTRING(@min_value,2,8000)
-  end
-  
-  if LEFT(@min_value,1) in ('≥','＞','>')
-  begin
-	set @min_value_temp=SUBSTRING(@min_value,2,8000)
-	set @max_value_temp='99999999999999999999999999999999999999'
-  end
-  
-  if LEFT(@max_value,1) in ('≤','＜','<')
-  begin
-	set @min_value_temp='-99999999999999999999999999999999999999'
-	set @max_value_temp=SUBSTRING(@max_value,2,8000)
-  end
-  
-  if LEFT(@max_value,1) in ('≥','＞','>')
-  begin
-	set @min_value_temp=SUBSTRING(@max_value,2,8000)
-	set @max_value_temp='99999999999999999999999999999999999999'
-  end    
-  --20161110参考值支持“大于”、“小于”、“大于等于”、“小于等于” stop
-
-  declare @min_value_float float,@max_value_float float,@cur_value_float float,@re_Alarm int
-
-  if(ISNUMERIC(@min_value_temp)=0)or(ISNUMERIC(@max_value_temp)=0)or(ISNUMERIC(@cur_value)=0) return 0
-  --类似ISNUMERIC('-   0')返回1,但下面的CONVERT转换报错。这样的情况也应返回0
-  if CHARINDEX(' ',ltrim(rtrim(@min_value_temp)))<>0 return 0
-  if CHARINDEX(' ',ltrim(rtrim(@max_value_temp)))<>0 return 0
-  if CHARINDEX(' ',ltrim(rtrim(@cur_value)))<>0 return 0
-  
-  --ISNUMERIC('-'),ISNUMERIC('+')均返回1,但下面的CONVERT转换报错。这样的情况也应返回0
-  if (ltrim(rtrim(@min_value_temp))='+')or(ltrim(rtrim(@min_value_temp))='-')or(ltrim(rtrim(@min_value_temp))='.')or(ltrim(rtrim(@min_value_temp))='+.')or(ltrim(rtrim(@min_value_temp))='-.') return 0
-  if (ltrim(rtrim(@max_value_temp))='+')or(ltrim(rtrim(@max_value_temp))='-')or(ltrim(rtrim(@max_value_temp))='.')or(ltrim(rtrim(@max_value_temp))='+.')or(ltrim(rtrim(@max_value_temp))='-.') return 0
-  if (ltrim(rtrim(@cur_value))='+')or(ltrim(rtrim(@cur_value))='-')or(ltrim(rtrim(@cur_value))='.')or(ltrim(rtrim(@cur_value))='+.')or(ltrim(rtrim(@cur_value))='-.') return 0
-
-  SELECT @min_value_float=CONVERT(float, @min_value_temp)
-  SELECT @max_value_float=CONVERT(float, @max_value_temp)
-  SELECT @cur_value_float=CONVERT(float, @cur_value)
-
-  set @re_Alarm=0
-      if @cur_value_float<@min_value_float 
-        return 1
-      else if @cur_value_float>@max_value_float 
-        return 2 
-  return @re_Alarm
-END
 
 GO
 SET QUOTED_IDENTIFIER OFF 
@@ -1735,75 +2679,164 @@ GO
 SET ANSI_NULLS ON 
 GO
 
+--存储过程pro_StaticHBV创建脚本
+if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[pro_StaticHBV]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+drop procedure [dbo].[pro_StaticHBV]
+GO
 
---修改表referencevalue
-IF NOT EXISTS (select 1 from syscolumns where name='flagetype' and id=object_id('referencevalue'))
-begin
-  Alter table referencevalue add flagetype varchar(50) null--样本类型
-end
-go
-
-
---修改表clinicchkitem
-IF NOT EXISTS (select 1 from syscolumns where name='CFXS' and id=object_id('clinicchkitem'))
-begin
-  Alter table clinicchkitem add CFXS varchar(10) null--乘法系数
-end
-
-IF NOT EXISTS (select 1 from syscolumns where name='JFXS' and id=object_id('clinicchkitem'))
-begin
-  Alter table clinicchkitem add JFXS varchar(10) null--加法系数
-end
-go
-
---视图view_chk_valu_All的创建脚本
 SET QUOTED_IDENTIFIER ON 
 GO
 SET ANSI_NULLS ON 
 GO
 
+Create PROCEDURE [dbo].[pro_StaticHBV] 
+@in_StartDate datetime, 
+@in_StopDate datetime,
+@in_HBsAg varchar(50),
+@in_HBsAb varchar(50),
+@in_HBeAg varchar(50),
+@in_HBeAb varchar(50),
+@in_HBcAb varchar(50)
+AS
 
-if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[view_chk_valu_All]') and OBJECTPROPERTY(id, N'IsView') = 1)
-drop view [dbo].[view_chk_valu_All]
-GO
+CREATE TABLE #temp01
+(
+t_pkunid int null,
+t_HBsAg varchar(50) null,
+t_HBsAb varchar(50) null,
+t_HBeAg varchar(50) null,
+t_HBeAb varchar(50) null,
+t_HBcAb varchar(50) null
+)
 
---Asp网络查询及打印每日存根要用到
---2007-03-21
-CREATE VIEW view_chk_valu_All
-  AS
-  SELECT *
-  FROM chk_valu
+  DECLARE Cur_operator Cursor For 
+    select pkunid,HBsAg ,HBsAb, HBeAg ,HBeAb, HBcAb FROM view_HBV_Value,view_Chk_Con_All where 
+	(view_HBV_Value.pkunid=view_Chk_Con_All.unid) 
+	and (check_date between @in_StartDate and @in_StopDate)
+
+  Open Cur_operator
+
+  Declare @pkunid int,@HBsAg varchar(50),@HBsAb varchar(50),@HBeAg varchar(50),@HBeAb varchar(50),@HBcAb varchar(50)
+
+  FETCH NEXT FROM Cur_operator INTO @pkunid,@HBsAg ,@HBsAb ,@HBeAg ,@HBeAb ,@HBcAb
+  WHILE @@FETCH_STATUS=0
+  BEGIN
+    if EXISTS (select 1 from #temp01 where t_pkunid=@pkunid)
+    begin
+      update #temp01 set t_HBsAg=t_HBsAg+@HBsAg ,t_HBsAb=t_HBsAb+@HBsAb, t_HBeAg=t_HBeAg+@HBeAg ,t_HBeAb=t_HBeAb+@HBeAb, t_HBcAb=t_HBcAb+@HBcAb where t_pkunid=@pkunid
+    end else insert into #temp01 values (@pkunid,@HBsAg ,@HBsAb ,@HBeAg ,@HBeAb ,@HBcAb)
+
+    FETCH NEXT FROM Cur_operator INTO @pkunid,@HBsAg ,@HBsAb ,@HBeAg ,@HBeAb ,@HBcAb
+  END
+  CLOSE Cur_operator
+  DEALLOCATE Cur_operator
+  
+  declare @RecordNum int 
+  select @RecordNum=count(*)
+	 from #temp01 B,dbo.view_Chk_Con_All A 
+	where t_pkunid=A.unid
+	and t_HBsAg like  '%'+@in_HBsAg+'%'
+	and t_HBsAb like  '%'+@in_HBsAb+'%'
+	and t_HBeAg like  '%'+@in_HBeAg+'%'
+	and t_HBeAb like  '%'+@in_HBeAb+'%'
+	and t_HBcAb like  '%'+@in_HBcAb+'%'
+
+  select lsh as 流水号,checkid as 联机号,caseno as 病历号,
+         patientname as 姓名,sex as 性别,age as 年龄,
+         B.t_HBsAg,B.t_HBsAb,B.t_HBeAg,B.t_HBeAb,B.t_HBcAb,
+         bedno as 床号,deptname as 送检科室,check_doctor as 送检医生,
+         check_date as 检查日期,issure as 备注
+	 from #temp01 B,dbo.view_Chk_Con_All A 
+	where t_pkunid=A.unid
+	and t_HBsAg like  '%'+@in_HBsAg+'%'
+	and t_HBsAb like  '%'+@in_HBsAb+'%'
+	and t_HBeAg like  '%'+@in_HBeAg+'%'
+	and t_HBeAb like  '%'+@in_HBeAb+'%'
+	and t_HBcAb like  '%'+@in_HBcAb+'%'
+	--order by A.check_date
   UNION ALL
-  SELECT *
-  FROM chk_valu_bak
-
+  select '合计',ltrim(rtrim(str(@RecordNum))),null,
+	 null,null,null,
+	 null,null,null,null,null,
+	 null,null,null,
+	 null,null
+	      
 GO
 SET QUOTED_IDENTIFIER OFF 
 GO
 SET ANSI_NULLS ON 
 GO
 
-if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[view_HBV_Value]') and OBJECTPROPERTY(id, N'IsView') = 1)
-drop view [dbo].[view_HBV_Value]
+--2011-01-06存储过程PRO_Completion_Chk_His创建脚本
+if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[PRO_Completion_Chk_His]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+drop procedure [dbo].[PRO_Completion_Chk_His]
 GO
 
---视图view_HBV_Value的创建脚本
 SET QUOTED_IDENTIFIER ON 
 GO
 SET ANSI_NULLS ON 
 GO
 
-Create VIEW view_HBV_Value
-  AS
+CREATE PROCEDURE PRO_Completion_Chk_His
+AS
+--归档全部完成的chk_his
+Declare @Current_Date datetime
+select @Current_Date=getdate()
 
-SELECT  pkunid,
-        (CASE english_name WHEN 'HBsAg' THEN itemvalue ELSE '' END) AS HBsAg,  
-        (CASE english_name WHEN 'HBsAb' THEN itemvalue ELSE '' END) AS HBsAb,  
-        (CASE english_name when 'HBeAg' THEN itemvalue ELSE '' END) AS HBeAg,
-        (CASE english_name when 'HBeAb' THEN itemvalue ELSE '' END) AS HBeAb,
-        (CASE english_name WHEN 'HBcAb' THEN itemvalue ELSE '' END) AS HBcAb
-FROM dbo.view_chk_valu_All where issure='1' and isnull(itemvalue,'')<>''
-	and (english_name='HBsAg' or english_name='HBsAb' or english_name='HBeAg' or english_name='HBeAb' or english_name='HBcAb')
+insert into chk_con_His_bak 
+select cch.* FROM dbo.chk_con_his cch
+where (SELECT count(*) FROM chk_valu_his cvh WHERE cvh.pkunid=cch.unid and isnull(cvh.itemvalue,'')<>'1')<=0
+      and (SELECT count(*) FROM chk_valu_his cvh3 WHERE cvh3.pkunid=cch.unid)>0
+      and cch.check_date<@Current_Date-1
+--select cch.* FROM dbo.chk_con_his cch
+--WHERE (Unid not IN
+--        (SELECT cvh.pkunid
+--         FROM chk_valu_his cvh
+--         WHERE not EXISTS
+--                   (SELECT 1
+--                    FROM view_Chk_Con_All vcca INNER JOIN
+--                        view_chk_valu_All vcva ON vcca.unid = vcva.pkunid AND 
+--                        cvh.pkunid = vcca.his_unid AND 
+--                        cvh.pkcombin_id = vcva.pkcombin_id AND vcva.issure = '1')
+--        )
+--       )
+
+insert into chk_valu_His_bak 
+select cvh2.* from chk_VALU_his cvh2 where cvh2.pkunid in
+(select cch.UNID FROM dbo.chk_con_his cch
+WHERE (SELECT count(*) FROM chk_valu_his cvh WHERE cvh.pkunid=cch.unid and isnull(cvh.itemvalue,'')<>'1')<=0 and cch.check_date<@Current_Date-1
+)
+--select cvh2.* from chk_VALU_his cvh2 where cvh2.pkunid in
+--(select cch.UNID FROM dbo.chk_con_his cch
+--WHERE (Unid not IN
+--        (SELECT cvh.pkunid
+--         FROM chk_valu_his cvh
+--         WHERE not EXISTS
+--                 (SELECT 1
+--                  FROM view_Chk_Con_All vcca INNER JOIN
+--                        view_chk_valu_All vcva ON vcca.unid = vcva.pkunid AND 
+--                        cvh.pkunid = vcca.his_unid AND 
+--                        cvh.pkcombin_id = vcva.pkcombin_id AND vcva.issure = '1')
+--        )
+--      )
+--)
+
+delete FROM chk_con_his
+WHERE (SELECT count(*) FROM chk_valu_his cvh WHERE cvh.pkunid=chk_con_his.unid and isnull(cvh.itemvalue,'')<>'1')<=0
+      and (SELECT count(*) FROM chk_valu_his cvh3 WHERE cvh3.pkunid=chk_con_his.unid)>0
+      and chk_con_his.check_date<@Current_Date-1
+--WHERE (Unid not IN
+--        (SELECT cvh.pkunid
+--         FROM chk_valu_his cvh
+--         WHERE not EXISTS
+--                 (SELECT 1
+--                  FROM view_Chk_Con_All vcca INNER JOIN
+--                        view_chk_valu_All vcva ON vcca.unid = vcva.pkunid AND 
+--                        cvh.pkunid = vcca.his_unid AND 
+--                        cvh.pkcombin_id = vcva.pkcombin_id AND vcva.issure = '1')
+--        )
+--      )
+
 
 GO
 SET QUOTED_IDENTIFIER OFF 
@@ -1811,47 +2844,182 @@ GO
 SET ANSI_NULLS ON 
 GO
 
-ALTER TABLE clinicchkitem ALTER COLUMN PYM varchar(15)
-ALTER TABLE clinicchkitem ALTER COLUMN WBM varchar(15)
-go
-
-alter table chk_con alter column TjJiWangShi varchar(300) null
-alter table chk_con_bak alter column TjJiWangShi varchar(300) null
-alter table chk_con alter column TjJiaZuShi varchar(300) null
-alter table chk_con_bak alter column TjJiaZuShi varchar(300) null
-alter table chk_con alter column TjNeiKe varchar(300) null
-alter table chk_con_bak alter column TjNeiKe varchar(300) null
-alter table chk_con alter column TjWaiKe varchar(300) null
-alter table chk_con_bak alter column TjWaiKe varchar(300) null
-alter table chk_con alter column TjWuGuanKe varchar(300) null
-alter table chk_con_bak alter column TjWuGuanKe varchar(300) null
-alter table chk_con alter column TjFuKe varchar(300) null
-alter table chk_con_bak alter column TjFuKe varchar(300) null
-alter table chk_con alter column TjLengQiangGuang varchar(300) null
-alter table chk_con_bak alter column TjLengQiangGuang varchar(300) null
-alter table chk_con alter column TjXGuang varchar(300) null
-alter table chk_con_bak alter column TjXGuang varchar(300) null
-alter table chk_con alter column TjBChao varchar(300) null
-alter table chk_con_bak alter column TjBChao varchar(300) null
-alter table chk_con alter column TjXinDianTu varchar(300) null
-alter table chk_con_bak alter column TjXinDianTu varchar(300) null
-alter table chk_con alter column TJAdvice varchar(300) null
-alter table chk_con_bak alter column TJAdvice varchar(300) null
+--存储过程pro_MergeRequestBill创建脚本
+if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[pro_MergeRequestBill]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+  drop procedure [dbo].[pro_MergeRequestBill]
 GO
 
---修改表chk_con
-IF NOT EXISTS (select 1 from syscolumns where name='TjJianYan' and id=object_id('chk_con'))
-begin
-  Alter table chk_con add TjJianYan varchar(300) null--检验
-end
+SET QUOTED_IDENTIFIER ON 
+GO
+SET ANSI_NULLS ON 
+GO
 
---修改表chk_con_bak
-IF NOT EXISTS (select 1 from syscolumns where name='TjJianYan' and id=object_id('chk_con_bak'))
-begin
-  Alter table chk_con_bak add TjJianYan varchar(300) null--检验
-end
-go
+--根据病历号、样本类型、样本分隔符合并申请单
+--满足以下条件的申请单才参与合并
+--1、从接口传入的申请单；2、病历号不为空
+--20151202越秀中医PEIS要求采样时间一样的才合并
+CREATE PROCEDURE [dbo].[pro_MergeRequestBill] 
+AS
 
+  DECLARE Cur_WaitMergeRequestBill Cursor For 
+	select min(cch.unid) as unid,
+               cch.caseno,
+               isnull(cbi.specimentype_DfValue,'') as specimentype_DfValue,
+               isnull(cbi.itemtype,'') as itemtype,
+	       isnull(cvh.TakeSampleTime,0) as TakeSampleTime
+        from chk_con_his cch
+        inner join chk_valu_his cvh on cch.unid=cvh.pkunid
+        inner join combinitem cbi on cbi.id=cvh.pkcombin_id
+        where isnull(cch.his_unid,'')<>''--表示接口传入的申请单
+        and 
+        isnull(cch.caseno,'')<>''--表示有病历号的申请单
+        and (select count(*) from chk_valu_his cvh2 where cvh2.pkunid=cch.unid and isnull(cvh2.itemvalue,'')='1')<=0--表示未被LIS取过的申请单
+        group by cch.caseno,isnull(cbi.specimentype_DfValue,''),isnull(cbi.itemtype,''),isnull(cvh.TakeSampleTime,0)
+
+  Open Cur_WaitMergeRequestBill
+
+  Declare @Unid int,@CaseNo varchar(30),@SpecimenType varchar(60),@ItemType varchar(50),@TakeSampleTime datetime
+  FETCH NEXT FROM Cur_WaitMergeRequestBill INTO @Unid,@CaseNo,@SpecimenType,@ItemType,@TakeSampleTime
+  WHILE @@FETCH_STATUS=0
+  BEGIN
+    update chk_valu_his set pkunid=@Unid where valueid in (
+	select cvh.valueid
+        from chk_con_his cch
+        inner join chk_valu_his cvh on cch.unid=cvh.pkunid
+        inner join combinitem cbi on cbi.id=cvh.pkcombin_id
+        where isnull(cch.his_unid,'')<>''--表示接口传入的申请单
+        and 
+        isnull(cch.caseno,'')<>''--表示有病历号的申请单
+        and (select count(*) from chk_valu_his cvh2 where cvh2.pkunid=cch.unid and isnull(cvh2.itemvalue,'')='1')<=0--表示未被LIS取过的申请单
+        --非当前申请单
+        and cch.unid<>@Unid
+        --病历号、样本类型、样本分隔符、采样时间一样的合并
+        and cch.caseno=@CaseNo and isnull(cbi.specimentype_DfValue,'')=isnull(@SpecimenType,'') and isnull(cbi.itemtype,'')=isnull(@ItemType,'') and isnull(cvh.TakeSampleTime,0)=isnull(@TakeSampleTime,0)
+      )
+      
+    FETCH NEXT FROM Cur_WaitMergeRequestBill INTO @Unid,@CaseNo,@SpecimenType,@ItemType,@TakeSampleTime
+  END
+  CLOSE Cur_WaitMergeRequestBill
+  DEALLOCATE Cur_WaitMergeRequestBill
+
+  --删除无明细(组合项目)的主记录
+  delete from chk_con_his 
+  where isnull(chk_con_his.his_unid,'')<>''--表示接口传入的申请单
+  and 
+  isnull(chk_con_his.caseno,'')<>''--表示有病历号的申请单
+  and (select count(*) from Chk_Valu_His cvh where cvh.PkUnid=chk_con_his.Unid)=0
+
+GO
+SET QUOTED_IDENTIFIER OFF 
+GO
+SET ANSI_NULLS ON 
+GO
+
+--存储过程pro_SplitRequestBill创建脚本
+if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[pro_SplitRequestBill]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+  drop procedure [dbo].[pro_SplitRequestBill]
+GO
+
+SET QUOTED_IDENTIFIER ON 
+GO
+SET ANSI_NULLS ON 
+GO
+
+--根据样本类型、样本分隔符拆分申请单
+--满足以下条件的申请单才参与拆分
+--1、从接口传入的申请单；
+--20151202越秀中医PEIS要求按采样时间拆开
+CREATE PROCEDURE [dbo].[pro_SplitRequestBill] 
+AS
+
+  DECLARE Cur_WaitSplitRequestBill Cursor For 
+	select cch.unid
+        from chk_con_his cch
+        where isnull(cch.his_unid,'')<>''--表示接口传入的申请单
+        and 
+        (select count(*) from chk_valu_his cvh2 where cvh2.pkunid=cch.unid and isnull(cvh2.itemvalue,'')='1')<=0--表示未被LIS取过的申请单
+
+  Open Cur_WaitSplitRequestBill
+
+  Declare @Unid int
+  FETCH NEXT FROM Cur_WaitSplitRequestBill INTO @Unid
+  WHILE @@FETCH_STATUS=0
+  BEGIN
+    declare @Num_Value int
+
+    select @Num_Value=count(*) from chk_valu_his where pkunid=@Unid
+    if @Num_Value<=0 
+    begin
+      FETCH NEXT FROM Cur_WaitSplitRequestBill INTO @Unid
+      continue
+    end
+
+    SELECT @Num_Value=COUNT(*) FROM
+	(
+	select 0 as A
+	from chk_valu_his cvh3 
+	    inner join combinitem cbi3 on cbi3.id=cvh3.pkcombin_id
+	    where cvh3.pkunid=@Unid
+	    group by isnull(cbi3.specimentype_DfValue,''),isnull(cbi3.itemtype,''),isnull(cvh3.TakeSampleTime,0)
+	) as TempA
+    if @Num_Value<=1
+    begin
+      update chk_con_his set chk_con_his.flagetype=
+	(select top 1 cbi.specimentype_DfValue from chk_valu_his cvh,combinitem cbi where cvh.pkunid=chk_con_his.unid and cbi.id=cvh.pkcombin_id) 
+	where unid=@Unid
+	and isnull(chk_con_his.flagetype,'')<>
+	(select top 1 isnull(cbi.specimentype_DfValue,'') from chk_valu_his cvh,combinitem cbi where cvh.pkunid=chk_con_his.unid and cbi.id=cvh.pkcombin_id) 
+      FETCH NEXT FROM Cur_WaitSplitRequestBill INTO @Unid
+      continue
+    end
+    
+    DECLARE Cur_1 Cursor For 
+	select isnull(cbi3.specimentype_DfValue,''),isnull(cbi3.itemtype,''),isnull(cvh3.TakeSampleTime,0)
+	from chk_valu_his cvh3 
+	    inner join combinitem cbi3 on cbi3.id=cvh3.pkcombin_id
+	    where cvh3.pkunid=@Unid
+	    group by isnull(cbi3.specimentype_DfValue,''),isnull(cbi3.itemtype,''),isnull(cvh3.TakeSampleTime,0)
+
+    Open Cur_1
+    Declare @specimentype_DfValue varchar(60),@itemtype varchar(50),@i int,@SCOPE_IDENTITY int,@TakeSampleTime datetime
+    set @i=0
+    FETCH NEXT FROM Cur_1 INTO @specimentype_DfValue,@itemtype,@TakeSampleTime
+    WHILE @@FETCH_STATUS=0
+    BEGIN
+      set @i=@i+1
+      if @i=1
+      begin
+        update chk_con_his set flagetype=@specimentype_DfValue where unid=@Unid and isnull(flagetype,'')<>@specimentype_DfValue
+        FETCH NEXT FROM Cur_1 INTO @specimentype_DfValue,@itemtype,@TakeSampleTime
+        continue
+      end
+
+      insert into chk_con_his (patientname,flagetype,sex,age,report_date,bedno,His_Unid,check_doctor,deptname,combin_id,Caseno,diagnose,Diagnosetype,typeflagcase,WorkCompany,WorkDepartment,ifMarry)  
+      	select patientname,flagetype,sex,age,report_date,bedno,His_Unid,check_doctor,deptname,combin_id,Caseno,diagnose,Diagnosetype,typeflagcase,WorkCompany,WorkDepartment,ifMarry from chk_con_his where unid=@Unid
+      SELECT @SCOPE_IDENTITY=SCOPE_IDENTITY()
+      update chk_valu_his set chk_valu_his.pkunid=@SCOPE_IDENTITY 
+	where chk_valu_his.pkunid=@Unid 
+	and (select isnull(cbi5.specimentype_DfValue,'') from combinitem cbi5 where cbi5.id=chk_valu_his.pkcombin_id)=@specimentype_DfValue
+	and (select isnull(cbi6.itemtype,'') from combinitem cbi6 where cbi6.id=chk_valu_his.pkcombin_id)=@itemtype
+        and isnull(chk_valu_his.TakeSampleTime,0)=@TakeSampleTime
+
+      FETCH NEXT FROM Cur_1 INTO @specimentype_DfValue,@itemtype,@TakeSampleTime
+    END
+    CLOSE Cur_1
+    DEALLOCATE Cur_1
+      
+    FETCH NEXT FROM Cur_WaitSplitRequestBill INTO @Unid
+  END
+  CLOSE Cur_WaitSplitRequestBill
+  DEALLOCATE Cur_WaitSplitRequestBill
+
+GO
+SET QUOTED_IDENTIFIER OFF 
+GO
+SET ANSI_NULLS ON 
+GO
+
+---------------触发器相关操作---------------
 
 --触发器TRIGGER_chk_con_CKZ_Update创建脚本
 SET QUOTED_IDENTIFIER ON 
@@ -1943,13 +3111,6 @@ GO
 SET ANSI_NULLS ON 
 GO
 
-
-IF NOT EXISTS (select 1 from syscolumns where name='IsEdited' and id=object_id('chk_valu'))
-  Alter table chk_valu add IsEdited int null
-
-IF NOT EXISTS (select 1 from syscolumns where name='IsEdited' and id=object_id('chk_valu_bak'))
-  Alter table chk_valu_bak add IsEdited int null
-GO
 
 --触发器TRIGGER_chk_valu_IsEdited_Update创建脚本
 SET QUOTED_IDENTIFIER ON 
@@ -2165,247 +3326,6 @@ GO
 
 --GO
 
---20160802视图view_Chk_Con_All创建脚本
-IF EXISTS (SELECT * FROM dbo.sysobjects where id = OBJECT_ID(N'[dbo].[view_Chk_Con_All]') and OBJECTPROPERTY(id, N'IsView') = 1)
-DROP VIEW [dbo].[view_Chk_Con_All]
-GO
-
-SET ANSI_NULLS ON
-GO
-
-SET QUOTED_IDENTIFIER OFF
-GO
-
-CREATE  VIEW [dbo].[view_Chk_Con_All]
-  AS
-  SELECT chk_con.*,0 as ifCompleted
-  FROM chk_con
-  UNION ALL
-  SELECT chk_con_bak.*,1 as ifCompleted
-  FROM chk_con_bak
-  
-GO
-
---存储过程pro_StaticHBV创建脚本
-if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[pro_StaticHBV]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
-drop procedure [dbo].[pro_StaticHBV]
-GO
-
-SET QUOTED_IDENTIFIER ON 
-GO
-SET ANSI_NULLS ON 
-GO
-
-Create PROCEDURE [dbo].[pro_StaticHBV] 
-@in_StartDate datetime, 
-@in_StopDate datetime,
-@in_HBsAg varchar(50),
-@in_HBsAb varchar(50),
-@in_HBeAg varchar(50),
-@in_HBeAb varchar(50),
-@in_HBcAb varchar(50)
-AS
-
-CREATE TABLE #temp01
-(
-t_pkunid int null,
-t_HBsAg varchar(50) null,
-t_HBsAb varchar(50) null,
-t_HBeAg varchar(50) null,
-t_HBeAb varchar(50) null,
-t_HBcAb varchar(50) null
-)
-
-  DECLARE Cur_operator Cursor For 
-    select pkunid,HBsAg ,HBsAb, HBeAg ,HBeAb, HBcAb FROM view_HBV_Value,view_Chk_Con_All where 
-	(view_HBV_Value.pkunid=view_Chk_Con_All.unid) 
-	and (check_date between @in_StartDate and @in_StopDate)
-
-  Open Cur_operator
-
-  Declare @pkunid int,@HBsAg varchar(50),@HBsAb varchar(50),@HBeAg varchar(50),@HBeAb varchar(50),@HBcAb varchar(50)
-
-  FETCH NEXT FROM Cur_operator INTO @pkunid,@HBsAg ,@HBsAb ,@HBeAg ,@HBeAb ,@HBcAb
-  WHILE @@FETCH_STATUS=0
-  BEGIN
-    if EXISTS (select 1 from #temp01 where t_pkunid=@pkunid)
-    begin
-      update #temp01 set t_HBsAg=t_HBsAg+@HBsAg ,t_HBsAb=t_HBsAb+@HBsAb, t_HBeAg=t_HBeAg+@HBeAg ,t_HBeAb=t_HBeAb+@HBeAb, t_HBcAb=t_HBcAb+@HBcAb where t_pkunid=@pkunid
-    end else insert into #temp01 values (@pkunid,@HBsAg ,@HBsAb ,@HBeAg ,@HBeAb ,@HBcAb)
-
-    FETCH NEXT FROM Cur_operator INTO @pkunid,@HBsAg ,@HBsAb ,@HBeAg ,@HBeAb ,@HBcAb
-  END
-  CLOSE Cur_operator
-  DEALLOCATE Cur_operator
-  
-  declare @RecordNum int 
-  select @RecordNum=count(*)
-	 from #temp01 B,dbo.view_Chk_Con_All A 
-	where t_pkunid=A.unid
-	and t_HBsAg like  '%'+@in_HBsAg+'%'
-	and t_HBsAb like  '%'+@in_HBsAb+'%'
-	and t_HBeAg like  '%'+@in_HBeAg+'%'
-	and t_HBeAb like  '%'+@in_HBeAb+'%'
-	and t_HBcAb like  '%'+@in_HBcAb+'%'
-
-  select lsh as 流水号,checkid as 联机号,caseno as 病历号,
-         patientname as 姓名,sex as 性别,age as 年龄,
-         B.t_HBsAg,B.t_HBsAb,B.t_HBeAg,B.t_HBeAb,B.t_HBcAb,
-         bedno as 床号,deptname as 送检科室,check_doctor as 送检医生,
-         check_date as 检查日期,issure as 备注
-	 from #temp01 B,dbo.view_Chk_Con_All A 
-	where t_pkunid=A.unid
-	and t_HBsAg like  '%'+@in_HBsAg+'%'
-	and t_HBsAb like  '%'+@in_HBsAb+'%'
-	and t_HBeAg like  '%'+@in_HBeAg+'%'
-	and t_HBeAb like  '%'+@in_HBeAb+'%'
-	and t_HBcAb like  '%'+@in_HBcAb+'%'
-	--order by A.check_date
-  UNION ALL
-  select '合计',ltrim(rtrim(str(@RecordNum))),null,
-	 null,null,null,
-	 null,null,null,null,null,
-	 null,null,null,
-	 null,null
-	      
-GO
-SET QUOTED_IDENTIFIER OFF 
-GO
-SET ANSI_NULLS ON 
-GO
-
-
---修改表clinicchkitem--20081027
-IF NOT EXISTS (select 1 from syscolumns where name='ChkMethod' and id=object_id('clinicchkitem'))
-begin
-  Alter table clinicchkitem add ChkMethod varchar(30) null--检验方法
-end
-
---修改表chk_valu--20081027
-IF NOT EXISTS (select 1 from syscolumns where name='ChkMethod' and id=object_id('chk_valu'))
-begin
-  Alter table chk_valu add ChkMethod varchar(30) null--检验方法
-end
-
---修改表chk_valu_bak--20081027
-IF NOT EXISTS (select 1 from syscolumns where name='ChkMethod' and id=object_id('chk_valu_bak'))
-begin
-  Alter table chk_valu_bak add ChkMethod varchar(30) null--检验方法
-end
-
---修改表clinicchkitem--20140312
-IF NOT EXISTS (select 1 from syscolumns where name='Reserve1' and id=object_id('clinicchkitem'))
-begin
-  Alter table clinicchkitem add Reserve1 varchar(200) null--保留字段1
-end
-
-IF NOT EXISTS (select 1 from syscolumns where name='Reserve2' and id=object_id('clinicchkitem'))
-begin
-  Alter table clinicchkitem add Reserve2 varchar(200) null--保留字段2
-end
-
-IF NOT EXISTS (select 1 from syscolumns where name='Reserve3' and id=object_id('clinicchkitem'))
-begin
-  Alter table clinicchkitem add Reserve3 varchar(200) null--保留字段3
-end
-
-IF NOT EXISTS (select 1 from syscolumns where name='Reserve4' and id=object_id('clinicchkitem'))
-begin
-  Alter table clinicchkitem add Reserve4 varchar(200) null--保留字段4
-end
-
-IF NOT EXISTS (select 1 from syscolumns where name='Reserve5' and id=object_id('clinicchkitem'))
-begin
-  Alter table clinicchkitem add Reserve5 int null--保留字段5
-end
-
-IF NOT EXISTS (select 1 from syscolumns where name='Reserve6' and id=object_id('clinicchkitem'))
-begin
-  Alter table clinicchkitem add Reserve6 int null--保留字段6
-end
-
-IF NOT EXISTS (select 1 from syscolumns where name='Reserve7' and id=object_id('clinicchkitem'))
-begin
-  Alter table clinicchkitem add Reserve7 float null--保留字段7
-end
-
-IF NOT EXISTS (select 1 from syscolumns where name='Reserve8' and id=object_id('clinicchkitem'))
-begin
-  Alter table clinicchkitem add Reserve8 float null--保留字段8
-end
-
-IF NOT EXISTS (select 1 from syscolumns where name='Reserve9' and id=object_id('clinicchkitem'))
-begin
-  Alter table clinicchkitem add Reserve9 datetime null--保留字段9
-end
-
-IF NOT EXISTS (select 1 from syscolumns where name='Reserve10' and id=object_id('clinicchkitem'))
-begin
-  Alter table clinicchkitem add Reserve10 datetime null--保留字段10
-end
-
-
---2014-04-16 使之能容纳项目超限的建议
-alter table clinicchkitem alter column Reserve1 varchar(300) null
-alter table clinicchkitem alter column Reserve2 varchar(300) null
-GO
-
-
---20141123
-IF NOT EXISTS (select 1 from syscolumns where name='Reserve1' and id=object_id('chk_valu'))
-  Alter table chk_valu add Reserve1 varchar(300) null--保留字段1
-
-IF NOT EXISTS (select 1 from syscolumns where name='Reserve1' and id=object_id('chk_valu_bak'))
-  Alter table chk_valu_bak add Reserve1 varchar(300) null--保留字段1
-
-IF NOT EXISTS (select 1 from syscolumns where name='Reserve2' and id=object_id('chk_valu'))
-  Alter table chk_valu add Reserve2 varchar(300) null--保留字段2
-
-IF NOT EXISTS (select 1 from syscolumns where name='Reserve2' and id=object_id('chk_valu_bak'))
-  Alter table chk_valu_bak add Reserve2 varchar(300) null--保留字段2
-
---保留字段3为Dosage1
---保留字段4为Dosage2
-
-IF NOT EXISTS (select 1 from syscolumns where name='Reserve5' and id=object_id('chk_valu'))
-  Alter table chk_valu add Reserve5 int null--保留字段5
-
-IF NOT EXISTS (select 1 from syscolumns where name='Reserve5' and id=object_id('chk_valu_bak'))
-  Alter table chk_valu_bak add Reserve5 int null--保留字段5
-
-IF NOT EXISTS (select 1 from syscolumns where name='Reserve6' and id=object_id('chk_valu'))
-  Alter table chk_valu add Reserve6 int null--保留字段6
-
-IF NOT EXISTS (select 1 from syscolumns where name='Reserve6' and id=object_id('chk_valu_bak'))
-  Alter table chk_valu_bak add Reserve6 int null--保留字段6
-
-IF NOT EXISTS (select 1 from syscolumns where name='Reserve7' and id=object_id('chk_valu'))
-  Alter table chk_valu add Reserve7 float null--保留字段7
-
-IF NOT EXISTS (select 1 from syscolumns where name='Reserve7' and id=object_id('chk_valu_bak'))
-  Alter table chk_valu_bak add Reserve7 float null--保留字段7
-
-IF NOT EXISTS (select 1 from syscolumns where name='Reserve8' and id=object_id('chk_valu'))
-  Alter table chk_valu add Reserve8 float null--保留字段8
-
-IF NOT EXISTS (select 1 from syscolumns where name='Reserve8' and id=object_id('chk_valu_bak'))
-  Alter table chk_valu_bak add Reserve8 float null--保留字段8
-
-IF NOT EXISTS (select 1 from syscolumns where name='Reserve9' and id=object_id('chk_valu'))
-  Alter table chk_valu add Reserve9 datetime null--保留字段9
-
-IF NOT EXISTS (select 1 from syscolumns where name='Reserve9' and id=object_id('chk_valu_bak'))
-  Alter table chk_valu_bak add Reserve9 datetime null--保留字段9
-
-IF NOT EXISTS (select 1 from syscolumns where name='Reserve10' and id=object_id('chk_valu'))
-  Alter table chk_valu add Reserve10 datetime null--保留字段10
-
-IF NOT EXISTS (select 1 from syscolumns where name='Reserve10' and id=object_id('chk_valu_bak'))
-  Alter table chk_valu_bak add Reserve10 datetime null--保留字段10
-
-GO
-
-
 --触发器TRIGGER_chk_valu_ItemName创建脚本
 SET QUOTED_IDENTIFIER ON 
 GO
@@ -2453,201 +3373,6 @@ SET QUOTED_IDENTIFIER OFF
 GO
 SET ANSI_NULLS ON 
 GO
-
---20081211,市政要求的细菌参考值很长,故50->250
-alter table chk_valu alter column Min_value varchar(250) null
-alter table chk_valu alter column Max_value varchar(250) null
-alter table chk_valu_bak alter column Min_value varchar(250) null
-alter table chk_valu_bak alter column Max_value varchar(250) null
-alter table referencevalue alter column minvalue varchar(250) null
-alter table referencevalue alter column maxvalue varchar(250) null
-GO
-
-
---20100125打印条码标签工作站的病人基本信息表
-if not exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[chk_con_his]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
-begin
-CREATE TABLE chk_con_his (
-        Unid int identity primary key,
-	[checkid] [varchar] (50) NULL ,
-	[patientname] [varchar] (14) NULL ,
-	[sex] [varchar] (8) NULL ,
-	[age] [varchar] (14) NULL ,
-	[Caseno] [varchar] (10) NULL ,
-	[bedno] [varchar] (10) NULL ,
-	[deptname] [varchar] (40) NULL ,
-	[check_date] [datetime] NULL DEFAULT (getdate()) ,
-	[check_doctor] [varchar] (14) NULL ,
-	[report_date] [datetime] NULL ,
-	[report_doctor] [varchar] (14) NULL ,
-	[operator] [varchar] (14) NULL ,
-	[printtimes] [datetime] NULL ,--int->datetime 20110613
-	[Diagnosetype] [varchar] (4) NULL ,
-	[flagetype] [varchar] (60) NULL ,
-	[diagnose] [char] (50) NULL ,
-	[typeflagcase] [char] (30) NULL ,
-	[issure] [varchar] (50) NULL ,
-	[combin_id] [varchar] (30) NULL ,
-	[LSH] [varchar] (8) NULL ,
-	[GermName] [varchar] (50) NULL ,
-	[His_Unid] [varchar] (50) NULL ,
-	[His_MzOrZy] [varchar] (50) NULL ,
-	[WorkDepartment] [varchar] (50) NULL ,
-	[WorkCategory] [varchar] (50) NULL ,
-	[WorkID] [varchar] (50) NULL ,
-	[ifMarry] [varchar] (8) NULL ,
-	[OldAddress] [varchar] (100) NULL ,
-	[Address] [varchar] (100) NULL ,
-	[Telephone] [varchar] (100) NULL ,
-	[TjDescription] [varchar] (500) NULL ,
-	[WorkCompany] [varchar] (50) NULL ,
-	[PushPress] [varchar] (50) NULL ,
-	[PullPress] [varchar] (50) NULL ,
-	[LeftEyesight] [varchar] (50) NULL ,
-	[RightEyesight] [varchar] (50) NULL ,
-	[Stature] [varchar] (50) NULL ,
-	[Weight] [varchar] (50) NULL ,
-	[TjJiWangShi] [varchar] (300) NULL ,
-	[TjJiaZuShi] [varchar] (300) NULL ,
-	[TjNeiKe] [varchar] (300) NULL ,
-	[TjWaiKe] [varchar] (300) NULL ,
-	[TjWuGuanKe] [varchar] (300) NULL ,
-	[TjFuKe] [varchar] (300) NULL ,
-	[TjLengQiangGuang] [varchar] (300) NULL ,
-	[TjXGuang] [varchar] (300) NULL ,
-	[TjBChao] [varchar] (300) NULL ,
-	[TjXinDianTu] [varchar] (300) NULL ,
-	[TJAdvice] [varchar] (300) NULL ,
-	[TjJianYan] [varchar] (300) NULL ,
-	[DNH] [varchar] (30) NULL 
-)
-
-CREATE TABLE chk_valu_his (
-        valueid int identity primary key,
-	[pkunid] [int] NOT NULL ,
-	[pkcombin_id] [varchar] (10) not NULL ,--null->not null 20110611
-	[itemid] [varchar] (10) NULL ,
-	[Name] [varchar] (30) NULL ,
-	[english_name] [varchar] (30) NULL ,
-	[itemvalue] [varchar] (60) NULL ,
-	[Unit] [varchar] (30) NULL ,
-	[Min_value] [varchar] (20) NULL ,
-	[Max_value] [varchar] (20) NULL ,
-	[printorder] [int] NULL ,
-	[getmoney] [money] NULL ,
-	[issure] [varchar] (10) NULL ,
-	[histogram] [varchar] (3000) NULL ,
-	[combin_Name] [varchar] (30) NULL ,
-	[Dosage1] [varchar] (100) NULL ,
-	[Dosage2] [varchar] (15) NULL ,
-	[Surem1] [varchar] (15) NULL ,
-	[Surem2] [varchar] (15) NULL ,
-	[Urine1] [varchar] (15) NULL ,
-	[Urine2] [varchar] (15) NULL ,
-	[Photo] [image] NULL ,
-	[IsEdited] [int] NULL 
-)
-
---创建chk_con_his与chk_valu_his之间的关系
-ALTER TABLE dbo.chk_valu_his ADD CONSTRAINT
-	FK_chk_valu_his_chk_con_his FOREIGN KEY
-	(
-	pkunid
-	) REFERENCES dbo.chk_con_his
-	(
-	unid
-	) ON UPDATE CASCADE
-	 ON DELETE CASCADE
-
---CREATE UNIQUE NONCLUSTERED INDEX IX_Chk_Con_His_1 ON dbo.chk_con_his
---	(
---	LSH
---	) ON [PRIMARY]
-
-CREATE TABLE chk_con_his_bak (
-        Unid int primary key,
-	[checkid] [varchar] (50) NULL ,
-	[patientname] [varchar] (14) NULL ,
-	[sex] [varchar] (8) NULL ,
-	[age] [varchar] (14) NULL ,
-	[Caseno] [varchar] (10) NULL ,
-	[bedno] [varchar] (10) NULL ,
-	[deptname] [varchar] (40) NULL ,
-	[check_date] [datetime] NULL ,
-	[check_doctor] [varchar] (14) NULL ,
-	[report_date] [datetime] NULL ,
-	[report_doctor] [varchar] (14) NULL ,
-	[operator] [varchar] (14) NULL ,
-	[printtimes] [datetime] NULL ,--int->datetime 20110613
-	[Diagnosetype] [varchar] (4) NULL ,
-	[flagetype] [varchar] (60) NULL ,
-	[diagnose] [char] (50) NULL ,
-	[typeflagcase] [char] (30) NULL ,
-	[issure] [varchar] (50) NULL ,
-	[combin_id] [varchar] (30) NULL ,
-	[LSH] [varchar] (8) NULL ,
-	[GermName] [varchar] (50) NULL ,
-	[His_Unid] [varchar] (50) NULL ,
-	[His_MzOrZy] [varchar] (50) NULL ,
-	[WorkDepartment] [varchar] (50) NULL ,
-	[WorkCategory] [varchar] (50) NULL ,
-	[WorkID] [varchar] (50) NULL ,
-	[ifMarry] [varchar] (8) NULL ,
-	[OldAddress] [varchar] (100) NULL ,
-	[Address] [varchar] (100) NULL ,
-	[Telephone] [varchar] (100) NULL ,
-	[TjDescription] [varchar] (500) NULL ,
-	[WorkCompany] [varchar] (50) NULL ,
-	[PushPress] [varchar] (50) NULL ,
-	[PullPress] [varchar] (50) NULL ,
-	[LeftEyesight] [varchar] (50) NULL ,
-	[RightEyesight] [varchar] (50) NULL ,
-	[Stature] [varchar] (50) NULL ,
-	[Weight] [varchar] (50) NULL ,
-	[TjJiWangShi] [varchar] (300) NULL ,
-	[TjJiaZuShi] [varchar] (300) NULL ,
-	[TjNeiKe] [varchar] (300) NULL ,
-	[TjWaiKe] [varchar] (300) NULL ,
-	[TjWuGuanKe] [varchar] (300) NULL ,
-	[TjFuKe] [varchar] (300) NULL ,
-	[TjLengQiangGuang] [varchar] (300) NULL ,
-	[TjXGuang] [varchar] (300) NULL ,
-	[TjBChao] [varchar] (300) NULL ,
-	[TjXinDianTu] [varchar] (300) NULL ,
-	[TJAdvice] [varchar] (300) NULL ,
-	[TjJianYan] [varchar] (300) NULL ,
-	[DNH] [varchar] (30) NULL 
-)
-
-CREATE TABLE chk_valu_his_bak (
-        valueid int primary key,
-	[pkunid] [int] NOT NULL ,
-	[pkcombin_id] [varchar] (10) not NULL ,--null->not null 20110611
-	[itemid] [varchar] (10) NULL ,
-	[Name] [varchar] (30) NULL ,
-	[english_name] [varchar] (30) NULL ,
-	[itemvalue] [varchar] (60) NULL ,
-	[Unit] [varchar] (30) NULL ,
-	[Min_value] [varchar] (20) NULL ,
-	[Max_value] [varchar] (20) NULL ,
-	[printorder] [int] NULL ,
-	[getmoney] [money] NULL ,
-	[issure] [varchar] (10) NULL ,
-	[histogram] [varchar] (3000) NULL ,
-	[combin_Name] [varchar] (30) NULL ,
-	[Dosage1] [varchar] (100) NULL ,
-	[Dosage2] [varchar] (15) NULL ,
-	[Surem1] [varchar] (15) NULL ,
-	[Surem2] [varchar] (15) NULL ,
-	[Urine1] [varchar] (15) NULL ,
-	[Urine2] [varchar] (15) NULL ,
-	[Photo] [image] NULL ,
-	[IsEdited] [int] NULL 
-)
-
-end
-GO
-
 
 if exists (select name from sysobjects where name='TRIGGER_chk_con_his_BarCode_insert' and type='TR')
   drop TRIGGER TRIGGER_chk_con_his_BarCode_insert
@@ -2708,7 +3433,6 @@ GO
 SET ANSI_NULLS ON 
 GO
 
-
 --20100310
 if exists (select name from sysobjects where name='TRIGGER_CommCode_PYM' and type='TR')
   drop TRIGGER TRIGGER_CommCode_PYM
@@ -2723,75 +3447,6 @@ AS
   if (@unid is null) return --表示没找到刚刚update的记录
   update CommCode set PYM=dbo.uf_getpy(@name) where unid=@unid
 GO
-
---20150719创建视图view_UT_LIS_RESULT
-if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[view_UT_LIS_RESULT]') and OBJECTPROPERTY(id, N'IsView') = 1)
-drop view [dbo].[view_UT_LIS_RESULT]
-GO
-
-SET QUOTED_IDENTIFIER ON 
-GO
-SET ANSI_NULLS ON 
-GO
-
-CREATE VIEW view_UT_LIS_RESULT
-AS
---LIS提供给标软PEIS的结果视图
-select	cv.valueid as RESULT_ID,
-	cc.Caseno as SAMPLE_NO,
-	cv.itemid as ITEM_CODE,
-	cv.name as ITEM_NAME,
-	cv.itemvalue as TEST_VALUE,
-	isnull(dbo.uf_Reference_Value_B1(cv.min_value,cv.max_value),'')+isnull(dbo.uf_Reference_Value_B2(cv.min_value,cv.max_value),'') as TEXT_RANGE,
-	cv.unit as TEXT_DANWEI,
-	case dbo.uf_ValueAlarm(cv.itemid,cv.Min_value,cv.Max_value,cv.itemvalue) when 1 then 'L' WHEN 2 THEN 'H' ELSE 'N' END as TEXT_NOTE,
-	cc.Audit_Date as REPORT_DATE,
-	cc.report_doctor as REPORT_USER,
-	CV.COMBIN_NAME as FLAG_YQ
-from chk_con cc,chk_valu cv
-where cc.unid=cv.pkunid
-AND ISNULL(cc.report_doctor,'')<>''
-and cv.issure='1'
-and isnull(cv.itemvalue,'')<>''
-
-union all
-
-select	cv.valueid as RESULT_ID,
-	cc.Caseno as SAMPLE_NO,
-	cv.itemid as ITEM_CODE,
-	cv.name as ITEM_NAME,
-	cv.itemvalue as TEST_VALUE,
-	isnull(dbo.uf_Reference_Value_B1(cv.min_value,cv.max_value),'')+isnull(dbo.uf_Reference_Value_B2(cv.min_value,cv.max_value),'') as TEXT_RANGE,
-	cv.unit as TEXT_DANWEI,
-	case dbo.uf_ValueAlarm(cv.itemid,cv.Min_value,cv.Max_value,cv.itemvalue) when 1 then 'L' WHEN 2 THEN 'H' ELSE 'N' END as TEXT_NOTE,
-	cc.Audit_Date as REPORT_DATE,
-	cc.report_doctor as REPORT_USER,
-	CV.COMBIN_NAME as FLAG_YQ
-from chk_con_bak cc,chk_valu_bak cv
-where cc.unid=cv.pkunid
-and isnull(cv.itemvalue,'')<>''
-and cc.check_date>getdate()-180
-
-GO
-SET QUOTED_IDENTIFIER OFF 
-GO
-SET ANSI_NULLS ON 
-GO
-
-IF NOT EXISTS (select 1 from syscolumns where name='IfSel' and id=object_id('chk_valu_his'))
-  Alter table chk_valu_his add IfSel bit null DEFAULT (1)--选择
-
-IF NOT EXISTS (select 1 from syscolumns where name='IfSel' and id=object_id('chk_valu_his_bak'))
-  Alter table chk_valu_his_bak add IfSel bit null--选择
-GO
-
---20151202增加采样时间字段
-IF NOT EXISTS (select 1 from syscolumns where name='TakeSampleTime' and id=object_id('chk_valu_his'))
-  Alter table chk_valu_his add TakeSampleTime datetime null
-
-IF NOT EXISTS (select 1 from syscolumns where name='TakeSampleTime' and id=object_id('chk_valu_his_bak'))
-  Alter table chk_valu_his_bak add TakeSampleTime datetime null
-go
 
 --if exists (select name from sysobjects where name='TRIGGER_chk_con_His_DELETE' and type='TR')
 --  drop TRIGGER TRIGGER_chk_con_His_DELETE
@@ -2888,334 +3543,6 @@ GO
 --    ROLLBACK TRANSACTION
 --  end
 --GO
-
---20150729
-if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[uf_Peis_Br_Barcode]') and xtype in (N'FN', N'IF', N'TF'))
-drop function [dbo].[uf_Peis_Br_Barcode]
-GO
-
-SET QUOTED_IDENTIFIER ON 
-GO
-SET ANSI_NULLS ON 
-GO
-
-CREATE FUNCTION uf_Peis_Br_Barcode
---得到标软公司体检系统的条码
-(
-  @chk_con_his_unid int
-)  
-RETURNS varchar(500) AS  
-BEGIN 
-  declare @ret varchar(500)
-  set @ret=''
-  select @ret=@ret+','+Urine1+Urine2 from chk_con_his cch,chk_valu_his cvh WHERE cch.unid=cvh.pkunid and cch.unid=@chk_con_his_unid group by Urine1,Urine2
-  set @ret=stuff(@ret,1,1,'')
-
-  return @ret
-END
-
-GO
-SET QUOTED_IDENTIFIER OFF 
-GO
-SET ANSI_NULLS ON 
-GO
-
-if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[uf_GetExtBarcode]') and xtype in (N'FN', N'IF', N'TF'))
-drop function [dbo].[uf_GetExtBarcode]
-GO
-
-SET QUOTED_IDENTIFIER ON 
-GO
-SET ANSI_NULLS ON 
-GO
-
-CREATE FUNCTION uf_GetExtBarcode
---获取条码号
-(
-  @chk_con_his_unid int
-)  
-RETURNS varchar(500) AS  
-BEGIN 
-  declare @ret varchar(500),@tempS1 varchar(500)
-
-  select @tempS1=dbo.uf_Peis_Br_Barcode(@chk_con_his_unid)
-
-  if isnull(@tempS1,'')='' 
-    set @ret=@chk_con_his_unid
-  else set @ret=@tempS1
-
-  select @ret=','+@ret+','
-
-  return @ret
-END
-
-GO
-SET QUOTED_IDENTIFIER OFF 
-GO
-SET ANSI_NULLS ON 
-GO
-
---20150728
-if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[uf_GetHisStationCombName]') and xtype in (N'FN', N'IF', N'TF'))
-drop function [dbo].[uf_GetHisStationCombName]
-GO
-
-SET QUOTED_IDENTIFIER ON 
-GO
-SET ANSI_NULLS ON 
-GO
-
-create FUNCTION uf_GetHisStationCombName
-(
-  @Unid int --HisStation病人的UNID
-)  
-RETURNS varchar(500) AS  
-BEGIN 
-  declare @ret varchar(500)
-  set @ret=''
-  select @ret=@ret+','+combin_Name from chk_valu_his WHERE PkUnid=@Unid
-  set @ret=stuff(@ret,1,1,'')
-
-  return @ret
-END
-
-GO
-SET QUOTED_IDENTIFIER OFF 
-GO
-SET ANSI_NULLS ON 
-GO
-
---20160907获取指定病人的组合项目串。用于集中打印时界面显示
---if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[uf_GetPatientCombName]') and xtype in (N'FN', N'IF', N'TF'))
---drop function [dbo].[uf_GetPatientCombName]
---GO
-
---SET QUOTED_IDENTIFIER ON 
---GO
---SET ANSI_NULLS ON 
---GO
-
---create FUNCTION uf_GetPatientCombName
---(
---  @ifCompleted int,--0:未结束的(chk_valu);1:已结束的(chk_valu_bak)
---  @Unid int --病人的UNID
---)  
---RETURNS varchar(500) AS  
---BEGIN 
---  declare @ret varchar(500)
---  set @ret=''
---  if @ifCompleted=1 
---    select @ret=@ret+','+combin_Name from chk_valu_bak
---      WHERE PkUnid=@Unid and issure=1 and ltrim(rtrim(isnull(itemvalue,'')))<>'' 
---      GROUP BY combin_Name 
---  else 
---    select @ret=@ret+','+combin_Name from chk_valu 
---      WHERE PkUnid=@Unid and issure=1 and ltrim(rtrim(isnull(itemvalue,'')))<>'' 
---      GROUP BY combin_Name 
-    
---  set @ret=stuff(@ret,1,1,'')
-
---  return @ret
---END
-
---GO
---SET QUOTED_IDENTIFIER OFF 
---GO
---SET ANSI_NULLS ON 
---GO
-
-if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[view_Show_chk_Con_His]') and OBJECTPROPERTY(id, N'IsView') = 1)
-drop view [dbo].[view_Show_chk_Con_His]
-GO
-
---2010-12-30视图view_Show_chk_Con_His创建脚本
-SET QUOTED_IDENTIFIER ON 
-GO
-SET ANSI_NULLS ON 
-GO
-
-CREATE  VIEW view_Show_chk_Con_His
-AS
-select cch.* from chk_con_his cch 
-where (SELECT count(*) FROM chk_valu_his cvh WHERE cvh.pkunid=cch.unid and isnull(cvh.itemvalue,'')<>'1')>0
---where cch.unid in(
---select cvh.pkunid from chk_valu_his cvh
---where not exists 
---( 
---select 1 from view_Chk_Con_All vcca
---inner join view_chk_valu_All vcva on vcca.unid=vcva.pkunid 
---and cvh.pkunid=vcca.his_unid and cvh.pkcombin_id=vcva.pkcombin_id and vcva.issure='1'
---)
---)
-
-GO
-SET QUOTED_IDENTIFIER OFF 
-GO
-SET ANSI_NULLS ON 
-GO
-
---2011-01-06存储过程PRO_Completion_Chk_His创建脚本
-if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[PRO_Completion_Chk_His]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
-drop procedure [dbo].[PRO_Completion_Chk_His]
-GO
-
-SET QUOTED_IDENTIFIER ON 
-GO
-SET ANSI_NULLS ON 
-GO
-
-
-CREATE PROCEDURE PRO_Completion_Chk_His
-AS
---归档全部完成的chk_his
-Declare @Current_Date datetime
-select @Current_Date=getdate()
-
-insert into chk_con_His_bak 
-select cch.* FROM dbo.chk_con_his cch
-where (SELECT count(*) FROM chk_valu_his cvh WHERE cvh.pkunid=cch.unid and isnull(cvh.itemvalue,'')<>'1')<=0
-      and (SELECT count(*) FROM chk_valu_his cvh3 WHERE cvh3.pkunid=cch.unid)>0
-      and cch.check_date<@Current_Date-1
---select cch.* FROM dbo.chk_con_his cch
---WHERE (Unid not IN
---        (SELECT cvh.pkunid
---         FROM chk_valu_his cvh
---         WHERE not EXISTS
---                   (SELECT 1
---                    FROM view_Chk_Con_All vcca INNER JOIN
---                        view_chk_valu_All vcva ON vcca.unid = vcva.pkunid AND 
---                        cvh.pkunid = vcca.his_unid AND 
---                        cvh.pkcombin_id = vcva.pkcombin_id AND vcva.issure = '1')
---        )
---       )
-
-insert into chk_valu_His_bak 
-select cvh2.* from chk_VALU_his cvh2 where cvh2.pkunid in
-(select cch.UNID FROM dbo.chk_con_his cch
-WHERE (SELECT count(*) FROM chk_valu_his cvh WHERE cvh.pkunid=cch.unid and isnull(cvh.itemvalue,'')<>'1')<=0 and cch.check_date<@Current_Date-1
-)
---select cvh2.* from chk_VALU_his cvh2 where cvh2.pkunid in
---(select cch.UNID FROM dbo.chk_con_his cch
---WHERE (Unid not IN
---        (SELECT cvh.pkunid
---         FROM chk_valu_his cvh
---         WHERE not EXISTS
---                 (SELECT 1
---                  FROM view_Chk_Con_All vcca INNER JOIN
---                        view_chk_valu_All vcva ON vcca.unid = vcva.pkunid AND 
---                        cvh.pkunid = vcca.his_unid AND 
---                        cvh.pkcombin_id = vcva.pkcombin_id AND vcva.issure = '1')
---        )
---      )
---)
-
-delete FROM chk_con_his
-WHERE (SELECT count(*) FROM chk_valu_his cvh WHERE cvh.pkunid=chk_con_his.unid and isnull(cvh.itemvalue,'')<>'1')<=0
-      and (SELECT count(*) FROM chk_valu_his cvh3 WHERE cvh3.pkunid=chk_con_his.unid)>0
-      and chk_con_his.check_date<@Current_Date-1
---WHERE (Unid not IN
---        (SELECT cvh.pkunid
---         FROM chk_valu_his cvh
---         WHERE not EXISTS
---                 (SELECT 1
---                  FROM view_Chk_Con_All vcca INNER JOIN
---                        view_chk_valu_All vcva ON vcca.unid = vcva.pkunid AND 
---                        cvh.pkunid = vcca.his_unid AND 
---                        cvh.pkcombin_id = vcva.pkcombin_id AND vcva.issure = '1')
---        )
---      )
-
-
-GO
-SET QUOTED_IDENTIFIER OFF 
-GO
-SET ANSI_NULLS ON 
-GO
-
---CommCode 20110414
-IF not EXISTS (select 1 from syscolumns where name='Reserve2' and id=object_id('CommCode'))
-  Alter table CommCode add Reserve2 varchar(200) null
-IF not EXISTS (select 1 from syscolumns where name='Reserve3' and id=object_id('CommCode'))
-  Alter table CommCode add Reserve3 varchar(200) null
-IF not EXISTS (select 1 from syscolumns where name='Reserve4' and id=object_id('CommCode'))
-  Alter table CommCode add Reserve4 varchar(200) null
-IF not EXISTS (select 1 from syscolumns where name='Reserve5' and id=object_id('CommCode'))
-  Alter table CommCode add Reserve5 int null
-IF not EXISTS (select 1 from syscolumns where name='Reserve6' and id=object_id('CommCode'))
-  Alter table CommCode add Reserve6 int null
-IF not EXISTS (select 1 from syscolumns where name='Reserve7' and id=object_id('CommCode'))
-  Alter table CommCode add Reserve7 float null
-IF not EXISTS (select 1 from syscolumns where name='Reserve8' and id=object_id('CommCode'))
-  Alter table CommCode add Reserve8 float null
-IF not EXISTS (select 1 from syscolumns where name='Reserve9' and id=object_id('CommCode'))
-  Alter table CommCode add Reserve9 datetime null
-IF not EXISTS (select 1 from syscolumns where name='Reserve10' and id=object_id('CommCode'))
-  Alter table CommCode add Reserve10 datetime null
-GO
-
---CommValue 20110607
-if not exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[CommValue]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
-create table CommValue
- (Unid int identity primary key,
-  ItemUnid int not null,
-  sValue varchar(100) not null,
-  dfValue bit null
-)
-GO
-
---创建CommValue与clinicchkitem之间的关系
-if not exists(select OBJECTPROPERTY(o.id,N'IsSystemTable') from sysobjects o where o.name = N'FK_CommValue_clinicchkitem' and user_name(o.uid) = N'dbo')
-ALTER TABLE dbo.CommValue ADD CONSTRAINT
-	FK_CommValue_clinicchkitem FOREIGN KEY
-	(
-	ItemUnid
-	) REFERENCES dbo.clinicchkitem
-	(
-	unid
-	) ON UPDATE CASCADE
-	 ON DELETE CASCADE
-go
-
---HisCombItem 20110611
-if not exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[HisCombItem]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
-create table HisCombItem
- (Unid int identity primary key,
-  CombUnid int not null,
-  HisItem varchar(20) not null,
-  HisItemName varchar(50) null
-)
-GO
-
---20150719增加字段
-IF NOT EXISTS (select 1 from syscolumns where name='ExtSystemId' and id=object_id('HisCombItem'))
-  Alter table HisCombItem add ExtSystemId varchar(50) null
-
-IF NOT EXISTS (select 1 from syscolumns where name='Create_Date_Time' and id=object_id('HisCombItem'))
-  Alter table HisCombItem add Create_Date_Time datetime null DEFAULT (getdate())
-GO
-
---创建HisCombItem与combinitem之间的关系
-if not exists(select OBJECTPROPERTY(o.id,N'IsSystemTable') from sysobjects o where o.name = N'FK_HisCombItem_combinitem' and user_name(o.uid) = N'dbo')
-ALTER TABLE dbo.HisCombItem ADD CONSTRAINT
-	FK_HisCombItem_combinitem FOREIGN KEY
-	(
-	CombUnid
-	) REFERENCES dbo.combinitem
-	(
-	unid
-	) ON UPDATE CASCADE
-	 ON DELETE CASCADE
-go
-
-if not exists(select * from sysindexes where name='IX_HisCombItem')
-begin
-CREATE UNIQUE NONCLUSTERED INDEX IX_HisCombItem ON dbo.HisCombItem
-	(
-	CombUnid,
-	HisItem
-	) ON [PRIMARY]
-end
-GO
 
 --触发器TRIGGER_chk_valu_His_ItemName创建脚本 20110611
 SET QUOTED_IDENTIFIER ON 
@@ -3393,27 +3720,6 @@ GO
 --GO
 
 
---PIX_TRAN 20111123
-if not exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[PIX_TRAN]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
-CREATE TABLE PIX_TRAN (
-	UNID int IDENTITY primary key,
-	PKUNID int NULL ,
-	Reserve1 varchar(100)  NULL ,
-	Reserve2 varchar(100)  NULL ,
-	Reserve3 varchar(100)  NULL ,
-	Reserve4 varchar(100)  NULL ,
-	Reserve5 datetime  NULL ,
-	CREATE_DATE_TIME datetime NULL DEFAULT (getdate()),
-	OpType varchar(50)  NULL 
-) 
-GO
-
-
-SET QUOTED_IDENTIFIER ON 
-GO
-SET ANSI_NULLS ON 
-GO
-
 if exists (select name from sysobjects where name='TRIGGER_chk_con_HisValue_Delete' and type='TR')
   drop TRIGGER TRIGGER_chk_con_HisValue_Delete
 go
@@ -3574,137 +3880,6 @@ GO
 SET ANSI_NULLS ON 
 GO
 
---修改表chk_con--20120222
-IF NOT EXISTS (select 1 from syscolumns where name='Audit_Date' and id=object_id('chk_con'))
-begin
-  Alter table chk_con add Audit_Date datetime null--审核时间
-end
-
---修改表chk_con_bak--20120222
-IF NOT EXISTS (select 1 from syscolumns where name='Audit_Date' and id=object_id('chk_con_bak'))
-begin
-  Alter table chk_con_bak add Audit_Date datetime null--审核时间
-end
-go
-
---修改表chk_con_his--20120313
-IF NOT EXISTS (select 1 from syscolumns where name='Audit_Date' and id=object_id('chk_con_his'))
-begin
-  Alter table chk_con_his add Audit_Date datetime null--审核时间
-end
-
---修改表chk_con_his_bak--20120313
-IF NOT EXISTS (select 1 from syscolumns where name='Audit_Date' and id=object_id('chk_con_his_bak'))
-begin
-  Alter table chk_con_his_bak add Audit_Date datetime null--审核时间
-end
-go
-
---20120228,越秀区中医医院导入诊疗卡号,故10->30
-alter table chk_con alter column Caseno varchar(30) null
-alter table chk_con_bak alter column Caseno varchar(30) null
-alter table chk_con_his alter column Caseno varchar(30) null
-alter table chk_con_his_bak alter column Caseno varchar(30) null
-GO
-
---2012-03-08从varchar(30)改为varchar(50),越秀区中医医院的组合项目特长
-alter table chk_valu_his alter column combin_Name varchar(50) null
-alter table chk_valu_his_bak alter column combin_Name varchar(50) null
-GO
-
---20120511,临床诊断,char(50)->varchar(200)
-alter table chk_con alter column diagnose varchar(200) null
-alter table chk_con_bak alter column diagnose varchar(200) null
-alter table chk_con_his alter column diagnose varchar(200) null
-alter table chk_con_his_bak alter column diagnose varchar(200) null
-GO
-
---20120528,nvarchar(30)->varchar(100),超级用户记录中的该字段存放试用版有效期
-alter table worker alter column account_limit varchar(100) Null
-GO
-
---Worker
-IF not EXISTS (select 1 from syscolumns where name='ShowAllTj' and id=object_id('Worker'))
-  Alter table Worker add ShowAllTj varchar(2) null
-GO
-
-IF EXISTS (select 1 from syscolumns where name='Reserve3' and id=object_id('clinicchkitem'))
-BEGIN
-  --Reserve3不要了，用Dosage1做为保留字段3.值改到Reserve5
-  update clinicchkitem set Reserve5=1 where Reserve3='体检结论' AND Reserve5 IS NULL
-  update clinicchkitem set Reserve5=2 where Reserve3='体检建议' AND Reserve5 IS NULL
-END
-GO
-
---20141123切变率在20141123前是在dosage2字段中，现转移到Reserve8
-update clinicchkitem set Reserve8=dosage2 where isnull(dosage2,'')<>'' AND ISNUMERIC(dosage2)=1 AND Reserve8 IS NULL
-GO
-
---20141123打算删除这些字段，考虑到PEIS可能在用这些字段，暂不删除
-/*
-IF EXISTS (select 1 from syscolumns where name='Reserve3' and id=object_id('clinicchkitem'))
-  Alter table clinicchkitem drop column Reserve3
-IF EXISTS (select 1 from syscolumns where name='Reserve4' and id=object_id('clinicchkitem'))
-  Alter table clinicchkitem drop column Reserve4
-IF EXISTS (select 1 from syscolumns where name='Surem1' and id=object_id('clinicchkitem'))
-  Alter table clinicchkitem drop column Surem1
-IF EXISTS (select 1 from syscolumns where name='Surem2' and id=object_id('clinicchkitem'))
-  Alter table clinicchkitem drop column Surem2
-IF EXISTS (select 1 from syscolumns where name='Urine1' and id=object_id('clinicchkitem'))
-  Alter table clinicchkitem drop column Urine1
-IF EXISTS (select 1 from syscolumns where name='Urine2' and id=object_id('clinicchkitem'))
-  Alter table clinicchkitem drop column Urine2
-IF EXISTS (select 1 from syscolumns where name='ChkMethod' and id=object_id('clinicchkitem'))
-  Alter table clinicchkitem drop column ChkMethod
-IF EXISTS (select 1 from syscolumns where name='Surem1' and id=object_id('chk_valu'))
-  Alter table chk_valu drop column Surem1
-IF EXISTS (select 1 from syscolumns where name='Surem2' and id=object_id('chk_valu'))
-  Alter table chk_valu drop column Surem2
-IF EXISTS (select 1 from syscolumns where name='Urine1' and id=object_id('chk_valu'))
-  Alter table chk_valu drop column Urine1
-IF EXISTS (select 1 from syscolumns where name='Urine2' and id=object_id('chk_valu'))
-  Alter table chk_valu drop column Urine2
-IF EXISTS (select 1 from syscolumns where name='ChkMethod' and id=object_id('chk_valu'))
-  Alter table chk_valu drop column ChkMethod
-IF EXISTS (select 1 from syscolumns where name='Surem1' and id=object_id('chk_valu_bak'))
-  Alter table chk_valu_bak drop column Surem1
-IF EXISTS (select 1 from syscolumns where name='Surem2' and id=object_id('chk_valu_bak'))
-  Alter table chk_valu_bak drop column Surem2
-IF EXISTS (select 1 from syscolumns where name='Urine1' and id=object_id('chk_valu_bak'))
-  Alter table chk_valu_bak drop column Urine1
-IF EXISTS (select 1 from syscolumns where name='Urine2' and id=object_id('chk_valu_bak'))
-  Alter table chk_valu_bak drop column Urine2
-IF EXISTS (select 1 from syscolumns where name='ChkMethod' and id=object_id('chk_valu_bak'))
-  Alter table chk_valu_bak drop column ChkMethod
-*/
-GO
-
---20150517增加标本发送人、接收人、接收时间
---PushPress（原舒张压）用作 发送人
---PullPress（原收缩压）用作 接收人
---Stature（原身高）用作 接收时间
-alter table chk_con alter column Stature datetime Null
-GO
-
-alter table chk_con_bak alter column Stature datetime Null
-GO
-
-if not exists(select * from CommCode where TypeName='工具菜单' and name='报表编辑器')
-begin
-  insert into CommCode(TypeName,ID,Name,Reserve,Reserve2) values ('工具菜单',010,'报表编辑器','FrfSet.exe','1')
-  insert into CommCode(TypeName,ID,Name,Reserve,Reserve2) values ('工具菜单',015,'SQL高级查询器','SQLQueryer.exe','')
-  insert into CommCode(TypeName,ID,Name,Reserve,Reserve2) values ('工具菜单',020,'-','','')
-  insert into CommCode(TypeName,ID,Name,Reserve,Reserve2) values ('工具菜单',025,'权限设置','PowerSet.exe','1')
-  insert into CommCode(TypeName,ID,Name,Reserve,Reserve2) values ('工具菜单',030,'-','','')
-  insert into CommCode(TypeName,ID,Name,Reserve,Reserve2) values ('工具菜单',035,'激活通信接口','注册COM组件.bat','')
-  insert into CommCode(TypeName,ID,Name,Reserve,Reserve2) values ('工具菜单',040,'-','','')
-  insert into CommCode(TypeName,ID,Name,Reserve,Reserve2) values ('工具菜单',055,'串口调试助手','UartAssist.exe','')
-  insert into CommCode(TypeName,ID,Name,Reserve,Reserve2) values ('工具菜单',060,'网络调试助手','NetAssist.exe','')
-  insert into CommCode(TypeName,ID,Name,Reserve,Reserve2) values ('工具菜单',070,'-','','')
-  insert into CommCode(TypeName,ID,Name,Reserve,Reserve2) values ('工具菜单',075,'操作手册','检验系统操作手册.pdf','')
-end
-GO
-
 --触发器TRIGGER_RisDescriptType_PYM创建脚本
 SET QUOTED_IDENTIFIER ON 
 GO
@@ -3831,132 +4006,6 @@ GO
 SET ANSI_NULLS ON 
 GO
 
---combinitem 20140410
-IF not EXISTS (select 1 from syscolumns where name='Department' and id=object_id('combinitem'))
-  Alter table combinitem add Department varchar(50) null
-GO
-
---combinitem 20140411
-IF not EXISTS (select 1 from syscolumns where name='SysName' and id=object_id('combinitem'))
-  Alter table combinitem add SysName varchar(10) null
-GO
-
-update combinitem SET SysName='LIS' WHERE isnull(SysName,'')=''
-GO
-
---clinicchkitem 20140411
-IF not EXISTS (select 1 from syscolumns where name='SysName' and id=object_id('clinicchkitem'))
-  Alter table clinicchkitem add SysName varchar(10) null
-GO
-
-update clinicchkitem SET SysName='LIS' WHERE isnull(SysName,'')=''
-GO
-
---CommCode 20140411
-IF not EXISTS (select 1 from syscolumns where name='SysName' and id=object_id('CommCode'))
-  Alter table CommCode add SysName varchar(10) null
-GO
-
-update CommCode SET SysName='LIS' WHERE isnull(SysName,'')=''
-GO
-
---生成参考范围函数 20140412
-if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[uf_Reference_Ranges]') and xtype in (N'FN', N'IF', N'TF'))
-drop function [dbo].[uf_Reference_Ranges]
-GO
-
-CREATE  FUNCTION uf_Reference_Ranges
-(
-  @Min_value varchar(250),
-  @Max_value varchar(250)
-)  
-RETURNS varchar(510) AS  
-BEGIN 
-  if isnull(@Min_value,'')=isnull(@Max_value,'') return @Min_value
-   
-  if isnull(@Min_value,'')<>''and isnull(@Max_value,'')='' return @Min_value
-
-  if isnull(@Min_value,'')=''and isnull(@Max_value,'')<>'' return @Max_value
-
-  if isnull(@Min_value,'')<>isnull(@Max_value,'') return @Min_value+'--'+@Max_value
-
-  return null
-END
-
-GO
-
---生成参考范围函数，用于报告显示 20161111
-if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[uf_Reference_Value_B1]') and xtype in (N'FN', N'IF', N'TF'))
-drop function [dbo].[uf_Reference_Value_B1]
-GO
-
-CREATE  FUNCTION uf_Reference_Value_B1
-(
-  @Min_value varchar(250),
-  @Max_value varchar(250)
-)  
-RETURNS varchar(510) AS  
-BEGIN 
-  if isnull(@Min_value,'')=isnull(@Max_value,'') return ''
-   
-  if isnull(@Min_value,'')='' or isnull(@Max_value,'')='' return ''
-
-  if isnull(@Min_value,'')<>isnull(@Max_value,'') return @Min_value
-
-  return ''
-END
-
-GO
-
-if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[uf_Reference_Value_B2]') and xtype in (N'FN', N'IF', N'TF'))
-drop function [dbo].[uf_Reference_Value_B2]
-GO
-
-CREATE  FUNCTION uf_Reference_Value_B2
-(
-  @Min_value varchar(250),
-  @Max_value varchar(250)
-)  
-RETURNS varchar(510) AS  
-BEGIN 
-  if isnull(@Min_value,'')=isnull(@Max_value,'') return @Min_value
-   
-  if isnull(@Min_value,'')='' or isnull(@Max_value,'')='' return isnull(@Min_value,'')+isnull(@Max_value,'')
-
-  if isnull(@Min_value,'')<>isnull(@Max_value,'') return '--'+@Max_value
-
-  return ''
-END
-
-GO
-
---20140906质控修改
-if EXISTS (select 1 from information_schema.columns where table_name = 'QCGHEAD' and column_name='qc_month' and data_type='varchar')
-begin
-  DELETE FROM QCGHEAD WHERE qc_month='AA'--处理历史数据
-  alter table qcghead alter column qc_year int NOT NULL
-  alter table qcghead alter column qc_month int NOT NULL
-end
-GO
-
-IF not EXISTS (select 1 from syscolumns where name='itemid' and id=object_id('qcghead'))
-  Alter table qcghead add itemid varchar(10) null
-GO
-
---处理历史数据
-update qcghead set itemid='-1' where itemid is null
-GO
-
-Alter table qcghead alter column itemid varchar(10) NOT null
-GO
-
-alter table qcghead alter column itemname varchar(30) null
-GO
-
---创建qcghead.itemid不能为空字符串的约束
-if not exists(select OBJECTPROPERTY(o.id,N'IsSystemTable') from sysobjects o where o.name = N'CK_qcghead_ITEMID' and user_name(o.uid) = N'dbo')
-ALTER TABLE qcghead ADD CONSTRAINT CK_qcghead_ITEMID CHECK (len(itemID) > 0)
-GO
 
 --触发器TRIGGER_qcghead_insert创建脚本
 SET QUOTED_IDENTIFIER ON 
@@ -3988,23 +4037,6 @@ GO
 SET ANSI_NULLS ON 
 GO
 
---20140906性别自定义
-if not exists (select 1 from CommCode where TypeName='性别')
-begin
-  insert into CommCode (typename,id,name,sysname) values ('性别','0','未知的性别','LIS')
-  insert into CommCode (typename,id,name,sysname) values ('性别','1','男','LIS')
-  insert into CommCode (typename,id,name,sysname) values ('性别','2','女','LIS')
-  insert into CommCode (typename,id,name,sysname) values ('性别','5','女变男','LIS')
-  insert into CommCode (typename,id,name,sysname) values ('性别','6','男变女','LIS')
-  insert into CommCode (typename,id,name,sysname) values ('性别','9','未说明的性别','LIS')
-end
-GO
-
---20150201软件过期时间
-if not exists (select 1 from CommCode where TypeName='系统代码' and Remark='软件过期时间')
-  insert into CommCode (typename,id,name,remark,sysname) values ('系统代码','0005','B6BB07900F8E5B81BBDEC78B685A68B8','软件过期时间','LIS')
-GO
-
 --20150517
 if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[TRIGGER_Lsh_Verify_Con]') and OBJECTPROPERTY(id, N'IsTrigger') = 1) 
   drop trigger [dbo].[TRIGGER_Lsh_Verify_Con]
@@ -4012,224 +4044,6 @@ GO
 
 if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[TRIGGER_Lsh_Verify]') and OBJECTPROPERTY(id, N'IsTrigger') = 1)
   drop trigger [dbo].[TRIGGER_Lsh_Verify]
-GO
-
---存储过程pro_MergeRequestBill创建脚本
-if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[pro_MergeRequestBill]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
-  drop procedure [dbo].[pro_MergeRequestBill]
-GO
-
-SET QUOTED_IDENTIFIER ON 
-GO
-SET ANSI_NULLS ON 
-GO
-
---根据病历号、样本类型、样本分隔符合并申请单
---满足以下条件的申请单才参与合并
---1、从接口传入的申请单；2、病历号不为空
---20151202越秀中医PEIS要求采样时间一样的才合并
-CREATE PROCEDURE [dbo].[pro_MergeRequestBill] 
-AS
-
-  DECLARE Cur_WaitMergeRequestBill Cursor For 
-	select min(cch.unid) as unid,
-               cch.caseno,
-               isnull(cbi.specimentype_DfValue,'') as specimentype_DfValue,
-               isnull(cbi.itemtype,'') as itemtype,
-	       isnull(cvh.TakeSampleTime,0) as TakeSampleTime
-        from chk_con_his cch
-        inner join chk_valu_his cvh on cch.unid=cvh.pkunid
-        inner join combinitem cbi on cbi.id=cvh.pkcombin_id
-        where isnull(cch.his_unid,'')<>''--表示接口传入的申请单
-        and 
-        isnull(cch.caseno,'')<>''--表示有病历号的申请单
-        and (select count(*) from chk_valu_his cvh2 where cvh2.pkunid=cch.unid and isnull(cvh2.itemvalue,'')='1')<=0--表示未被LIS取过的申请单
-        group by cch.caseno,isnull(cbi.specimentype_DfValue,''),isnull(cbi.itemtype,''),isnull(cvh.TakeSampleTime,0)
-
-  Open Cur_WaitMergeRequestBill
-
-  Declare @Unid int,@CaseNo varchar(30),@SpecimenType varchar(60),@ItemType varchar(50),@TakeSampleTime datetime
-  FETCH NEXT FROM Cur_WaitMergeRequestBill INTO @Unid,@CaseNo,@SpecimenType,@ItemType,@TakeSampleTime
-  WHILE @@FETCH_STATUS=0
-  BEGIN
-    update chk_valu_his set pkunid=@Unid where valueid in (
-	select cvh.valueid
-        from chk_con_his cch
-        inner join chk_valu_his cvh on cch.unid=cvh.pkunid
-        inner join combinitem cbi on cbi.id=cvh.pkcombin_id
-        where isnull(cch.his_unid,'')<>''--表示接口传入的申请单
-        and 
-        isnull(cch.caseno,'')<>''--表示有病历号的申请单
-        and (select count(*) from chk_valu_his cvh2 where cvh2.pkunid=cch.unid and isnull(cvh2.itemvalue,'')='1')<=0--表示未被LIS取过的申请单
-        --非当前申请单
-        and cch.unid<>@Unid
-        --病历号、样本类型、样本分隔符、采样时间一样的合并
-        and cch.caseno=@CaseNo and isnull(cbi.specimentype_DfValue,'')=isnull(@SpecimenType,'') and isnull(cbi.itemtype,'')=isnull(@ItemType,'') and isnull(cvh.TakeSampleTime,0)=isnull(@TakeSampleTime,0)
-      )
-      
-    FETCH NEXT FROM Cur_WaitMergeRequestBill INTO @Unid,@CaseNo,@SpecimenType,@ItemType,@TakeSampleTime
-  END
-  CLOSE Cur_WaitMergeRequestBill
-  DEALLOCATE Cur_WaitMergeRequestBill
-
-  --删除无明细(组合项目)的主记录
-  delete from chk_con_his 
-  where isnull(chk_con_his.his_unid,'')<>''--表示接口传入的申请单
-  and 
-  isnull(chk_con_his.caseno,'')<>''--表示有病历号的申请单
-  and (select count(*) from Chk_Valu_His cvh where cvh.PkUnid=chk_con_his.Unid)=0
-
-GO
-SET QUOTED_IDENTIFIER OFF 
-GO
-SET ANSI_NULLS ON 
-GO
-
---存储过程pro_SplitRequestBill创建脚本
-if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[pro_SplitRequestBill]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
-  drop procedure [dbo].[pro_SplitRequestBill]
-GO
-
-SET QUOTED_IDENTIFIER ON 
-GO
-SET ANSI_NULLS ON 
-GO
-
---根据样本类型、样本分隔符拆分申请单
---满足以下条件的申请单才参与拆分
---1、从接口传入的申请单；
---20151202越秀中医PEIS要求按采样时间拆开
-CREATE PROCEDURE [dbo].[pro_SplitRequestBill] 
-AS
-
-  DECLARE Cur_WaitSplitRequestBill Cursor For 
-	select cch.unid
-        from chk_con_his cch
-        where isnull(cch.his_unid,'')<>''--表示接口传入的申请单
-        and 
-        (select count(*) from chk_valu_his cvh2 where cvh2.pkunid=cch.unid and isnull(cvh2.itemvalue,'')='1')<=0--表示未被LIS取过的申请单
-
-  Open Cur_WaitSplitRequestBill
-
-  Declare @Unid int
-  FETCH NEXT FROM Cur_WaitSplitRequestBill INTO @Unid
-  WHILE @@FETCH_STATUS=0
-  BEGIN
-    declare @Num_Value int
-
-    select @Num_Value=count(*) from chk_valu_his where pkunid=@Unid
-    if @Num_Value<=0 
-    begin
-      FETCH NEXT FROM Cur_WaitSplitRequestBill INTO @Unid
-      continue
-    end
-
-    SELECT @Num_Value=COUNT(*) FROM
-	(
-	select 0 as A
-	from chk_valu_his cvh3 
-	    inner join combinitem cbi3 on cbi3.id=cvh3.pkcombin_id
-	    where cvh3.pkunid=@Unid
-	    group by isnull(cbi3.specimentype_DfValue,''),isnull(cbi3.itemtype,''),isnull(cvh3.TakeSampleTime,0)
-	) as TempA
-    if @Num_Value<=1
-    begin
-      update chk_con_his set chk_con_his.flagetype=
-	(select top 1 cbi.specimentype_DfValue from chk_valu_his cvh,combinitem cbi where cvh.pkunid=chk_con_his.unid and cbi.id=cvh.pkcombin_id) 
-	where unid=@Unid
-	and isnull(chk_con_his.flagetype,'')<>
-	(select top 1 isnull(cbi.specimentype_DfValue,'') from chk_valu_his cvh,combinitem cbi where cvh.pkunid=chk_con_his.unid and cbi.id=cvh.pkcombin_id) 
-      FETCH NEXT FROM Cur_WaitSplitRequestBill INTO @Unid
-      continue
-    end
-    
-    DECLARE Cur_1 Cursor For 
-	select isnull(cbi3.specimentype_DfValue,''),isnull(cbi3.itemtype,''),isnull(cvh3.TakeSampleTime,0)
-	from chk_valu_his cvh3 
-	    inner join combinitem cbi3 on cbi3.id=cvh3.pkcombin_id
-	    where cvh3.pkunid=@Unid
-	    group by isnull(cbi3.specimentype_DfValue,''),isnull(cbi3.itemtype,''),isnull(cvh3.TakeSampleTime,0)
-
-    Open Cur_1
-    Declare @specimentype_DfValue varchar(60),@itemtype varchar(50),@i int,@SCOPE_IDENTITY int,@TakeSampleTime datetime
-    set @i=0
-    FETCH NEXT FROM Cur_1 INTO @specimentype_DfValue,@itemtype,@TakeSampleTime
-    WHILE @@FETCH_STATUS=0
-    BEGIN
-      set @i=@i+1
-      if @i=1
-      begin
-        update chk_con_his set flagetype=@specimentype_DfValue where unid=@Unid and isnull(flagetype,'')<>@specimentype_DfValue
-        FETCH NEXT FROM Cur_1 INTO @specimentype_DfValue,@itemtype,@TakeSampleTime
-        continue
-      end
-
-      insert into chk_con_his (patientname,flagetype,sex,age,report_date,bedno,His_Unid,check_doctor,deptname,combin_id,Caseno,diagnose,Diagnosetype,typeflagcase,WorkCompany,WorkDepartment,ifMarry)  
-      	select patientname,flagetype,sex,age,report_date,bedno,His_Unid,check_doctor,deptname,combin_id,Caseno,diagnose,Diagnosetype,typeflagcase,WorkCompany,WorkDepartment,ifMarry from chk_con_his where unid=@Unid
-      SELECT @SCOPE_IDENTITY=SCOPE_IDENTITY()
-      update chk_valu_his set chk_valu_his.pkunid=@SCOPE_IDENTITY 
-	where chk_valu_his.pkunid=@Unid 
-	and (select isnull(cbi5.specimentype_DfValue,'') from combinitem cbi5 where cbi5.id=chk_valu_his.pkcombin_id)=@specimentype_DfValue
-	and (select isnull(cbi6.itemtype,'') from combinitem cbi6 where cbi6.id=chk_valu_his.pkcombin_id)=@itemtype
-        and isnull(chk_valu_his.TakeSampleTime,0)=@TakeSampleTime
-
-      FETCH NEXT FROM Cur_1 INTO @specimentype_DfValue,@itemtype,@TakeSampleTime
-    END
-    CLOSE Cur_1
-    DEALLOCATE Cur_1
-      
-    FETCH NEXT FROM Cur_WaitSplitRequestBill INTO @Unid
-  END
-  CLOSE Cur_WaitSplitRequestBill
-  DEALLOCATE Cur_WaitSplitRequestBill
-
-GO
-SET QUOTED_IDENTIFIER OFF 
-GO
-SET ANSI_NULLS ON 
-GO
-
---20150808获取最新流水号
-if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[uf_GetNextSerialNum]') and xtype in (N'FN', N'IF', N'TF'))
-drop function [dbo].[uf_GetNextSerialNum]
-GO
-
-SET QUOTED_IDENTIFIER ON 
-GO
-SET ANSI_NULLS ON 
-GO
-
-CREATE FUNCTION uf_GetNextSerialNum
-(
-  @WorkGroup varchar(30), --工作组
-  @CHECK_DATE varchar(10),--检查日期,YYYY-MM-DD
-  @Diagnosetype varchar(10) --优先级别
-)  
-RETURNS varchar(50) AS  
-BEGIN 
-  --获取最新流水号
-
-  if isnull(@Diagnosetype,'')<>'常规' and isnull(@Diagnosetype,'')<>'急诊' and isnull(@Diagnosetype,'')<>'加急'
-    set @Diagnosetype='常规'
-
-  declare @MaxSerialNum varchar(50),@ret varchar(50)
-
-  select @MaxSerialNum=max(right('0000'+lsh,4)) from chk_con 
-  WHERE CONVERT(CHAR(10),check_date,121)=@CHECK_DATE
-  AND combin_id=@WorkGroup
-  and Diagnosetype=@Diagnosetype
-
-  if isnumeric(@MaxSerialNum)=1
-    set @ret=right('0000'+cast(cast(@MaxSerialNum as int)+1 as varchar),4)     
-  else set @ret='0001'
-
-  return @ret
-END
-
-GO
-SET QUOTED_IDENTIFIER OFF 
-GO
-SET ANSI_NULLS ON 
 GO
 
 --触发器TRIGGER_chk_con_PatientInfo_From_HisUnid创建脚本
@@ -4399,43 +4213,234 @@ GO
 SET ANSI_NULLS ON 
 GO
 
---20151205表ApiToken创建脚本
-if not exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[ApiToken]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
-CREATE TABLE ApiToken (
-	UserId varchar (20) primary key ,
-	Token varchar (50) NOT NULL ,
-	Mod_Date_Time datetime NULL ,
-	Create_Date_Time datetime NULL DEFAULT (getdate())
-) 
+--删除触发器TRIGGER_chk_con_SCJG_Update
+if exists (select name from sysobjects where name='TRIGGER_chk_con_SCJG_Update' and type='TR')
+  drop TRIGGER TRIGGER_chk_con_SCJG_Update
+go
+
+--删除触发器TRIGGER_chk_valu_SCJG_insert
+if exists (select name from sysobjects where name='TRIGGER_chk_valu_SCJG_insert' and type='TR')
+  drop TRIGGER TRIGGER_chk_valu_SCJG_insert
+go
+
+---------------视图相关操作---------------
+
+--视图view_chk_valu_All的创建脚本
+SET QUOTED_IDENTIFIER ON 
+GO
+SET ANSI_NULLS ON 
 GO
 
---20160422用户访问应用程序记录表(用户信息收集)创建脚本
-if not exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[AppVisit]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
-create table AppVisit
- (Unid int identity primary key,
-  SysName varchar (20) NULL,
-  PageName varchar (10) NULL,
-  IP varchar (20) NULL,
-  Customer varchar (50) NULL,
-  UserName varchar (20) NULL,
-  ActionName varchar (50) NULL,
-  ActionTime datetime NULL,
-  Remark varchar (100) NULL,
-  Reserve varchar(100) NULL,
-  Reserve2 varchar (200) NULL,
-  Reserve3 varchar (200) NULL,
-  Reserve4 varchar (200) NULL,
-  Reserve5 int NULL,
-  Reserve6 int NULL,
-  Reserve7 float NULL,
-  Reserve8 float NULL,
-  Reserve9 datetime NULL,
-  Reserve10 datetime NULL,
-  Create_Date_Time datetime NULL DEFAULT (getdate())
-)
+if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[view_chk_valu_All]') and OBJECTPROPERTY(id, N'IsView') = 1)
+drop view [dbo].[view_chk_valu_All]
 GO
 
---重新编译视图
+--Asp网络查询及打印每日存根要用到
+--2007-03-21
+CREATE VIEW view_chk_valu_All
+  AS
+  SELECT *
+  FROM chk_valu
+  UNION ALL
+  SELECT *
+  FROM chk_valu_bak
+
+GO
+SET QUOTED_IDENTIFIER OFF 
+GO
+SET ANSI_NULLS ON 
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[view_HBV_Value]') and OBJECTPROPERTY(id, N'IsView') = 1)
+drop view [dbo].[view_HBV_Value]
+GO
+
+--视图view_HBV_Value的创建脚本
+SET QUOTED_IDENTIFIER ON 
+GO
+SET ANSI_NULLS ON 
+GO
+
+Create VIEW view_HBV_Value
+  AS
+
+SELECT  pkunid,
+        (CASE english_name WHEN 'HBsAg' THEN itemvalue ELSE '' END) AS HBsAg,  
+        (CASE english_name WHEN 'HBsAb' THEN itemvalue ELSE '' END) AS HBsAb,  
+        (CASE english_name when 'HBeAg' THEN itemvalue ELSE '' END) AS HBeAg,
+        (CASE english_name when 'HBeAb' THEN itemvalue ELSE '' END) AS HBeAb,
+        (CASE english_name WHEN 'HBcAb' THEN itemvalue ELSE '' END) AS HBcAb
+FROM dbo.view_chk_valu_All where issure='1' and isnull(itemvalue,'')<>''
+	and (english_name='HBsAg' or english_name='HBsAb' or english_name='HBeAg' or english_name='HBeAb' or english_name='HBcAb')
+
+GO
+SET QUOTED_IDENTIFIER OFF 
+GO
+SET ANSI_NULLS ON 
+GO
+
+--20160802视图view_Chk_Con_All创建脚本
+IF EXISTS (SELECT * FROM dbo.sysobjects where id = OBJECT_ID(N'[dbo].[view_Chk_Con_All]') and OBJECTPROPERTY(id, N'IsView') = 1)
+DROP VIEW [dbo].[view_Chk_Con_All]
+GO
+
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER OFF
+GO
+
+CREATE  VIEW [dbo].[view_Chk_Con_All]
+  AS
+  SELECT chk_con.*,0 as ifCompleted
+  FROM chk_con
+  UNION ALL
+  SELECT chk_con_bak.*,1 as ifCompleted
+  FROM chk_con_bak
+  
+GO
+
+--20150719创建视图view_UT_LIS_RESULT
+if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[view_UT_LIS_RESULT]') and OBJECTPROPERTY(id, N'IsView') = 1)
+drop view [dbo].[view_UT_LIS_RESULT]
+GO
+
+SET QUOTED_IDENTIFIER ON 
+GO
+SET ANSI_NULLS ON 
+GO
+
+CREATE VIEW view_UT_LIS_RESULT
+AS
+--LIS提供给标软PEIS的结果视图
+select	cv.valueid as RESULT_ID,
+	cc.Caseno as SAMPLE_NO,
+	cv.itemid as ITEM_CODE,
+	cv.name as ITEM_NAME,
+	cv.itemvalue as TEST_VALUE,
+	isnull(dbo.uf_Reference_Value_B1(cv.min_value,cv.max_value),'')+isnull(dbo.uf_Reference_Value_B2(cv.min_value,cv.max_value),'') as TEXT_RANGE,
+	cv.unit as TEXT_DANWEI,
+	case dbo.uf_ValueAlarm(cv.itemid,cv.Min_value,cv.Max_value,cv.itemvalue) when 1 then 'L' WHEN 2 THEN 'H' ELSE 'N' END as TEXT_NOTE,
+	cc.Audit_Date as REPORT_DATE,
+	cc.report_doctor as REPORT_USER,
+	CV.COMBIN_NAME as FLAG_YQ
+from chk_con cc,chk_valu cv
+where cc.unid=cv.pkunid
+AND ISNULL(cc.report_doctor,'')<>''
+and cv.issure='1'
+and isnull(cv.itemvalue,'')<>''
+
+union all
+
+select	cv.valueid as RESULT_ID,
+	cc.Caseno as SAMPLE_NO,
+	cv.itemid as ITEM_CODE,
+	cv.name as ITEM_NAME,
+	cv.itemvalue as TEST_VALUE,
+	isnull(dbo.uf_Reference_Value_B1(cv.min_value,cv.max_value),'')+isnull(dbo.uf_Reference_Value_B2(cv.min_value,cv.max_value),'') as TEXT_RANGE,
+	cv.unit as TEXT_DANWEI,
+	case dbo.uf_ValueAlarm(cv.itemid,cv.Min_value,cv.Max_value,cv.itemvalue) when 1 then 'L' WHEN 2 THEN 'H' ELSE 'N' END as TEXT_NOTE,
+	cc.Audit_Date as REPORT_DATE,
+	cc.report_doctor as REPORT_USER,
+	CV.COMBIN_NAME as FLAG_YQ
+from chk_con_bak cc,chk_valu_bak cv
+where cc.unid=cv.pkunid
+and isnull(cv.itemvalue,'')<>''
+and cc.check_date>getdate()-180
+
+GO
+SET QUOTED_IDENTIFIER OFF 
+GO
+SET ANSI_NULLS ON 
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[view_Show_chk_Con_His]') and OBJECTPROPERTY(id, N'IsView') = 1)
+drop view [dbo].[view_Show_chk_Con_His]
+GO
+
+--2010-12-30视图view_Show_chk_Con_His创建脚本
+SET QUOTED_IDENTIFIER ON 
+GO
+SET ANSI_NULLS ON 
+GO
+
+CREATE VIEW view_Show_chk_Con_His
+AS
+select cch.* from chk_con_his cch 
+where (SELECT count(*) FROM chk_valu_his cvh WHERE cvh.pkunid=cch.unid and isnull(cvh.itemvalue,'')<>'1')>0
+--where cch.unid in(
+--select cvh.pkunid from chk_valu_his cvh
+--where not exists 
+--( 
+--select 1 from view_Chk_Con_All vcca
+--inner join view_chk_valu_All vcva on vcca.unid=vcva.pkunid 
+--and cvh.pkunid=vcca.his_unid and cvh.pkcombin_id=vcva.pkcombin_id and vcva.issure='1'
+--)
+--)
+
+GO
+SET QUOTED_IDENTIFIER OFF 
+GO
+SET ANSI_NULLS ON 
+GO
+
+---------------数据相关操作---------------
+
+IF EXISTS (select 1 from syscolumns where name='Reserve3' and id=object_id('clinicchkitem'))
+BEGIN
+  --Reserve3不要了，用Dosage1做为保留字段3.值改到Reserve5
+  update clinicchkitem set Reserve5=1 where Reserve3='体检结论' AND Reserve5 IS NULL
+  update clinicchkitem set Reserve5=2 where Reserve3='体检建议' AND Reserve5 IS NULL
+END
+GO
+
+--20141123切变率在20141123前是在dosage2字段中，现转移到Reserve8
+update clinicchkitem set Reserve8=dosage2 where isnull(dosage2,'')<>'' AND ISNUMERIC(dosage2)=1 AND Reserve8 IS NULL
+GO
+
+update combinitem SET SysName='LIS' WHERE isnull(SysName,'')=''
+GO
+
+update clinicchkitem SET SysName='LIS' WHERE isnull(SysName,'')=''
+GO
+
+update CommCode SET SysName='LIS' WHERE isnull(SysName,'')=''
+GO
+
+--20140906性别自定义
+if not exists (select 1 from CommCode where TypeName='性别')
+begin
+  insert into CommCode (typename,id,name,sysname) values ('性别','0','未知的性别','LIS')
+  insert into CommCode (typename,id,name,sysname) values ('性别','1','男','LIS')
+  insert into CommCode (typename,id,name,sysname) values ('性别','2','女','LIS')
+  insert into CommCode (typename,id,name,sysname) values ('性别','5','女变男','LIS')
+  insert into CommCode (typename,id,name,sysname) values ('性别','6','男变女','LIS')
+  insert into CommCode (typename,id,name,sysname) values ('性别','9','未说明的性别','LIS')
+end
+GO
+
+--20150201软件过期时间
+if not exists (select 1 from CommCode where TypeName='系统代码' and Remark='软件过期时间')
+  insert into CommCode (typename,id,name,remark,sysname) values ('系统代码','0005','B6BB07900F8E5B81BBDEC78B685A68B8','软件过期时间','LIS')
+GO
+
+if not exists(select * from CommCode where TypeName='工具菜单' and name='报表编辑器')
+begin
+  insert into CommCode(TypeName,ID,Name,Reserve,Reserve2) values ('工具菜单',010,'报表编辑器','FrfSet.exe','1')
+  insert into CommCode(TypeName,ID,Name,Reserve,Reserve2) values ('工具菜单',015,'SQL高级查询器','SQLQueryer.exe','')
+  insert into CommCode(TypeName,ID,Name,Reserve,Reserve2) values ('工具菜单',020,'-','','')
+  insert into CommCode(TypeName,ID,Name,Reserve,Reserve2) values ('工具菜单',025,'权限设置','PowerSet.exe','1')
+  insert into CommCode(TypeName,ID,Name,Reserve,Reserve2) values ('工具菜单',030,'-','','')
+  insert into CommCode(TypeName,ID,Name,Reserve,Reserve2) values ('工具菜单',035,'激活通信接口','注册COM组件.bat','')
+  insert into CommCode(TypeName,ID,Name,Reserve,Reserve2) values ('工具菜单',040,'-','','')
+  insert into CommCode(TypeName,ID,Name,Reserve,Reserve2) values ('工具菜单',055,'串口调试助手','UartAssist.exe','')
+  insert into CommCode(TypeName,ID,Name,Reserve,Reserve2) values ('工具菜单',060,'网络调试助手','NetAssist.exe','')
+  insert into CommCode(TypeName,ID,Name,Reserve,Reserve2) values ('工具菜单',070,'-','','')
+  insert into CommCode(TypeName,ID,Name,Reserve,Reserve2) values ('工具菜单',075,'操作手册','检验系统操作手册.pdf','')
+end
+GO
+
+---------------重新编译视图---------------
 sp_refreshview  'dbo.view_chk_valu_All'
 GO
 sp_refreshview  'dbo.view_HBV_Value'
