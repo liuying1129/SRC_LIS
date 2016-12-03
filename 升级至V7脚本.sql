@@ -65,9 +65,10 @@ IF not EXISTS (select 1 from syscolumns where name='SysName' and id=object_id('C
   Alter table CommCode add SysName varchar(10) null
 GO
 
+--索引IX_CommCode创建脚本.其中的数据操作有依赖表，故只能放在表删除脚本之前
 if not exists(select * from sysindexes where name='IX_CommCode')
 begin
-CREATE UNIQUE NONCLUSTERED INDEX IX_CommCode ON dbo.CommCode
+  CREATE UNIQUE NONCLUSTERED INDEX IX_CommCode ON dbo.CommCode
 	(
 	TypeName,
 	ID
@@ -157,13 +158,6 @@ IF not EXISTS (select 1 from syscolumns where name='SysName' and id=object_id('c
   Alter table combinitem add SysName varchar(10) null
 GO
 
-if not exists(select * from sysindexes where name='IX_combinitem')
-  CREATE UNIQUE NONCLUSTERED INDEX [IX_combinitem] ON [dbo].[combinitem] 
-  (
-	[id] ASC
-  )
-go
-
 --CombSChkItem
 if not exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[CombSChkItem]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
 create table CombSChkItem
@@ -173,40 +167,7 @@ create table CombSChkItem
 )
 GO
 
---将数据插入到CombSChkItem表中 start
---combinitem中增加unid字段之后
---删除clinicchkitem重复记录之前
-  DECLARE Cur_CombSChkItem Cursor For 
-    select combinitem,itemid from clinicchkitem where (combinitem is not null) and (combinitem<>'')
-  Open Cur_CombSChkItem
-
-  Declare @combinitem varchar(50),@itemid varchar(50)
-  FETCH NEXT FROM Cur_CombSChkItem INTO @combinitem,@itemid
-  WHILE @@FETCH_STATUS=0
-  BEGIN
-    declare @itemunid int,@combunid varchar(50)
-    select @itemunid=unid from clinicchkitem where (itemid=@itemid) and ((combinitem is null) or (combinitem=''))
-    select @combunid=unid from combinitem where id=@combinitem
-    if (@itemunid is not null) and (@combunid is not null)
-      insert into CombSChkItem (itemunid,combunid) values (@itemunid,@combunid)
-
-
-    FETCH NEXT FROM Cur_CombSChkItem INTO @combinitem,@itemid
-  END
-  CLOSE Cur_CombSChkItem
-  DEALLOCATE Cur_CombSChkItem
-go
---将数据插入到CombSChkItem表中 stop
-
 --clinicchkitem
-IF EXISTS (select 1 from syscolumns where name='combinitem' and id=object_id('clinicchkitem'))
-  delete from clinicchkitem where (combinitem is not null) and (combinitem<>'')
-GO
-
-IF EXISTS (select 1 from syscolumns where name='combinitem' and id=object_id('clinicchkitem'))
-  Alter table clinicchkitem drop column combinitem
-GO
-
 IF EXISTS (select 1 from syscolumns where name='reference' and id=object_id('clinicchkitem'))
   Alter table clinicchkitem drop column reference
 
@@ -331,12 +292,6 @@ IF not EXISTS (select 1 from syscolumns where name='SysName' and id=object_id('c
   Alter table clinicchkitem add SysName varchar(10) null
 GO
 
-if not exists(select * from sysindexes where name='IX_clinicchkitem')
-CREATE UNIQUE NONCLUSTERED INDEX [IX_clinicchkitem] ON [dbo].[clinicchkitem] 
-(
-	[itemid] ASC
-) 
-	 
 --修改表referencevalue
 IF NOT EXISTS (select 1 from syscolumns where name='flagetype' and id=object_id('referencevalue'))
 begin
@@ -586,19 +541,10 @@ IF not EXISTS (select 1 from syscolumns where name='itemid' and id=object_id('qc
   Alter table qcghead add itemid varchar(10) null
 GO
 
---处理历史数据
-update qcghead set itemid='-1' where itemid is null
-GO
-
 Alter table qcghead alter column itemid varchar(10) NOT null
 GO
 
 alter table qcghead alter column itemname varchar(30) null
-GO
-
---创建qcghead.itemid不能为空字符串的约束
-if not exists(select OBJECTPROPERTY(o.id,N'IsSystemTable') from sysobjects o where o.name = N'CK_qcghead_ITEMID' and user_name(o.uid) = N'dbo')
-ALTER TABLE qcghead ADD CONSTRAINT CK_qcghead_ITEMID CHECK (len(itemID) > 0)
 GO
 
 --HisCombItem 20110611
@@ -617,16 +563,6 @@ IF NOT EXISTS (select 1 from syscolumns where name='ExtSystemId' and id=object_i
 
 IF NOT EXISTS (select 1 from syscolumns where name='Create_Date_Time' and id=object_id('HisCombItem'))
   Alter table HisCombItem add Create_Date_Time datetime null DEFAULT (getdate())
-GO
-
-if not exists(select * from sysindexes where name='IX_HisCombItem')
-begin
-CREATE UNIQUE NONCLUSTERED INDEX IX_HisCombItem ON dbo.HisCombItem
-	(
-	CombUnid,
-	HisItem
-	) ON [PRIMARY]
-end
 GO
 
 --20100125打印条码标签工作站的病人基本信息表
@@ -988,111 +924,6 @@ if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[specimenca
 if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[specimentype]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
   drop table [dbo].[specimentype]
 
----------------表关系相关操作---------------
-
---创建CommValue与clinicchkitem之间的关系
-if not exists(select OBJECTPROPERTY(o.id,N'IsSystemTable') from sysobjects o where o.name = N'FK_CommValue_clinicchkitem' and user_name(o.uid) = N'dbo')
-ALTER TABLE dbo.CommValue ADD CONSTRAINT
-	FK_CommValue_clinicchkitem FOREIGN KEY
-	(
-	ItemUnid
-	) REFERENCES dbo.clinicchkitem
-	(
-	unid
-	) ON UPDATE CASCADE
-	 ON DELETE CASCADE
-go
-
---创建clinicchkitem与CombSChkItem之间的关系
-if not exists(select OBJECTPROPERTY(o.id,N'IsSystemTable') from sysobjects o where o.name = N'FK_CombSChkItem_clinicchkitem' and user_name(o.uid) = N'dbo')
-ALTER TABLE dbo.CombSChkItem ADD CONSTRAINT
-	FK_CombSChkItem_clinicchkitem FOREIGN KEY
-	(
-	ItemUnid
-	) REFERENCES dbo.clinicchkitem
-	(
-	unid
-	) ON UPDATE CASCADE
-	 ON DELETE CASCADE
-
---创建combinitem与CombSChkItem之间的关系
-if not exists(select OBJECTPROPERTY(o.id,N'IsSystemTable') from sysobjects o where o.name = N'FK_CombSChkItem_combinitem' and user_name(o.uid) = N'dbo')
-ALTER TABLE dbo.CombSChkItem ADD CONSTRAINT
-	FK_CombSChkItem_combinitem FOREIGN KEY
-	(
-	CombUnid
-	) REFERENCES dbo.combinitem
-	(
-	unid
-	) ON UPDATE CASCADE
-	 ON DELETE CASCADE
-
-go
-
---创建clinicchkitem与referencevalue之间的关系
-if not exists(select OBJECTPROPERTY(o.id,N'IsSystemTable') from sysobjects o where o.name = N'FK_referencevalue_clinicchkitem' and user_name(o.uid) = N'dbo')
-ALTER TABLE dbo.referencevalue ADD CONSTRAINT
-	FK_referencevalue_clinicchkitem FOREIGN KEY
-	(
-	id
-	) REFERENCES dbo.clinicchkitem
-	(
-	itemid
-	) ON UPDATE CASCADE
-	 ON DELETE CASCADE
-GO
-
---20140926创建ItemExceptionValue与clinicchkitem之间的关系
-if not exists(select OBJECTPROPERTY(o.id,N'IsSystemTable') from sysobjects o where o.name = N'FK_ItemExceptionValue_clinicchkitem' and user_name(o.uid) = N'dbo')
-ALTER TABLE dbo.ItemExceptionValue ADD CONSTRAINT
-	FK_ItemExceptionValue_clinicchkitem FOREIGN KEY
-	(
-	ItemUnid
-	) REFERENCES dbo.clinicchkitem
-	(
-	unid
-	) ON UPDATE CASCADE
-	 ON DELETE CASCADE
-GO
-
---创建HisCombItem与combinitem之间的关系
-if not exists(select OBJECTPROPERTY(o.id,N'IsSystemTable') from sysobjects o where o.name = N'FK_HisCombItem_combinitem' and user_name(o.uid) = N'dbo')
-ALTER TABLE dbo.HisCombItem ADD CONSTRAINT
-	FK_HisCombItem_combinitem FOREIGN KEY
-	(
-	CombUnid
-	) REFERENCES dbo.combinitem
-	(
-	unid
-	) ON UPDATE CASCADE
-	 ON DELETE CASCADE
-go
-
---创建chk_con_his与chk_valu_his之间的关系
-if not exists(select OBJECTPROPERTY(o.id,N'IsSystemTable') from sysobjects o where o.name = N'FK_chk_valu_his_chk_con_his' and user_name(o.uid) = N'dbo')
-ALTER TABLE dbo.chk_valu_his ADD CONSTRAINT
-	FK_chk_valu_his_chk_con_his FOREIGN KEY
-	(
-	pkunid
-	) REFERENCES dbo.chk_con_his
-	(
-	unid
-	) ON UPDATE CASCADE
-	 ON DELETE CASCADE
-GO
-
---删除关系FK_worker_department
-if exists(select OBJECTPROPERTY(o.id,N'IsSystemTable') from sysobjects o where o.name = N'FK_worker_department' and user_name(o.uid) = N'dbo')
-ALTER TABLE dbo.worker
-	DROP CONSTRAINT FK_worker_department
-GO
-
---删除关系FK_clinicchkitem_combinitem
-if exists(select OBJECTPROPERTY(o.id,N'IsSystemTable') from sysobjects o where o.name = N'FK_clinicchkitem_combinitem' and user_name(o.uid) = N'dbo')
-ALTER TABLE dbo.clinicchkitem
-	DROP CONSTRAINT FK_clinicchkitem_combinitem
-GO
-
 ---------------函数相关操作---------------
 
 if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[uf_GetPy]') and xtype in (N'FN', N'IF', N'TF'))
@@ -1142,6 +973,272 @@ GO
 SET QUOTED_IDENTIFIER OFF 
 GO
 SET ANSI_NULLS ON 
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[uf_GetAgeReal]') and xtype in (N'FN', N'IF', N'TF'))
+drop function [dbo].[uf_GetAgeReal]
+GO
+
+SET QUOTED_IDENTIFIER OFF 
+GO
+SET ANSI_NULLS ON 
+GO
+
+--返回年龄的实数值(分钟值)
+--2006-01-05年龄传入'成'则默认为18岁
+CREATE FUNCTION uf_GetAgeReal
+(
+  @ageStr varchar(50)--ageStr='1岁2月3天4小时5分钟'
+)  
+RETURNS float AS  
+BEGIN 
+  declare @re_age float --返回值
+  set @re_age=0
+
+  if(@agestr='')or(@agestr is null) return 0
+  if(ltrim(rtrim(@agestr))='成') return 18*365*24*60
+
+  if isnumeric(@agestr)=1 --//只有数字时按岁来计算
+  begin
+    set @re_age=convert(float,@agestr)*365*24*60
+    return @re_age
+  end
+
+  declare @yPos int,@mPos int,@dpos int,@hpos int,@minpos int
+  declare @temp varchar(50),@temp_ageStr varchar(50)
+
+  set @temp_ageStr=@ageStr
+  set @yPos=charindex('岁',@temp_ageStr)
+  if @yPos<>0
+  begin
+    set @temp=substring(@temp_ageStr,1,@yPos-1)
+    set @temp_ageStr=right(@temp_ageStr,len(@temp_ageStr)-@yPos)
+    if isnumeric(@temp)=1 
+    begin
+      set @re_age=@re_age+convert(float,@temp)*365*24*60
+    end
+  end
+  
+  set @mPos=charindex('月',@temp_ageStr)
+  if @mPos<>0
+  begin
+    set @temp=substring(@temp_ageStr,1,@mPos-1)
+    set @temp_ageStr=right(@temp_ageStr,len(@temp_ageStr)-@mPos)
+    if isnumeric(@temp)=1 
+    begin
+      set @re_age=@re_age+convert(float,@temp)*30*24*60
+    end
+  end
+
+  set @dpos=charindex('天',@temp_ageStr)
+  if @dPos<>0
+  begin
+    set @temp=substring(@temp_ageStr,1,@dPos-1)
+    set @temp_ageStr=right(@temp_ageStr,len(@temp_ageStr)-@dPos)
+    if isnumeric(@temp)=1 
+    begin
+      set @re_age=@re_age+convert(float,@temp)*24*60
+    end
+  end
+
+  set @hpos=charindex('小时',@temp_ageStr)
+  if @hPos<>0
+  begin
+    set @temp=substring(@temp_ageStr,1,@hPos-1)
+    set @temp_ageStr=right(@temp_ageStr,len(@temp_ageStr)-@hPos-1)
+    if isnumeric(@temp)=1 
+    begin
+      set @re_age=@re_age+convert(float,@temp)*60
+    end
+  end
+
+  set @minpos=charindex('分钟',@temp_ageStr)
+  if @minPos<>0
+  begin
+    set @temp=substring(@temp_ageStr,1,@minPos-1)
+    set @temp_ageStr=right(@temp_ageStr,len(@temp_ageStr)-@minPos-1)
+    if isnumeric(@temp)=1 
+    begin
+      set @re_age=@re_age+convert(float,@temp)*1
+    end
+  end
+
+  return @re_age
+END
+
+GO
+SET QUOTED_IDENTIFIER OFF 
+GO
+SET ANSI_NULLS ON 
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[uf_GetBirthday]') and xtype in (N'FN', N'IF', N'TF'))
+drop function [dbo].[uf_GetBirthday]
+GO
+
+SET QUOTED_IDENTIFIER ON 
+GO
+SET ANSI_NULLS ON 
+GO
+
+--返回生日
+--2006-01-05年龄传入'成'则默认为18岁
+CREATE FUNCTION uf_GetBirthday
+(
+  @ageStr varchar(50),--ageStr='1岁2月3日4小时5分钟'
+  @op_date datetime --送检日期
+)  
+RETURNS datetime AS   
+BEGIN 
+  if(@agestr='')or(@agestr is null) return null
+  if isdate(@op_date)=0 return null --不是合法的日期
+  if(@op_date='')or(@op_date is null) return null 
+  declare @re_age datetime --返回值
+  set @re_age=null
+
+  if(ltrim(rtrim(@agestr))='成') set @agestr='18'
+  if isnumeric(@agestr)=1 --//只有数字时按岁来计算
+  begin
+    set @re_age=@op_date-convert(float,@agestr)*365
+    return @re_age
+  end
+
+  declare @yPos int,@mPos int,@dpos int,@hpos int,@minpos int
+  declare @temp varchar(50),@temp_ageStr varchar(50)
+
+  set @temp_ageStr=@ageStr
+  set @yPos=charindex('岁',@temp_ageStr)
+  if @yPos<>0
+  begin
+    set @temp=substring(@temp_ageStr,1,@yPos-1)
+    set @temp_ageStr=right(@temp_ageStr,len(@temp_ageStr)-@yPos)
+    if isnumeric(@temp)=1 
+    begin
+      set @re_age=isnull(@re_age,@op_date)-convert(float,@temp)*365
+    end
+  end
+  
+  set @mPos=charindex('月',@temp_ageStr)
+  if @mPos<>0
+  begin
+    set @temp=substring(@temp_ageStr,1,@mPos-1)
+    set @temp_ageStr=right(@temp_ageStr,len(@temp_ageStr)-@mPos)
+    if isnumeric(@temp)=1 
+    begin
+      set @re_age=isnull(@re_age,@op_date)-convert(float,@temp)*30
+    end
+  end
+
+  set @dpos=charindex('天',@temp_ageStr)
+  if @dPos<>0
+  begin
+    set @temp=substring(@temp_ageStr,1,@dPos-1)
+    set @temp_ageStr=right(@temp_ageStr,len(@temp_ageStr)-@dPos)
+    if isnumeric(@temp)=1 
+    begin
+      set @re_age=isnull(@re_age,@op_date)-convert(float,@temp)
+    end
+  end
+
+  set @hpos=charindex('小时',@temp_ageStr)
+  if @hPos<>0
+  begin
+    set @temp=substring(@temp_ageStr,1,@hPos-1)
+    set @temp_ageStr=right(@temp_ageStr,len(@temp_ageStr)-@hPos-1)
+    if isnumeric(@temp)=1 
+    begin
+      set @re_age=isnull(@re_age,@op_date)-convert(float,@temp)/24
+    end
+  end
+
+  set @minpos=charindex('分钟',@temp_ageStr)
+  if @minPos<>0
+  begin
+    set @temp=substring(@temp_ageStr,1,@minPos-1)
+    set @temp_ageStr=right(@temp_ageStr,len(@temp_ageStr)-@minPos-1)
+    if isnumeric(@temp)=1 
+    begin
+      set @re_age=isnull(@re_age,@op_date)-convert(float,@temp)/24/60
+    end
+  end
+
+  return @re_age
+END
+
+GO
+SET QUOTED_IDENTIFIER OFF 
+GO
+SET ANSI_NULLS ON 
+GO
+
+--生成参考范围函数 20140412
+if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[uf_Reference_Ranges]') and xtype in (N'FN', N'IF', N'TF'))
+drop function [dbo].[uf_Reference_Ranges]
+GO
+
+CREATE  FUNCTION uf_Reference_Ranges
+(
+  @Min_value varchar(250),
+  @Max_value varchar(250)
+)  
+RETURNS varchar(510) AS  
+BEGIN 
+  if isnull(@Min_value,'')=isnull(@Max_value,'') return @Min_value
+   
+  if isnull(@Min_value,'')<>''and isnull(@Max_value,'')='' return @Min_value
+
+  if isnull(@Min_value,'')=''and isnull(@Max_value,'')<>'' return @Max_value
+
+  if isnull(@Min_value,'')<>isnull(@Max_value,'') return @Min_value+'--'+@Max_value
+
+  return null
+END
+
+GO
+
+--生成参考范围函数，用于报告显示 20161111
+if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[uf_Reference_Value_B1]') and xtype in (N'FN', N'IF', N'TF'))
+drop function [dbo].[uf_Reference_Value_B1]
+GO
+
+CREATE  FUNCTION uf_Reference_Value_B1
+(
+  @Min_value varchar(250),
+  @Max_value varchar(250)
+)  
+RETURNS varchar(510) AS  
+BEGIN 
+  if isnull(@Min_value,'')=isnull(@Max_value,'') return ''
+   
+  if isnull(@Min_value,'')='' or isnull(@Max_value,'')='' return ''
+
+  if isnull(@Min_value,'')<>isnull(@Max_value,'') return @Min_value
+
+  return ''
+END
+
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[uf_Reference_Value_B2]') and xtype in (N'FN', N'IF', N'TF'))
+drop function [dbo].[uf_Reference_Value_B2]
+GO
+
+CREATE  FUNCTION uf_Reference_Value_B2
+(
+  @Min_value varchar(250),
+  @Max_value varchar(250)
+)  
+RETURNS varchar(510) AS  
+BEGIN 
+  if isnull(@Min_value,'')=isnull(@Max_value,'') return @Min_value
+   
+  if isnull(@Min_value,'')='' or isnull(@Max_value,'')='' return isnull(@Min_value,'')+isnull(@Max_value,'')
+
+  if isnull(@Min_value,'')<>isnull(@Max_value,'') return '--'+@Max_value
+
+  return ''
+END
+
 GO
 
 --20150616根据LIS组合项目得到对应的HIS项目串
@@ -1255,210 +1352,6 @@ GO
 SET ANSI_NULLS ON 
 GO
 
-
----------------------------------
-if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[uf_GetAgeReal]') and xtype in (N'FN', N'IF', N'TF'))
-drop function [dbo].[uf_GetAgeReal]
-GO
-
-SET QUOTED_IDENTIFIER OFF 
-GO
-SET ANSI_NULLS ON 
-GO
-
---返回年龄的实数值(分钟值)
---2006-01-05年龄传入'成'则默认为18岁
-CREATE FUNCTION uf_GetAgeReal
-(
-  @ageStr varchar(50)--ageStr='1岁2月3天4小时5分钟'
-)  
-RETURNS float AS  
-BEGIN 
-  declare @re_age float --返回值
-  set @re_age=0
-
-  if(@agestr='')or(@agestr is null) return 0
-  if(ltrim(rtrim(@agestr))='成') return 18*365*24*60
-
-  if isnumeric(@agestr)=1 --//只有数字时按岁来计算
-  begin
-    set @re_age=convert(float,@agestr)*365*24*60
-    return @re_age
-  end
-
-  declare @yPos int,@mPos int,@dpos int,@hpos int,@minpos int
-  declare @temp varchar(50),@temp_ageStr varchar(50)
-
-  set @temp_ageStr=@ageStr
-  set @yPos=charindex('岁',@temp_ageStr)
-  if @yPos<>0
-  begin
-    set @temp=substring(@temp_ageStr,1,@yPos-1)
-    set @temp_ageStr=right(@temp_ageStr,len(@temp_ageStr)-@yPos)
-    if isnumeric(@temp)=1 
-    begin
-      set @re_age=@re_age+convert(float,@temp)*365*24*60
-    end
-  end
-  
-  set @mPos=charindex('月',@temp_ageStr)
-  if @mPos<>0
-  begin
-    set @temp=substring(@temp_ageStr,1,@mPos-1)
-    set @temp_ageStr=right(@temp_ageStr,len(@temp_ageStr)-@mPos)
-    if isnumeric(@temp)=1 
-    begin
-      set @re_age=@re_age+convert(float,@temp)*30*24*60
-    end
-  end
-
-  set @dpos=charindex('天',@temp_ageStr)
-  if @dPos<>0
-  begin
-    set @temp=substring(@temp_ageStr,1,@dPos-1)
-    set @temp_ageStr=right(@temp_ageStr,len(@temp_ageStr)-@dPos)
-    if isnumeric(@temp)=1 
-    begin
-      set @re_age=@re_age+convert(float,@temp)*24*60
-    end
-  end
-
-  set @hpos=charindex('小时',@temp_ageStr)
-  if @hPos<>0
-  begin
-    set @temp=substring(@temp_ageStr,1,@hPos-1)
-    set @temp_ageStr=right(@temp_ageStr,len(@temp_ageStr)-@hPos-1)
-    if isnumeric(@temp)=1 
-    begin
-      set @re_age=@re_age+convert(float,@temp)*60
-    end
-  end
-
-  set @minpos=charindex('分钟',@temp_ageStr)
-  if @minPos<>0
-  begin
-    set @temp=substring(@temp_ageStr,1,@minPos-1)
-    set @temp_ageStr=right(@temp_ageStr,len(@temp_ageStr)-@minPos-1)
-    if isnumeric(@temp)=1 
-    begin
-      set @re_age=@re_age+convert(float,@temp)*1
-    end
-  end
-
-  return @re_age
-END
-
-GO
-SET QUOTED_IDENTIFIER OFF 
-GO
-SET ANSI_NULLS ON 
-GO
-
-------------------------------
-if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[uf_GetBirthday]') and xtype in (N'FN', N'IF', N'TF'))
-drop function [dbo].[uf_GetBirthday]
-GO
-
-SET QUOTED_IDENTIFIER ON 
-GO
-SET ANSI_NULLS ON 
-GO
-
---返回生日
---2006-01-05年龄传入'成'则默认为18岁
-CREATE FUNCTION uf_GetBirthday
-(
-  @ageStr varchar(50),--ageStr='1岁2月3日4小时5分钟'
-  @op_date datetime --送检日期
-)  
-RETURNS datetime AS  
-BEGIN 
-  if(@agestr='')or(@agestr is null) return null
-  if isdate(@op_date)=0 return null --不是合法的日期
-  if(@op_date='')or(@op_date is null) return null 
-  declare @re_age datetime --返回值
-  set @re_age=null
-
-  if(ltrim(rtrim(@agestr))='成') set @agestr='18'
-  if isnumeric(@agestr)=1 --//只有数字时按岁来计算
-  begin
-    set @re_age=@op_date-convert(float,@agestr)*365
-    return @re_age
-  end
-
-  declare @yPos int,@mPos int,@dpos int,@hpos int,@minpos int
-  declare @temp varchar(50),@temp_ageStr varchar(50)
-
-  set @temp_ageStr=@ageStr
-  set @yPos=charindex('岁',@temp_ageStr)
-  if @yPos<>0
-  begin
-    set @temp=substring(@temp_ageStr,1,@yPos-1)
-    set @temp_ageStr=right(@temp_ageStr,len(@temp_ageStr)-@yPos)
-    if isnumeric(@temp)=1 
-    begin
-      set @re_age=isnull(@re_age,@op_date)-convert(float,@temp)*365
-    end
-  end
-  
-  set @mPos=charindex('月',@temp_ageStr)
-  if @mPos<>0
-  begin
-    set @temp=substring(@temp_ageStr,1,@mPos-1)
-    set @temp_ageStr=right(@temp_ageStr,len(@temp_ageStr)-@mPos)
-    if isnumeric(@temp)=1 
-    begin
-      set @re_age=isnull(@re_age,@op_date)-convert(float,@temp)*30
-    end
-  end
-
-  set @dpos=charindex('天',@temp_ageStr)
-  if @dPos<>0
-  begin
-    set @temp=substring(@temp_ageStr,1,@dPos-1)
-    set @temp_ageStr=right(@temp_ageStr,len(@temp_ageStr)-@dPos)
-    if isnumeric(@temp)=1 
-    begin
-      set @re_age=isnull(@re_age,@op_date)-convert(float,@temp)
-    end
-  end
-
-  set @hpos=charindex('小时',@temp_ageStr)
-  if @hPos<>0
-  begin
-    set @temp=substring(@temp_ageStr,1,@hPos-1)
-    set @temp_ageStr=right(@temp_ageStr,len(@temp_ageStr)-@hPos-1)
-    if isnumeric(@temp)=1 
-    begin
-      set @re_age=isnull(@re_age,@op_date)-convert(float,@temp)/24
-    end
-  end
-
-  set @minpos=charindex('分钟',@temp_ageStr)
-  if @minPos<>0
-  begin
-    set @temp=substring(@temp_ageStr,1,@minPos-1)
-    set @temp_ageStr=right(@temp_ageStr,len(@temp_ageStr)-@minPos-1)
-    if isnumeric(@temp)=1 
-    begin
-      set @re_age=isnull(@re_age,@op_date)-convert(float,@temp)/24/60
-    end
-  end
-
-  return @re_age
-END
-
-GO
-SET QUOTED_IDENTIFIER OFF 
-GO
-SET ANSI_NULLS ON 
-GO
-
-------------------------------
-if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[uf_GetNextXxNo]') and xtype in (N'FN', N'IF', N'TF'))
-drop function [dbo].[uf_GetNextXxNo]
-GO
-
 --函数uf_ValueAlarm创建脚本
 if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[uf_ValueAlarm]') and xtype in (N'FN', N'IF', N'TF'))
 drop function [dbo].[uf_ValueAlarm]
@@ -1552,76 +1445,6 @@ GO
 SET QUOTED_IDENTIFIER OFF 
 GO
 SET ANSI_NULLS ON 
-GO
-
---生成参考范围函数 20140412
-if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[uf_Reference_Ranges]') and xtype in (N'FN', N'IF', N'TF'))
-drop function [dbo].[uf_Reference_Ranges]
-GO
-
-CREATE  FUNCTION uf_Reference_Ranges
-(
-  @Min_value varchar(250),
-  @Max_value varchar(250)
-)  
-RETURNS varchar(510) AS  
-BEGIN 
-  if isnull(@Min_value,'')=isnull(@Max_value,'') return @Min_value
-   
-  if isnull(@Min_value,'')<>''and isnull(@Max_value,'')='' return @Min_value
-
-  if isnull(@Min_value,'')=''and isnull(@Max_value,'')<>'' return @Max_value
-
-  if isnull(@Min_value,'')<>isnull(@Max_value,'') return @Min_value+'--'+@Max_value
-
-  return null
-END
-
-GO
-
---生成参考范围函数，用于报告显示 20161111
-if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[uf_Reference_Value_B1]') and xtype in (N'FN', N'IF', N'TF'))
-drop function [dbo].[uf_Reference_Value_B1]
-GO
-
-CREATE  FUNCTION uf_Reference_Value_B1
-(
-  @Min_value varchar(250),
-  @Max_value varchar(250)
-)  
-RETURNS varchar(510) AS  
-BEGIN 
-  if isnull(@Min_value,'')=isnull(@Max_value,'') return ''
-   
-  if isnull(@Min_value,'')='' or isnull(@Max_value,'')='' return ''
-
-  if isnull(@Min_value,'')<>isnull(@Max_value,'') return @Min_value
-
-  return ''
-END
-
-GO
-
-if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[uf_Reference_Value_B2]') and xtype in (N'FN', N'IF', N'TF'))
-drop function [dbo].[uf_Reference_Value_B2]
-GO
-
-CREATE  FUNCTION uf_Reference_Value_B2
-(
-  @Min_value varchar(250),
-  @Max_value varchar(250)
-)  
-RETURNS varchar(510) AS  
-BEGIN 
-  if isnull(@Min_value,'')=isnull(@Max_value,'') return @Min_value
-   
-  if isnull(@Min_value,'')='' or isnull(@Max_value,'')='' return isnull(@Min_value,'')+isnull(@Max_value,'')
-
-  if isnull(@Min_value,'')<>isnull(@Max_value,'') return '--'+@Max_value
-
-  return ''
-END
-
 GO
 
 --20150729
@@ -1800,6 +1623,11 @@ GO
 SET QUOTED_IDENTIFIER OFF 
 GO
 SET ANSI_NULLS ON 
+GO
+
+--删除函数uf_GetNextXxNo
+if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[uf_GetNextXxNo]') and xtype in (N'FN', N'IF', N'TF'))
+drop function [dbo].[uf_GetNextXxNo]
 GO
 
 ---------------存储过程相关操作---------------
@@ -3245,7 +3073,6 @@ SET ANSI_NULLS ON
 --GO
 */
 
-
 --触发器TRIGGER_chk_con_CommCode创建脚本
 SET QUOTED_IDENTIFIER ON 
 GO
@@ -3374,10 +3201,6 @@ SET QUOTED_IDENTIFIER OFF
 GO
 SET ANSI_NULLS ON 
 GO
-
-if exists (select name from sysobjects where name='TRIGGER_chk_con_his_BarCode_insert' and type='TR')
-  drop TRIGGER TRIGGER_chk_con_his_BarCode_insert
-go
 
 --触发器TRIGGER_chk_con_his_CommCode创建脚本20101223
 SET QUOTED_IDENTIFIER ON 
@@ -3931,7 +3754,6 @@ GO
 SET ANSI_NULLS ON 
 GO
 
-
 --触发器TRIGGER_RisDescription_PYM创建脚本
 SET QUOTED_IDENTIFIER ON 
 GO
@@ -4007,7 +3829,6 @@ GO
 SET ANSI_NULLS ON 
 GO
 
-
 --触发器TRIGGER_qcghead_insert创建脚本
 SET QUOTED_IDENTIFIER ON 
 GO
@@ -4036,15 +3857,6 @@ GO
 SET QUOTED_IDENTIFIER OFF 
 GO
 SET ANSI_NULLS ON 
-GO
-
---20150517
-if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[TRIGGER_Lsh_Verify_Con]') and OBJECTPROPERTY(id, N'IsTrigger') = 1) 
-  drop trigger [dbo].[TRIGGER_Lsh_Verify_Con]
-GO
-
-if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[TRIGGER_Lsh_Verify]') and OBJECTPROPERTY(id, N'IsTrigger') = 1)
-  drop trigger [dbo].[TRIGGER_Lsh_Verify]
 GO
 
 --触发器TRIGGER_chk_con_PatientInfo_From_HisUnid创建脚本
@@ -4106,6 +3918,44 @@ GO
 SET ANSI_NULLS ON 
 GO
 
+GO
+SET QUOTED_IDENTIFIER OFF 
+GO
+SET ANSI_NULLS ON 
+GO
+
+GO
+SET QUOTED_IDENTIFIER OFF 
+GO
+SET ANSI_NULLS ON 
+GO
+
+--删除触发器TRIGGER_chk_con_SCJG_Update
+if exists (select name from sysobjects where name='TRIGGER_chk_con_SCJG_Update' and type='TR')
+  drop TRIGGER TRIGGER_chk_con_SCJG_Update
+go
+
+--删除触发器TRIGGER_chk_valu_SCJG_insert
+if exists (select name from sysobjects where name='TRIGGER_chk_valu_SCJG_insert' and type='TR')
+  drop TRIGGER TRIGGER_chk_valu_SCJG_insert
+go
+
+--删除触发器TRIGGER_chk_con_his_BarCode_insert
+if exists (select name from sysobjects where name='TRIGGER_chk_con_his_BarCode_insert' and type='TR')
+  drop TRIGGER TRIGGER_chk_con_his_BarCode_insert
+go
+
+--删除触发器TRIGGER_Lsh_Verify_Con--20150517
+if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[TRIGGER_Lsh_Verify_Con]') and OBJECTPROPERTY(id, N'IsTrigger') = 1) 
+  drop trigger [dbo].[TRIGGER_Lsh_Verify_Con]
+GO
+
+--删除触发器TRIGGER_Lsh_Verify
+if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[TRIGGER_Lsh_Verify]') and OBJECTPROPERTY(id, N'IsTrigger') = 1)
+  drop trigger [dbo].[TRIGGER_Lsh_Verify]
+GO
+
+--删除触发器TRIGGER_chk_con_PatientInfo_From_HisUnid_Insert
 --触发器TRIGGER_chk_con_PatientInfo_From_HisUnid_Insert创建脚本
 --20151021用TRIGGER_chk_con_PatientInfo_From_HisUnid替代
 SET QUOTED_IDENTIFIER ON 
@@ -4153,12 +4003,8 @@ AS
          WorkCompany=@WorkCompany,WorkDepartment=@WorkDepartment,ifMarry=@ifMarry 
   where unid=@ChkCon_unid  
 */
-GO
-SET QUOTED_IDENTIFIER OFF 
-GO
-SET ANSI_NULLS ON 
-GO
 
+--删除触发器TRIGGER_chk_con_PatientInfo_From_HisUnid_Update
 --触发器TRIGGER_chk_con_PatientInfo_From_HisUnid_Update创建脚本
 --20151021用TRIGGER_chk_con_PatientInfo_From_HisUnid替代
 SET QUOTED_IDENTIFIER ON 
@@ -4208,21 +4054,6 @@ AS
          WorkCompany=@WorkCompany,WorkDepartment=@WorkDepartment,ifMarry=@ifMarry 
   where unid=@ChkCon_unid  
 */
-GO
-SET QUOTED_IDENTIFIER OFF 
-GO
-SET ANSI_NULLS ON 
-GO
-
---删除触发器TRIGGER_chk_con_SCJG_Update
-if exists (select name from sysobjects where name='TRIGGER_chk_con_SCJG_Update' and type='TR')
-  drop TRIGGER TRIGGER_chk_con_SCJG_Update
-go
-
---删除触发器TRIGGER_chk_valu_SCJG_insert
-if exists (select name from sysobjects where name='TRIGGER_chk_valu_SCJG_insert' and type='TR')
-  drop TRIGGER TRIGGER_chk_valu_SCJG_insert
-go
 
 ---------------视图相关操作---------------
 
@@ -4387,6 +4218,40 @@ GO
 
 ---------------数据相关操作---------------
 
+--将数据插入到CombSChkItem表中 start
+--combinitem中增加unid字段之后
+--删除clinicchkitem重复记录之前
+  DECLARE Cur_CombSChkItem Cursor For 
+    select combinitem,itemid from clinicchkitem where (combinitem is not null) and (combinitem<>'')
+  Open Cur_CombSChkItem
+
+  Declare @combinitem varchar(50),@itemid varchar(50)
+  FETCH NEXT FROM Cur_CombSChkItem INTO @combinitem,@itemid
+  WHILE @@FETCH_STATUS=0
+  BEGIN
+    declare @itemunid int,@combunid varchar(50)
+    select @itemunid=unid from clinicchkitem where (itemid=@itemid) and ((combinitem is null) or (combinitem=''))
+    select @combunid=unid from combinitem where id=@combinitem
+    if (@itemunid is not null) and (@combunid is not null)
+      insert into CombSChkItem (itemunid,combunid) values (@itemunid,@combunid)
+
+
+    FETCH NEXT FROM Cur_CombSChkItem INTO @combinitem,@itemid
+  END
+  CLOSE Cur_CombSChkItem
+  DEALLOCATE Cur_CombSChkItem
+go
+--将数据插入到CombSChkItem表中 stop
+
+IF EXISTS (select 1 from syscolumns where name='combinitem' and id=object_id('clinicchkitem'))
+  delete from clinicchkitem where (combinitem is not null) and (combinitem<>'')
+GO
+
+--上面的数据操作需要字段combinitem,故只能在数据操作之后删除字段combinitem
+IF EXISTS (select 1 from syscolumns where name='combinitem' and id=object_id('clinicchkitem'))
+  Alter table clinicchkitem drop column combinitem
+GO
+
 IF EXISTS (select 1 from syscolumns where name='Reserve3' and id=object_id('clinicchkitem'))
 BEGIN
   --Reserve3不要了，用Dosage1做为保留字段3.值改到Reserve5
@@ -4439,6 +4304,146 @@ begin
   insert into CommCode(TypeName,ID,Name,Reserve,Reserve2) values ('工具菜单',070,'-','','')
   insert into CommCode(TypeName,ID,Name,Reserve,Reserve2) values ('工具菜单',075,'操作手册','检验系统操作手册.pdf','')
 end
+GO
+
+--处理历史数据
+update qcghead set itemid='-1' where itemid is null
+GO
+
+---------------表约束、索引相关操作---------------
+
+if not exists(select * from sysindexes where name='IX_combinitem')
+  CREATE UNIQUE NONCLUSTERED INDEX [IX_combinitem] ON [dbo].[combinitem] 
+  (
+	[id] ASC
+  )
+go
+
+if not exists(select * from sysindexes where name='IX_clinicchkitem')
+CREATE UNIQUE NONCLUSTERED INDEX [IX_clinicchkitem] ON [dbo].[clinicchkitem] 
+(
+	[itemid] ASC
+)
+go
+
+--创建qcghead.itemid不能为空字符串的约束
+if not exists(select OBJECTPROPERTY(o.id,N'IsSystemTable') from sysobjects o where o.name = N'CK_qcghead_ITEMID' and user_name(o.uid) = N'dbo')
+  ALTER TABLE qcghead ADD CONSTRAINT CK_qcghead_ITEMID CHECK (len(itemID) > 0)
+GO
+
+if not exists(select * from sysindexes where name='IX_HisCombItem')
+begin
+CREATE UNIQUE NONCLUSTERED INDEX IX_HisCombItem ON dbo.HisCombItem
+	(
+	CombUnid,
+	HisItem
+	) ON [PRIMARY]
+end
+GO
+
+---------------表关系相关操作---------------
+
+--创建CommValue与clinicchkitem之间的关系
+if not exists(select OBJECTPROPERTY(o.id,N'IsSystemTable') from sysobjects o where o.name = N'FK_CommValue_clinicchkitem' and user_name(o.uid) = N'dbo')
+ALTER TABLE dbo.CommValue ADD CONSTRAINT
+	FK_CommValue_clinicchkitem FOREIGN KEY
+	(
+	ItemUnid
+	) REFERENCES dbo.clinicchkitem
+	(
+	unid
+	) ON UPDATE CASCADE
+	 ON DELETE CASCADE
+go
+
+--创建clinicchkitem与CombSChkItem之间的关系
+if not exists(select OBJECTPROPERTY(o.id,N'IsSystemTable') from sysobjects o where o.name = N'FK_CombSChkItem_clinicchkitem' and user_name(o.uid) = N'dbo')
+ALTER TABLE dbo.CombSChkItem ADD CONSTRAINT
+	FK_CombSChkItem_clinicchkitem FOREIGN KEY
+	(
+	ItemUnid
+	) REFERENCES dbo.clinicchkitem
+	(
+	unid
+	) ON UPDATE CASCADE
+	 ON DELETE CASCADE
+
+--创建combinitem与CombSChkItem之间的关系
+if not exists(select OBJECTPROPERTY(o.id,N'IsSystemTable') from sysobjects o where o.name = N'FK_CombSChkItem_combinitem' and user_name(o.uid) = N'dbo')
+ALTER TABLE dbo.CombSChkItem ADD CONSTRAINT
+	FK_CombSChkItem_combinitem FOREIGN KEY
+	(
+	CombUnid
+	) REFERENCES dbo.combinitem
+	(
+	unid
+	) ON UPDATE CASCADE
+	 ON DELETE CASCADE
+
+go
+
+--创建clinicchkitem与referencevalue之间的关系
+if not exists(select OBJECTPROPERTY(o.id,N'IsSystemTable') from sysobjects o where o.name = N'FK_referencevalue_clinicchkitem' and user_name(o.uid) = N'dbo')
+ALTER TABLE dbo.referencevalue ADD CONSTRAINT
+	FK_referencevalue_clinicchkitem FOREIGN KEY
+	(
+	id
+	) REFERENCES dbo.clinicchkitem
+	(
+	itemid
+	) ON UPDATE CASCADE
+	 ON DELETE CASCADE
+GO
+
+--20140926创建ItemExceptionValue与clinicchkitem之间的关系
+if not exists(select OBJECTPROPERTY(o.id,N'IsSystemTable') from sysobjects o where o.name = N'FK_ItemExceptionValue_clinicchkitem' and user_name(o.uid) = N'dbo')
+ALTER TABLE dbo.ItemExceptionValue ADD CONSTRAINT
+	FK_ItemExceptionValue_clinicchkitem FOREIGN KEY
+	(
+	ItemUnid
+	) REFERENCES dbo.clinicchkitem
+	(
+	unid
+	) ON UPDATE CASCADE
+	 ON DELETE CASCADE
+GO
+
+--创建HisCombItem与combinitem之间的关系
+if not exists(select OBJECTPROPERTY(o.id,N'IsSystemTable') from sysobjects o where o.name = N'FK_HisCombItem_combinitem' and user_name(o.uid) = N'dbo')
+ALTER TABLE dbo.HisCombItem ADD CONSTRAINT
+	FK_HisCombItem_combinitem FOREIGN KEY
+	(
+	CombUnid
+	) REFERENCES dbo.combinitem
+	(
+	unid
+	) ON UPDATE CASCADE
+	 ON DELETE CASCADE
+go
+
+--创建chk_con_his与chk_valu_his之间的关系
+if not exists(select OBJECTPROPERTY(o.id,N'IsSystemTable') from sysobjects o where o.name = N'FK_chk_valu_his_chk_con_his' and user_name(o.uid) = N'dbo')
+ALTER TABLE dbo.chk_valu_his ADD CONSTRAINT
+	FK_chk_valu_his_chk_con_his FOREIGN KEY
+	(
+	pkunid
+	) REFERENCES dbo.chk_con_his
+	(
+	unid
+	) ON UPDATE CASCADE
+	 ON DELETE CASCADE
+GO
+
+--删除关系FK_worker_department
+if exists(select OBJECTPROPERTY(o.id,N'IsSystemTable') from sysobjects o where o.name = N'FK_worker_department' and user_name(o.uid) = N'dbo')
+ALTER TABLE dbo.worker
+	DROP CONSTRAINT FK_worker_department
+GO
+
+--删除关系FK_clinicchkitem_combinitem
+if exists(select OBJECTPROPERTY(o.id,N'IsSystemTable') from sysobjects o where o.name = N'FK_clinicchkitem_combinitem' and user_name(o.uid) = N'dbo')
+ALTER TABLE dbo.clinicchkitem
+	DROP CONSTRAINT FK_clinicchkitem_combinitem
 GO
 
 ---------------重新编译视图---------------
