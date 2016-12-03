@@ -195,7 +195,6 @@ begin
     strsqlPrint:='select cv.itemid as 项目代码,cv.name as 名称,cv.english_name as 英文名,'+
           ' cv.itemvalue as 检验结果,'+
           ' cv.min_value as 最小值,cv.max_value as 最大值,'+
-          ' dbo.uf_Reference_Ranges(cv.min_value,cv.max_value) as 参考范围,'+
           ' dbo.uf_Reference_Value_B1(cv.min_value,cv.max_value) as 前段参考范围,dbo.uf_Reference_Value_B2(cv.min_value,cv.max_value) as 后段参考范围,'+
           ' cv.unit as 单位,min(cv.printorder) as 打印编号,'+
           ' min(cv.pkcombin_id) as 组合项目号, '+
@@ -215,7 +214,6 @@ begin
     strsqlPrint:='select itemid as 项目代码,name as 名称,english_name as 英文名,'+
             ' itemvalue as 检验结果,'+
             ' min_value as 最小值,max_value as 最大值,'+
-            ' dbo.uf_Reference_Ranges(min_value,max_value) as 参考范围,'+
             ' dbo.uf_Reference_Value_B1(min_value,max_value) as 前段参考范围,dbo.uf_Reference_Value_B2(min_value,max_value) as 后段参考范围,'+
             ' unit as 单位,min(printorder) as 打印编号,'+
             ' min(pkcombin_id) as 组合项目号, '+
@@ -374,8 +372,7 @@ begin
     sMergePrintWorkGroupRange:=' and cc.combin_id in ('+MergePrintWorkGroupRange+') ';
   if (SDIAppForm.N64.Checked)and(sPatientname<>'') then//按姓别性别年龄合并打印//只有存在姓名时才合并
     strsqlPrint:='select cv.combin_name as name,cv.name as 名称,cv.english_name as 英文名,cv.itemvalue as 检验结果,'+//combinitem.name
-    'cv.unit as 单位,cv.min_value as 最小值,'+
-    'cv.max_value as 最大值,dbo.uf_Reference_Ranges(cv.min_value,cv.max_value) as 参考范围, '+
+    'cv.unit as 单位,cv.min_value as 最小值,cv.max_value as 最大值,'+
     ' dbo.uf_Reference_Value_B1(cv.min_value,cv.max_value) as 前段参考范围,dbo.uf_Reference_Value_B2(cv.min_value,cv.max_value) as 后段参考范围,'+
     ' cv.Reserve1,cv.Reserve2,cv.Dosage1,cv.Dosage2,cv.Reserve5,cv.Reserve6,cv.Reserve7,cv.Reserve8,cv.Reserve9,cv.Reserve10, '+
     ' cv.itemid as 项目代码 '+//cci.Reserve3,
@@ -391,8 +388,7 @@ begin
     ' order by cv.pkcombin_id,cv.printorder '//组合项目号,打印编号 '
   else
     strsqlPrint:='select cv.combin_name as name,cv.name as 名称,cv.english_name as 英文名,cv.itemvalue as 检验结果,'+
-    'cv.unit as 单位,cv.min_value as 最小值,'+
-    'cv.max_value as 最大值,dbo.uf_Reference_Ranges(cv.min_value,cv.max_value) as 参考范围, '+
+    'cv.unit as 单位,cv.min_value as 最小值,cv.max_value as 最大值,'+
     ' dbo.uf_Reference_Value_B1(cv.min_value,cv.max_value) as 前段参考范围,dbo.uf_Reference_Value_B2(cv.min_value,cv.max_value) as 后段参考范围,'+
     ' cv.Reserve1,cv.Reserve2,cv.Dosage1,cv.Dosage2,cv.Reserve5,cv.Reserve6,cv.Reserve7,cv.Reserve8,cv.Reserve9,cv.Reserve10, '+
     ' cv.itemid as 项目代码 '+//cci.Reserve3,
