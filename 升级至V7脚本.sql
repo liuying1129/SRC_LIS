@@ -1069,6 +1069,7 @@ ALTER TABLE dbo.HisCombItem ADD CONSTRAINT
 go
 
 --创建chk_con_his与chk_valu_his之间的关系
+if not exists(select OBJECTPROPERTY(o.id,N'IsSystemTable') from sysobjects o where o.name = N'FK_chk_valu_his_chk_con_his' and user_name(o.uid) = N'dbo')
 ALTER TABLE dbo.chk_valu_his ADD CONSTRAINT
 	FK_chk_valu_his_chk_con_his FOREIGN KEY
 	(
