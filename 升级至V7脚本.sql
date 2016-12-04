@@ -2849,6 +2849,167 @@ GO
 SET ANSI_NULLS ON 
 GO
 
+---------------视图相关操作---------------
+
+--视图view_chk_valu_All的创建脚本
+SET QUOTED_IDENTIFIER ON 
+GO
+SET ANSI_NULLS ON 
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[view_chk_valu_All]') and OBJECTPROPERTY(id, N'IsView') = 1)
+drop view [dbo].[view_chk_valu_All]
+GO
+
+--Asp网络查询及打印每日存根要用到
+--2007-03-21
+CREATE VIEW view_chk_valu_All
+  AS
+  SELECT *
+  FROM chk_valu
+  UNION ALL
+  SELECT *
+  FROM chk_valu_bak
+
+GO
+SET QUOTED_IDENTIFIER OFF 
+GO
+SET ANSI_NULLS ON 
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[view_HBV_Value]') and OBJECTPROPERTY(id, N'IsView') = 1)
+drop view [dbo].[view_HBV_Value]
+GO
+
+--视图view_HBV_Value的创建脚本
+SET QUOTED_IDENTIFIER ON 
+GO
+SET ANSI_NULLS ON 
+GO
+
+Create VIEW view_HBV_Value
+  AS
+
+SELECT  pkunid,
+        (CASE english_name WHEN 'HBsAg' THEN itemvalue ELSE '' END) AS HBsAg,  
+        (CASE english_name WHEN 'HBsAb' THEN itemvalue ELSE '' END) AS HBsAb,  
+        (CASE english_name when 'HBeAg' THEN itemvalue ELSE '' END) AS HBeAg,
+        (CASE english_name when 'HBeAb' THEN itemvalue ELSE '' END) AS HBeAb,
+        (CASE english_name WHEN 'HBcAb' THEN itemvalue ELSE '' END) AS HBcAb
+FROM dbo.view_chk_valu_All where issure='1' and isnull(itemvalue,'')<>''
+	and (english_name='HBsAg' or english_name='HBsAb' or english_name='HBeAg' or english_name='HBeAb' or english_name='HBcAb')
+
+GO
+SET QUOTED_IDENTIFIER OFF 
+GO
+SET ANSI_NULLS ON 
+GO
+
+--20160802视图view_Chk_Con_All创建脚本
+IF EXISTS (SELECT * FROM dbo.sysobjects where id = OBJECT_ID(N'[dbo].[view_Chk_Con_All]') and OBJECTPROPERTY(id, N'IsView') = 1)
+DROP VIEW [dbo].[view_Chk_Con_All]
+GO
+
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER OFF
+GO
+
+CREATE  VIEW [dbo].[view_Chk_Con_All]
+  AS
+  SELECT chk_con.*,0 as ifCompleted
+  FROM chk_con
+  UNION ALL
+  SELECT chk_con_bak.*,1 as ifCompleted
+  FROM chk_con_bak
+  
+GO
+
+--20150719创建视图view_UT_LIS_RESULT
+if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[view_UT_LIS_RESULT]') and OBJECTPROPERTY(id, N'IsView') = 1)
+drop view [dbo].[view_UT_LIS_RESULT]
+GO
+
+SET QUOTED_IDENTIFIER ON 
+GO
+SET ANSI_NULLS ON 
+GO
+
+CREATE VIEW view_UT_LIS_RESULT
+AS
+--LIS提供给标软PEIS的结果视图
+select	cv.valueid as RESULT_ID,
+	cc.Caseno as SAMPLE_NO,
+	cv.itemid as ITEM_CODE,
+	cv.name as ITEM_NAME,
+	cv.itemvalue as TEST_VALUE,
+	isnull(dbo.uf_Reference_Value_B1(cv.min_value,cv.max_value),'')+isnull(dbo.uf_Reference_Value_B2(cv.min_value,cv.max_value),'') as TEXT_RANGE,
+	cv.unit as TEXT_DANWEI,
+	case dbo.uf_ValueAlarm(cv.itemid,cv.Min_value,cv.Max_value,cv.itemvalue) when 1 then 'L' WHEN 2 THEN 'H' ELSE 'N' END as TEXT_NOTE,
+	cc.Audit_Date as REPORT_DATE,
+	cc.report_doctor as REPORT_USER,
+	CV.COMBIN_NAME as FLAG_YQ
+from chk_con cc,chk_valu cv
+where cc.unid=cv.pkunid
+AND ISNULL(cc.report_doctor,'')<>''
+and cv.issure='1'
+and isnull(cv.itemvalue,'')<>''
+
+union all
+
+select	cv.valueid as RESULT_ID,
+	cc.Caseno as SAMPLE_NO,
+	cv.itemid as ITEM_CODE,
+	cv.name as ITEM_NAME,
+	cv.itemvalue as TEST_VALUE,
+	isnull(dbo.uf_Reference_Value_B1(cv.min_value,cv.max_value),'')+isnull(dbo.uf_Reference_Value_B2(cv.min_value,cv.max_value),'') as TEXT_RANGE,
+	cv.unit as TEXT_DANWEI,
+	case dbo.uf_ValueAlarm(cv.itemid,cv.Min_value,cv.Max_value,cv.itemvalue) when 1 then 'L' WHEN 2 THEN 'H' ELSE 'N' END as TEXT_NOTE,
+	cc.Audit_Date as REPORT_DATE,
+	cc.report_doctor as REPORT_USER,
+	CV.COMBIN_NAME as FLAG_YQ
+from chk_con_bak cc,chk_valu_bak cv
+where cc.unid=cv.pkunid
+and isnull(cv.itemvalue,'')<>''
+and cc.check_date>getdate()-180
+
+GO
+SET QUOTED_IDENTIFIER OFF 
+GO
+SET ANSI_NULLS ON 
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[view_Show_chk_Con_His]') and OBJECTPROPERTY(id, N'IsView') = 1)
+drop view [dbo].[view_Show_chk_Con_His]
+GO
+
+--2010-12-30视图view_Show_chk_Con_His创建脚本
+SET QUOTED_IDENTIFIER ON 
+GO
+SET ANSI_NULLS ON 
+GO
+
+CREATE VIEW view_Show_chk_Con_His
+AS
+select cch.* from chk_con_his cch 
+where (SELECT count(*) FROM chk_valu_his cvh WHERE cvh.pkunid=cch.unid and isnull(cvh.itemvalue,'')<>'1')>0
+--where cch.unid in(
+--select cvh.pkunid from chk_valu_his cvh
+--where not exists 
+--( 
+--select 1 from view_Chk_Con_All vcca
+--inner join view_chk_valu_All vcva on vcca.unid=vcva.pkunid 
+--and cvh.pkunid=vcca.his_unid and cvh.pkcombin_id=vcva.pkcombin_id and vcva.issure='1'
+--)
+--)
+
+GO
+SET QUOTED_IDENTIFIER OFF 
+GO
+SET ANSI_NULLS ON 
+GO
+
 ---------------触发器相关操作---------------
 
 --触发器TRIGGER_chk_con_CKZ_Update创建脚本
@@ -4055,167 +4216,6 @@ AS
          WorkCompany=@WorkCompany,WorkDepartment=@WorkDepartment,ifMarry=@ifMarry 
   where unid=@ChkCon_unid  
 */
-
----------------视图相关操作---------------
-
---视图view_chk_valu_All的创建脚本
-SET QUOTED_IDENTIFIER ON 
-GO
-SET ANSI_NULLS ON 
-GO
-
-if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[view_chk_valu_All]') and OBJECTPROPERTY(id, N'IsView') = 1)
-drop view [dbo].[view_chk_valu_All]
-GO
-
---Asp网络查询及打印每日存根要用到
---2007-03-21
-CREATE VIEW view_chk_valu_All
-  AS
-  SELECT *
-  FROM chk_valu
-  UNION ALL
-  SELECT *
-  FROM chk_valu_bak
-
-GO
-SET QUOTED_IDENTIFIER OFF 
-GO
-SET ANSI_NULLS ON 
-GO
-
-if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[view_HBV_Value]') and OBJECTPROPERTY(id, N'IsView') = 1)
-drop view [dbo].[view_HBV_Value]
-GO
-
---视图view_HBV_Value的创建脚本
-SET QUOTED_IDENTIFIER ON 
-GO
-SET ANSI_NULLS ON 
-GO
-
-Create VIEW view_HBV_Value
-  AS
-
-SELECT  pkunid,
-        (CASE english_name WHEN 'HBsAg' THEN itemvalue ELSE '' END) AS HBsAg,  
-        (CASE english_name WHEN 'HBsAb' THEN itemvalue ELSE '' END) AS HBsAb,  
-        (CASE english_name when 'HBeAg' THEN itemvalue ELSE '' END) AS HBeAg,
-        (CASE english_name when 'HBeAb' THEN itemvalue ELSE '' END) AS HBeAb,
-        (CASE english_name WHEN 'HBcAb' THEN itemvalue ELSE '' END) AS HBcAb
-FROM dbo.view_chk_valu_All where issure='1' and isnull(itemvalue,'')<>''
-	and (english_name='HBsAg' or english_name='HBsAb' or english_name='HBeAg' or english_name='HBeAb' or english_name='HBcAb')
-
-GO
-SET QUOTED_IDENTIFIER OFF 
-GO
-SET ANSI_NULLS ON 
-GO
-
---20160802视图view_Chk_Con_All创建脚本
-IF EXISTS (SELECT * FROM dbo.sysobjects where id = OBJECT_ID(N'[dbo].[view_Chk_Con_All]') and OBJECTPROPERTY(id, N'IsView') = 1)
-DROP VIEW [dbo].[view_Chk_Con_All]
-GO
-
-SET ANSI_NULLS ON
-GO
-
-SET QUOTED_IDENTIFIER OFF
-GO
-
-CREATE  VIEW [dbo].[view_Chk_Con_All]
-  AS
-  SELECT chk_con.*,0 as ifCompleted
-  FROM chk_con
-  UNION ALL
-  SELECT chk_con_bak.*,1 as ifCompleted
-  FROM chk_con_bak
-  
-GO
-
---20150719创建视图view_UT_LIS_RESULT
-if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[view_UT_LIS_RESULT]') and OBJECTPROPERTY(id, N'IsView') = 1)
-drop view [dbo].[view_UT_LIS_RESULT]
-GO
-
-SET QUOTED_IDENTIFIER ON 
-GO
-SET ANSI_NULLS ON 
-GO
-
-CREATE VIEW view_UT_LIS_RESULT
-AS
---LIS提供给标软PEIS的结果视图
-select	cv.valueid as RESULT_ID,
-	cc.Caseno as SAMPLE_NO,
-	cv.itemid as ITEM_CODE,
-	cv.name as ITEM_NAME,
-	cv.itemvalue as TEST_VALUE,
-	isnull(dbo.uf_Reference_Value_B1(cv.min_value,cv.max_value),'')+isnull(dbo.uf_Reference_Value_B2(cv.min_value,cv.max_value),'') as TEXT_RANGE,
-	cv.unit as TEXT_DANWEI,
-	case dbo.uf_ValueAlarm(cv.itemid,cv.Min_value,cv.Max_value,cv.itemvalue) when 1 then 'L' WHEN 2 THEN 'H' ELSE 'N' END as TEXT_NOTE,
-	cc.Audit_Date as REPORT_DATE,
-	cc.report_doctor as REPORT_USER,
-	CV.COMBIN_NAME as FLAG_YQ
-from chk_con cc,chk_valu cv
-where cc.unid=cv.pkunid
-AND ISNULL(cc.report_doctor,'')<>''
-and cv.issure='1'
-and isnull(cv.itemvalue,'')<>''
-
-union all
-
-select	cv.valueid as RESULT_ID,
-	cc.Caseno as SAMPLE_NO,
-	cv.itemid as ITEM_CODE,
-	cv.name as ITEM_NAME,
-	cv.itemvalue as TEST_VALUE,
-	isnull(dbo.uf_Reference_Value_B1(cv.min_value,cv.max_value),'')+isnull(dbo.uf_Reference_Value_B2(cv.min_value,cv.max_value),'') as TEXT_RANGE,
-	cv.unit as TEXT_DANWEI,
-	case dbo.uf_ValueAlarm(cv.itemid,cv.Min_value,cv.Max_value,cv.itemvalue) when 1 then 'L' WHEN 2 THEN 'H' ELSE 'N' END as TEXT_NOTE,
-	cc.Audit_Date as REPORT_DATE,
-	cc.report_doctor as REPORT_USER,
-	CV.COMBIN_NAME as FLAG_YQ
-from chk_con_bak cc,chk_valu_bak cv
-where cc.unid=cv.pkunid
-and isnull(cv.itemvalue,'')<>''
-and cc.check_date>getdate()-180
-
-GO
-SET QUOTED_IDENTIFIER OFF 
-GO
-SET ANSI_NULLS ON 
-GO
-
-if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[view_Show_chk_Con_His]') and OBJECTPROPERTY(id, N'IsView') = 1)
-drop view [dbo].[view_Show_chk_Con_His]
-GO
-
---2010-12-30视图view_Show_chk_Con_His创建脚本
-SET QUOTED_IDENTIFIER ON 
-GO
-SET ANSI_NULLS ON 
-GO
-
-CREATE VIEW view_Show_chk_Con_His
-AS
-select cch.* from chk_con_his cch 
-where (SELECT count(*) FROM chk_valu_his cvh WHERE cvh.pkunid=cch.unid and isnull(cvh.itemvalue,'')<>'1')>0
---where cch.unid in(
---select cvh.pkunid from chk_valu_his cvh
---where not exists 
---( 
---select 1 from view_Chk_Con_All vcca
---inner join view_chk_valu_All vcva on vcca.unid=vcva.pkunid 
---and cvh.pkunid=vcca.his_unid and cvh.pkcombin_id=vcva.pkcombin_id and vcva.issure='1'
---)
---)
-
-GO
-SET QUOTED_IDENTIFIER OFF 
-GO
-SET ANSI_NULLS ON 
-GO
 
 ---------------数据相关操作---------------
 
