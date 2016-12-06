@@ -822,6 +822,12 @@ create table AppVisit
 )
 GO
 
+IF NOT EXISTS (select 1 from syscolumns where name='ComputerName' and id=object_id('AppVisit'))
+begin
+  Alter table AppVisit add ComputerName varchar (50) null--计算机名称
+end
+go
+
 --20141123打算删除这些字段，考虑到PEIS可能在用这些字段，暂不删除
 /*
 IF EXISTS (select 1 from syscolumns where name='Reserve3' and id=object_id('clinicchkitem'))
