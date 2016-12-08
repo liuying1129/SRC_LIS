@@ -10,7 +10,7 @@ uses Windows,Messages, Classes,SysUtils, Graphics, Forms, Controls, Menus,
   DateUtils, FR_DSet, ADOLYGetcode,Math,Jpeg,Variants, UfrmLocateRecord,
   ExtDlgs, UADOLYQuery,HTTPApp{HTTPEncode},IdHashMessageDigest{TIdHashMessageDigest5},
   IdHash, IdBaseComponent, IdComponent, IdTCPConnection, IdTCPClient,
-  IdHTTP{T4x4LongWordRecord};
+  IdHTTP, IdIPWatch{T4x4LongWordRecord};
 
 //==为了通过发送消息更新主窗体状态栏而增加==//
 const
@@ -486,6 +486,8 @@ var
   s1,sort_params:string;
   RespData:TStringStream;
   IdHTTP_Tmp1:TIdHTTP;
+  sLocalIP,sLocalName:STRING;
+  IdIPWatch:TIdIPWatch;
 begin
   if ifRegister then bRegister:=true else bRegister:=false;
   
@@ -512,8 +514,14 @@ begin
   LoadToolMenu(N65,'select name from CommCode where TypeName=''工具菜单'' order by ID');
 
   //调用用户信息接口start
+  IdIPWatch:=TIdIPWatch.Create(nil);
+  IdIPWatch.HistoryEnabled:=false;
+  sLocalIP:=IdIPWatch.LocalIP;
+  sLocalName:=IdIPWatch.LocalName;
+  IdIPWatch.Free;
+  
   //t1:=FormatDateTime('YYYY-MM-DD hh:nn:ss',now);
-  s1:='insert into AppVisit (SysName,PageName,IP,Customer,UserName,ActionName,ActionTime) values ('''+SYSNAME+''','''+Name+''','''+'10.1.2.3'+''','''+SCSYDW+''','''+operator_name+''','''+'Show'+''',getdate())';
+  s1:='insert into AppVisit (SysName,PageName,IP,ComputerName,Customer,UserName,ActionName,ActionTime) values ('''+SYSNAME+''','''+Name+''','''+sLocalIP+''','''+sLocalName+''','''+SCSYDW+''','''+operator_name+''','''+'Show'+''',getdate())';
   s3:='methodNum='+HTTPEncode(UTF8Encode('AIF012'));
   //s3:=s3+'&customer='+(HTTPEncode(UTF8Encode(SCSYDW)));
   //s3:=s3+'&actionTime='+HTTPEncode(UTF8Encode(t1));
