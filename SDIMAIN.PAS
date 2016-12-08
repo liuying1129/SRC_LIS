@@ -10,7 +10,7 @@ uses Windows,Messages, Classes,SysUtils, Graphics, Forms, Controls, Menus,
   DateUtils, FR_DSet, ADOLYGetcode,Math,Jpeg,Variants, UfrmLocateRecord,
   ExtDlgs, UADOLYQuery,HTTPApp{HTTPEncode},IdHashMessageDigest{TIdHashMessageDigest5},
   IdHash, IdBaseComponent, IdComponent, IdTCPConnection, IdTCPClient,
-  IdHTTP, IdIPWatch{T4x4LongWordRecord};
+  IdHTTP{T4x4LongWordRecord}, IdIPWatch;
 
 //==为了通过发送消息更新主窗体状态栏而增加==//
 const
