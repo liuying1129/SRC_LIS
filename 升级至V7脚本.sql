@@ -4,7 +4,8 @@ go
 ---------------表相关操作---------------
 
 --20120528,nvarchar(30)->varchar(100),超级用户记录中的该字段存放试用版有效期
-alter table worker alter column account_limit varchar(100) Null
+--20161218,后来已将“试用版有效期”放在系统代码中,故varchar(50)即可
+alter table worker alter column account_limit varchar(50) Null
 GO
 
 --Worker
