@@ -2135,6 +2135,7 @@ object SDIAppForm: TSDIAppForm
   end
   object TimerIdleTracker: TTimer
     Enabled = False
+    Interval = 2000
     OnTimer = TimerIdleTrackerTimer
     Left = 496
     Top = 245

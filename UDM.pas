@@ -116,9 +116,6 @@ function DeCryptStr(aStr: Pchar; aKey: Pchar): Pchar;stdcall;external 'DESCrypt.
 function EnCryptStr(aStr: Pchar; aKey: Pchar): Pchar;stdcall;external 'DESCrypt.dll';//加密
 function CalParserValue(const CalExpress:Pchar;var ReturnValue:single):boolean;stdcall;external 'CalParser.dll';
 function ShowOptionForm(const pCaption,pTabSheetCaption,pItemInfo,pInifile:Pchar):boolean;stdcall;external 'OptionSetForm.dll';
-Function IdleTrackerInit:boolean;stdcall;external 'IdleTrac.dll';//start the monitoring process
-Procedure IdleTrackerTerm;stdcall;external 'IdleTrac.dll';//stop the monitoring process
-Function IdleTrackerGetLastTickCount:Longint;stdcall;external 'IdleTrac.dll';//get the tick count of last user input
 //将计算项目增加或编辑到检验结果表中
 procedure addOrEditCalcItem(const Aadoconnstr:Pchar;const ComboItemID:Pchar;const checkunid: integer);stdcall;external 'CalcItemPro.dll';
 //将计算数据增加或编辑到检验结果表中
@@ -942,13 +939,14 @@ begin
      adotemp3.Free;
 end;
 
-function StopTime: integer; //返回没有键盘和鼠标事件的时间
+function StopTime: integer;
+//返回没有键盘和鼠标事件的时间
 var
   LInput: TLastInputInfo;
 begin
   LInput.cbSize := SizeOf(TLastInputInfo);
   GetLastInputInfo(LInput);
-  Result := (GetTickCount() - LInput.dwTime) div 1000;  //微秒换成秒
+  Result := (GetTickCount() - LInput.dwTime) div 1000;//微秒换成秒
 end;
 
 end.

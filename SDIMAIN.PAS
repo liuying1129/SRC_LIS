@@ -509,8 +509,6 @@ begin
   UpdateADObasic;
   update_Ado_dtl;
 
-  if IdleTrackerInit then TimerIdleTracker.Enabled:=true else TimerIdleTracker.Enabled:=false;//要用到ReadConfig中的LoginTime参数
-
   LoadToolMenu(N65,'select name from CommCode where TypeName=''工具菜单'' order by ID');
 
   //调用用户信息接口start
@@ -554,6 +552,8 @@ begin
   RespData.Free;
   IdHTTP_Tmp1.Free;
   //调用用户信息接口stop
+
+  TimerIdleTracker.Enabled:=true;//TimerIdleTrackerTimer事件中需用到配置文件变量LoginTime
 end;
 
 procedure TSDIAppForm.ClearAll(CONST Clear_TYPE:integer);
@@ -1083,8 +1083,6 @@ begin
   WriteProfile;
 
   lsGroupShow.free;
-  
-  IdleTrackerTerm;
 end;
 
 procedure TSDIAppForm.frReport1GetValue(const ParName: String;
@@ -3536,8 +3534,7 @@ end;
 
 procedure TSDIAppForm.TimerIdleTrackerTimer(Sender: TObject);
 begin
-//自动弹出登录窗口
-//  if(GetTickCount-IdleTrackerGetLastTickCount>LoginTime*1000)and(FindWindow(PCHAR('TfrmLogin'),PCHAR('登录'))=0) then
+  //自动弹出登录窗口
   if (StopTime>LoginTime) and (FindWindow(PCHAR('TfrmLogin'),PCHAR('登录'))=0) then
     frmLogin.ShowModal;
 end;
