@@ -1611,31 +1611,32 @@ if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[uf_GetNext
 drop function [dbo].[uf_GetNextXxNo]
 GO
 
+--20170106越秀区中医医院还有很多旧客户端程序引用了该函数，故暂时保留，待所有客户端均更新后再删除
 --删除函数uf_Reference_Ranges.用函数uf_Reference_Value_B1与uf_Reference_Value_B2代替
 --生成参考范围函数 20140412
 if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[uf_Reference_Ranges]') and xtype in (N'FN', N'IF', N'TF'))
   drop function [dbo].[uf_Reference_Ranges]
 GO
 
---CREATE  FUNCTION uf_Reference_Ranges
---(
---  @Min_value varchar(250),
---  @Max_value varchar(250)
---)  
---RETURNS varchar(510) AS  
---BEGIN 
---  if isnull(@Min_value,'')=isnull(@Max_value,'') return @Min_value
+CREATE  FUNCTION uf_Reference_Ranges
+(
+  @Min_value varchar(250),
+  @Max_value varchar(250)
+)  
+RETURNS varchar(510) AS  
+BEGIN 
+  if isnull(@Min_value,'')=isnull(@Max_value,'') return @Min_value
    
---  if isnull(@Min_value,'')<>''and isnull(@Max_value,'')='' return @Min_value
+  if isnull(@Min_value,'')<>''and isnull(@Max_value,'')='' return @Min_value
 
---  if isnull(@Min_value,'')=''and isnull(@Max_value,'')<>'' return @Max_value
+  if isnull(@Min_value,'')=''and isnull(@Max_value,'')<>'' return @Max_value
 
---  if isnull(@Min_value,'')<>isnull(@Max_value,'') return @Min_value+'--'+@Max_value
+  if isnull(@Min_value,'')<>isnull(@Max_value,'') return @Min_value+'--'+@Max_value
 
---  return null
---END
+  return null
+END
 
---GO
+GO
 
 ---------------存储过程相关操作---------------
 
