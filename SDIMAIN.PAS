@@ -546,6 +546,10 @@ begin
   s3:=s3+'&sign='+sign;
 
   IdHTTP_Tmp1:=TIdHTTP.Create(nil);
+  //经测试
+  //本机有网络，但连接HTTP服务很慢时，如不加超时，会一直挂起
+  //本机无网络，就算不加超时也没问题
+  IdHTTP_Tmp1.ReadTimeout:=2*1000;//毫秒
   RespData:=TStringStream.Create('');
   try
     IdHTTP_Tmp1.Get(BASE_URL+'?'+s3,RespData);
