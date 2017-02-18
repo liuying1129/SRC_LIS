@@ -63,9 +63,8 @@ var
   ifEnterGetCode:boolean;//记录是否 填写病人基本信息时,直接回车弹出取码框
   deptname_match:string;//记录送检科室的取码匹配方式
   check_doctor_match:string;////记录送检医生的取码匹配方式
-  ifDoctorStation:boolean;//记录是否仅显示已审核的检验单
-  ShowSelfDJ:boolean;//仅显示登录者所开检验单
-  ifGetInfoFromHis:boolean;//记录是否提取HIS中的病人基本信息及检验项目
+  //ifDoctorStation:boolean;//记录是否仅显示已审核的检验单
+  //ShowSelfDJ:boolean;//仅显示登录者所开检验单
   ifAutoCompletionJob:boolean;//是否关闭程序时自动结束检验工作
   CXZF:STRING;//检验结果超限字符
   ifNoResultPrint:boolean;//是否允许无检验结果打印

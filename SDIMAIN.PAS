@@ -706,7 +706,7 @@ end;
 
 procedure TSDIAppForm.UpdateADObasic;  //全部检验单事件
 var
-  strsql22,strsql,strsql44,STRSQL45,STRSQL46,STRSQL47,STRSQL48: string;
+  strsql22,strsql,strsql44,STRSQL45,{STRSQL46,}STRSQL47{,STRSQL48}: string;
 begin
   if bRegister then strsql22:='select ' else strsql22:='select top 2 ';//未注册版本只能显示前两条记录
   strsql:=' lsh as 流水号,checkid as 联机号,patientname as 姓名,report_doctor as 审核者,'+
@@ -726,11 +726,6 @@ begin
   if trim(cbxConnChar.Text)='' then   //所有检验单
     strsql44:=''
   else strsql44:=' combin_id='''+trim(cbxConnChar.Text)+''' and ';
-  if ifDoctorStation then
-    STRSQL46:=' report_doctor<>'''' and report_doctor is not null and '
-  else STRSQL46:='';
-  if ShowSelfDJ then STRSQL48:=' check_doctor='''+operator_name+''' and '
-  else STRSQL48:='';
   STRSQL47:=' 1=1 ';
   STRSQL45:=' order by CONVERT(CHAR(10),check_date,121),优先级别,'+OrderType;
   ADObasic.Close;
@@ -738,8 +733,6 @@ begin
   ADObasic.SQL.Add(strsql22);
   ADObasic.SQL.Add(strsql);
   ADObasic.SQL.Add(strsql44);
-  ADObasic.SQL.Add(strsql46);
-  ADObasic.SQL.Add(strsql48);
   ADObasic.SQL.Add(strsql47);
   ADObasic.SQL.Add(strsql45);
   ADObasic.Open;
@@ -2414,12 +2407,9 @@ begin
       '"按姓名性别年龄合并"的工作组范围'+#2+'Edit'+#2+#2+'0'+#2+'如仅希望临检组与生化组合并,则填"临检组,生化组".空表示无限制'+#2+#3+
       '打印时自动审核检验单'+#2+'CheckListBox'+#2+#2+'1'+#2+#2+#3+
       '根据"门诊/住院号"提取备注'+#2+'CheckListBox'+#2+#2+'1'+#2+#2+#3+
-      '提取HIS中的病人基本信息及检验项目'+#2+'CheckListBox'+#2+#2+'1'+#2+#2+#3+
       '填写病人基本信息时,直接回车弹出取码框'+#2+'CheckListBox'+#2+#2+'1'+#2+#2+#3+
       '送检科室取码的匹配方式'+#2+'Combobox'+#2+'模糊匹配'+#13+'左匹配'+#13+'右匹配'+#13+'全匹配'+#2+'1'+#2+#2+#3+
       '送检医生取码的匹配方式'+#2+'Combobox'+#2+'模糊匹配'+#13+'左匹配'+#13+'右匹配'+#13+'全匹配'+#2+'1'+#2+#2+#3+
-      '仅显示已审核的检验单'+#2+'CheckListBox'+#2+#2+'1'+#2+#2+#3+
-      '仅显示登录者所开检验单'+#2+'CheckListBox'+#2+#2+'1'+#2+#2+#3+
       '是否关闭程序时自动结束检验工作'+#2+'CheckListBox'+#2+#2+'1'+#2+#2+#3+
       '病人基本信息排序方式'+#2+'Combobox'+#2+'流水号'+#13+'联机号'+#2+'1'+#2+#2+#3+
       '弹出登录窗口的时间'+#2+'Edit'+#2+#2+'1'+#2+'注:表示多长时间内无操作,则自动弹出登录窗口(单位:秒)'+#2+#3+
@@ -2949,9 +2939,6 @@ begin
   ifEnterGetCode:=configini.ReadBool('选项','填写病人基本信息时,直接回车弹出取码框',false);
   deptname_match:=configini.ReadString('选项','送检科室取码的匹配方式','');
   check_doctor_match:=configini.ReadString('选项','送检医生取码的匹配方式','');
-  ifDoctorStation:=configini.ReadBool('选项','仅显示已审核的检验单',false);
-  ShowSelfDJ:=configini.ReadBool('选项','仅显示登录者所开检验单',false);
-  ifGetInfoFromHis:=configini.ReadBool('选项','提取HIS中的病人基本信息及检验项目',false);
   ifGetMemoFromCaseNo:=configini.ReadBool('选项','根据"门诊/住院号"提取备注',false);
   ifAutoCompletionJob:=configini.ReadBool('选项','是否关闭程序时自动结束检验工作',false);
   OrderType:=configini.ReadString('选项','病人基本信息排序方式','');
@@ -3053,8 +3040,6 @@ var
   tempstr:string;
   i,j:integer;
 begin
-  if ifDoctorStation then exit;
-
      adotemp3:=tadoquery.Create(nil);
      adotemp3.Connection:=DM.ADOConnection1;
      adotemp3.Close;
