@@ -101,13 +101,14 @@ object SDIAppForm: TSDIAppForm
       object suiButton8: TSpeedButton
         Left = 244
         Top = 2
-        Width = 47
+        Width = 67
         Height = 22
         Caption = #21047#26032'F5'
+        Layout = blGlyphRight
         OnClick = suiButton8Click
       end
       object ToolButton4: TToolButton
-        Left = 291
+        Left = 311
         Top = 2
         Width = 3
         Caption = 'ToolButton4'
@@ -115,7 +116,7 @@ object SDIAppForm: TSDIAppForm
         Style = tbsSeparator
       end
       object suiButton3: TSpeedButton
-        Left = 294
+        Left = 314
         Top = 2
         Width = 47
         Height = 22
@@ -123,7 +124,7 @@ object SDIAppForm: TSDIAppForm
         OnClick = suiButton3Click
       end
       object suiButton4: TSpeedButton
-        Left = 341
+        Left = 361
         Top = 2
         Width = 75
         Height = 22
@@ -131,7 +132,7 @@ object SDIAppForm: TSDIAppForm
         OnClick = suiButton4Click
       end
       object ToolButton6: TToolButton
-        Left = 416
+        Left = 436
         Top = 2
         Width = 3
         Caption = 'ToolButton6'
@@ -139,7 +140,7 @@ object SDIAppForm: TSDIAppForm
         Style = tbsSeparator
       end
       object ToolButton8: TSpeedButton
-        Left = 419
+        Left = 439
         Top = 2
         Width = 47
         Height = 22
@@ -147,7 +148,7 @@ object SDIAppForm: TSDIAppForm
         OnClick = ToolButton8Click
       end
       object suiButton1: TSpeedButton
-        Left = 466
+        Left = 486
         Top = 2
         Width = 75
         Height = 22
@@ -155,7 +156,7 @@ object SDIAppForm: TSDIAppForm
         OnClick = suiButton1Click
       end
       object ToolButton3: TToolButton
-        Left = 541
+        Left = 561
         Top = 2
         Width = 3
         Caption = 'ToolButton3'
@@ -163,7 +164,7 @@ object SDIAppForm: TSDIAppForm
         Style = tbsSeparator
       end
       object SpeedButton2: TSpeedButton
-        Left = 544
+        Left = 564
         Top = 2
         Width = 95
         Height = 22

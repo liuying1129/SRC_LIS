@@ -1,0 +1,16 @@
+//cmd
+//c:
+//cd C:\Program Files (x86)\Borland\Delphi7\Bin
+//brcc32 D:\源代码\YkLis\SRC_LIS\YkLisCustom.rc
+//生成与rc文件同名的RES文件
+
+Num1 BITMAP Resource\1.bmp
+Num2 BITMAP Resource\2.bmp
+Num3 BITMAP Resource\3.bmp
+Num4 BITMAP Resource\4.bmp
+Num5 BITMAP Resource\5.bmp
+Num6 BITMAP Resource\6.bmp
+Num7 BITMAP Resource\7.bmp
+Num8 BITMAP Resource\8.bmp
+Num9 BITMAP Resource\9.bmp
+Num9plus BITMAP Resource\9plus.bmp

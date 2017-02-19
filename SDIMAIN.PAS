@@ -443,6 +443,8 @@ var
     lsGroupShow:TStrings;
 
 {$R *.dfm}
+//自定义资源文件，源代码为YkLisCustom.rc
+{$R YkLisCustom.RES}
 
 procedure TSDIAppForm.NewAddStatus;
 begin
@@ -492,6 +494,8 @@ var
   sLocalIP,sLocalName:STRING;
   IdIPWatch:TIdIPWatch;
 begin
+  //suiButton8.Glyph.LoadFromResourceName(hInstance,'Num9plus');
+
   if ifRegister then bRegister:=true else bRegister:=false;
   
   frmLogin.ShowModal;
