@@ -441,6 +441,7 @@ var
     copyName,copySex,copyage,copyCaseno,copyBedno,copydeptname,copycheck_doctor:string;//复制的病人基本信息，仅粘贴时有用
     HQCLIB:THANDLE;
     lsGroupShow:TStrings;
+    lsAAA:TStrings;
 
 {$R *.dfm}
 //自定义资源文件，源代码为YkLisCustom.rc
@@ -494,8 +495,6 @@ var
   sLocalIP,sLocalName:STRING;
   IdIPWatch:TIdIPWatch;
 begin
-  //suiButton8.Glyph.LoadFromResourceName(hInstance,'Num9plus');
-
   if ifRegister then bRegister:=true else bRegister:=false;
   
   frmLogin.ShowModal;
@@ -710,7 +709,7 @@ end;
 
 procedure TSDIAppForm.UpdateADObasic;  //全部检验单事件
 var
-  strsql22,strsql,strsql44,STRSQL45,{STRSQL46,}STRSQL47{,STRSQL48}: string;
+  strsql22,strsql,strsql44,STRSQL45,STRSQL47: string;
 begin
   if bRegister then strsql22:='select ' else strsql22:='select top 2 ';//未注册版本只能显示前两条记录
   strsql:=' lsh as 流水号,checkid as 联机号,patientname as 姓名,report_doctor as 审核者,'+
@@ -748,6 +747,7 @@ begin
    if not adobasic.Active then exit;
    ff:=adobasic.fieldbyname('唯一编号').AsInteger;
    UpdateADObasic;
+   suiButton8.Glyph:=nil;lsAAA.Clear;
    adobasic.Locate('唯一编号',ff,[loCaseInsensitive]);
 end;
 
@@ -871,6 +871,7 @@ Begin
   SetWindowLong(LabeledEdit16.Handle, GWL_STYLE, GetWindowLong(LabeledEdit16.Handle, GWL_STYLE) or ES_NUMBER);//只能输入数字
   
   lsGroupShow:=tstringlist.Create;
+  lsAAA:=tstringlist.Create;
 
   //试用版有效期控制 start
   esXPIRE_DATE:=ScalarSQLCmd(LisConn,'select Name from CommCode where TypeName=''系统代码'' and ReMark=''软件过期时间'' ');
@@ -1087,6 +1088,7 @@ begin
   WriteProfile;
 
   lsGroupShow.free;
+  lsAAA.Free;
 end;
 
 procedure TSDIAppForm.frReport1GetValue(const ParName: String;
@@ -1415,11 +1417,11 @@ begin
     exit;
   end;
 
-  if not n41.Checked then
-  begin
-    Msg.Result := 1;
-    exit;
-  end;
+  //if not n41.Checked then
+  //begin
+  //  Msg.Result := 1;
+  //  exit;
+  //end;
 
   if not ADObasic.Active then
   begin
@@ -1435,10 +1437,17 @@ begin
   end;
 
   //===在这里增加收到消息后的界面更新过程
-  UpdateADObasic;
+  //UpdateADObasic;
 
-  DBGrid1.DataSource.DataSet.Locate('唯一编号',curunid,[loCaseInsensitive]);
-  update_Ado_dtl;
+  //DBGrid1.DataSource.DataSet.Locate('唯一编号',curunid,[loCaseInsensitive]);
+  //update_Ado_dtl;
+
+  lsAAA.Add(Trim(strCurUnid));
+
+  if lsAAA.Count<=9 then
+    suiButton8.Glyph.LoadFromResourceName(HInstance,'Num'+inttostr(lsAAA.Count))
+  else
+    suiButton8.Glyph.LoadFromResourceName(HInstance,'Num9plus');
   //=====================================
 
   Msg.Result := 1;
@@ -1824,6 +1833,7 @@ begin
   if AddorUpdateResult then
   begin
     UpdateADObasic;
+    suiButton8.Glyph:=nil;lsAAA.Clear;
     adobasic.Locate('唯一编号',ValetudinarianInfoId,[loCaseInsensitive]) ;
     update_Ado_dtl;
 
