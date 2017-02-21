@@ -441,7 +441,7 @@ var
     copyName,copySex,copyage,copyCaseno,copyBedno,copydeptname,copycheck_doctor:string;//复制的病人基本信息，仅粘贴时有用
     HQCLIB:THANDLE;
     lsGroupShow:TStrings;
-    lsAAA:TStringList;
+    lsTransUnid:TStringList;//仪器传输（需刷新）的病人基本资料UNID列表
 
 {$R *.dfm}
 //自定义资源文件，源代码为YkLisCustom.rc
@@ -749,12 +749,8 @@ begin
   ff:=adobasic.fieldbyname('唯一编号').AsInteger;
   UpdateADObasic;
   if not suiButton8.Glyph.Empty then suiButton8.Glyph:=nil;
-  //if lsAAA.Count>0 then
-  //begin
-  //  if not adobasic.Locate('唯一编号',lsAAA[0],[loCaseInsensitive]) then//尝试先定位仪器传输过来记录
-      adobasic.Locate('唯一编号',ff,[loCaseInsensitive]);
-  //end else adobasic.Locate('唯一编号',ff,[loCaseInsensitive]);
-  lsAAA.Clear;
+  lsTransUnid.Clear;
+  adobasic.Locate('唯一编号',ff,[loCaseInsensitive]);
 end;
 
 procedure TSDIAppForm.ToolButton8Click(Sender: TObject);
@@ -877,9 +873,9 @@ Begin
   SetWindowLong(LabeledEdit16.Handle, GWL_STYLE, GetWindowLong(LabeledEdit16.Handle, GWL_STYLE) or ES_NUMBER);//只能输入数字
   
   lsGroupShow:=tstringlist.Create;
-  lsAAA:=TStringList.Create;
-  lsAAA.Sorted:=true;//设置Sorted为true,下面的Duplicates属性才生效
-  lsAAA.Duplicates:=dupIgnore;//忽略重复项
+  lsTransUnid:=TStringList.Create;
+  lsTransUnid.Sorted:=true;//设置Sorted为true,下面的Duplicates属性才生效
+  lsTransUnid.Duplicates:=dupIgnore;//忽略重复项
 
   //试用版有效期控制 start
   esXPIRE_DATE:=ScalarSQLCmd(LisConn,'select Name from CommCode where TypeName=''系统代码'' and ReMark=''软件过期时间'' ');
@@ -1096,7 +1092,7 @@ begin
   WriteProfile;
 
   lsGroupShow.free;
-  lsAAA.Free;
+  lsTransUnid.Free;
 end;
 
 procedure TSDIAppForm.frReport1GetValue(const ParName: String;
@@ -1445,17 +1441,21 @@ begin
   end;
 
   //===在这里增加收到消息后的界面更新过程
-  //UpdateADObasic;
+  if n41.Checked then
+  begin
+    UpdateADObasic;
 
-  //DBGrid1.DataSource.DataSet.Locate('唯一编号',curunid,[loCaseInsensitive]);
-  //update_Ado_dtl;
+    DBGrid1.DataSource.DataSet.Locate('唯一编号',curunid,[loCaseInsensitive]);
+    update_Ado_dtl;
+  end else
+  begin
+    lsTransUnid.Add(Trim(strCurUnid));//已忽略重复项
 
-  lsAAA.Add(Trim(strCurUnid));//已忽略重复项
-
-  if lsAAA.Count<=9 then
-    suiButton8.Glyph.LoadFromResourceName(HInstance,'Num'+inttostr(lsAAA.Count))
-  else
-    suiButton8.Glyph.LoadFromResourceName(HInstance,'Num9plus');
+    if lsTransUnid.Count<=9 then
+      suiButton8.Glyph.LoadFromResourceName(HInstance,'Num'+inttostr(lsTransUnid.Count))
+    else
+      suiButton8.Glyph.LoadFromResourceName(HInstance,'Num9plus');
+  end;
   //=====================================
 
   Msg.Result := 1;
@@ -1842,7 +1842,7 @@ begin
   begin
     UpdateADObasic;
     if not suiButton8.Glyph.Empty then suiButton8.Glyph:=nil;
-    lsAAA.Clear;
+    lsTransUnid.Clear;
     adobasic.Locate('唯一编号',ValetudinarianInfoId,[loCaseInsensitive]) ;
     update_Ado_dtl;
 
