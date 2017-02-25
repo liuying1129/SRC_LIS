@@ -3009,8 +3009,6 @@ var
   ConfigIni:tinifile;
   colValueWidth:integer;
 begin
-  //if not bValueWidth then exit;
-  
   ConfigIni:=tinifile.Create(ChangeFileExt(Application.ExeName,'.ini'));
 
   colValueWidth:=configini.ReadInteger('Interface','colValueWidth',70);{记录检验结果列的宽度}
