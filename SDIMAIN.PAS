@@ -3014,7 +3014,7 @@ begin
   ConfigIni:=tinifile.Create(ChangeFileExt(Application.ExeName,'.ini'));
 
   colValueWidth:=configini.ReadInteger('Interface','colValueWidth',70);{记录检验结果列的宽度}
-  if (colValueWidth<>dbgrid2.Columns[4].Width)and(dbgrid2.Columns[4].Width>=70) then
+  if (colValueWidth<>dbgrid2.Columns[4].Width)and(dbgrid2.Columns[4].Width>=70)and(dbgrid2.Columns[4].Width<=640) then
     configini.WriteInteger('Interface','colValueWidth',dbgrid2.Columns[4].Width);{记录检验结果列的宽度}
 
   configini.Free;
