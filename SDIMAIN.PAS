@@ -510,7 +510,9 @@ begin
 
   ReadConfig;
   UpdateStatusBar(#$2+'6:'+SCSYDW);
-  UpdateStatusBar(#$2+'7:'+SYSNAME);
+  UpdateStatusBar(#$2+'0:'+SYSNAME);
+  UpdateStatusBar(#$2+'8:'+gServerName);
+  UpdateStatusBar(#$2+'10:'+gDbName);
 
   UpdateADObasic;
   update_Ado_dtl;

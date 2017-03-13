@@ -74,6 +74,8 @@ var
   bAppendMakeTjDesc:string;//是否允许追加生成体检结论
   SmoothNum:integer;//直方图光滑次数
   LisConn:string;//Lis连接字符串,MakeDBConn过程中被赋值,然后传入QC.DLL、CalcItemPro.dll
+  gServerName:string;//服务名,用于显示在状态栏
+  gDbName:string;//数据库名,用于显示在状态栏
   OrderType:string;//基本信息排序方式
   ifBatchOperater:boolean;//是否批量操作,批量操作时结果不跟随基本信息滚动.滚动太耗时,使批打慢
   LoginTime:integer;//弹出登录窗口的时间
@@ -743,6 +745,8 @@ begin
     dm.ADOConnection1.Connected := true;
     result:=true;
     LisConn:=newconnstr;
+    gServerName:=datasource;
+    gDbName:=initialcatalog;
   except
   end;
   if not result then
