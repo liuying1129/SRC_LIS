@@ -2870,6 +2870,7 @@ var
   adotemp11:tadoquery;
   s1,s2,s3:string;
 begin
+  //为提高性能，采取分库分表(此处为水平拆分)
   result:=true;
 
   IF NOT ADObasic.Active THEN begin result:=false;EXIT;end;
