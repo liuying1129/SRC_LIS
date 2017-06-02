@@ -3,6 +3,10 @@ go
 
 --幂等性（调用一次或无数次，后果一样）脚本
 
+--批处理文件执行SQL脚本,Bat文件格式：
+--osql -S (local) -E -d ErpBill -i .\V_INF_INPT_PKT_DTL.sql
+--pause
+
 ---------------表相关操作---------------
 
 --20161218,nvarchar(30)->varchar(100),适应用户的角色很多的情况
