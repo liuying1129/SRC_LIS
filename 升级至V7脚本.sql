@@ -534,6 +534,11 @@ GO
 alter table chk_con_bak alter column Stature datetime Null
 GO
 
+--20170816,病人姓名,越秀区中医医院兵检,少数民族同胞的名称很长,varchar(14)->varchar(30)
+alter table chk_con alter column patientname varchar(30) null
+alter table chk_con_bak alter column patientname varchar(30) null
+GO
+
 --20140906质控修改
 if EXISTS (select 1 from information_schema.columns where table_name = 'QCGHEAD' and column_name='qc_month' and data_type='varchar')
 begin
@@ -790,6 +795,11 @@ GO
 --20120511,临床诊断,char(50)->varchar(200)
 alter table chk_con_his alter column diagnose varchar(200) null
 alter table chk_con_his_bak alter column diagnose varchar(200) null
+GO
+
+--20170816,病人姓名,越秀区中医医院兵检,少数民族同胞的名称很长,varchar(14)->varchar(30)
+alter table chk_con_his alter column patientname varchar(30) null
+alter table chk_con_his_bak alter column patientname varchar(30) null
 GO
 
 --20151205表ApiToken创建脚本
