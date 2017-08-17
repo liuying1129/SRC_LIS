@@ -534,9 +534,9 @@ GO
 alter table chk_con_bak alter column Stature datetime Null
 GO
 
---20170816,病人姓名,越秀区中医医院兵检,少数民族同胞的名称很长,varchar(14)->varchar(30)
-alter table chk_con alter column patientname varchar(30) null
-alter table chk_con_bak alter column patientname varchar(30) null
+--20170816,病人姓名,越秀区中医医院兵检,少数民族同胞的名称很长,varchar(14)->varchar(40)
+alter table chk_con alter column patientname varchar(40) null
+alter table chk_con_bak alter column patientname varchar(40) null
 GO
 
 --20140906质控修改
@@ -797,9 +797,9 @@ alter table chk_con_his alter column diagnose varchar(200) null
 alter table chk_con_his_bak alter column diagnose varchar(200) null
 GO
 
---20170816,病人姓名,越秀区中医医院兵检,少数民族同胞的名称很长,varchar(14)->varchar(30)
-alter table chk_con_his alter column patientname varchar(30) null
-alter table chk_con_his_bak alter column patientname varchar(30) null
+--20170816,病人姓名,越秀区中医医院兵检,少数民族同胞的名称很长,varchar(14)->varchar(40)
+alter table chk_con_his alter column patientname varchar(40) null
+alter table chk_con_his_bak alter column patientname varchar(40) null
 GO
 
 --20151205表ApiToken创建脚本
