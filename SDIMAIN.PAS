@@ -2185,7 +2185,7 @@ begin
   if ifAddorDel then
   //==========================增加插入=================================//
   begin
-    WriteLog(pchar('开始增加组合项目,组合项目编号:'+s2+',预约登记ValueId:'+inttostr(AChk_Valu_His_ValueId)+',LIS唯一编号:'+inttostr(checkunid)));
+    WriteLog(pchar('操作者:'+operator_name+',开始增加组合项目,组合项目编号:'+s2+',预约登记ValueId:'+inttostr(AChk_Valu_His_ValueId)+',LIS唯一编号:'+inttostr(checkunid)));
         
     ExecSQLCmd(LisConn,'update chk_valu set issure=1 where pkunid='+inttostr(checkunid)+' and pkcombin_id='+s2);
 
@@ -2214,7 +2214,7 @@ begin
                        'inner join clinicchkitem cci on cci.unid=csci.ItemUnid '+
                        'where ci.Id='''+s2+''' ';
     adotemp3.Open;
-    WriteLog(pchar('增加组合项目,组合项目编号:'+s2+',预约登记ValueId:'+inttostr(AChk_Valu_His_ValueId)+',LIS唯一编号:'+inttostr(checkunid)+',该组合项目有小项目数量:'+inttostr(adotemp3.RecordCount)));
+    WriteLog(pchar('操作者:'+operator_name+',增加组合项目,组合项目编号:'+s2+',预约登记ValueId:'+inttostr(AChk_Valu_His_ValueId)+',LIS唯一编号:'+inttostr(checkunid)+',该组合项目有小项目数量:'+inttostr(adotemp3.RecordCount)));
     while not adotemp3.Eof do//adotemp3是该组合项目的所有检验项目
     begin
       itemid:=trim(adotemp3.fieldbyname('itemid').AsString);
@@ -2228,9 +2228,9 @@ begin
           ' ) ';
         ExecSQLCmd(LisConn,strsql);
         sAA.Add(itemid);
-        WriteLog(pchar('增加小项目,组合项目编号:'+ComboItemID+',预约登记ValueId:'+inttostr(AChk_Valu_His_ValueId)+',LIS唯一编号:'+inttostr(checkunid)+',小项目itemid:'+itemid+',插入成功'));
+        WriteLog(pchar('操作者:'+operator_name+',增加小项目,组合项目编号:'+ComboItemID+',预约登记ValueId:'+inttostr(AChk_Valu_His_ValueId)+',LIS唯一编号:'+inttostr(checkunid)+',小项目itemid:'+itemid+',插入成功'));
       end else
-        WriteLog(pchar('增加小项目,组合项目编号:'+ComboItemID+',预约登记ValueId:'+inttostr(AChk_Valu_His_ValueId)+',LIS唯一编号:'+inttostr(checkunid)+',小项目Itemid:'+Itemid+'已存在,跳过'));
+        WriteLog(pchar('操作者:'+operator_name+',增加小项目,组合项目编号:'+ComboItemID+',预约登记ValueId:'+inttostr(AChk_Valu_His_ValueId)+',LIS唯一编号:'+inttostr(checkunid)+',小项目Itemid:'+Itemid+'已存在,跳过'));
       //增加单个小项目stop
 
       adotemp3.Next;
@@ -2238,7 +2238,7 @@ begin
     adotemp3.Free;
     sAA.Free;
 
-    WriteLog(pchar('增加组合项目结束,组合项目编号:'+s2+',预约登记ValueId:'+inttostr(AChk_Valu_His_ValueId)+',LIS唯一编号:'+inttostr(checkunid)));
+    WriteLog(pchar('操作者:'+operator_name+',增加组合项目结束,组合项目编号:'+s2+',预约登记ValueId:'+inttostr(AChk_Valu_His_ValueId)+',LIS唯一编号:'+inttostr(checkunid)));
 
     addOrEditCalcItem(pchar(LisConn),pchar(s2),checkunid);//增加计算项目
 
@@ -2248,7 +2248,7 @@ begin
   else
   begin
   //======================减少删除==================================================//
-    WriteLog(pchar('删除组合项目,组合项目编号:'+s2+',LIS唯一编号:'+inttostr(checkunid)));
+    WriteLog(pchar('操作者:'+operator_name+',删除组合项目,组合项目编号:'+s2+',LIS唯一编号:'+inttostr(checkunid)));
 
     ExecSQLCmd(LisConn,'update chk_valu set issure=0 where pkunid='+inttostr(checkunid)+' and pkcombin_id='''+s2+''' ');
 
