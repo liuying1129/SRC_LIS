@@ -820,9 +820,6 @@ begin
         mvPictureTitle:=TfrMemoView.Create;
         frReport1.Pages[0].Objects.Add(mvPictureTitle);
         mvPictureTitle.Name:='mv'+TfrPictureView(frReport1.Pages[0].Objects.Items[i]).Name;
-        mvPictureTitle.Prop['AutoWidth']:=True;
-        mvPictureTitle.Font.Name:='ËÎÌו';
-        mvPictureTitle.SetBounds(TfrPictureView(frReport1.Pages[0].Objects.Items[i]).Prop['left'], TfrPictureView(frReport1.Pages[0].Objects.Items[i]).Prop['top']-20, 50, 20);//}
         mvPictureTitle.Visible:=false;
       end;
     end;
@@ -3526,6 +3523,9 @@ begin
       mvPictureTitle:=frReport1.FindObject('mv'+(View as TfrPictureView).Name);
       if (mvPictureTitle<>nil) and (mvPictureTitle is TfrMemoView) then
       begin
+        mvPictureTitle.Prop['AutoWidth']:=True;
+        TfrMemoView(mvPictureTitle).Font.Name:='ËÎÌו';
+        mvPictureTitle.SetBounds((View as TfrPictureView).Prop['left'], (View as TfrPictureView).Prop['top']-20, 50, 20);
         mvPictureTitle.Memo.Text:=adotemp11.fieldbyname('english_name').AsString;
         mvPictureTitle.Visible:=true;
       end;
