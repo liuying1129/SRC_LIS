@@ -762,7 +762,10 @@ var
   
   //对姓别性别年龄的合并项做打印标记 变量
   sPatientname,sSex,sAge:string;
-  //===============================  
+  //===============================
+
+  i:integer;
+  mvPictureTitle:TfrMemoView;  
 begin
   if not ifhaspower(sender,powerstr_js_main) then exit;
 
@@ -807,6 +810,25 @@ begin
     exit;
   end;
 
+  //动态创建图片标题begin
+  for i:=0 to frReport1.Pages[0].Objects.Count-1 do
+  begin
+    if TObject(frReport1.Pages[0].Objects.Items[i]) is TfrPictureView then
+    begin
+      if uppercase(leftstr(TfrPictureView(frReport1.Pages[0].Objects.Items[i]).Name,7))='PICTURE' then
+      begin
+        mvPictureTitle:=TfrMemoView.Create;
+        frReport1.Pages[0].Objects.Add(mvPictureTitle);
+        mvPictureTitle.Name:='mv'+TfrPictureView(frReport1.Pages[0].Objects.Items[i]).Name;
+        mvPictureTitle.Prop['AutoWidth']:=True;
+        mvPictureTitle.Font.Name:='宋体';
+        mvPictureTitle.SetBounds(TfrPictureView(frReport1.Pages[0].Objects.Items[i]).Prop['left'], TfrPictureView(frReport1.Pages[0].Objects.Items[i]).Prop['top']-20, 50, 20);//}
+        mvPictureTitle.Visible:=false;
+      end;
+    end;
+  end;
+  //动态创建图片标题end
+  
   if (N64.Checked)and(sPatientname<>'') then//按姓别性别年龄合并打印//只有存在姓名时才合并
     strsqlPrint:='select cv.itemid as 项目代码,cv.name as 名称,cv.english_name as 英文名,'+
           ' cv.itemvalue as 检验结果,'+
@@ -3380,6 +3402,8 @@ var
   mPa_max_1,mPa_max_2:string;//粘度
   Chart_XLB:TChart;
   //血流变变量stop
+
+  mvPictureTitle :TfrView;
 begin
   if not ADObasic.Active then exit;
   if not ADObasic.RecordCount=0 then exit;
@@ -3470,7 +3494,7 @@ begin
     View.Visible:=false;
     strEnglishName:=(View as TfrPictureView).Name;
     strEnglishName:=stringreplace(strEnglishName,'Picture','',[rfIgnoreCase]);
-    strsqlPrint:='select top 1 Photo '+
+    strsqlPrint:='select top 1 Photo,english_name '+
        ' from chk_valu '+
        ' where pkunid=:pkunid '+
        //' and english_name=:english_name '+
@@ -3497,6 +3521,15 @@ begin
       MS.Free;
       TfrPictureView(View).Picture.assign(tempjpeg);
       tempjpeg.Free;
+
+      //显示图片标题begin
+      mvPictureTitle:=frReport1.FindObject('mv'+(View as TfrPictureView).Name);
+      if (mvPictureTitle<>nil) and (mvPictureTitle is TfrMemoView) then
+      begin
+        mvPictureTitle.Memo.Text:=adotemp11.fieldbyname('english_name').AsString;
+        mvPictureTitle.Visible:=true;
+      end;
+      //显示图片标题end
     end;
     adotemp11.Free;
   end;
