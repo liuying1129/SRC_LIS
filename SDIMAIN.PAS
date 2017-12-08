@@ -764,7 +764,7 @@ var
   sPatientname,sSex,sAge:string;
   //===============================
 
-  i:integer;
+  i,j:integer;
   mvPictureTitle:TfrMemoView;  
 begin
   if not ifhaspower(sender,powerstr_js_main) then exit;
@@ -814,19 +814,19 @@ begin
   //待处理问题:是否需要释放mvPictureTitle?何时释放?
   for j:=0 to frReport1.Pages.Count-1 do
   begin
-      for i:=0 to frReport1.Pages[j].Objects.Count-1 do
+    for i:=0 to frReport1.Pages[j].Objects.Count-1 do
+    begin
+      if TObject(frReport1.Pages[j].Objects.Items[i]) is TfrPictureView then
       begin
-        if TObject(frReport1.Pages[j].Objects.Items[i]) is TfrPictureView then
+        if uppercase(leftstr(TfrPictureView(frReport1.Pages[j].Objects.Items[i]).Name,7))='PICTURE' then
         begin
-          if uppercase(leftstr(TfrPictureView(frReport1.Pages[j].Objects.Items[i]).Name,7))='PICTURE' then
-          begin
-            mvPictureTitle:=TfrMemoView.Create;
-            frReport1.Pages[j].Objects.Add(mvPictureTitle);
-            mvPictureTitle.Name:='mv'+TfrPictureView(frReport1.Pages[j].Objects.Items[i]).Name;
-            mvPictureTitle.Visible:=false;
-          end;
+          mvPictureTitle:=TfrMemoView.Create;
+          frReport1.Pages[j].Objects.Add(mvPictureTitle);
+          mvPictureTitle.Name:='mv'+TfrPictureView(frReport1.Pages[j].Objects.Items[i]).Name;
+          mvPictureTitle.Visible:=false;
         end;
       end;
+    end;
   end;
   //动态创建图片标题end
   
@@ -2018,6 +2018,9 @@ var
   report_doctor,sql,ss,sPrinttimes,sReport_doctor2:string;
   sPatientname,sSex,sAge,sMergePrintWorkGroupRange:string;
   //===============================  
+
+  i,j:integer;
+  mvPictureTitle:TfrMemoView;  
 begin
   if not ifhaspower(sender,powerstr_js_main) then exit;
 
@@ -2061,6 +2064,26 @@ begin
   else
     frGH.Prop['formnewpage'] := false;
 
+  //动态创建图片标题begin
+  //待处理问题:是否需要释放mvPictureTitle?何时释放?
+  for j:=0 to frReport1.Pages.Count-1 do
+  begin
+    for i:=0 to frReport1.Pages[j].Objects.Count-1 do
+    begin
+      if TObject(frReport1.Pages[j].Objects.Items[i]) is TfrPictureView then
+      begin
+        if uppercase(leftstr(TfrPictureView(frReport1.Pages[j].Objects.Items[i]).Name,7))='PICTURE' then
+        begin
+          mvPictureTitle:=TfrMemoView.Create;
+          frReport1.Pages[j].Objects.Add(mvPictureTitle);
+          mvPictureTitle.Name:='mv'+TfrPictureView(frReport1.Pages[j].Objects.Items[i]).Name;
+          mvPictureTitle.Visible:=false;
+        end;
+      end;
+    end;
+  end;
+  //动态创建图片标题end
+  
   if MergePrintWorkGroupRange<>'' then
     sMergePrintWorkGroupRange:=' and cc.combin_id in ('+MergePrintWorkGroupRange+') ';
   if (N64.Checked)and(sPatientname<>'') then//按姓别性别年龄合并打印//只有存在姓名时才合并
