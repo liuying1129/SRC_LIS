@@ -811,18 +811,22 @@ begin
   end;
 
   //动态创建图片标题begin
-  for i:=0 to frReport1.Pages[0].Objects.Count-1 do
+  //待处理问题:是否需要释放mvPictureTitle?何时释放?
+  for j:=0 to frReport1.Pages.Count-1 do
   begin
-    if TObject(frReport1.Pages[0].Objects.Items[i]) is TfrPictureView then
-    begin
-      if uppercase(leftstr(TfrPictureView(frReport1.Pages[0].Objects.Items[i]).Name,7))='PICTURE' then
+      for i:=0 to frReport1.Pages[j].Objects.Count-1 do
       begin
-        mvPictureTitle:=TfrMemoView.Create;
-        frReport1.Pages[0].Objects.Add(mvPictureTitle);
-        mvPictureTitle.Name:='mv'+TfrPictureView(frReport1.Pages[0].Objects.Items[i]).Name;
-        mvPictureTitle.Visible:=false;
+        if TObject(frReport1.Pages[j].Objects.Items[i]) is TfrPictureView then
+        begin
+          if uppercase(leftstr(TfrPictureView(frReport1.Pages[j].Objects.Items[i]).Name,7))='PICTURE' then
+          begin
+            mvPictureTitle:=TfrMemoView.Create;
+            frReport1.Pages[j].Objects.Add(mvPictureTitle);
+            mvPictureTitle.Name:='mv'+TfrPictureView(frReport1.Pages[j].Objects.Items[i]).Name;
+            mvPictureTitle.Visible:=false;
+          end;
+        end;
       end;
-    end;
   end;
   //动态创建图片标题end
   
