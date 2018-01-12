@@ -1493,6 +1493,7 @@ RETURNS varchar(500) AS
 BEGIN 
   declare @ret varchar(500),@tempS1 varchar(500)
 
+  /*20180112条码已通过WAR-Schedule回写到chk_con_his.TjJianYan
   select @tempS1=dbo.uf_Peis_Br_Barcode(@chk_con_his_unid)
 
   if isnull(@tempS1,'')='' 
@@ -1500,7 +1501,11 @@ BEGIN
   else set @ret=@tempS1
 
   select @ret=','+@ret+','
+  */
 
+  --20180112
+  select @ret=TjJianYan from chk_con_his where Unid=@chk_con_his_unid
+  
   return @ret
 END
 
