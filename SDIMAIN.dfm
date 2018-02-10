@@ -396,7 +396,7 @@ object SDIAppForm: TSDIAppForm
           Top = 1
           Width = 417
           Height = 150
-          ActivePage = TabSheet6
+          ActivePage = TabSheet5
           Align = alTop
           TabOrder = 1
           object TabSheet5: TTabSheet

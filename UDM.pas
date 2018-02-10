@@ -63,7 +63,6 @@ var
   ifEnterGetCode:boolean;//记录是否 填写病人基本信息时,直接回车弹出取码框
   deptname_match:string;//记录送检科室的取码匹配方式
   check_doctor_match:string;////记录送检医生的取码匹配方式
-  ifAutoCompletionJob:boolean;//是否关闭程序时自动结束检验工作
   CXZF:STRING;//检验结果超限字符
   ifNoResultPrint:boolean;//是否允许无检验结果打印
   MergePrintWorkGroupRange:string;//"按姓名性别年龄合并"的工作组范围

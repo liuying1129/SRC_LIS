@@ -2726,10 +2726,8 @@ end;
 procedure TSDIAppForm.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
   if MessageDlg('确实要退出系统吗?', mtInformation, [mbNo,mbYes], 0 ) = mrYes then
-  begin
-    if ifAutoCompletionJob then CompletionJob;
-    action:=cafree;
-  end else action:=caNone;
+    action:=cafree
+  else action:=caNone;
 end;
 
 procedure TSDIAppForm.UpdateStatusBar(const text: string);
@@ -3012,7 +3010,6 @@ begin
   deptname_match:=configini.ReadString('选项','送检科室取码的匹配方式','');
   check_doctor_match:=configini.ReadString('选项','送检医生取码的匹配方式','');
   ifGetMemoFromCaseNo:=configini.ReadBool('选项','根据"门诊/住院号"提取备注',false);
-  ifAutoCompletionJob:=configini.ReadBool('选项','是否关闭程序时自动结束检验工作',false);
   OrderType:=configini.ReadString('选项','病人基本信息排序方式','');
   //if OrderType<>'联机号' then OrderType:='流水号';
   OrderType:=ifThen(OrderType<>'联机号','right(''0000''+lsh,4)','联机号');
