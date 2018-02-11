@@ -3360,8 +3360,8 @@ AS
 --向chk_valu中插入项目代码时自动插入项目名称、检验结果(默认值、已检值)等附加信息
 --有此触发器，则向chk_valu中插入记录时，可不插入项目名称、检验结果等附加信息。当然，插入也无妨!
 --20081027,增加检验方法字段ChkMethod
-  declare @valueid int,@pkunid int,@itemid varchar(50),@Name varchar(50),@english_name varchar(50),@Unit varchar(50),@printorder int,@getmoney money,@Reserve1 varchar(300),@Reserve2 varchar(300),@Dosage1 varchar(100),@Dosage2 varchar(50),@Reserve5 int,@Reserve6 int,@Reserve7 float,@Reserve8 float,@Reserve9 datetime,@Reserve10 datetime,@itemvalue varchar(100)
-  SELECT @valueid=valueid,@pkunid=pkunid,@itemid=itemid,@Name=Name,@english_name=english_name,@itemvalue=itemvalue FROM Inserted
+  declare @valueid int,@pkunid int,@itemid varchar(50),@Name varchar(50),@english_name varchar(50),@Unit varchar(50),@printorder int,@getmoney money,@Reserve1 varchar(300),@Reserve2 varchar(300),@Dosage1 varchar(100),@Dosage2 varchar(50),@Reserve5 int,@Reserve6 int,@Reserve7 float,@Reserve8 float,@Reserve9 datetime,@Reserve10 datetime,@itemvalue varchar(100),@histogram varchar(4000)
+  SELECT @valueid=valueid,@pkunid=pkunid,@itemid=itemid,@Name=Name,@english_name=english_name,@itemvalue=itemvalue,@histogram=histogram FROM Inserted
   if @valueid is null return --表示没找到刚刚Inserted的记录
   if @pkunid is null return --表示没找到刚刚Inserted的记录
   if isnull(@itemid,'')='' return --表示没找到刚刚Inserted的记录
@@ -3386,6 +3386,26 @@ AS
 
     if @itemvalue<>'' update chk_valu set itemvalue=@itemvalue where valueid=@valueid
   end
+
+  if isnull(@histogram,'')=''--如果插入了直方图(绘点),则不update,如从仪器传入
+  begin
+    if exists(select 1 from chk_valu where pkunid=@pkunid and itemid=@itemid and valueid<>@valueid and isnull(histogram,'')<>'')--//病人检验结果集中已有该检验项目,则取该结果
+    begin
+      select @histogram=histogram from chk_valu where pkunid=@pkunid and itemid=@itemid and valueid<>@valueid and isnull(histogram,'')<>''
+      update chk_valu set histogram=@histogram where valueid=@valueid
+    end
+  end  
+
+  --20180211同步相同项目已存在的Photo值
+  --【不能在 'inserted' 表和 'deleted' 表中使用 text、ntext 或 image 列】故只能在源表(chk_valu)中给@Photo赋值
+  if exists(select 1 from chk_valu where valueid=@valueid and Photo is null)--如果插入了图像,则不update,如从仪器传入
+  begin
+    if exists(select 1 from chk_valu where pkunid=@pkunid and itemid=@itemid and valueid<>@valueid and Photo is not null)
+    begin
+      update chk_valu set Photo=(select top 1 Photo from chk_valu where pkunid=@pkunid and itemid=@itemid and valueid<>@valueid and Photo is not null) 
+      where valueid=@valueid
+    end
+  end  
 GO
 SET QUOTED_IDENTIFIER OFF 
 GO
