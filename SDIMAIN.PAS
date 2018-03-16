@@ -2923,6 +2923,7 @@ begin
   s1:=' select   *  from chk_con where isnull(chk_con.report_doctor,'''')<>'''' and combin_id='''+cbxConnChar.Text+''' ';//所有已审核的单
   s2:=' select unid from chk_con where isnull(chk_con.report_doctor,'''')<>'''' and combin_id='''+cbxConnChar.Text+''' ';//与S1相同，除了选择范围不同外
   s3:='             from chk_con where isnull(chk_con.report_doctor,'''')<>'''' and combin_id='''+cbxConnChar.Text+''' ';//与S1相同，除了选择范围不同外
+  //SQL SERVER事务具有原子性.即要么一起成功,要么一起失败
   DM.ADOConnection1.BeginTrans;
   try//经测试(设置断点并中止执行或断电)，BeginTrans与CommitTrans之间的语句中止执行，数据不会提交
     adotemp11:=tadoquery.Create(nil);
