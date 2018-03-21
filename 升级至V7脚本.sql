@@ -3402,7 +3402,10 @@ AS
   begin
     if exists(select 1 from chk_valu where pkunid=@pkunid and itemid=@itemid and valueid<>@valueid and Photo is not null)
     begin
-      update chk_valu set Photo=(select top 1 Photo from chk_valu where pkunid=@pkunid and itemid=@itemid and valueid<>@valueid and Photo is not null) 
+      --这种写法SQL SERVER 2008可行,SQL SERVER 2000报错【在这一子查询或聚合表达式中,text,ntext 和 image 数据类型无效】
+      --update chk_valu set Photo=(select top 1 Photo from chk_valu where pkunid=@pkunid and itemid=@itemid and valueid<>@valueid and Photo is not null) 
+      --改用下面的写法
+      update chk_valu set Photo=tmpT1.Photo FROM (select top 1 Photo from chk_valu where pkunid=@pkunid and itemid=@itemid and valueid<>@valueid and Photo is not null) tmpT1
       where valueid=@valueid
     end
   end  
