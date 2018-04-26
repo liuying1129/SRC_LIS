@@ -844,8 +844,7 @@ begin
 end
 go
 
---20141123打算删除这些字段，考虑到PEIS可能在用这些字段，暂不删除
-/*
+--20180426删除这些字段
 IF EXISTS (select 1 from syscolumns where name='Reserve3' and id=object_id('clinicchkitem'))
   Alter table clinicchkitem drop column Reserve3
 IF EXISTS (select 1 from syscolumns where name='Reserve4' and id=object_id('clinicchkitem'))
@@ -860,28 +859,27 @@ IF EXISTS (select 1 from syscolumns where name='Urine2' and id=object_id('clinic
   Alter table clinicchkitem drop column Urine2
 IF EXISTS (select 1 from syscolumns where name='ChkMethod' and id=object_id('clinicchkitem'))
   Alter table clinicchkitem drop column ChkMethod
-IF EXISTS (select 1 from syscolumns where name='Surem1' and id=object_id('chk_valu'))
-  Alter table chk_valu drop column Surem1
-IF EXISTS (select 1 from syscolumns where name='Surem2' and id=object_id('chk_valu'))
-  Alter table chk_valu drop column Surem2
+--IF EXISTS (select 1 from syscolumns where name='Surem1' and id=object_id('chk_valu'))
+--  Alter table chk_valu drop column Surem1
+--IF EXISTS (select 1 from syscolumns where name='Surem2' and id=object_id('chk_valu'))
+--  Alter table chk_valu drop column Surem2
 IF EXISTS (select 1 from syscolumns where name='Urine1' and id=object_id('chk_valu'))
   Alter table chk_valu drop column Urine1
 IF EXISTS (select 1 from syscolumns where name='Urine2' and id=object_id('chk_valu'))
   Alter table chk_valu drop column Urine2
 IF EXISTS (select 1 from syscolumns where name='ChkMethod' and id=object_id('chk_valu'))
   Alter table chk_valu drop column ChkMethod
-IF EXISTS (select 1 from syscolumns where name='Surem1' and id=object_id('chk_valu_bak'))
-  Alter table chk_valu_bak drop column Surem1
-IF EXISTS (select 1 from syscolumns where name='Surem2' and id=object_id('chk_valu_bak'))
-  Alter table chk_valu_bak drop column Surem2
+--IF EXISTS (select 1 from syscolumns where name='Surem1' and id=object_id('chk_valu_bak'))
+--  Alter table chk_valu_bak drop column Surem1
+--IF EXISTS (select 1 from syscolumns where name='Surem2' and id=object_id('chk_valu_bak'))
+--  Alter table chk_valu_bak drop column Surem2
 IF EXISTS (select 1 from syscolumns where name='Urine1' and id=object_id('chk_valu_bak'))
   Alter table chk_valu_bak drop column Urine1
 IF EXISTS (select 1 from syscolumns where name='Urine2' and id=object_id('chk_valu_bak'))
   Alter table chk_valu_bak drop column Urine2
 IF EXISTS (select 1 from syscolumns where name='ChkMethod' and id=object_id('chk_valu_bak'))
   Alter table chk_valu_bak drop column ChkMethod
-*/
---GO
+GO
 
 --删除表ChkStatus
 if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[ChkStatus]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
@@ -4304,13 +4302,13 @@ IF EXISTS (select 1 from syscolumns where name='combinitem' and id=object_id('cl
   Alter table clinicchkitem drop column combinitem
 GO
 
-IF EXISTS (select 1 from syscolumns where name='Reserve3' and id=object_id('clinicchkitem'))
-BEGIN
+--IF EXISTS (select 1 from syscolumns where name='Reserve3' and id=object_id('clinicchkitem'))
+--BEGIN
   --Reserve3不要了，用Dosage1做为保留字段3.值改到Reserve5
-  update clinicchkitem set Reserve5=1 where Reserve3='体检结论' AND Reserve5 IS NULL
-  update clinicchkitem set Reserve5=2 where Reserve3='体检建议' AND Reserve5 IS NULL
-END
-GO
+--  update clinicchkitem set Reserve5=1 where Reserve3='体检结论' AND Reserve5 IS NULL
+--  update clinicchkitem set Reserve5=2 where Reserve3='体检建议' AND Reserve5 IS NULL
+--END
+--GO
 
 --20141123切变率在20141123前是在dosage2字段中，现转移到Reserve8
 update clinicchkitem set Reserve8=dosage2 where isnull(dosage2,'')<>'' AND ISNUMERIC(dosage2)=1 AND Reserve8 IS NULL
