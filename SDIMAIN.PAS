@@ -4144,8 +4144,8 @@ begin
   adotemp33.Open;
   while not adotemp33.Eof do
   begin
-    sTjjl_Unid:=ScalarSQLCmd(LisConn,'select cv.valueid from chk_valu cv,clinicchkitem cci where cv.pkunid='+inttostr(ACheckUnid)+' and cci.itemid=cv.itemid and cci.Reserve3=''体检结论'' and cci.SysName='''+SYSNAME+''' ');
-    sTjjy_Unid:=ScalarSQLCmd(LisConn,'select cv.valueid from chk_valu cv,clinicchkitem cci where cv.pkunid='+inttostr(ACheckUnid)+' and cci.itemid=cv.itemid and cci.Reserve3=''体检建议'' and cci.SysName='''+SYSNAME+''' ');
+    sTjjl_Unid:=ScalarSQLCmd(LisConn,'select cv.valueid from chk_valu cv,clinicchkitem cci where cv.pkunid='+inttostr(ACheckUnid)+' and cci.itemid=cv.itemid and cci.Reserve5=1 and cci.SysName='''+SYSNAME+''' ');
+    sTjjy_Unid:=ScalarSQLCmd(LisConn,'select cv.valueid from chk_valu cv,clinicchkitem cci where cv.pkunid='+inttostr(ACheckUnid)+' and cci.itemid=cv.itemid and cci.Reserve5=2 and cci.SysName='''+SYSNAME+''' ');
 
     ItemId:=trim(adotemp33.fieldbyname('itemid').AsString);
     ItemChnName:=trim(adotemp33.fieldbyname('name').AsString);
