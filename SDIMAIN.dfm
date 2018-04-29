@@ -1892,6 +1892,11 @@ object SDIAppForm: TSDIAppForm
         RadioItem = True
         OnClick = N9Click
       end
+      object N85: TMenuItem
+        Caption = #25171#21360#39044#35272#27169#24335'-'#24102#25171#21360#23545#35805#26694
+        RadioItem = True
+        OnClick = N85Click
+      end
     end
     object N21: TMenuItem
       Caption = #36136#37327#25511#21046

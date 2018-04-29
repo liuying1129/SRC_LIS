@@ -258,12 +258,20 @@ begin
     //frReport1.Pages.Pages[0].pgHeight:=70;
     frReport1.Pages[0].ChangePaper($100,2100,PageHeigth,-1,poPortrait);  //1 inch=2.54 cm
 
-    if sdiappform.N9.Checked then  //预览模式
-      frReport1.ShowReport;
-    if sdiappform.N8.Checked then  //直接打印模式
-    begin
-      if frReport1.PrepareReport then frReport1.PrintPreparedReport('', 1, True, frAll);
-    end;
+  if sdiappform.N85.Checked then//预览模式-带打印对话框
+  begin
+    frReport1.ShowPrintDialog:=true;
+    frReport1.ShowReport;
+  end;
+  if sdiappform.n9.Checked then  //预览模式
+  begin
+    frReport1.ShowPrintDialog:=false;
+    frReport1.ShowReport;
+  end;
+  if sdiappform.n8.Checked then  //直接打印模式
+  begin
+    if frReport1.PrepareReport then frReport1.PrintPreparedReport('', 1, True, frAll);
+  end;
 end;
 
 procedure TfrmCommQuery.frReport1GetValue(const ParName: String;
@@ -454,8 +462,16 @@ begin
     //frReport1.Pages.Pages[0].pgHeight:=70;
     frReport1.Pages[0].ChangePaper($100,2100,PageHeigth,-1,poPortrait);  //1 inch=2.54 cm
 
-  if sdiappform.n9.Checked then  //预览模式
+  if sdiappform.N85.Checked then//预览模式-带打印对话框
+  begin
+    frReport1.ShowPrintDialog:=true;
     frReport1.ShowReport;
+  end;
+  if sdiappform.n9.Checked then  //预览模式
+  begin
+    frReport1.ShowPrintDialog:=false;
+    frReport1.ShowReport;
+  end;
   if sdiappform.n8.Checked then  //直接打印模式
   begin
     if frReport1.PrepareReport then frReport1.PrintPreparedReport('', 1, True, frAll);

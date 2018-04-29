@@ -228,6 +228,7 @@ type
     N17: TMenuItem;
     N60: TMenuItem;
     N75: TMenuItem;
+    N85: TMenuItem;
     procedure FileExit1Execute(Sender: TObject);
     procedure HelpAbout1Execute(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -372,6 +373,7 @@ type
     procedure N17Click(Sender: TObject);
     procedure N75Click(Sender: TObject);
     procedure frReport1PrintReport;
+    procedure N85Click(Sender: TObject);
   private
     procedure CheckTheListBox;//根据当前病人的结果在checklistbox1中打钩
     procedure WriteProfile;
@@ -647,14 +649,21 @@ procedure TSDIAppForm.N8Click(Sender: TObject);
 begin
   if not ifhaspower(sender,powerstr_js_main) then exit;
 
-  n8.Checked := true;
+  (Sender as TMenuItem).Checked := true;
 end;
 
 procedure TSDIAppForm.N9Click(Sender: TObject);
 begin
   if not ifhaspower(sender,powerstr_js_main) then exit;
 
-  n9.Checked := true;
+  (Sender as TMenuItem).Checked := true;
+end;
+
+procedure TSDIAppForm.N85Click(Sender: TObject);
+begin
+  if not ifhaspower(sender,powerstr_js_main) then exit;
+
+  (Sender as TMenuItem).Checked := true;
 end;
 
 procedure TSDIAppForm.ToolButton1Click(Sender: TObject);
@@ -871,12 +880,20 @@ begin
     //frReport1.Pages.Pages[0].pgHeight:=70;
     frReport1.Pages[0].ChangePaper($100,2100,PageHeigth,-1,poPortrait);  //1 inch=2.54 cm
 
-    if n9.Checked then  //预览模式
-      frReport1.ShowReport;
-    if n8.Checked then  //直接打印模式
-    begin
-      if frReport1.PrepareReport then frReport1.PrintPreparedReport('', 1, True, frAll);
-    end;
+  if N85.Checked then//预览模式-带打印对话框
+  begin
+    frReport1.ShowPrintDialog:=true;
+    frReport1.ShowReport;
+  end;
+  if n9.Checked then  //预览模式
+  begin
+    frReport1.ShowPrintDialog:=false;
+    frReport1.ShowReport;
+  end;
+  if n8.Checked then  //直接打印模式
+  begin
+    if frReport1.PrepareReport then frReport1.PrintPreparedReport('', 1, True, frAll);
+  end;
 end;
 
 procedure TSDIAppForm.FormCreate(Sender: TObject);
@@ -2153,8 +2170,16 @@ begin
     //frReport1.Pages.Pages[0].pgHeight:=70;
     frReport1.Pages[0].ChangePaper($100,2100,PageHeigth,-1,poPortrait);  //1 inch=2.54 cm
 
-  if n9.Checked then  //预览模式
+  if N85.Checked then//预览模式-带打印对话框
+  begin
+    frReport1.ShowPrintDialog:=true;
     frReport1.ShowReport;
+  end;
+  if n9.Checked then  //预览模式
+  begin
+    frReport1.ShowPrintDialog:=false;
+    frReport1.ShowReport;
+  end;
   if n8.Checked then  //直接打印模式
   begin
     if frReport1.PrepareReport then frReport1.PrintPreparedReport('', 1, True, frAll);
