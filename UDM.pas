@@ -29,7 +29,6 @@ const
   SYSNAME='LIS';
   sDBALIAS='ALIAS_SHHJ';
   CGYXJB='常规';//常规优先级别字符串
-	BASE_URL='http://211.97.0.5:8080/YkAPI/service';
 
   //BUG:选取申请单功能，选取查询条件时，不能用“条码号”、“选择”做为查询条件
                                               //1 as 选择,默认是选择的.1--选择,非1--未选
@@ -66,11 +65,13 @@ var
   CXZF:STRING;//检验结果超限字符
   ifNoResultPrint:boolean;//是否允许无检验结果打印
   MergePrintWorkGroupRange:string;//"按姓名性别年龄合并"的工作组范围
+  ifShowPrintDialog:boolean;//打印对话框
   bRegister:boolean;
   SCSYDW:STRING;//授权使用单位
   MergePrintDays:integer;//历史结果合并打印的偏差天数
   MakeTjDescDays:integer;//生成体检结论、建议的偏差天数
   bAppendMakeTjDesc:string;//是否允许追加生成体检结论
+  BASE_URL:STRING;//远程请求地址//'http://211.97.0.5:8080/YkAPI/service';
   SmoothNum:integer;//直方图光滑次数
   LisConn:string;//Lis连接字符串,MakeDBConn过程中被赋值,然后传入QC.DLL、CalcItemPro.dll
   gServerName:string;//服务名,用于显示在状态栏
