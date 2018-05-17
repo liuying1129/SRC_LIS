@@ -163,7 +163,6 @@ type
     CheckBox1: TCheckBox;
     Action3: TAction;
     N19: TMenuItem;
-    suiButton7: TSpeedButton;
     N64: TMenuItem;
     N65: TMenuItem;
     N16: TMenuItem;
@@ -276,7 +275,6 @@ type
     procedure N41Click(Sender: TObject);
     procedure N44Click(Sender: TObject);
     procedure cbxConnCharChange(Sender: TObject);
-    procedure suiButton7Click(Sender: TObject);
     procedure ADO_dtlAfterPost(DataSet: TDataSet);
     procedure N46Click(Sender: TObject);
     procedure LabeledEdit16Exit(Sender: TObject);
@@ -431,7 +429,7 @@ uses  Unit_dialog_pllr,
    UfrmBatchSpecNo,
   ufrm_referencevalue,ufrmItemSetup,
   UfrmCheckDate, Ufrmdocset,
-  UfrmSmallItemPick, UfrmHistoryResult,
+  UfrmHistoryResult,
   UfrmExcelQuery, UfrmStaticCombItem,
   UDM, UfrmFromExcelLoad,
   UfrmXDepictType, UfrmXDepict, UfrmCommCode, UfrmPlxg, UfrmCopyInfo,
@@ -2430,11 +2428,6 @@ begin
   update_Ado_dtl;
 end;
 
-procedure TSDIAppForm.suiButton7Click(Sender: TObject);
-begin
-  frmSmallItemPick.ShowModal;
-end;
-
 procedure TSDIAppForm.ADO_dtlAfterPost(DataSet: TDataSet);
 begin
   addOrEditCalcValu(pchar(LisConn),dsbasic.DataSet.FieldByName('唯一编号').AsInteger,false,''); //计算
@@ -3000,6 +2993,7 @@ begin
   MakeTjDescDays:=strtointdef(ScalarSQLCmd(LisConn,'select Name from CommCode where TypeName=''系统代码'' and ReMark=''生成体检结论的偏差天数'' '),0);
   bAppendMakeTjDesc:=ScalarSQLCmd(LisConn,'select Name from CommCode where TypeName=''系统代码'' and ReMark=''允许追加生成体检结论'' ');
   BASE_URL:=ScalarSQLCmd(LisConn,'select Name from CommCode where TypeName=''系统代码'' and ReMark=''远程请求地址'' ');
+  if trim(BASE_URL)='' then BASE_URL:='http://211.97.0.5:8080/YkAPI/service';
 
   CONFIGINI:=TINIFILE.Create(ChangeFileExt(Application.ExeName,'.ini'));
 
