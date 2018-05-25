@@ -209,21 +209,6 @@ object SDIAppForm: TSDIAppForm
         Font.Style = []
         ParentFont = False
       end
-      object suiButton7: TSpeedButton
-        Left = 310
-        Top = 0
-        Width = 100
-        Height = 22
-        Caption = #36873#21462#26410#20998#32452#39033#30446
-        Font.Charset = ANSI_CHARSET
-        Font.Color = clBlack
-        Font.Height = -13
-        Font.Name = #23435#20307
-        Font.Style = []
-        ParentFont = False
-        Visible = False
-        OnClick = suiButton7Click
-      end
       object LabeledEdit13: TLabeledEdit
         Left = 81
         Top = 2
@@ -1891,11 +1876,6 @@ object SDIAppForm: TSDIAppForm
         Caption = #25171#21360#39044#35272#27169#24335
         RadioItem = True
         OnClick = N9Click
-      end
-      object N85: TMenuItem
-        Caption = #25171#21360#39044#35272#27169#24335'-'#24102#25171#21360#23545#35805#26694
-        RadioItem = True
-        OnClick = N85Click
       end
     end
     object N21: TMenuItem

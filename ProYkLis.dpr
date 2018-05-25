@@ -12,7 +12,6 @@ uses
   UfrmCheckDate in 'UfrmCheckDate.pas' {frmCheckDate},
   UfrmItemSetup in 'ufrmItemSetup.pas' {frmItemSetup},
   Ufrmdocset in 'Ufrmdocset.pas' {frmdocset},
-  UfrmSmallItemPick in 'UfrmSmallItemPick.pas' {frmSmallItemPick},
   UfrmHistoryResult in 'UfrmHistoryResult.pas' {frmHistoryResult},
   UfrmExcelQuery in 'UfrmExcelQuery.pas' {frmExcelQuery},
   UfrmStaticCombItem in 'UfrmStaticCombItem.pas' {frmStaticCombItem},

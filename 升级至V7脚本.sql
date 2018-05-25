@@ -4342,6 +4342,11 @@ if not exists (select 1 from CommCode where TypeName='系统代码' and Remark='软件
   insert into CommCode (typename,id,name,remark,sysname) values ('系统代码','0005','B6BB07900F8E5B81BBDEC78B685A68B8','软件过期时间','LIS')
 GO
 
+--20180512远程请求地址
+if not exists (select 1 from CommCode where TypeName='系统代码' and Remark='远程请求地址')
+  insert into CommCode (typename,id,name,remark,sysname) values ('系统代码','0007','http://211.97.0.5:8080/YkAPI/service','远程请求地址','LIS')
+GO
+
 if not exists(select * from CommCode where TypeName='工具菜单' and name='报表编辑器')
 begin
   insert into CommCode(TypeName,ID,Name,Reserve,Reserve2) values ('工具菜单',010,'报表编辑器','FrfSet.exe','1')

@@ -163,7 +163,6 @@ type
     CheckBox1: TCheckBox;
     Action3: TAction;
     N19: TMenuItem;
-    suiButton7: TSpeedButton;
     N64: TMenuItem;
     N65: TMenuItem;
     N16: TMenuItem;
@@ -228,7 +227,6 @@ type
     N17: TMenuItem;
     N60: TMenuItem;
     N75: TMenuItem;
-    N85: TMenuItem;
     procedure FileExit1Execute(Sender: TObject);
     procedure HelpAbout1Execute(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -277,7 +275,6 @@ type
     procedure N41Click(Sender: TObject);
     procedure N44Click(Sender: TObject);
     procedure cbxConnCharChange(Sender: TObject);
-    procedure suiButton7Click(Sender: TObject);
     procedure ADO_dtlAfterPost(DataSet: TDataSet);
     procedure N46Click(Sender: TObject);
     procedure LabeledEdit16Exit(Sender: TObject);
@@ -373,7 +370,6 @@ type
     procedure N17Click(Sender: TObject);
     procedure N75Click(Sender: TObject);
     procedure frReport1PrintReport;
-    procedure N85Click(Sender: TObject);
   private
     procedure CheckTheListBox;//根据当前病人的结果在checklistbox1中打钩
     procedure WriteProfile;
@@ -433,7 +429,7 @@ uses  Unit_dialog_pllr,
    UfrmBatchSpecNo,
   ufrm_referencevalue,ufrmItemSetup,
   UfrmCheckDate, Ufrmdocset,
-  UfrmSmallItemPick, UfrmHistoryResult,
+  UfrmHistoryResult,
   UfrmExcelQuery, UfrmStaticCombItem,
   UDM, UfrmFromExcelLoad,
   UfrmXDepictType, UfrmXDepict, UfrmCommCode, UfrmPlxg, UfrmCopyInfo,
@@ -659,13 +655,6 @@ begin
   (Sender as TMenuItem).Checked := true;
 end;
 
-procedure TSDIAppForm.N85Click(Sender: TObject);
-begin
-  if not ifhaspower(sender,powerstr_js_main) then exit;
-
-  (Sender as TMenuItem).Checked := true;
-end;
-
 procedure TSDIAppForm.ToolButton1Click(Sender: TObject);
 var
   sUnid{,sHis_Unid}:string;
@@ -880,14 +869,9 @@ begin
     //frReport1.Pages.Pages[0].pgHeight:=70;
     frReport1.Pages[0].ChangePaper($100,2100,PageHeigth,-1,poPortrait);  //1 inch=2.54 cm
 
-  if N85.Checked then//预览模式-带打印对话框
-  begin
-    frReport1.ShowPrintDialog:=true;
-    frReport1.ShowReport;
-  end;
   if n9.Checked then  //预览模式
   begin
-    frReport1.ShowPrintDialog:=false;
+    frReport1.ShowPrintDialog:=ifShowPrintDialog;
     frReport1.ShowReport;
   end;
   if n8.Checked then  //直接打印模式
@@ -2170,14 +2154,9 @@ begin
     //frReport1.Pages.Pages[0].pgHeight:=70;
     frReport1.Pages[0].ChangePaper($100,2100,PageHeigth,-1,poPortrait);  //1 inch=2.54 cm
 
-  if N85.Checked then//预览模式-带打印对话框
-  begin
-    frReport1.ShowPrintDialog:=true;
-    frReport1.ShowReport;
-  end;
   if n9.Checked then  //预览模式
   begin
-    frReport1.ShowPrintDialog:=false;
+    frReport1.ShowPrintDialog:=ifShowPrintDialog;
     frReport1.ShowReport;
   end;
   if n8.Checked then  //直接打印模式
@@ -2449,11 +2428,6 @@ begin
   update_Ado_dtl;
 end;
 
-procedure TSDIAppForm.suiButton7Click(Sender: TObject);
-begin
-  frmSmallItemPick.ShowModal;
-end;
-
 procedure TSDIAppForm.ADO_dtlAfterPost(DataSet: TDataSet);
 begin
   addOrEditCalcValu(pchar(LisConn),dsbasic.DataSet.FieldByName('唯一编号').AsInteger,false,''); //计算
@@ -2501,6 +2475,7 @@ begin
       '检验结果超限字符'+#2+'Combobox'+#2+'↑↓'+#13+'H L'+#2+'0'+#2+'注:第1、2位为超上限字符，第3、4位为超下限字符'+#2+#3+
       '允许无检验结果打印'+#2+'CheckListBox'+#2+#2+'0'+#2+#2+#3+
       '"按姓名性别年龄合并"的工作组范围'+#2+'Edit'+#2+#2+'0'+#2+'如仅希望临检组与生化组合并,则填"临检组,生化组".空表示无限制'+#2+#3+
+      '打印对话框'+#2+'CheckListBox'+#2+#2+'0'+#2+'打印预览模式的高级选项(打印机、页码、份数等)'+#2+#3+
       '打印时自动审核检验单'+#2+'CheckListBox'+#2+#2+'1'+#2+#2+#3+
       '根据"门诊/住院号"提取备注'+#2+'CheckListBox'+#2+#2+'1'+#2+#2+#3+
       '填写病人基本信息时,直接回车弹出取码框'+#2+'CheckListBox'+#2+#2+'1'+#2+#2+#3+
@@ -3017,6 +2992,8 @@ begin
   MergePrintDays:=strtointdef(ScalarSQLCmd(LisConn,'select Name from CommCode where TypeName=''系统代码'' and ReMark=''历史结果合并打印的偏差天数'' '),0);
   MakeTjDescDays:=strtointdef(ScalarSQLCmd(LisConn,'select Name from CommCode where TypeName=''系统代码'' and ReMark=''生成体检结论的偏差天数'' '),0);
   bAppendMakeTjDesc:=ScalarSQLCmd(LisConn,'select Name from CommCode where TypeName=''系统代码'' and ReMark=''允许追加生成体检结论'' ');
+  BASE_URL:=ScalarSQLCmd(LisConn,'select Name from CommCode where TypeName=''系统代码'' and ReMark=''远程请求地址'' ');
+  if trim(BASE_URL)='' then BASE_URL:='http://211.97.0.5:8080/YkAPI/service';
 
   CONFIGINI:=TINIFILE.Create(ChangeFileExt(Application.ExeName,'.ini'));
 
@@ -3031,6 +3008,7 @@ begin
     MergePrintWorkGroupRange:=StringReplace(MergePrintWorkGroupRange,',',''',''',[rfReplaceAll]);
     MergePrintWorkGroupRange:=''''+MergePrintWorkGroupRange+'''';
   end;
+  ifShowPrintDialog:=configini.ReadBool('报表','打印对话框',false);
   ifAutoCheck:=configini.ReadBool('选项','打印时自动审核检验单',false);
   ifEnterGetCode:=configini.ReadBool('选项','填写病人基本信息时,直接回车弹出取码框',false);
   deptname_match:=configini.ReadString('选项','送检科室取码的匹配方式','');
