@@ -3038,6 +3038,56 @@ GO
 SET ANSI_NULLS ON 
 GO
 
+if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[view_LeakItem_Warning]') and OBJECTPROPERTY(id, N'IsView') = 1)
+drop view [dbo].[view_LeakItem_Warning]
+GO
+
+--2018-05-30漏项预警视图创建脚本
+SET QUOTED_IDENTIFIER ON 
+GO
+SET ANSI_NULLS ON 
+GO
+
+CREATE VIEW view_LeakItem_Warning
+AS
+select 
+T1.PKUNID as 受检标本唯一ID
+,T1.patientname AS 受检者姓名
+,T1.combin_id AS 工作组
+,T1.PKCOMBIN_ID as 组合项目代码
+,T1.ITEMNUM AS 结果的组合项目小项目数量
+,T2.ITEMNUM as 设置的组合项目小项目数量 
+from
+(
+SELECT 
+      pkunid
+      ,patientname
+      ,combin_id
+      ,pkcombin_id
+      ,count(distinct itemid) as itemNum      
+  FROM chk_valu,chk_con
+  where pkunid=unid
+  and chk_valu.issure='1'
+  and isnull(Surem2,'')<>'' --表示扫码的
+  group by pkunid,patientname,combin_id,pkcombin_id
+) T1,
+(
+select ci.id
+       ,count(distinct cci.itemid) as itemNum  
+  from CombSChkItem csci,combinitem ci,clinicchkitem cci
+  where csci.combunid=ci.unid 
+  and csci.itemunid=cci.unid
+  group by id
+) T2
+WHERE T1.PKCOMBIN_ID=T2.ID
+AND T1.itemNum<T2.itemNum
+
+GO
+SET QUOTED_IDENTIFIER OFF 
+GO
+SET ANSI_NULLS ON 
+GO
+
 ---------------触发器相关操作---------------
 
 --触发器TRIGGER_chk_con_CKZ_Update创建脚本
@@ -4513,4 +4563,6 @@ GO
 sp_refreshview  'dbo.view_Chk_Con_All'
 GO
 sp_refreshview  'dbo.view_Show_chk_Con_His'
+GO
+sp_refreshview  'dbo.view_LeakItem_Warning'
 GO
