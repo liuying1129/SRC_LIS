@@ -171,6 +171,32 @@ object SDIAppForm: TSDIAppForm
         Caption = #36873#21462#30003#35831#21333'F12'
         OnClick = SpeedButton2Click
       end
+      object ToolButton5: TToolButton
+        Left = 659
+        Top = 2
+        Width = 8
+        Caption = 'ToolButton5'
+        ImageIndex = 5
+        Style = tbsSeparator
+      end
+      object LYLed1: TLYLed
+        Left = 667
+        Top = 2
+        Width = 19
+        Height = 22
+        Cursor = crDefault
+        Hint = #26465#30721#25195#25551#28431#39033#39044#35686
+        Value = False
+        OnColor = clRed
+        OffColor = clBtnFace
+        Interval = 500
+        Blink = True
+        BorderColor = clMaroon
+        hasSound = False
+        SoundString = '.\Wave\Driveby.wav'
+        SoundInValue = True
+        OnDblClick = LYLed1DblClick
+      end
     end
   end
   object Panel1: TPanel
@@ -2186,5 +2212,11 @@ object SDIAppForm: TSDIAppForm
       Caption = #31227#38500
       OnClick = N17Click
     end
+  end
+  object TimerLeakItemWarning: TTimer
+    Interval = 60000
+    OnTimer = TimerLeakItemWarningTimer
+    Left = 677
+    Top = 377
   end
 end

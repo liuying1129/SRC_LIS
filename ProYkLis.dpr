@@ -28,7 +28,8 @@ uses
   UfrmHisCombItem in 'UfrmHisCombItem.pas' {frmHisCombItem},
   uQRCode in 'uQRCode.pas',
   UfrmExtItemSetup in 'UfrmExtItemSetup.pas' {frmExtItemSetup},
-  UfrmExceptionValue in 'UfrmExceptionValue.pas' {frmExceptionValue};
+  UfrmExceptionValue in 'UfrmExceptionValue.pas' {frmExceptionValue},
+  UfrmLeakItemWarning in 'UfrmLeakItemWarning.pas' {frmLeakItemWarning};
 
 {$R *.RES}
 

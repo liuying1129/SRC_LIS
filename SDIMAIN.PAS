@@ -10,7 +10,7 @@ uses Windows,Messages, Classes,SysUtils, Graphics, Forms, Controls, Menus,
   DateUtils, FR_DSet, ADOLYGetcode,Math,Jpeg,Variants, UfrmLocateRecord,
   ExtDlgs, UADOLYQuery,HTTPApp{HTTPEncode},IdHashMessageDigest{TIdHashMessageDigest5},
   IdHash, IdBaseComponent, IdComponent, IdTCPConnection, IdTCPClient,
-  IdHTTP{T4x4LongWordRecord}, IdIPWatch;
+  IdHTTP{T4x4LongWordRecord}, IdIPWatch, LYLed;
 
 //==为了通过发送消息更新主窗体状态栏而增加==//
 const
@@ -227,6 +227,9 @@ type
     N17: TMenuItem;
     N60: TMenuItem;
     N75: TMenuItem;
+    LYLed1: TLYLed;
+    ToolButton5: TToolButton;
+    TimerLeakItemWarning: TTimer;
     procedure FileExit1Execute(Sender: TObject);
     procedure HelpAbout1Execute(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -370,6 +373,8 @@ type
     procedure N17Click(Sender: TObject);
     procedure N75Click(Sender: TObject);
     procedure frReport1PrintReport;
+    procedure LYLed1DblClick(Sender: TObject);
+    procedure TimerLeakItemWarningTimer(Sender: TObject);
   private
     procedure CheckTheListBox;//根据当前病人的结果在checklistbox1中打钩
     procedure WriteProfile;
@@ -433,7 +438,7 @@ uses  Unit_dialog_pllr,
   UfrmExcelQuery, UfrmStaticCombItem,
   UDM, UfrmFromExcelLoad,
   UfrmXDepictType, UfrmXDepict, UfrmCommCode, UfrmPlxg, UfrmCopyInfo,
-  UfrmPhoto, UfrmShowChkConHis, uQRCode;
+  UfrmPhoto, UfrmShowChkConHis, uQRCode, UfrmLeakItemWarning;
 
 var
     copyName,copySex,copyage,copyCaseno,copyBedno,copydeptname,copycheck_doctor:string;//复制的病人基本信息，仅粘贴时有用
@@ -4540,6 +4545,16 @@ begin
 
   if sHistorySeries<>sCurSeries then//有历史结果则显示出来,但不一定有曲线（非数字结果无曲线）
     frmHistoryResult(sHistorySeries).ShowModal;
+end;
+
+procedure TSDIAppForm.LYLed1DblClick(Sender: TObject);
+begin
+  if (Sender as TLYLed).Value then frmLeakItemWarning.Show;
+end;
+
+procedure TSDIAppForm.TimerLeakItemWarningTimer(Sender: TObject);
+begin
+  if strtoint(ScalarSQLCmd(LisConn,'select count(*) from view_LeakItem_Warning '))>0 then LYLed1.Value:=true else LYLed1.Value:=false;
 end;
 
 end.
