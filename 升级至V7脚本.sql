@@ -3052,37 +3052,47 @@ CREATE VIEW view_LeakItem_Warning
 AS
 select 
 T1.PKUNID as 受检标本唯一ID
-,T1.patientname AS 受检者姓名
-,T1.combin_id AS 工作组
+,CN.patientname AS 受检者姓名
+,CN.combin_id AS 工作组
 ,T1.PKCOMBIN_ID as 组合项目代码
 ,T2.Name AS 组合项目名称
 ,T1.ITEMNUM AS 结果的组合项目小项目数量
 ,T2.ITEMNUM as 设置的组合项目小项目数量 
 from
 (
-SELECT 
-      pkunid
-      ,patientname
-      ,combin_id
-      ,pkcombin_id
-      ,count(distinct itemid) as itemNum      
-  FROM chk_valu,chk_con
-  where pkunid=unid
-  and chk_valu.issure='1'
-  and isnull(Surem2,'')<>'' --表示扫码的
-  group by pkunid,patientname,combin_id,pkcombin_id
-) T1,
+	select 
+    CV.pkunid
+	,CV.pkcombin_id
+	,count(distinct itemid) as itemNum  
+	from chk_valu CV,
+	(
+	  SELECT 
+	  pkunid
+	  ,pkcombin_id    
+	  FROM chk_valu
+	  where issure='1'
+	  and Surem2 is not null and Surem2<>'' and Surem2<>'-1' --表示扫码的
+	  group by pkunid,pkcombin_id
+	) T5--表T5:扫码的受检标本、组合项目
+	WHERE CV.pkunid=T5.pkunid
+	AND CV.pkcombin_id=T5.pkcombin_id
+	and CV.issure='1'
+	group by CV.pkunid,CV.pkcombin_id
+) T1,--表T1:扫码的受检标本、组合项目、组合项目包含小项目数量.手工勾选处理后不再预警,故T1封装T5
 (
-select ci.id
-       ,ci.Name
-       ,count(distinct cci.itemid) as itemNum  
-  from CombSChkItem csci,combinitem ci,clinicchkitem cci
-  where csci.combunid=ci.unid 
-  and csci.itemunid=cci.unid
-  group by id,ci.Name
-) T2
+	select 
+	ci.id
+	,ci.name
+	,count(distinct cci.itemid) as itemNum  
+	from CombSChkItem csci,combinitem ci,clinicchkitem cci
+	where csci.combunid=ci.unid 
+	and csci.itemunid=cci.unid
+	group by id,ci.Name
+) T2,--表T1:组合项目及组合项目包含小项目数量
+chk_con CN
 WHERE T1.PKCOMBIN_ID=T2.ID
 AND T1.itemNum<T2.itemNum
+AND T1.PKUNID=CN.UNID
 
 GO
 SET QUOTED_IDENTIFIER OFF 
