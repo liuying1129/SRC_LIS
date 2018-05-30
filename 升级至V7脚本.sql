@@ -3055,6 +3055,7 @@ T1.PKUNID as 受检标本唯一ID
 ,T1.patientname AS 受检者姓名
 ,T1.combin_id AS 工作组
 ,T1.PKCOMBIN_ID as 组合项目代码
+,T2.Name AS 组合项目名称
 ,T1.ITEMNUM AS 结果的组合项目小项目数量
 ,T2.ITEMNUM as 设置的组合项目小项目数量 
 from
@@ -3073,11 +3074,12 @@ SELECT
 ) T1,
 (
 select ci.id
+       ,ci.Name
        ,count(distinct cci.itemid) as itemNum  
   from CombSChkItem csci,combinitem ci,clinicchkitem cci
   where csci.combunid=ci.unid 
   and csci.itemunid=cci.unid
-  group by id
+  group by id,ci.Name
 ) T2
 WHERE T1.PKCOMBIN_ID=T2.ID
 AND T1.itemNum<T2.itemNum
