@@ -197,6 +197,31 @@ object SDIAppForm: TSDIAppForm
         SoundInValue = True
         OnDblClick = LYLed1DblClick
       end
+      object ToolButton7: TToolButton
+        Left = 686
+        Top = 2
+        Width = 8
+        Caption = 'ToolButton7'
+        ImageIndex = 6
+        Style = tbsSeparator
+      end
+      object LYLed2: TLYLed
+        Left = 694
+        Top = 2
+        Width = 19
+        Height = 22
+        Cursor = crDefault
+        Hint = #20307#26816#32467#35770#12289#24314#35758#29983#25104#25552#31034#28783
+        Value = False
+        OnColor = clRed
+        OffColor = clBtnFace
+        Interval = 500
+        Blink = True
+        BorderColor = clMaroon
+        hasSound = False
+        SoundString = '.\Wave\Driveby.wav'
+        SoundInValue = True
+      end
     end
   end
   object Panel1: TPanel
@@ -2217,6 +2242,12 @@ object SDIAppForm: TSDIAppForm
     Interval = 60000
     OnTimer = TimerLeakItemWarningTimer
     Left = 677
+    Top = 377
+  end
+  object TimerMakeTjDescription: TTimer
+    Interval = 10000
+    OnTimer = TimerMakeTjDescriptionTimer
+    Left = 717
     Top = 377
   end
 end

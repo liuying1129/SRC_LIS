@@ -230,6 +230,9 @@ type
     LYLed1: TLYLed;
     ToolButton5: TToolButton;
     TimerLeakItemWarning: TTimer;
+    ToolButton7: TToolButton;
+    LYLed2: TLYLed;
+    TimerMakeTjDescription: TTimer;
     procedure FileExit1Execute(Sender: TObject);
     procedure HelpAbout1Execute(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -375,6 +378,7 @@ type
     procedure frReport1PrintReport;
     procedure LYLed1DblClick(Sender: TObject);
     procedure TimerLeakItemWarningTimer(Sender: TObject);
+    procedure TimerMakeTjDescriptionTimer(Sender: TObject);
   private
     procedure CheckTheListBox;//根据当前病人的结果在checklistbox1中打钩
     procedure WriteProfile;
@@ -395,7 +399,7 @@ type
     procedure miToolItemClick(Sender: TObject);
     procedure ShowPictureValue(const ACheckUnid:integer);
     procedure ShowBarcode2D(const ACheckUnid:integer);
-    procedure SingleMakeTjDescription(const ACheckUnid:integer);//指定病人生成体检结论、建议
+    //procedure SingleMakeTjDescription(const ACheckUnid:integer);//指定病人生成体检结论、建议
   public
       { Public declarations }
     ifnewadd:boolean;
@@ -4089,7 +4093,7 @@ begin
   frmXDepict(2).Show;
 end;
 
-procedure TSDIAppForm.SingleMakeTjDescription(const ACheckUnid: integer);
+{procedure TSDIAppForm.SingleMakeTjDescription(const ACheckUnid: integer);
 var
   Pre_Combin_Name,Combin_Name,ItemId,ItemChnName,cur_value,min_value,max_value:string;
   adotemp11,adotemp22,adotemp33:Tadoquery;
@@ -4125,7 +4129,7 @@ begin
   if trim(sPatientname)='' then exit;//无姓名则不更新
 
   Save_Cursor := Screen.Cursor;
-  Screen.Cursor := crHourGlass;    { Show hourglass cursor }
+  Screen.Cursor := crHourGlass;
 
   adotemp33:=Tadoquery.Create(nil);
   adotemp33.Connection:=dm.ADOConnection1;
@@ -4236,13 +4240,13 @@ begin
   end;
   adotemp33.Free;
 
-  Screen.Cursor := Save_Cursor;  { Always restore to normal }
-end;
+  Screen.Cursor := Save_Cursor;
+end;//}
 
 procedure TSDIAppForm.N29Click(Sender: TObject);
 var
   adotemp11:Tadoquery;
-  RecNum:integer;
+  //RecNum:integer;
 begin
   if not ADObasic.Active then exit;
   if not ADObasic.RecordCount=0 then exit;
@@ -4251,12 +4255,15 @@ begin
 
   if (MessageDlg('确定要为当前界面的所有体检者生成体检结论？', mtWarning, [mbYes, mbNo], 0) <> mrYes) then exit;
 
-  WriteLog(pchar('开始批量生成体检结论、建议'));
+  //WriteLog(pchar('开始批量生成体检结论、建议'));
   adotemp11:=tadoquery.Create(nil);
   adotemp11.clone(ADObasic);
   while not adotemp11.Eof do
   begin
-    if bAppendMakeTjDesc<>'是' then
+
+    ExecSQLCmd(LisConn,'update chk_con set Weight=''待生成'' where unid='+adotemp11.fieldbyname('唯一编号').AsString+' and Weight<>''待生成'' ');
+
+    {if bAppendMakeTjDesc<>'是' then
     begin
       RecNum:=strtoint(ScalarSQLCmd(LisConn,'select count(*) from chk_valu cv,clinicchkitem cci where cv.itemid=cci.itemid and cv.pkunid='+adotemp11.fieldbyname('唯一编号').AsString+' and cci.Reserve5 in (1,2) and isnull(cv.itemvalue,'''')<>'''' '));
       if RecNum>0 then
@@ -4268,14 +4275,14 @@ begin
       end;
     end;
     
-    SingleMakeTjDescription(adotemp11.fieldbyname('唯一编号').AsInteger);
+    SingleMakeTjDescription(adotemp11.fieldbyname('唯一编号').AsInteger);//}
 
     adotemp11.Next;
   end;
   adotemp11.Free;
-  WriteLog(pchar('批量生成体检结论、建议完成'));
+  //WriteLog(pchar('批量生成体检结论、建议完成'));
 
-  MessageDlg('生成体检结论完成', mtInformation, [mbOK], 0);
+  //MessageDlg('生成体检结论完成', mtInformation, [mbOK], 0);
 end;
 
 procedure TSDIAppForm.N76Click(Sender: TObject);
@@ -4287,9 +4294,11 @@ begin
 
   if (MessageDlg('确定要为当前体检者生成体检结论？', mtWarning, [mbYes, mbNo], 0) <> mrYes) then exit;
 
-  SingleMakeTjDescription(ADObasic.fieldbyname('唯一编号').AsInteger);
+  ExecSQLCmd(LisConn,'update chk_con set Weight=''待生成'' where unid='+ADObasic.fieldbyname('唯一编号').AsString+' and Weight<>''待生成'' ');
 
-  MessageDlg('生成体检结论完成', mtInformation, [mbOK], 0);
+  //SingleMakeTjDescription(ADObasic.fieldbyname('唯一编号').AsInteger);
+
+  //MessageDlg('生成体检结论完成', mtInformation, [mbOK], 0);
 end;
 
 procedure TSDIAppForm.lbedtifMarryExit(Sender: TObject);
@@ -4555,6 +4564,11 @@ end;
 procedure TSDIAppForm.TimerLeakItemWarningTimer(Sender: TObject);
 begin
   if strtoint(ScalarSQLCmd(LisConn,'select count(*) from view_LeakItem_Warning '))>0 then LYLed1.Value:=true else LYLed1.Value:=false;
+end;
+
+procedure TSDIAppForm.TimerMakeTjDescriptionTimer(Sender: TObject);
+begin
+  if strtoint(ScalarSQLCmd(LisConn,'select count(*) from chk_con where Weight=''待生成'' '))>0 then LYLed1.Value:=true else LYLed1.Value:=false;
 end;
 
 end.
