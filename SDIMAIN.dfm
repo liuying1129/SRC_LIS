@@ -2245,7 +2245,7 @@ object SDIAppForm: TSDIAppForm
     Top = 377
   end
   object TimerMakeTjDescription: TTimer
-    Interval = 10000
+    Interval = 30000
     OnTimer = TimerMakeTjDescriptionTimer
     Left = 717
     Top = 377
