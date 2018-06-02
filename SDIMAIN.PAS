@@ -4568,7 +4568,7 @@ end;
 
 procedure TSDIAppForm.TimerMakeTjDescriptionTimer(Sender: TObject);
 begin
-  if strtoint(ScalarSQLCmd(LisConn,'select count(*) from chk_con where Weight=''待生成'' '))>0 then LYLed1.Value:=true else LYLed1.Value:=false;
+  if strtoint(ScalarSQLCmd(LisConn,'select count(*) from chk_con where Weight=''待生成'' '))>0 then LYLed2.Value:=true else LYLed2.Value:=false;
 end;
 
 end.
