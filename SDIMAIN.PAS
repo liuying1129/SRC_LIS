@@ -4261,7 +4261,7 @@ begin
   while not adotemp11.Eof do
   begin
 
-    ExecSQLCmd(LisConn,'update chk_con set Weight=''待生成'' where unid='+adotemp11.fieldbyname('唯一编号').AsString+' and Weight<>''待生成'' ');
+    ExecSQLCmd(LisConn,'update chk_con set Weight=''待生成'' where unid='+adotemp11.fieldbyname('唯一编号').AsString+' and isnull(Weight,'''')<>''待生成'' ');
 
     {if bAppendMakeTjDesc<>'是' then
     begin
@@ -4294,7 +4294,7 @@ begin
 
   if (MessageDlg('确定要为当前体检者生成体检结论？', mtWarning, [mbYes, mbNo], 0) <> mrYes) then exit;
 
-  ExecSQLCmd(LisConn,'update chk_con set Weight=''待生成'' where unid='+ADObasic.fieldbyname('唯一编号').AsString+' and Weight<>''待生成'' ');
+  ExecSQLCmd(LisConn,'update chk_con set Weight=''待生成'' where unid='+ADObasic.fieldbyname('唯一编号').AsString+' and isnull(Weight,'''')<>''待生成'' ');
 
   //SingleMakeTjDescription(ADObasic.fieldbyname('唯一编号').AsInteger);
 
