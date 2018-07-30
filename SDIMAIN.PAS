@@ -530,7 +530,7 @@ begin
   IdIPWatch:=TIdIPWatch.Create(nil);
   IdIPWatch.HistoryEnabled:=false;
   sLocalIP:=IdIPWatch.LocalIP;
-  sLocalName:=IdIPWatch.LocalName;
+  sLocalName:='';//IdIPWatch.LocalName;//indy10无该属性
   IdIPWatch.Free;
   
   //t1:=FormatDateTime('YYYY-MM-DD hh:nn:ss',now);
@@ -562,14 +562,14 @@ begin
   //本机有网络，但连接HTTP服务很慢时，如不加超时，会一直挂起
   //本机无网络，就算不加超时也没问题
   IdHTTP_Tmp1.ReadTimeout:=2*1000;//毫秒
+  IdHTTP_Tmp1.ConnectTimeout:=2*1000;//Connect超时设置//indy9无该属性.故要安装indy10
   RespData:=TStringStream.Create('');
 
-  if trim(BASE_URL)<>'' then
-    try
-      IdHTTP_Tmp1.Get(BASE_URL+'?'+s3,RespData);
-      //showmessage(UTF8Decode(RespData.DataString));//返回信息//IdHTTP是同步的
-    except
-    end;
+  try
+    IdHTTP_Tmp1.Get(BASE_URL+'?'+s3,RespData);
+    //showmessage(UTF8Decode(RespData.DataString));//返回信息//IdHTTP是同步的
+  except
+  end;
     
   RespData.Free;
   IdHTTP_Tmp1.Free;
@@ -3005,7 +3005,7 @@ begin
   MakeTjDescDays:=strtointdef(ScalarSQLCmd(LisConn,'select Name from CommCode where TypeName=''系统代码'' and ReMark=''生成体检结论的偏差天数'' '),0);
   bAppendMakeTjDesc:=ScalarSQLCmd(LisConn,'select Name from CommCode where TypeName=''系统代码'' and ReMark=''允许追加生成体检结论'' ');
   BASE_URL:=ScalarSQLCmd(LisConn,'select Name from CommCode where TypeName=''系统代码'' and ReMark=''远程请求地址'' ');
-  //if trim(BASE_URL)='' then BASE_URL:='http://211.97.0.5:8080/YkAPI/service';
+  if trim(BASE_URL)='' then BASE_URL:='http://211.97.0.5:8080/YkAPI/service';
 
   CONFIGINI:=TINIFILE.Create(ChangeFileExt(Application.ExeName,'.ini'));
 
