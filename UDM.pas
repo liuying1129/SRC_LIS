@@ -880,6 +880,7 @@ begin
   except
     on E:Exception do
     begin
+      WriteLog(pchar('操作者:'+operator_name+'。函数ExecSQLCmd失败:'+E.Message+'。错误的SQL:'+ASQL));
       MESSAGEDLG('函数ExecSQLCmd失败:'+E.Message+'。错误的SQL:'+ASQL,mtError,[mbOK],0);
       Result:=-1;
     end;
@@ -907,6 +908,7 @@ begin
   except
     on E:Exception do
     begin
+      WriteLog(pchar('操作者:'+operator_name+'。函数ScalarSQLCmd失败:'+E.Message+'。错误的SQL:'+ASQL));
       MESSAGEDLG('函数ScalarSQLCmd失败:'+E.Message+'。错误的SQL:'+ASQL,mtError,[mbOK],0);
       Qry.Free;
       Conn.Free;
