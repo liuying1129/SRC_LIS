@@ -2192,7 +2192,7 @@ begin
             'min_value as 最小值,max_value as 最大值,'+
             'unit as 单位,'+
             'pkcombin_id as 组合项目号,itemid as 项目编号,valueid as 唯一编号,IsEdited as 修改标志 '+
-            ' from chk_valu where pkunid=:pkunid and issure=1 '+
+            ' from chk_valu WITH(NOLOCK) where pkunid=:pkunid and issure=1 '+
             ' order by pkcombin_id,printorder ';
 
   ADO_dtl.Close;
