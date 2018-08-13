@@ -3127,7 +3127,7 @@ AS
 	  --if (@sex='')or(@sex is null) set @sex='男'--20130707注释
 	
 	  DECLARE cur_chk_valu CURSOR FOR 
-	    select valueid,itemid from chk_valu where pkunid=@unid
+	    select valueid,itemid from chk_valu WITH(NOLOCK) where pkunid=@unid
 	
 	    DECLARE @valueid int,@itemid varchar(50)
 	
@@ -3443,17 +3443,17 @@ AS
     --set @CommaPos=charindex(',',@itemvalue)
     --if @CommaPos<>0 set @itemvalue=left(@itemvalue,@CommaPos-1)
 
-    if exists(select 1 from chk_valu where pkunid=@pkunid and itemid=@itemid and valueid<>@valueid)--//病人检验结果集中已有该检验项目,则取该结果
-      select @itemvalue=isnull(itemvalue,'') from chk_valu where pkunid=@pkunid and itemid=@itemid and valueid<>@valueid
+    if exists(select 1 from chk_valu WITH(NOLOCK) where pkunid=@pkunid and itemid=@itemid and valueid<>@valueid)--//病人检验结果集中已有该检验项目,则取该结果
+      select @itemvalue=isnull(itemvalue,'') from chk_valu WITH(NOLOCK) where pkunid=@pkunid and itemid=@itemid and valueid<>@valueid
 
     if @itemvalue<>'' update chk_valu set itemvalue=@itemvalue where valueid=@valueid
   end
 
   if isnull(@histogram,'')=''--如果插入了直方图(绘点),则不update,如从仪器传入
   begin
-    if exists(select 1 from chk_valu where pkunid=@pkunid and itemid=@itemid and valueid<>@valueid and isnull(histogram,'')<>'')--//病人检验结果集中已有该检验项目,则取该结果
+    if exists(select 1 from chk_valu WITH(NOLOCK) where pkunid=@pkunid and itemid=@itemid and valueid<>@valueid and isnull(histogram,'')<>'')--//病人检验结果集中已有该检验项目,则取该结果
     begin
-      select @histogram=histogram from chk_valu where pkunid=@pkunid and itemid=@itemid and valueid<>@valueid and isnull(histogram,'')<>''
+      select @histogram=histogram from chk_valu WITH(NOLOCK) where pkunid=@pkunid and itemid=@itemid and valueid<>@valueid and isnull(histogram,'')<>''
       update chk_valu set histogram=@histogram where valueid=@valueid
     end
   end  
@@ -3462,12 +3462,12 @@ AS
   --【不能在 'inserted' 表和 'deleted' 表中使用 text、ntext 或 image 列】故只能在源表(chk_valu)中给@Photo赋值
   if exists(select 1 from chk_valu where valueid=@valueid and Photo is null)--如果插入了图像,则不update,如从仪器传入
   begin
-    if exists(select 1 from chk_valu where pkunid=@pkunid and itemid=@itemid and valueid<>@valueid and Photo is not null)
+    if exists(select 1 from chk_valu WITH(NOLOCK) where pkunid=@pkunid and itemid=@itemid and valueid<>@valueid and Photo is not null)
     begin
       --这种写法SQL SERVER 2008可行,SQL SERVER 2000报错【在这一子查询或聚合表达式中,text,ntext 和 image 数据类型无效】
       --update chk_valu set Photo=(select top 1 Photo from chk_valu where pkunid=@pkunid and itemid=@itemid and valueid<>@valueid and Photo is not null) 
       --改用下面的写法
-      update chk_valu set Photo=tmpT1.Photo FROM (select top 1 Photo from chk_valu where pkunid=@pkunid and itemid=@itemid and valueid<>@valueid and Photo is not null) tmpT1
+      update chk_valu set Photo=tmpT1.Photo FROM (select top 1 Photo from chk_valu WITH(NOLOCK) where pkunid=@pkunid and itemid=@itemid and valueid<>@valueid and Photo is not null) tmpT1
       where valueid=@valueid
     end
   end  
