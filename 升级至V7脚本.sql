@@ -3064,12 +3064,12 @@ from
     CV.pkunid
 	,CV.pkcombin_id
 	,count(distinct itemid) as itemNum  
-	from chk_valu CV,
+	from chk_valu CV WITH(NOLOCK),
 	(
 	  SELECT 
 	  pkunid
 	  ,pkcombin_id    
-	  FROM chk_valu
+	  FROM chk_valu WITH(NOLOCK)
 	  where issure='1'
 	  and Surem2 is not null and Surem2<>'' and Surem2<>'-1' --±íÊ¾É¨ÂëµÄ
 	  group by pkunid,pkcombin_id
