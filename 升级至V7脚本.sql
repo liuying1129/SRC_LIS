@@ -3693,7 +3693,7 @@ AS
   if (@Surem2='') return
   if (cast(@Surem2 AS int)<=0) return
 
-  if exists(select * from chk_valu where Surem2=@Surem2 and issure='1')
+  if exists(select 1 from chk_valu where Surem2=@Surem2 and issure='1')
     update chk_valu_his set itemvalue=1 where cast(valueid as varchar)=@Surem2 and isnull(itemvalue,'')<>'1'
 
 GO
@@ -3746,7 +3746,7 @@ AS
       continue
     end
 
-    if exists(select * from chk_valu where Surem2=@Surem2 and issure='1')
+    if exists(select 1 from chk_valu where Surem2=@Surem2 and issure='1')
     begin
       update chk_valu_his set itemvalue=1 where cast(valueid as varchar)=@Surem2 and isnull(itemvalue,'')<>'1'
     end else 
@@ -3908,7 +3908,7 @@ AS
 
   if (isnull(@issure_Old,'')<>'1' or isnull(@itemvalue_Old,'')='') and (isnull(@issure,'')<>'1' or isnull(@itemvalue,'')='') return--表示修改前与修改后都是无效结果
 
-  if exists (select * from chk_valu where pkunid=@pkunid and issure='1' and isnull(itemvalue,'')<>'')
+  if exists (select 1 from chk_valu where pkunid=@pkunid and issure='1' and isnull(itemvalue,'')<>'')
   --该select选出的记录包含修改之后issure='1' and isnull(itemvalue,'')<>''的情况
     insert into pix_tran (pkunid,Reserve1,Reserve2,OpType) values (@pkunid,@his_mzorzy,'Class_Result','Add')
   else insert into pix_tran (pkunid,Reserve1,Reserve2,OpType) values (@pkunid,@his_mzorzy,'Class_Result','Del')
