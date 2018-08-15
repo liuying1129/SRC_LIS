@@ -849,7 +849,7 @@ begin
           ' cv.unit as 单位,min(cv.printorder) as 打印编号,'+
           ' min(cv.pkcombin_id) as 组合项目号, '+
           ' cv.Reserve1,cv.Reserve2,cv.Dosage1,cv.Dosage2,cv.Reserve5,cv.Reserve6,cv.Reserve7,cv.Reserve8,cv.Reserve9,cv.Reserve10 '+
-          ' from chk_valu cv '+
+          ' from chk_valu cv WITH(NOLOCK) '+
           ' inner join chk_con cc on cv.pkunid=cc.unid '+
           ' left join clinicchkitem cci on cci.itemid=cv.itemid '+
           ' where Patientname='''+sPatientname+''' and isnull(sex,'''')='''+sSex+''' and dbo.uf_GetAgeReal(age)=dbo.uf_GetAgeReal('''+sAge+
@@ -866,7 +866,7 @@ begin
           ' unit as 单位,min(printorder) as 打印编号,'+
           ' min(pkcombin_id) as 组合项目号, '+
           ' Reserve1,Reserve2,Dosage1,Dosage2,Reserve5,Reserve6,Reserve7,Reserve8,Reserve9,Reserve10 '+
-          ' from chk_valu where pkunid='+sUnid+
+          ' from chk_valu WITH(NOLOCK) where pkunid='+sUnid+
           ' and chk_valu.issure=1 and ltrim(rtrim(isnull(itemvalue,'''')))<>'''' '+
           ' group by itemid,name,english_name,itemvalue,min_value,max_value,unit, '+
           ' Reserve1,Reserve2,Dosage1,Dosage2,Reserve5,Reserve6,Reserve7,Reserve8,Reserve9,Reserve10 '+
@@ -2106,7 +2106,7 @@ begin
     ' dbo.uf_Reference_Value_B1(cv.min_value,cv.max_value) as 前段参考范围,dbo.uf_Reference_Value_B2(cv.min_value,cv.max_value) as 后段参考范围,'+
     ' cv.Reserve1,cv.Reserve2,cv.Dosage1,cv.Dosage2,cv.Reserve5,cv.Reserve6,cv.Reserve7,cv.Reserve8,cv.Reserve9,cv.Reserve10, '+
     ' cv.itemid as 项目代码 '+//cci.Reserve3,
-    ' from chk_valu cv '+//combinitem,从组合项目表取组合项目名称，有可能代码变了，取不到名称了
+    ' from chk_valu cv WITH(NOLOCK) '+//combinitem,从组合项目表取组合项目名称，有可能代码变了，取不到名称了
     ' inner join chk_con cc on cv.pkunid=cc.unid '+
     ' left join clinicchkitem cci on cci.itemid=cv.itemid '+
     ' where Patientname='''+sPatientname+''' and isnull(sex,'''')='''+sSex+''' and dbo.uf_GetAgeReal(age)=dbo.uf_GetAgeReal('''+sAge+
@@ -2120,7 +2120,7 @@ begin
     ' dbo.uf_Reference_Value_B1(cv.min_value,cv.max_value) as 前段参考范围,dbo.uf_Reference_Value_B2(cv.min_value,cv.max_value) as 后段参考范围,'+
     ' cv.Reserve1,cv.Reserve2,cv.Dosage1,cv.Dosage2,cv.Reserve5,cv.Reserve6,cv.Reserve7,cv.Reserve8,cv.Reserve9,cv.Reserve10, '+
     ' cv.itemid as 项目代码 '+//cci.Reserve3,
-    ' from chk_valu cv '+
+    ' from chk_valu cv WITH(NOLOCK) '+
     ' left join clinicchkitem cci on cci.itemid=cv.itemid '+
     ' where cv.pkunid='+sUnid+
     ' and cv.issure=1 and ltrim(rtrim(isnull(itemvalue,'''')))<>'''' '+
@@ -2192,7 +2192,7 @@ begin
             'min_value as 最小值,max_value as 最大值,'+
             'unit as 单位,'+
             'pkcombin_id as 组合项目号,itemid as 项目编号,valueid as 唯一编号,IsEdited as 修改标志 '+
-            ' from chk_valu WITH(NOLOCK) where pkunid=:pkunid and issure=1 '+
+            ' from chk_valu where pkunid=:pkunid and issure=1 '+
             ' order by pkcombin_id,printorder ';
 
   ADO_dtl.Close;
@@ -3454,7 +3454,7 @@ begin
   begin
     View.Visible:=false;
     strsqlPrint:='select Reserve8,itemValue,Min_Value,Max_Value '+
-       ' from chk_valu '+
+       ' from chk_valu WITH(NOLOCK) '+
        ' where pkunid=:pkunid '+
        ' and Reserve8 is not null '+
        ' and issure=1 ';
@@ -3497,7 +3497,7 @@ begin
     strEnglishName:=(View as TfrChartView).Name;
     strEnglishName:=stringreplace(strEnglishName,'Chart','',[rfIgnoreCase]);
     strsqlPrint:='select top 1 histogram,Dosage1 '+
-       ' from chk_valu '+
+       ' from chk_valu WITH(NOLOCK) '+
        ' where pkunid=:pkunid '+
        ' and english_name=:english_name '+
        ' and isnull(histogram,'''')<>'''' '+
@@ -3533,7 +3533,7 @@ begin
     strEnglishName:=(View as TfrPictureView).Name;
     strEnglishName:=stringreplace(strEnglishName,'Picture','',[rfIgnoreCase]);
     strsqlPrint:='select top 1 Photo,english_name '+
-       ' from chk_valu '+
+       ' from chk_valu WITH(NOLOCK) '+
        ' where pkunid=:pkunid '+
        //' and english_name=:english_name '+
        ' and itemid=:itemid '+//edit by liuying 20110414
