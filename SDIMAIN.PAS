@@ -1613,18 +1613,19 @@ begin
   adotemp2.Parameters.ParamByName('OldAddress').Value:=pOldAddress ; //
   adotemp2.Parameters.ParamByName('Address').Value:=pAddress ; //
   adotemp2.Parameters.ParamByName('Telephone').Value:=pTelephone ; //
-  Try
-    adotemp2.Open ;
-    ValetudinarianInfoId:=adotemp2.fieldbyname('Insert_Identity').AsInteger;
-  except
-    Application.MessageBox('增加新记录失败!','系统提示',MB_ICONWARNING);
-    adotemp2.Free;
-    result:=false;
-    exit;
-  End;
 
-  adotemp2.Free;
-  result:=true;
+  Try
+    Try
+      adotemp2.Open ;
+      ValetudinarianInfoId:=adotemp2.fieldbyname('Insert_Identity').AsInteger;
+      result:=true;
+    except
+      Application.MessageBox('增加新记录失败!','系统提示',MB_ICONWARNING);
+      result:=false;
+    End;
+  finally
+    adotemp2.Free;
+  end;    
 end;
 
 function TSDIAppForm.UpdateValetudinarianBasicInfo(Punid:integer;const PLSH,pcheckid,Ppatientname,Psex,
