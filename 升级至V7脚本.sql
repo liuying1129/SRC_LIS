@@ -3020,8 +3020,9 @@ GO
 
 CREATE VIEW view_Show_chk_Con_His
 AS
-select cch.* from chk_con_his cch 
-where (SELECT count(*) FROM chk_valu_his cvh WHERE cvh.pkunid=cch.unid and isnull(cvh.itemvalue,'')<>'1')>0
+--拆分、合并时出现问题,怀疑死锁造成.该视图仅用于在LIS中根据试管条件查询申请单,故脏数据不会被用到
+select cch.* from chk_con_his cch WITH(NOLOCK)
+where (SELECT count(*) FROM chk_valu_his cvh WITH(NOLOCK) WHERE cvh.pkunid=cch.unid and isnull(cvh.itemvalue,'')<>'1')>0
 --where cch.unid in(
 --select cvh.pkunid from chk_valu_his cvh
 --where not exists 
