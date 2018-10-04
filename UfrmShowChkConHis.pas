@@ -52,7 +52,6 @@ type
       Shift: TShiftState);
   private
     { Private declarations }
-    //pPQuery:string;
     procedure WriteProfile;
     procedure Query_Chk_Valu_His(Aadoquery:TAdoquery;const Achk_con_his_unid:integer);
     function Add_Chk_Con_Valu_His(const AChk_Con_His_Unid:integer;const ACheckId:string):integer;
@@ -69,7 +68,7 @@ implementation
 uses UDM, SDIMAIN;
 
 var
-  {ArCheckBoxValueCon,}ArCheckBoxValue:TArCheckBoxValue;
+  ArCheckBoxValue:TArCheckBoxValue;
   ffrmShowChkConHis:TfrmShowChkConHis;           {本地的窗体变量,供关闭窗体释放内存时调用}
 {$R *.dfm}
 
@@ -143,14 +142,6 @@ begin
   ServerDate:=GetServerDate(DM.ADOConnection1);
   labelededit1.Text:=GetMaxCheckId(SDIAppForm.cbxConnChar.Text,ServerDate);
   //==========
-
-  {if pPQuery<>'' then
-  begin
-    ADOQuery1.Close;
-    ADOQuery1.SQL.Clear;
-    ADOQuery1.SQL.Text:=pPQuery;
-    ADOQuery1.Open;
-  end;//}
 end;
 
 procedure TfrmShowChkConHis.FormCreate(Sender: TObject);
@@ -160,57 +151,18 @@ begin
 end;
 
 procedure TfrmShowChkConHis.Query_Chk_Valu_His(Aadoquery:TAdoquery;const Achk_con_his_unid:integer);
-//var
-  //sqlstr1:string;
-  //adotemp22:tadoquery;
-  //i,j:integer;
 begin
-  //if not ADOQuery1.Active then exit;
-  //if ADOQuery1.RecordCount=0 then exit;
-  
-  //sqlstr1:='';
-  //if CheckBox2.Checked then
-  //  sqlstr1:='inner join combinitem on combinitem.id=cvh.pkcombin_id and combinitem.dept_DfValue='''+SDIAppForm.cbxConnChar.Text+''' ';
-
   Aadoquery.Close;
   Aadoquery.SQL.Clear;
                       //1 as 选择,默认是选择的.1--选择,非1--未选
   Aadoquery.SQL.Text:='select cvh.pkcombin_id as 组合项目代码,cvh.combin_name as 组合项目名称,IfSel as 选择,combinitem.dept_DfValue as 默认工作组,combinitem.specimentype_DfValue as 默认样本类型,combinitem.itemtype as 样本分隔符,cvh.TakeSampleTime as 采样时间,'+
                       ' cvh.* '+
                       ' from chk_valu_his cvh '+
-                      //sqlstr1+
                       ' left join combinitem on combinitem.id=cvh.pkcombin_id '+
                       ' where '+
-                      'pkunid='+inttostr(Achk_con_his_unid)+//ADOQuery1.fieldbyname('唯一编号').AsString+
-                      //' and not exists '+
-                      //'( '+
-                      //'select 1 from view_Chk_Con_All vcca '+
-                      //'inner join view_chk_valu_All vcva on vcca.unid=vcva.pkunid '+
-                      //'and cvh.pkunid=vcca.his_unid and cvh.pkcombin_id=vcva.pkcombin_id and vcva.issure=''1'' '+
-                      //') ';
+                      'pkunid='+inttostr(Achk_con_his_unid)+
                       ' and isnull(cvh.itemvalue,'''')<>''1'' ';
   Aadoquery.Open;
-
-  {adotemp22:=tadoquery.Create(nil);
-  adotemp22.clone(ADOQuery2);
-  ArCheckBoxValue:=nil;
-  setlength(ArCheckBoxValue,adotemp22.RecordCount);
-  i:=0;
-  while not adotemp22.Eof do
-  begin
-    for j :=0  to 1 do
-    begin
-      //该二维数组中一定要有个字段标识唯一性的
-      if j=0 then
-      begin
-        if (CheckBox2.Checked)and(adotemp22.fieldbyname('dept_DfValue').AsString<>SDIAppForm.cbxConnChar.Text) then ArCheckBoxValue[I,j]:=0
-          else ArCheckBoxValue[I,j]:=adotemp22.FieldByName('选择').AsInteger;
-      end else ArCheckBoxValue[I,j]:=adotemp22.FieldByName('VALUEID').AsInteger;
-    end;
-    adotemp22.Next;
-    inc(i);
-  end;
-  adotemp22.Free;//}
 end;
 
 procedure TfrmShowChkConHis.ADOQuery1AfterScroll(DataSet: TDataSet);
@@ -402,9 +354,7 @@ end;
 procedure TfrmShowChkConHis.BitBtn2Click(Sender: TObject);
 VAR
   ValetudinarianInfoId:integer;
-  //sCheckId:string;
-  i{,j}:integer;
-  //ServerDate:tdate;
+  i:integer;
   ifSelect:boolean;
   adotemp22:tadoquery;
 begin
@@ -414,15 +364,12 @@ begin
   (Sender as TBitBtn).Enabled:=false;//防止重复"确定"
 
   ValetudinarianInfoId:=0;
-  //j:=0;
-  //ServerDate:=GetServerDate(DM.ADOConnection1);
 
   adotemp22:=tadoquery.Create(nil);
   adotemp22.clone(ADOQuery1);
   while not adotemp22.Eof do
   begin
     ifSelect:=false;
-    //for i :=0  to ADOQuery1.RecordCount-1 do//循环ArCheckBoxValue
     for i :=LOW(ArCheckBoxValue)  to HIGH(ArCheckBoxValue) do//循环ArCheckBoxValue
     begin
       if (ArCheckBoxValue[i,1]=adotemp22.fieldbyname('唯一编号').AsInteger)and(ArCheckBoxValue[i,0]=1) then
@@ -430,28 +377,14 @@ begin
         ifSelect:=true;
         break;
       end;
-    end;//}
+    end;
     if not ifSelect then begin adotemp22.Next;continue;end;//如果未选择，则跳过
-    //if not adotemp22.FieldByName('选择').AsBoolean then begin adotemp22.Next;continue;end;//如果未选择，则跳过
 
-    //if j=0 then sCheckId:=LabeledEdit1.Text else sCheckId:=GetMaxCheckId(SDIAppForm.cbxConnChar.Text,ServerDate);
     ValetudinarianInfoId:=Add_Chk_Con_Valu_His(adotemp22.fieldbyname('唯一编号').AsInteger,'');
-    //showmessage(ADOQuery1.fieldbyname('唯一编号').AsString);
-    //inc(j);
 
     adotemp22.next;
   end;
   adotemp22.free;
-
-  //ADOQuery1.First;
-  //while not ADOQuery1.Eof do
-  //begin
-  //  if i=0 then sCheckId:=LabeledEdit1.Text else sCheckId:=GetMaxCheckId(SDIAppForm.cbxConnChar.Text,ServerDate);
-  //  ValetudinarianInfoId:=Add_Chk_Con_Valu_His(sCheckId);
-  //  inc(i);
-  //  ADOQuery1.Next;
-  //end;
-
 
   if CheckBox3.Checked then close;
 
@@ -468,42 +401,18 @@ const
   CtrlState: array[Boolean] of Integer = (DFCS_BUTTONCHECK, DFCS_BUTTONCHECK or DFCS_CHECKED);
 var
   checkBox_check:boolean;
-  //iUNID,i:INTEGER;
 begin
   if Column.Field.FieldName='选择' then
   begin
     (sender as TDBGrid).Canvas.FillRect(Rect);
-    //checkBox_check:=false;
     checkBox_check:=(Sender AS TDBGRID).DataSource.DataSet.FieldByName('选择').AsBoolean;
-    {iUNID:=(Sender AS TDBGRID).DataSource.DataSet.FieldByName('VALUEID').AsInteger;
-    for i :=0  to (Sender AS TDBGRID).DataSource.DataSet.RecordCount-1 do
-    begin
-      if ArCheckBoxValue[i,1]=iUNID then
-      begin
-        checkBox_check:=ArCheckBoxValue[i,0]=1;
-        break;
-      end;
-    end;//}
     DrawFrameControl((sender as TDBGrid).Canvas.Handle,Rect, DFC_BUTTON, CtrlState[checkBox_check]);
   end else (sender as TDBGrid).DefaultDrawColumnCell(Rect,DataCol,Column,State);
 end;
 
 procedure TfrmShowChkConHis.DBGrid2CellClick(Column: TColumn);
-//var
-  //iUNID,i:INTEGER;
 begin
   if Column.Field.FieldName <>'选择' then exit;
-
-  {iUNID:=DBGrid2.DataSource.DataSet.FieldByName('VALUEID').AsInteger;
-  for i :=0  to DBGrid2.DataSource.DataSet.RecordCount-1 do
-  begin
-    if ArCheckBoxValue[i,1]=iUNID then
-    begin
-      ArCheckBoxValue[i,0]:=ifThen(ArCheckBoxValue[i,0]=1,0,1);
-      DBGrid2.Refresh;//调用DBGrid1DrawColumnCell事件
-      break;
-    end;
-  end;//}
 
   ADOQuery2.Edit;
   ADOQuery2.FieldByName('选择').AsBoolean:=not ADOQuery2.FieldByName('选择').AsBoolean;
@@ -605,7 +514,6 @@ begin
   begin
     (sender as TDBGrid).Canvas.FillRect(Rect);
     checkBox_check:=false;
-    //checkBox_check:=ADOQuery1.fieldbyname('选择').AsBoolean;
     iUNID:=(Sender AS TDBGRID).DataSource.DataSet.FieldByName('唯一编号').AsInteger;
     for i :=0  to (Sender AS TDBGRID).DataSource.DataSet.RecordCount-1 do
     begin
@@ -614,7 +522,7 @@ begin
         checkBox_check:=ArCheckBoxValue[i,0]=1;
         break;
       end;
-    end;//}
+    end;
     DrawFrameControl((sender as TDBGrid).Canvas.Handle,Rect, DFC_BUTTON, CtrlState[checkBox_check]);
   end else (sender as TDBGrid).DefaultDrawColumnCell(Rect,DataCol,Column,State);
 end;
