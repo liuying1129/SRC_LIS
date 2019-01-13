@@ -562,7 +562,7 @@ begin
   //本机有网络，但连接HTTP服务很慢时，如不加超时，会一直挂起
   //本机无网络，就算不加超时也没问题
   IdHTTP_Tmp1.ReadTimeout:=2*1000;//毫秒
-  IdHTTP_Tmp1.ConnectTimeout:=2*1000;//Connect超时设置//indy9无该属性.故要安装indy10
+  //IdHTTP_Tmp1.ConnectTimeout:=2*1000;//Connect超时设置//indy9无该属性.故要安装indy10
   RespData:=TStringStream.Create('');
 
   if trim(BASE_URL)<>'' then
