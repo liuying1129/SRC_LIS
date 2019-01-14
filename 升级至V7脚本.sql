@@ -1463,7 +1463,7 @@ RETURNS varchar(500) AS
 BEGIN 
   declare @ret varchar(500)
   set @ret=''
-  select @ret=@ret+','+Urine1+Urine2 from chk_con_his cch,chk_valu_his cvh WHERE cch.unid=cvh.pkunid and cch.unid=@chk_con_his_unid group by Urine1,Urine2
+  select @ret=@ret+','+Urine1+Urine2 from chk_valu_his cvh WHERE cvh.pkunid=@chk_con_his_unid group by Urine1,Urine2
   set @ret=stuff(@ret,1,1,'')
 
   return @ret
