@@ -3102,7 +3102,7 @@ SET ANSI_NULLS ON
 GO
 
 ---------------触发器相关操作---------------
-
+/*定时任务实现
 SET QUOTED_IDENTIFIER ON 
 GO
 SET ANSI_NULLS ON 
@@ -3230,7 +3230,7 @@ GO
 SET QUOTED_IDENTIFIER OFF 
 GO
 SET ANSI_NULLS ON 
-GO
+GO*/
 
 --触发器TRIGGER_chk_con_CKZ_Update创建脚本
 SET QUOTED_IDENTIFIER ON 
