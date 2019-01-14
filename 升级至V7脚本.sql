@@ -1463,7 +1463,7 @@ RETURNS varchar(500) AS
 BEGIN 
   declare @ret varchar(500)
   set @ret=''
-  select @ret=@ret+','+Urine1+Urine2 from chk_valu_his cvh WHERE cvh.pkunid=@chk_con_his_unid group by Urine1,Urine2
+  select @ret=@ret+','+isnull(Urine1,'')+isnull(Urine2,'') from chk_valu_his cvh WHERE cvh.pkunid=@chk_con_his_unid group by Urine1,Urine2
   set @ret=stuff(@ret,1,1,'')
 
   return @ret
@@ -3102,6 +3102,135 @@ SET ANSI_NULLS ON
 GO
 
 ---------------触发器相关操作---------------
+
+SET QUOTED_IDENTIFIER ON 
+GO
+SET ANSI_NULLS ON 
+GO
+
+if exists (select name from sysobjects where name='TRIGGER_chk_valu_his_Insert_Barcode' and type='TR')
+  drop TRIGGER TRIGGER_chk_valu_his_Insert_Barcode
+go
+
+CREATE TRIGGER [dbo].[TRIGGER_chk_valu_his_Insert_Barcode] ON [dbo].[chk_valu_his]
+FOR INSERT
+AS
+  --越秀中医-北京标软,将chk_valu_his中的条码号回写到chk_con_his,提升扫码速度
+  declare @pkunid int,@Urine1 varchar(15),@Urine2 varchar(15),@newBarcode varchar(50)
+  SELECT @pkunid=pkunid,@Urine1=Urine1,@Urine2=Urine2 FROM Inserted
+
+  if isnull(@pkunid,'')='' return
+	    
+  select @newBarcode=dbo.uf_Peis_Br_Barcode(@pkunid)
+  if isnull(@newBarcode,'')=''
+  begin
+    set @newBarcode=''
+  end else
+  begin
+    set @newBarcode=','+@newBarcode+','
+  end
+
+  update chk_con_his set TjJianYan=@newBarcode where Unid=@pkunid and isnull(TjJianYan,'')<>isnull(@newBarcode,'')
+
+GO
+SET QUOTED_IDENTIFIER OFF 
+GO
+SET ANSI_NULLS ON 
+GO
+
+SET QUOTED_IDENTIFIER ON 
+GO
+SET ANSI_NULLS ON 
+GO
+
+if exists (select name from sysobjects where name='TRIGGER_chk_valu_his_Del_Barcode' and type='TR')
+  drop TRIGGER TRIGGER_chk_valu_his_Del_Barcode
+go
+
+CREATE TRIGGER [dbo].[TRIGGER_chk_valu_his_Del_Barcode] ON [dbo].[chk_valu_his]
+FOR DELETE
+AS
+  --越秀中医-北京标软,将chk_valu_his中的条码号回写到chk_con_his,提升扫码速度
+  declare @pkunid int,@Urine1 varchar(15),@Urine2 varchar(15)
+ 
+  --如果批量删除,业务上pkunid也一样,故不需要游标
+  SELECT @pkunid=pkunid,@Urine1=Urine1,@Urine2=Urine2 FROM Deleted
+
+  if isnull(@pkunid,'')='' return
+        
+  declare @newBarcode varchar(50)
+  select @newBarcode=dbo.uf_Peis_Br_Barcode(@pkunid)
+  if isnull(@newBarcode,'')=''
+  begin
+    set @newBarcode=''
+  end else
+  begin
+    set @newBarcode=','+@newBarcode+','
+  end
+
+  update chk_con_his set TjJianYan=@newBarcode where Unid=@pkunid and isnull(TjJianYan,'')<>isnull(@newBarcode,'')
+
+GO
+SET QUOTED_IDENTIFIER OFF 
+GO
+SET ANSI_NULLS ON 
+GO
+
+SET QUOTED_IDENTIFIER ON 
+GO
+SET ANSI_NULLS ON 
+GO
+
+if exists (select name from sysobjects where name='TRIGGER_chk_valu_his_Update_Barcode' and type='TR')
+  drop TRIGGER TRIGGER_chk_valu_his_Update_Barcode
+go
+
+CREATE TRIGGER [dbo].[TRIGGER_chk_valu_his_Update_Barcode] ON [dbo].[chk_valu_his]
+FOR Update
+AS
+  --越秀中医-北京标软,将chk_valu_his中的条码号回写到chk_con_his,提升扫码速度
+  --如果批量修改,业务上pkunid会一起修改成另一个值,故不需要游标
+  declare @pkunid int,@Urine1 varchar(15),@Urine2 varchar(15)  
+  SELECT @pkunid=pkunid,@Urine1=Urine1,@Urine2=Urine2 FROM Inserted
+
+  declare @pkunid_old int,@Urine1_old varchar(15),@Urine2_old varchar(15)   
+  SELECT @pkunid_old=pkunid,@Urine1_old=Urine1,@Urine2_old=Urine2 FROM deleted
+
+  if isnull(@pkunid,'')=isnull(@pkunid_old,'') and isnull(@Urine1_old,'')=isnull(@Urine1,'') and isnull(@Urine2_old,'')=isnull(@Urine2,'') return
+      
+  if @pkunid is not null
+  begin      
+    declare @newBarcode_insert varchar(50)
+	select @newBarcode_insert=dbo.uf_Peis_Br_Barcode(@pkunid)
+	if isnull(@newBarcode_insert,'')=''
+	begin
+	  set @newBarcode_insert=''
+	end else
+	begin
+	  set @newBarcode_insert=','+@newBarcode_insert+','
+	end
+	update chk_con_his set TjJianYan=@newBarcode_insert where Unid=@pkunid and isnull(TjJianYan,'')<>isnull(@newBarcode_insert,'')
+  end
+  
+  if isnull(@pkunid,'')<>isnull(@pkunid_old,'') and @pkunid_old is not null
+  begin
+    declare @newBarcode_delete varchar(50)
+	select @newBarcode_delete=dbo.uf_Peis_Br_Barcode(@pkunid_old)
+	if isnull(@newBarcode_delete,'')=''
+	begin
+	  set @newBarcode_delete=''
+	end else
+	begin
+	  set @newBarcode_delete=','+@newBarcode_delete+','
+	end
+	update chk_con_his set TjJianYan=@newBarcode_delete where Unid=@pkunid and isnull(TjJianYan,'')<>isnull(@newBarcode_delete,'')
+  end	
+
+GO
+SET QUOTED_IDENTIFIER OFF 
+GO
+SET ANSI_NULLS ON 
+GO
 
 --触发器TRIGGER_chk_con_CKZ_Update创建脚本
 SET QUOTED_IDENTIFIER ON 
