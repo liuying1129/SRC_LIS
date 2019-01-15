@@ -1545,45 +1545,6 @@ GO
 SET ANSI_NULLS ON 
 GO
 
---20160907获取指定病人的组合项目串。用于集中打印时界面显示
---if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[uf_GetPatientCombName]') and xtype in (N'FN', N'IF', N'TF'))
---drop function [dbo].[uf_GetPatientCombName]
---GO
-
---SET QUOTED_IDENTIFIER ON 
---GO
---SET ANSI_NULLS ON 
---GO
-
---create FUNCTION uf_GetPatientCombName
---(
---  @ifCompleted int,--0:未结束的(chk_valu);1:已结束的(chk_valu_bak)
---  @Unid int --病人的UNID
---)  
---RETURNS varchar(500) AS  
---BEGIN 
---  declare @ret varchar(500)
---  set @ret=''
---  if @ifCompleted=1 
---    select @ret=@ret+','+combin_Name from chk_valu_bak
---      WHERE PkUnid=@Unid and issure=1 and ltrim(rtrim(isnull(itemvalue,'')))<>'' 
---      GROUP BY combin_Name 
---  else 
---    select @ret=@ret+','+combin_Name from chk_valu 
---      WHERE PkUnid=@Unid and issure=1 and ltrim(rtrim(isnull(itemvalue,'')))<>'' 
---      GROUP BY combin_Name 
-    
---  set @ret=stuff(@ret,1,1,'')
-
---  return @ret
---END
-
---GO
---SET QUOTED_IDENTIFIER OFF 
---GO
---SET ANSI_NULLS ON 
---GO
-
 --20150808获取最新流水号
 if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[uf_GetNextSerialNum]') and xtype in (N'FN', N'IF', N'TF'))
 drop function [dbo].[uf_GetNextSerialNum]
@@ -3102,135 +3063,6 @@ SET ANSI_NULLS ON
 GO
 
 ---------------触发器相关操作---------------
-/*定时任务实现
-SET QUOTED_IDENTIFIER ON 
-GO
-SET ANSI_NULLS ON 
-GO
-
-if exists (select name from sysobjects where name='TRIGGER_chk_valu_his_Insert_Barcode' and type='TR')
-  drop TRIGGER TRIGGER_chk_valu_his_Insert_Barcode
-go
-
-CREATE TRIGGER [dbo].[TRIGGER_chk_valu_his_Insert_Barcode] ON [dbo].[chk_valu_his]
-FOR INSERT
-AS
-  --越秀中医-北京标软,将chk_valu_his中的条码号回写到chk_con_his,提升扫码速度
-  declare @pkunid int,@Urine1 varchar(15),@Urine2 varchar(15),@newBarcode varchar(50)
-  SELECT @pkunid=pkunid,@Urine1=Urine1,@Urine2=Urine2 FROM Inserted
-
-  if isnull(@pkunid,'')='' return
-	    
-  select @newBarcode=dbo.uf_Peis_Br_Barcode(@pkunid)
-  if isnull(@newBarcode,'')=''
-  begin
-    set @newBarcode=''
-  end else
-  begin
-    set @newBarcode=','+@newBarcode+','
-  end
-
-  update chk_con_his set TjJianYan=@newBarcode where Unid=@pkunid and isnull(TjJianYan,'')<>isnull(@newBarcode,'')
-
-GO
-SET QUOTED_IDENTIFIER OFF 
-GO
-SET ANSI_NULLS ON 
-GO
-
-SET QUOTED_IDENTIFIER ON 
-GO
-SET ANSI_NULLS ON 
-GO
-
-if exists (select name from sysobjects where name='TRIGGER_chk_valu_his_Del_Barcode' and type='TR')
-  drop TRIGGER TRIGGER_chk_valu_his_Del_Barcode
-go
-
-CREATE TRIGGER [dbo].[TRIGGER_chk_valu_his_Del_Barcode] ON [dbo].[chk_valu_his]
-FOR DELETE
-AS
-  --越秀中医-北京标软,将chk_valu_his中的条码号回写到chk_con_his,提升扫码速度
-  declare @pkunid int,@Urine1 varchar(15),@Urine2 varchar(15)
- 
-  --如果批量删除,业务上pkunid也一样,故不需要游标
-  SELECT @pkunid=pkunid,@Urine1=Urine1,@Urine2=Urine2 FROM Deleted
-
-  if isnull(@pkunid,'')='' return
-        
-  declare @newBarcode varchar(50)
-  select @newBarcode=dbo.uf_Peis_Br_Barcode(@pkunid)
-  if isnull(@newBarcode,'')=''
-  begin
-    set @newBarcode=''
-  end else
-  begin
-    set @newBarcode=','+@newBarcode+','
-  end
-
-  update chk_con_his set TjJianYan=@newBarcode where Unid=@pkunid and isnull(TjJianYan,'')<>isnull(@newBarcode,'')
-
-GO
-SET QUOTED_IDENTIFIER OFF 
-GO
-SET ANSI_NULLS ON 
-GO
-
-SET QUOTED_IDENTIFIER ON 
-GO
-SET ANSI_NULLS ON 
-GO
-
-if exists (select name from sysobjects where name='TRIGGER_chk_valu_his_Update_Barcode' and type='TR')
-  drop TRIGGER TRIGGER_chk_valu_his_Update_Barcode
-go
-
-CREATE TRIGGER [dbo].[TRIGGER_chk_valu_his_Update_Barcode] ON [dbo].[chk_valu_his]
-FOR Update
-AS
-  --越秀中医-北京标软,将chk_valu_his中的条码号回写到chk_con_his,提升扫码速度
-  --如果批量修改,业务上pkunid会一起修改成另一个值,故不需要游标
-  declare @pkunid int,@Urine1 varchar(15),@Urine2 varchar(15)  
-  SELECT @pkunid=pkunid,@Urine1=Urine1,@Urine2=Urine2 FROM Inserted
-
-  declare @pkunid_old int,@Urine1_old varchar(15),@Urine2_old varchar(15)   
-  SELECT @pkunid_old=pkunid,@Urine1_old=Urine1,@Urine2_old=Urine2 FROM deleted
-
-  if isnull(@pkunid,'')=isnull(@pkunid_old,'') and isnull(@Urine1_old,'')=isnull(@Urine1,'') and isnull(@Urine2_old,'')=isnull(@Urine2,'') return
-      
-  if @pkunid is not null
-  begin      
-    declare @newBarcode_insert varchar(50)
-	select @newBarcode_insert=dbo.uf_Peis_Br_Barcode(@pkunid)
-	if isnull(@newBarcode_insert,'')=''
-	begin
-	  set @newBarcode_insert=''
-	end else
-	begin
-	  set @newBarcode_insert=','+@newBarcode_insert+','
-	end
-	update chk_con_his set TjJianYan=@newBarcode_insert where Unid=@pkunid and isnull(TjJianYan,'')<>isnull(@newBarcode_insert,'')
-  end
-  
-  if isnull(@pkunid,'')<>isnull(@pkunid_old,'') and @pkunid_old is not null
-  begin
-    declare @newBarcode_delete varchar(50)
-	select @newBarcode_delete=dbo.uf_Peis_Br_Barcode(@pkunid_old)
-	if isnull(@newBarcode_delete,'')=''
-	begin
-	  set @newBarcode_delete=''
-	end else
-	begin
-	  set @newBarcode_delete=','+@newBarcode_delete+','
-	end
-	update chk_con_his set TjJianYan=@newBarcode_delete where Unid=@pkunid and isnull(TjJianYan,'')<>isnull(@newBarcode_delete,'')
-  end	
-
-GO
-SET QUOTED_IDENTIFIER OFF 
-GO
-SET ANSI_NULLS ON 
-GO*/
 
 --触发器TRIGGER_chk_con_CKZ_Update创建脚本
 SET QUOTED_IDENTIFIER ON 
@@ -3392,69 +3224,6 @@ GO
 SET ANSI_NULLS ON 
 GO
 
-/*前台已有完善的审核机制,且自己审核过的再修改就不用取消审核了,故注释这两个触发器
---因为查询分析器的块注释不能用GO开头，故注释掉GO,如需启用，需取消GO前的注释符
---触发器TRIGGER_chk_con_CancelAudit_Update创建脚本
-SET QUOTED_IDENTIFIER ON 
---GO
-SET ANSI_NULLS ON 
---GO
-
-if exists (select name from sysobjects where name='TRIGGER_chk_con_CancelAudit_Update' and type='TR')
-  drop TRIGGER TRIGGER_chk_con_CancelAudit_Update
---go
-
-CREATE TRIGGER TRIGGER_chk_con_CancelAudit_Update ON chk_con
-FOR UPDATE
-AS
---取消审核
-  declare @unid int,@report_doctor_old varchar(50),@report_doctor varchar(50),@printtimes_old int,@printtimes int
-  SELECT @unid=unid,@report_doctor=report_doctor,@printtimes=printtimes FROM Inserted
-  SELECT @report_doctor_old=report_doctor,@printtimes_old=printtimes FROM deleted
-  if (@unid is null) return --表示没找到刚刚update的记录
-  if isnull(@report_doctor_old,'a')<>isnull(@report_doctor,'b') return--表示修改的是审核者字段
-  if isnull(@printtimes_old,1)<>isnull(@printtimes,2) return--表示修改的是打印次数字段
-  if isnull(@report_doctor,'')='' return
-  update chk_con set report_doctor='' where unid=@unid
-
---GO
-SET QUOTED_IDENTIFIER OFF 
---GO
-SET ANSI_NULLS ON 
---GO
-
-
---触发器TRIGGER_chk_valu_CancelAudit_Update创建脚本
-SET QUOTED_IDENTIFIER ON 
---GO
-SET ANSI_NULLS ON 
---GO
-
-if exists (select name from sysobjects where name='TRIGGER_chk_valu_CancelAudit_Update' and type='TR')
-  drop TRIGGER TRIGGER_chk_valu_CancelAudit_Update
---go
-
-CREATE TRIGGER TRIGGER_chk_valu_CancelAudit_Update ON chk_valu
-FOR UPDATE
-AS
---取消审核
-  declare @pkunid int,@report_doctor varchar(50),@itemvalue varchar(100),@itemvalue_Old varchar(100)
-  SELECT @pkunid=pkunid,@itemvalue=itemvalue FROM Inserted
-  if (@pkunid is null) return --表示没找到刚刚update的记录
-  SELECT @itemvalue_Old=itemvalue FROM deleted
-  select @report_doctor=report_doctor from chk_con where unid=@pkunid
-
-  if isnull(@itemvalue_Old,'')=isnull(@itemvalue,'') return
-  if isnull(@report_doctor,'')='' return
-  update chk_con set report_doctor='' where unid=@pkunid
-
---GO
-SET QUOTED_IDENTIFIER OFF 
---GO
-SET ANSI_NULLS ON 
---GO
-*/
-
 --触发器TRIGGER_chk_con_CommCode创建脚本
 SET QUOTED_IDENTIFIER ON 
 GO
@@ -3514,27 +3283,6 @@ SET QUOTED_IDENTIFIER OFF
 GO
 SET ANSI_NULLS ON 
 GO
-
---触发器TRIGGER_chk_con_His_Unid创建脚本20101204
---if exists (select name from sysobjects where name='TRIGGER_chk_con_His_Unid' and type='TR')
---  drop TRIGGER TRIGGER_chk_con_His_Unid
---go
-
---CREATE TRIGGER TRIGGER_chk_con_His_Unid ON chk_con
---FOR UPDATE,Insert
---AS
---His_Unid不允许重复
---  declare @His_unid varchar(50),@His_Unid_Num int
---  SELECT @His_unid=His_unid FROM Inserted
---  if (@His_unid is null)or(@His_unid='') return
---  select @His_Unid_Num=count(*) from chk_con where His_Unid=@His_unid
---  if (@His_Unid_Num>1)
---  begin
---    raiserror ('His_Unid不能重复!',16,1)
---    ROLLBACK TRANSACTION
---  end
-
---GO
 
 --触发器TRIGGER_chk_valu_ItemName创建脚本
 SET QUOTED_IDENTIFIER ON 
@@ -3677,24 +3425,6 @@ AS
   update CommCode set PYM=dbo.uf_getpy(@name) where unid=@unid
 GO
 
---if exists (select name from sysobjects where name='TRIGGER_chk_con_His_DELETE' and type='TR')
---  drop TRIGGER TRIGGER_chk_con_His_DELETE
---GO
-
---CREATE TRIGGER TRIGGER_chk_con_His_DELETE ON chk_con_his
---FOR DELETE 
---AS
---  declare @unid int,@Checked int
---  SELECT @unid=unid FROM deleted
---  if (@unid is null) return --表示没找到刚刚DELETE的记录
---  select @Checked=count(*) from view_Chk_Con_All where His_Unid=@unid
---  if (@Checked>0)
---  begin
---    raiserror ('该申请已被科室处理,不能删除!',16,1)
---    ROLLBACK TRANSACTION
---  end
---GO
-
 if exists (select name from sysobjects where name='TRIGGER_chk_con_His_Update' and type='TR')
   drop TRIGGER TRIGGER_chk_con_His_Update
 GO
@@ -3716,62 +3446,6 @@ AS
     ROLLBACK TRANSACTION
   end
 GO
-
---允许增加新的组合项目，故注释。
---if exists (select name from sysobjects where name='TRIGGER_chk_valu_His_Insert' and type='TR')
---  drop TRIGGER TRIGGER_chk_valu_His_Insert
---GO
-
---CREATE TRIGGER TRIGGER_chk_valu_His_Insert ON chk_valu_his
---FOR Insert 
---AS
---  declare @pkunid int,@Checked int
---  SELECT @pkunid=pkunid FROM INSERTED
---  if (@pkunid is null) return --表示没找到刚刚Insert的记录
---  select @Checked=count(*) from view_Chk_Con_All where His_Unid=@pkunid
---  if (@Checked>0)
---  begin
---    raiserror ('该申请已被科室处理,不能增加!',16,1)
---    ROLLBACK TRANSACTION
---  end
---GO
-
---if exists (select name from sysobjects where name='TRIGGER_chk_valu_His_DELETE' and type='TR')
---  drop TRIGGER TRIGGER_chk_valu_His_DELETE
---GO
-
---CREATE TRIGGER TRIGGER_chk_valu_His_DELETE ON chk_valu_his
---FOR DELETE 
---AS
---  declare @pkunid int,@Checked int
---  SELECT @pkunid=pkunid FROM deleted
---  if (@pkunid is null) return --表示没找到刚刚Insert的记录
---  select @Checked=count(*) from view_Chk_Con_All where His_Unid=@pkunid
---  if (@Checked>0)
---  begin
---    raiserror ('该申请已被科室处理,不能删除!',16,1)
---    ROLLBACK TRANSACTION
---  end
---GO
-
---界面上不存在修改的操作，故注释。倒是有修改取走标志的操作，故更加要注释
---if exists (select name from sysobjects where name='TRIGGER_chk_valu_His_Update' and type='TR')
---  drop TRIGGER TRIGGER_chk_valu_His_Update
---GO
-
---CREATE TRIGGER TRIGGER_chk_valu_His_Update ON chk_valu_his
---FOR Update 
---AS
---  declare @pkunid int,@Checked int
---  SELECT @pkunid=pkunid FROM deleted
---  if (@pkunid is null) return --表示没找到刚刚Insert的记录
---  select @Checked=count(*) from view_Chk_Con_All where His_Unid=@pkunid
---  if (@Checked>0)
---  begin
---    raiserror ('该申请已被科室处理,不能修改!',16,1)
---    ROLLBACK TRANSACTION
---  end
---GO
 
 --触发器TRIGGER_chk_valu_His_ItemName创建脚本 20110611
 SET QUOTED_IDENTIFIER ON 
@@ -3892,62 +3566,6 @@ SET QUOTED_IDENTIFIER OFF
 GO
 SET ANSI_NULLS ON 
 GO
-
---SET QUOTED_IDENTIFIER ON 
---GO
---SET ANSI_NULLS ON 
---GO
-
---if exists (select name from sysobjects where name='TRIGGER_chk_valu_Delete_His_Mark' and type='TR')
---  drop TRIGGER TRIGGER_chk_valu_Delete_His_Mark
---go
-
---CREATE TRIGGER TRIGGER_chk_valu_Delete_His_Mark ON chk_valu
---FOR Delete
---AS
---  declare @valueid int,@pkunid int,@his_unid varchar(50),@pkcombin_id varchar(10),@issure varchar(10),@issure_Old varchar(10)
---  SELECT @valueid=valueid,@pkunid=pkunid,@pkcombin_id=pkcombin_id,@issure=issure FROM Deleted
---  if (@valueid is null) return --表示没找到刚刚update或insert的记录
---  if (@pkunid is null) return --表示没有主记录
-
---  select @his_unid=his_unid from chk_con where unid=@pkunid
---  if (isnull(@his_unid,'')='') return 
-
---  update chk_valu_his set itemvalue=null where cast(pkunid as varchar)=@his_unid and pkcombin_id=@pkcombin_id
-
---GO
---SET QUOTED_IDENTIFIER OFF 
---GO
---SET ANSI_NULLS ON 
---GO
-
---程序搞定，以免影响“结束当前检验工作”
---SET QUOTED_IDENTIFIER ON 
---GO
---SET ANSI_NULLS ON 
---GO
-
---if exists (select name from sysobjects where name='TRIGGER_chk_con_Delete_His_Mark' and type='TR')
---  drop TRIGGER TRIGGER_chk_con_Delete_His_Mark
---go
-
---CREATE   TRIGGER TRIGGER_chk_con_Delete_His_Mark ON chk_con
---FOR Delete
---AS
-  --该触发器放在chk_valu时，由于找不到chk_con,不生效。故只有放在chk_con中(其实界面操作中,chk_valu也不存在删除)
---  declare @his_unid varchar(50)
---  SELECT @his_unid=his_unid FROM Deleted
-
---  if (isnull(@his_unid,'')='') return 
-
---  update chk_valu_his set itemvalue=null where cast(pkunid as varchar)=@his_unid
-
---GO
---SET QUOTED_IDENTIFIER OFF 
---GO
---SET ANSI_NULLS ON 
---GO
-
 
 if exists (select name from sysobjects where name='TRIGGER_chk_con_HisValue_Delete' and type='TR')
   drop TRIGGER TRIGGER_chk_con_HisValue_Delete
@@ -4372,43 +3990,6 @@ if exists (select name from sysobjects where name='TRIGGER_chk_con_PatientInfo_F
   drop TRIGGER TRIGGER_chk_con_PatientInfo_From_HisUnid_Insert
 go
 
-/*CREATE TRIGGER TRIGGER_chk_con_PatientInfo_From_HisUnid_Insert ON chk_con
-FOR Insert
-AS
---根据His_Unid从chk_con_his取病人信息
-  declare @ChkCon_unid int,@ChkCon_His_Unid varchar(50)
-  SELECT @ChkCon_unid=unid,@ChkCon_His_Unid=His_Unid FROM Inserted
-  
-  if @ChkCon_unid is null return
-  if @ChkCon_unid<=0 return
-  if @ChkCon_His_Unid is null return
-  if @ChkCon_His_Unid='' return
-
-  if not exists(select 1 from chk_con_his where cast(unid as varchar)=@ChkCon_His_Unid) return
-
-  declare @patientname varchar(50),@sex varchar(50),@age varchar(50),@Caseno varchar(50),
-          @bedno varchar(50),@deptname varchar(50),@check_doctor varchar(50),
-          @report_date datetime,@Diagnosetype varchar(50),@flagetype varchar(100),
-          @diagnose varchar(200),@typeflagcase varchar(50),@issure varchar(50),
-          @WorkCompany varchar(50),@WorkDepartment varchar(50),@ifMarry varchar(50)
-
-  select @patientname=patientname,@sex=sex,@age=age,@Caseno=Caseno,
-         @bedno=bedno,@deptname=deptname,@check_doctor=check_doctor,
-         @report_date=report_date,@Diagnosetype=Diagnosetype,@flagetype=flagetype,
-         @diagnose=diagnose,@typeflagcase=typeflagcase,@issure=issure,
-         @WorkCompany=WorkCompany,@WorkDepartment=WorkDepartment,@ifMarry=ifMarry 
-  from chk_con_his 
-  where cast(unid as varchar)=@ChkCon_His_Unid
-
-  update chk_con set 
-         patientname=@patientname,sex=@sex,age=@age,Caseno=@Caseno,
-         bedno=@bedno,deptname=@deptname,check_doctor=@check_doctor,
-         report_date=@report_date,Diagnosetype=@Diagnosetype,flagetype=@flagetype,
-         diagnose=@diagnose,typeflagcase=@typeflagcase,issure=@issure,
-         WorkCompany=@WorkCompany,WorkDepartment=@WorkDepartment,ifMarry=@ifMarry 
-  where unid=@ChkCon_unid  
-*/
-
 --删除触发器TRIGGER_chk_con_PatientInfo_From_HisUnid_Update
 --触发器TRIGGER_chk_con_PatientInfo_From_HisUnid_Update创建脚本
 --20151021用TRIGGER_chk_con_PatientInfo_From_HisUnid替代
@@ -4421,44 +4002,6 @@ if exists (select name from sysobjects where name='TRIGGER_chk_con_PatientInfo_F
   drop TRIGGER TRIGGER_chk_con_PatientInfo_From_HisUnid_Update
 go
 
-/*CREATE TRIGGER TRIGGER_chk_con_PatientInfo_From_HisUnid_Update ON chk_con
-FOR Update
-AS
---根据His_Unid从chk_con_his取病人信息
---1、当His_Unid修改时，取病人信息
---2、表示以下字段不允许修改，只会从CHK_CON_HIS中取
-  declare @ChkCon_unid int,@ChkCon_His_Unid varchar(50)
-  SELECT @ChkCon_unid=unid,@ChkCon_His_Unid=His_Unid FROM Inserted
-  
-  if @ChkCon_unid is null return
-  if @ChkCon_unid<=0 return
-  if @ChkCon_His_Unid is null return
-  if @ChkCon_His_Unid='' return
-
-  if not exists(select 1 from chk_con_his where cast(unid as varchar)=@ChkCon_His_Unid) return
-
-  declare @patientname varchar(50),@sex varchar(50),@age varchar(50),@Caseno varchar(50),
-          @bedno varchar(50),@deptname varchar(50),@check_doctor varchar(50),
-          @report_date datetime,@Diagnosetype varchar(50),@flagetype varchar(100),
-          @diagnose varchar(200),
-          @WorkCompany varchar(50),@WorkDepartment varchar(50),@ifMarry varchar(50)
-
-  select @patientname=patientname,@sex=sex,@age=age,@Caseno=Caseno,
-         @bedno=bedno,@deptname=deptname,@check_doctor=check_doctor,
-         @report_date=report_date,@Diagnosetype=Diagnosetype,@flagetype=flagetype,
-         @diagnose=diagnose,
-         @WorkCompany=WorkCompany,@WorkDepartment=WorkDepartment,@ifMarry=ifMarry 
-  from chk_con_his 
-  where cast(unid as varchar)=@ChkCon_His_Unid
-
-  update chk_con set 
-         patientname=@patientname,sex=@sex,age=@age,Caseno=@Caseno,
-         bedno=@bedno,deptname=@deptname,check_doctor=@check_doctor,
-         report_date=@report_date,Diagnosetype=@Diagnosetype,flagetype=@flagetype,
-         diagnose=@diagnose,
-         WorkCompany=@WorkCompany,WorkDepartment=@WorkDepartment,ifMarry=@ifMarry 
-  where unid=@ChkCon_unid  
-*/
 
 ---------------数据相关操作---------------
 
@@ -4495,14 +4038,6 @@ GO
 IF EXISTS (select 1 from syscolumns where name='combinitem' and id=object_id('clinicchkitem'))
   Alter table clinicchkitem drop column combinitem
 GO
-
---IF EXISTS (select 1 from syscolumns where name='Reserve3' and id=object_id('clinicchkitem'))
---BEGIN
-  --Reserve3不要了，用Dosage1做为保留字段3.值改到Reserve5
---  update clinicchkitem set Reserve5=1 where Reserve3='体检结论' AND Reserve5 IS NULL
---  update clinicchkitem set Reserve5=2 where Reserve3='体检建议' AND Reserve5 IS NULL
---END
---GO
 
 --20141123切变率在20141123前是在dosage2字段中，现转移到Reserve8
 update clinicchkitem set Reserve8=dosage2 where isnull(dosage2,'')<>'' AND ISNUMERIC(dosage2)=1 AND Reserve8 IS NULL
