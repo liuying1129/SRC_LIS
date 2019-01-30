@@ -4074,6 +4074,11 @@ if not exists (select 1 from CommCode where TypeName='系统代码' and Remark='远程
   insert into CommCode (typename,id,name,remark,sysname) values ('系统代码','0007','http://211.97.0.5:8080/YkAPI/service','远程请求地址','LIS')
 GO
 
+--20190130 WebSocket服务端-新结果提醒
+if not exists (select 1 from CommCode where TypeName='系统代码' and Remark='WebSocket服务端' and Reserve='新结果提醒')
+  insert into CommCode (typename,id,name,remark,Reserve,sysname) values ('系统代码','0008','ws://localhost:8080/YkSchedule','WebSocket服务端','新结果提醒','LIS')
+GO
+
 if not exists(select * from CommCode where TypeName='工具菜单' and name='报表编辑器')
 begin
   insert into CommCode(TypeName,ID,Name,Reserve,Reserve2) values ('工具菜单',010,'报表编辑器','FrfSet.exe','1')
