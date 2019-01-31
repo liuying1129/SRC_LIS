@@ -180,8 +180,6 @@ VAR
   His_Unid_Unid,Chk_Valu_His_ValueId:integer;
   sCheckId:string;
 begin
-  WriteLog(pchar('操作者:'+operator_name+',开始增加申请单,申请单唯一编号:'+inttostr(AChk_Con_His_Unid)+',联机号:'+ACheckId));
-
   His_Unid_Unid:=0;
 
   adotemp33:=tadoquery.Create(nil);
@@ -194,7 +192,6 @@ begin
   begin
     adotemp33.Free;
     result:=0;
-    WriteLog(pchar('操作者:'+operator_name+',增加申请单结束,申请单唯一编号:'+inttostr(AChk_Con_His_Unid)+',联机号:'+ACheckId+',预约登记中无该唯一编号'));
     exit;
   end;
   adotemp33.Free;
@@ -209,15 +206,11 @@ begin
         ''',Stature=getdate() '+
         ' Where unid='+inttostr(His_Unid_Unid);
     ExecSQLCmd(LisConn,stringTemp1);
-  
-    WriteLog(pchar('操作者:'+operator_name+',增加申请单,强制覆盖当前指定病人LIS unid:'+inttostr(His_Unid_Unid)+',申请单唯一编号:'+inttostr(AChk_Con_His_Unid)));
   end;
 
   adotemp22:=tadoquery.Create(nil);
   adotemp22.Connection:=DM.ADOConnection1;
   Query_Chk_Valu_His(adotemp22,AChk_Con_His_Unid);
-
-  WriteLog(pchar('操作者:'+operator_name+',增加申请单,申请单唯一编号:'+inttostr(AChk_Con_His_Unid)+',待处理组合项目数量:'+inttostr(adotemp22.RecordCount)));
 
   while not adotemp22.Eof do
   begin
@@ -227,7 +220,6 @@ begin
 
     if not adotemp22.FieldByName('选择').AsBoolean then//如果未选择，则跳过
     begin
-      WriteLog(pchar('操作者:'+operator_name+',增加申请单,申请单唯一编号:'+inttostr(AChk_Con_His_Unid)+',联机号:'+ACheckId+',预约登记ValueId:'+inttostr(Chk_Valu_His_ValueId)+',未选择,跳过'));
       adotemp22.Next;
       continue;
     end;
@@ -237,7 +229,6 @@ begin
     begin
       if sWorkGroup<>SDIAppForm.cbxConnChar.Text then
       begin
-        WriteLog(pchar('操作者:'+operator_name+',增加申请单,申请单唯一编号:'+inttostr(AChk_Con_His_Unid)+',联机号:'+ACheckId+',预约登记ValueId:'+inttostr(Chk_Valu_His_ValueId)+',非当前工作组的组合项目,跳过'));
         adotemp22.Next;
         continue;
       end;
@@ -251,9 +242,7 @@ begin
                           'inner join chk_valu_his cvh on cvh.pkunid=vcca.his_unid and cvh.pkcombin_id=vcva.pkcombin_id '+
                           ' and cvh.ValueID='+inttostr(Chk_Valu_His_ValueId);//adotemp22.fieldbyname('ValueID').AsString;
 
-      His_Unid_Unid:=strtointdef(ScalarSQLCmd(LisConn,stringTemp3),0); 
-      
-      WriteLog(pchar('操作者:'+operator_name+',增加申请单,申请单唯一编号:'+inttostr(AChk_Con_His_Unid)+',联机号:'+ACheckId+',预约登记ValueId:'+inttostr(Chk_Valu_His_ValueId)+',LIS唯一编号1:'+inttostr(His_Unid_Unid)));
+      His_Unid_Unid:=strtointdef(ScalarSQLCmd(LisConn,stringTemp3),0);
     end;
         
     if His_Unid_Unid=0 then
@@ -261,8 +250,6 @@ begin
       stringTemp4:='select Unid as His_Unid_Unid from chk_con where combin_id='''+sWorkGroup+''' and his_unid='+inttostr(AChk_Con_His_Unid);
       
       His_Unid_Unid:=strtointdef(ScalarSQLCmd(LisConn,stringTemp4),0);
-      
-      WriteLog(pchar('操作者:'+operator_name+',增加申请单,申请单唯一编号:'+inttostr(AChk_Con_His_Unid)+',联机号:'+ACheckId+',LIS唯一编号2:'+inttostr(His_Unid_Unid)));
     end;
 
     if His_Unid_Unid=0 then
@@ -289,8 +276,6 @@ begin
       adotemp2.Open ;
       His_Unid_Unid:=adotemp2.fieldbyname('Insert_Identity').AsInteger;
       adotemp2.Free;
-
-      WriteLog(pchar('操作者:'+operator_name+',增加申请单,申请单唯一编号:'+inttostr(AChk_Con_His_Unid)+',联机号:'+sCheckId+',LIS唯一编号3:'+inttostr(His_Unid_Unid)));
     end;
 
     sdiappform.InsertOrDeleteVaue(adotemp22.fieldbyname('组合项目代码').AsString,true,His_Unid_Unid,Chk_Valu_His_ValueId);//插入检验项目
@@ -300,8 +285,6 @@ begin
   adotemp22.Free;
   
   result:=His_Unid_Unid;
-  
-  WriteLog(pchar('操作者:'+operator_name+',增加申请单结束,申请单唯一编号:'+inttostr(AChk_Con_His_Unid)+',联机号:'+ACheckId+',LIS唯一编号:'+inttostr(His_Unid_Unid)));
 end;
 
 procedure TfrmShowChkConHis.ADOQuery1AfterOpen(DataSet: TDataSet);
@@ -441,8 +424,6 @@ begin
   sCheckId:=LabeledEdit1.Text;
   ServerDate:=GetServerDate(DM.ADOConnection1);
 
-  WriteLog(pchar('操作者:'+operator_name+',选取申请单,开始,联机号:'+sCheckId+',条码:'+sExtBarcode));
-
   ADOQuery1.Close;
   ADOQuery1.SQL.Clear;
   ADOQuery1.SQL.Text:=SHOW_CHK_CON_HIS+' where dbo.uf_GetExtBarcode(cch.unid) like ''%,'+sExtBarcode+',%'' ';
@@ -451,8 +432,6 @@ begin
   Chk_Con_His_Unid:=0;//没用。为了不让编译时报Warning:Variable 'Chk_Con_His_Unid' might not have been initialized
   if RecNum=1 then Chk_Con_His_Unid:=ADOQuery1.fieldbyname('唯一编号').AsInteger;
 
-  WriteLog(pchar('操作者:'+operator_name+',选取申请单,查询样本条码,数量:'+inttostr(RecNum)));
-  
   adotemp22:=tadoquery.Create(nil);
   adotemp22.clone(ADOQuery1);
   ArCheckBoxValue:=nil;
@@ -491,11 +470,7 @@ begin
     //获取联机号
     labelededit1.Text:=GetMaxCheckId(SDIAppForm.cbxConnChar.Text,ServerDate);
     //==========
-    
-    WriteLog(pchar('操作者:'+operator_name+',选取申请单,获取下一个联机号:'+labelededit1.Text));
   end;
-
-  WriteLog(pchar('操作者:'+operator_name+',选取申请单,结束,条码:'+sExtBarcode));
 
   (Sender as TLabeledEdit).Enabled:=true;
   if (Sender as TLabeledEdit).CanFocus then begin (Sender as TLabeledEdit).SetFocus;(Sender as TLabeledEdit).SelectAll; end;
