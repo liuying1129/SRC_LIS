@@ -1,15 +1,15 @@
-use YKLis
+ï»¿use YKLis
 go
 
---ÃİµÈĞÔ£¨µ÷ÓÃÒ»´Î»òÎŞÊı´Î£¬ºó¹ûÒ»Ñù£©½Å±¾
+--å¹‚ç­‰æ€§ï¼ˆè°ƒç”¨ä¸€æ¬¡æˆ–æ— æ•°æ¬¡ï¼Œåæœä¸€æ ·ï¼‰è„šæœ¬
 
---Åú´¦ÀíÎÄ¼şÖ´ĞĞSQL½Å±¾,BatÎÄ¼ş¸ñÊ½£º
+--æ‰¹å¤„ç†æ–‡ä»¶æ‰§è¡ŒSQLè„šæœ¬,Batæ–‡ä»¶æ ¼å¼ï¼š
 --osql -S (local) -E -d ErpBill -i .\V_INF_INPT_PKT_DTL.sql
 --pause
 
----------------±íÏà¹Ø²Ù×÷---------------
+---------------è¡¨ç›¸å…³æ“ä½œ---------------
 
---20161218,nvarchar(30)->varchar(100),ÊÊÓ¦ÓÃ»§µÄ½ÇÉ«ºÜ¶àµÄÇé¿ö
+--20161218,nvarchar(30)->varchar(100),é€‚åº”ç”¨æˆ·çš„è§’è‰²å¾ˆå¤šçš„æƒ…å†µ
 alter table worker alter column account_limit varchar(100) Null
 GO
 
@@ -32,11 +32,11 @@ create table CommCode
 )
 GO
 
---20120511,ÁÙ´²Õï¶Ï,char(50)->varchar(200)
+--20120511,ä¸´åºŠè¯Šæ–­,char(50)->varchar(200)
 alter table CommCode alter column ID varchar(200) Not Null
 GO
 
---20100315 start--ÊÚÈ¨Ê¹ÓÃµ¥Î»Í¦³¤µÄ
+--20100315 start--æˆæƒä½¿ç”¨å•ä½æŒºé•¿çš„
 alter table CommCode alter column Name varchar(200) null
 GO
 alter table CommCode alter column PYM varchar(200) null
@@ -71,7 +71,7 @@ IF not EXISTS (select 1 from syscolumns where name='SysName' and id=object_id('C
   Alter table CommCode add SysName varchar(10) null
 GO
 
---Ë÷ÒıIX_CommCode´´½¨½Å±¾.ÆäÖĞµÄÊı¾İ²Ù×÷ÓĞÒÀÀµ±í£¬¹ÊÖ»ÄÜ·ÅÔÚ±íÉ¾³ı½Å±¾Ö®Ç°
+--ç´¢å¼•IX_CommCodeåˆ›å»ºè„šæœ¬.å…¶ä¸­çš„æ•°æ®æ“ä½œæœ‰ä¾èµ–è¡¨ï¼Œæ•…åªèƒ½æ”¾åœ¨è¡¨åˆ é™¤è„šæœ¬ä¹‹å‰
 if not exists(select * from sysindexes where name='IX_CommCode')
 begin
   CREATE UNIQUE NONCLUSTERED INDEX IX_CommCode ON dbo.CommCode
@@ -79,15 +79,15 @@ begin
 	TypeName,
 	ID
 	) ON [PRIMARY]
-  insert into CommCode(TypeName,ID,Name,PYM,WBM) select 'ÓÅÏÈ¼¶±ğ',ID,Name,PINYIN,WBM from ChkStatus
-  insert into CommCode(TypeName,ID,Name,PYM,WBM) select 'ÁÙ´²Õï¶Ï',ID,Name,PINYIN,WBM from clinicdiagnose
-  insert into CommCode(TypeName,ID,Name,PYM,WBM) select '½á¹û¿ì½İÂë',ID,Name,PINYIN,WBM from codeexpress
-  insert into CommCode(TypeName,ID,Name,PYM,WBM) select '²¿ÃÅ',ID,Name,PINYIN,WBM from department
-  insert into CommCode(TypeName,ID,Name,PYM,WBM) select 'Ï¸¾ú',ID,Name,PINYIN,WBM from Germs
-  insert into CommCode(TypeName,ID,Name,PYM,WBM) select '¼ìÑé×é±ğ',ID,Name,PINYIN,WBM from InfoGroup
-  insert into CommCode(TypeName,ID,Name,PYM,WBM) select '±¸×¢',ID,Name,PINYIN,WBM from memo
-  insert into CommCode(TypeName,ID,Name,PYM,WBM) select 'Ñù±¾ÀàĞÍ',ID,Name,PINYIN,WBM from specimentype
-  insert into CommCode(TypeName,ID,Name,PYM,WBM) select 'Ñù±¾×´Ì¬',ID,Name,PINYIN,WBM from specimencase
+  insert into CommCode(TypeName,ID,Name,PYM,WBM) select 'ä¼˜å…ˆçº§åˆ«',ID,Name,PINYIN,WBM from ChkStatus
+  insert into CommCode(TypeName,ID,Name,PYM,WBM) select 'ä¸´åºŠè¯Šæ–­',ID,Name,PINYIN,WBM from clinicdiagnose
+  insert into CommCode(TypeName,ID,Name,PYM,WBM) select 'ç»“æœå¿«æ·ç ',ID,Name,PINYIN,WBM from codeexpress
+  insert into CommCode(TypeName,ID,Name,PYM,WBM) select 'éƒ¨é—¨',ID,Name,PINYIN,WBM from department
+  insert into CommCode(TypeName,ID,Name,PYM,WBM) select 'ç»†èŒ',ID,Name,PINYIN,WBM from Germs
+  insert into CommCode(TypeName,ID,Name,PYM,WBM) select 'æ£€éªŒç»„åˆ«',ID,Name,PINYIN,WBM from InfoGroup
+  insert into CommCode(TypeName,ID,Name,PYM,WBM) select 'å¤‡æ³¨',ID,Name,PINYIN,WBM from memo
+  insert into CommCode(TypeName,ID,Name,PYM,WBM) select 'æ ·æœ¬ç±»å‹',ID,Name,PINYIN,WBM from specimentype
+  insert into CommCode(TypeName,ID,Name,PYM,WBM) select 'æ ·æœ¬çŠ¶æ€',ID,Name,PINYIN,WBM from specimencase
 end
 
 --CommValue 20110607
@@ -182,7 +182,7 @@ IF EXISTS (select 1 from syscolumns where name='clinicmeaning' and id=object_id(
 
 IF EXISTS (select 1 from syscolumns where name='channelno' and id=object_id('clinicchkitem'))
 begin
-  --ÓÉÏîÄ¿±àºÅÉú³É¼ÆËã¹«Ê½
+  --ç”±é¡¹ç›®ç¼–å·ç”Ÿæˆè®¡ç®—å…¬å¼
   Alter table clinicchkitem drop column channelno
 end
 
@@ -207,24 +207,24 @@ IF EXISTS (select 1 from syscolumns where name='QC_def_lv_dest' and id=object_id
 IF EXISTS (select 1 from syscolumns where name='QC_def_lv_sd' and id=object_id('clinicchkitem'))
   Alter table clinicchkitem drop column QC_def_lv_sd
 
---2010-05-03´Óvarchar(15)¸ÄÎªvarchar(100),Ê¹Ö®ÄÜÈİÄÉÖ±·½Í¼XÖáµÄTitle
+--2010-05-03ä»varchar(15)æ”¹ä¸ºvarchar(100),ä½¿ä¹‹èƒ½å®¹çº³ç›´æ–¹å›¾Xè½´çš„Title
 IF EXISTS (select 1 from syscolumns where name='Dosage1' and id=object_id('clinicchkitem'))
   alter table clinicchkitem alter column Dosage1 varchar(100) null
 
---2015-05-30´Óvarchar(15)¸ÄÎªvarchar(100),Ê¹Ö®ÄÜÈİÄÉÃ¸±êÒÇELX800µÄ¼ÆËã¹«Ê½
---2018-05-25´Óvarchar(100)¸ÄÎªvarchar(200),Ê¹Ö®ÄÜÈİÄÉÃ¸±êÒÇELX800µÄ¼ÆËã¹«Ê½
+--2015-05-30ä»varchar(15)æ”¹ä¸ºvarchar(100),ä½¿ä¹‹èƒ½å®¹çº³é…¶æ ‡ä»ªELX800çš„è®¡ç®—å…¬å¼
+--2018-05-25ä»varchar(100)æ”¹ä¸ºvarchar(200),ä½¿ä¹‹èƒ½å®¹çº³é…¶æ ‡ä»ªELX800çš„è®¡ç®—å…¬å¼
 IF EXISTS (select 1 from syscolumns where name='Dosage2' and id=object_id('clinicchkitem'))
   alter table clinicchkitem alter column Dosage2 varchar(200) null
   
---ĞŞ¸Ä±íclinicchkitem
+--ä¿®æ”¹è¡¨clinicchkitem
 IF NOT EXISTS (select 1 from syscolumns where name='CFXS' and id=object_id('clinicchkitem'))
 begin
-  Alter table clinicchkitem add CFXS varchar(10) null--³Ë·¨ÏµÊı
+  Alter table clinicchkitem add CFXS varchar(10) null--ä¹˜æ³•ç³»æ•°
 end
 
 IF NOT EXISTS (select 1 from syscolumns where name='JFXS' and id=object_id('clinicchkitem'))
 begin
-  Alter table clinicchkitem add JFXS varchar(10) null--¼Ó·¨ÏµÊı
+  Alter table clinicchkitem add JFXS varchar(10) null--åŠ æ³•ç³»æ•°
 end
 go
 
@@ -232,64 +232,64 @@ ALTER TABLE clinicchkitem ALTER COLUMN PYM varchar(15)
 ALTER TABLE clinicchkitem ALTER COLUMN WBM varchar(15)
 go  
 
---ĞŞ¸Ä±íclinicchkitem--20081027
+--ä¿®æ”¹è¡¨clinicchkitem--20081027
 IF NOT EXISTS (select 1 from syscolumns where name='ChkMethod' and id=object_id('clinicchkitem'))
 begin
-  Alter table clinicchkitem add ChkMethod varchar(30) null--¼ìÑé·½·¨
+  Alter table clinicchkitem add ChkMethod varchar(30) null--æ£€éªŒæ–¹æ³•
 end
 
---ĞŞ¸Ä±íclinicchkitem--20140312
+--ä¿®æ”¹è¡¨clinicchkitem--20140312
 IF NOT EXISTS (select 1 from syscolumns where name='Reserve1' and id=object_id('clinicchkitem'))
 begin
-  Alter table clinicchkitem add Reserve1 varchar(200) null--±£Áô×Ö¶Î1
+  Alter table clinicchkitem add Reserve1 varchar(200) null--ä¿ç•™å­—æ®µ1
 end
 
 IF NOT EXISTS (select 1 from syscolumns where name='Reserve2' and id=object_id('clinicchkitem'))
 begin
-  Alter table clinicchkitem add Reserve2 varchar(200) null--±£Áô×Ö¶Î2
+  Alter table clinicchkitem add Reserve2 varchar(200) null--ä¿ç•™å­—æ®µ2
 end
 
 IF NOT EXISTS (select 1 from syscolumns where name='Reserve3' and id=object_id('clinicchkitem'))
 begin
-  Alter table clinicchkitem add Reserve3 varchar(200) null--±£Áô×Ö¶Î3
+  Alter table clinicchkitem add Reserve3 varchar(200) null--ä¿ç•™å­—æ®µ3
 end
 
 IF NOT EXISTS (select 1 from syscolumns where name='Reserve4' and id=object_id('clinicchkitem'))
 begin
-  Alter table clinicchkitem add Reserve4 varchar(200) null--±£Áô×Ö¶Î4
+  Alter table clinicchkitem add Reserve4 varchar(200) null--ä¿ç•™å­—æ®µ4
 end
 
 IF NOT EXISTS (select 1 from syscolumns where name='Reserve5' and id=object_id('clinicchkitem'))
 begin
-  Alter table clinicchkitem add Reserve5 int null--±£Áô×Ö¶Î5
+  Alter table clinicchkitem add Reserve5 int null--ä¿ç•™å­—æ®µ5
 end
 
 IF NOT EXISTS (select 1 from syscolumns where name='Reserve6' and id=object_id('clinicchkitem'))
 begin
-  Alter table clinicchkitem add Reserve6 int null--±£Áô×Ö¶Î6
+  Alter table clinicchkitem add Reserve6 int null--ä¿ç•™å­—æ®µ6
 end
 
 IF NOT EXISTS (select 1 from syscolumns where name='Reserve7' and id=object_id('clinicchkitem'))
 begin
-  Alter table clinicchkitem add Reserve7 float null--±£Áô×Ö¶Î7
+  Alter table clinicchkitem add Reserve7 float null--ä¿ç•™å­—æ®µ7
 end
 
 IF NOT EXISTS (select 1 from syscolumns where name='Reserve8' and id=object_id('clinicchkitem'))
 begin
-  Alter table clinicchkitem add Reserve8 float null--±£Áô×Ö¶Î8
+  Alter table clinicchkitem add Reserve8 float null--ä¿ç•™å­—æ®µ8
 end
 
 IF NOT EXISTS (select 1 from syscolumns where name='Reserve9' and id=object_id('clinicchkitem'))
 begin
-  Alter table clinicchkitem add Reserve9 datetime null--±£Áô×Ö¶Î9
+  Alter table clinicchkitem add Reserve9 datetime null--ä¿ç•™å­—æ®µ9
 end
 
 IF NOT EXISTS (select 1 from syscolumns where name='Reserve10' and id=object_id('clinicchkitem'))
 begin
-  Alter table clinicchkitem add Reserve10 datetime null--±£Áô×Ö¶Î10
+  Alter table clinicchkitem add Reserve10 datetime null--ä¿ç•™å­—æ®µ10
 end
 
---2014-04-16 Ê¹Ö®ÄÜÈİÄÉÏîÄ¿³¬ÏŞµÄ½¨Òé
+--2014-04-16 ä½¿ä¹‹èƒ½å®¹çº³é¡¹ç›®è¶…é™çš„å»ºè®®
 alter table clinicchkitem alter column Reserve1 varchar(300) null
 alter table clinicchkitem alter column Reserve2 varchar(300) null
 GO
@@ -299,10 +299,10 @@ IF not EXISTS (select 1 from syscolumns where name='SysName' and id=object_id('c
   Alter table clinicchkitem add SysName varchar(10) null
 GO
 
---ĞŞ¸Ä±íreferencevalue
+--ä¿®æ”¹è¡¨referencevalue
 IF NOT EXISTS (select 1 from syscolumns where name='flagetype' and id=object_id('referencevalue'))
 begin
-  Alter table referencevalue add flagetype varchar(50) null--Ñù±¾ÀàĞÍ
+  Alter table referencevalue add flagetype varchar(50) null--æ ·æœ¬ç±»å‹
 end
 go
 
@@ -310,14 +310,14 @@ alter table referencevalue alter column minvalue varchar(250) null
 alter table referencevalue alter column maxvalue varchar(250) null
 GO
 
---20140926´´½¨±íItemExceptionValue
+--20140926åˆ›å»ºè¡¨ItemExceptionValue
 if not exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[ItemExceptionValue]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
 create table ItemExceptionValue
  (Unid int identity primary key,
   ItemUnid int not null,
-  MatchMode int not null,--0£ºÄ£ºıÆ¥Åä£»1£º×óÆ¥Åä£»2£ºÓÒÆ¥Åä£»3£ºÈ«Æ¥Åä
+  MatchMode int not null,--0ï¼šæ¨¡ç³ŠåŒ¹é…ï¼›1ï¼šå·¦åŒ¹é…ï¼›2ï¼šå³åŒ¹é…ï¼›3ï¼šå…¨åŒ¹é…
   ItemValue varchar(100) not null,
-  HighOrLowFlag int Not Null--1£ºÆ«µÍ£»2£ºÆ«¸ß
+  HighOrLowFlag int Not Null--1ï¼šåä½ï¼›2ï¼šåé«˜
 )
 GO	 
 	 
@@ -337,7 +337,7 @@ IF EXISTS (select 1 from syscolumns where name='check_date_hist' and id=object_i
 Alter table chk_valu_bak drop column check_date_hist
 go
 
---´ÓEXCELµ¼ÈëĞÅÏ¢Ê±ÒªÓÃµ½£¬¹ÊÒª±£Áô
+--ä»EXCELå¯¼å…¥ä¿¡æ¯æ—¶è¦ç”¨åˆ°ï¼Œæ•…è¦ä¿ç•™
 --IF EXISTS (select 1 from syscolumns where name='DNH' and id=object_id('chk_con'))
 --Alter table chk_con drop column DNH
 --go
@@ -346,28 +346,28 @@ go
 --Alter table chk_con_bak drop column DNH
 --go
 
---´Óvarchar(30)¸ÄÎªvarchar(500),Ê¹Ö®ÄÜÈİÄÉ½»²æÅäÑª¡¢ÑªÁ÷±äÕï¶ÏÒâ¼û¡¢Ìå¼ì½áÂÛ¡¢½¨ÒéµÈ½á¹ûÖµ
+--ä»varchar(30)æ”¹ä¸ºvarchar(500),ä½¿ä¹‹èƒ½å®¹çº³äº¤å‰é…è¡€ã€è¡€æµå˜è¯Šæ–­æ„è§ã€ä½“æ£€ç»“è®ºã€å»ºè®®ç­‰ç»“æœå€¼
 alter table chk_valu alter column itemvalue varchar(500) null
 alter table chk_valu_bak alter column itemvalue varchar(500) null
 GO
 
---´Óvarchar(3000)¸ÄÎªvarchar(4000),Ê¹Ö®ÄÜÈİÄÉActDiffÖ±·½Í¼Êı¾İ
+--ä»varchar(3000)æ”¹ä¸ºvarchar(4000),ä½¿ä¹‹èƒ½å®¹çº³ActDiffç›´æ–¹å›¾æ•°æ®
 alter table chk_valu alter column histogram varchar(4000) null
 alter table chk_valu_bak alter column histogram varchar(4000) null
 GO
 
---2010-05-03´Óvarchar(15)¸ÄÎªvarchar(100),Ê¹Ö®ÄÜÈİÄÉÖ±·½Í¼XÖáµÄTitle
+--2010-05-03ä»varchar(15)æ”¹ä¸ºvarchar(100),ä½¿ä¹‹èƒ½å®¹çº³ç›´æ–¹å›¾Xè½´çš„Title
 alter table chk_valu alter column Dosage1 varchar(100) null
 alter table chk_valu_bak alter column Dosage1 varchar(100) null
 GO
 
---2015-05-30´Óvarchar(15)¸ÄÎªvarchar(100),Ê¹Ö®ÄÜÈİÄÉÃ¸±êÒÇELX800µÄ¼ÆËã¹«Ê½
---2018-05-25´Óvarchar(100)¸ÄÎªvarchar(200),Ê¹Ö®ÄÜÈİÄÉÃ¸±êÒÇELX800µÄ¼ÆËã¹«Ê½
+--2015-05-30ä»varchar(15)æ”¹ä¸ºvarchar(100),ä½¿ä¹‹èƒ½å®¹çº³é…¶æ ‡ä»ªELX800çš„è®¡ç®—å…¬å¼
+--2018-05-25ä»varchar(100)æ”¹ä¸ºvarchar(200),ä½¿ä¹‹èƒ½å®¹çº³é…¶æ ‡ä»ªELX800çš„è®¡ç®—å…¬å¼
 alter table chk_valu alter column Dosage2 varchar(200) null
 alter table chk_valu_bak alter column Dosage2 varchar(200) null
 GO
 
---2012-03-08´Óvarchar(30)¸ÄÎªvarchar(50),Ô½ĞãÇøÖĞÒ½Ò½ÔºµÄ×éºÏÏîÄ¿ÌØ³¤
+--2012-03-08ä»varchar(30)æ”¹ä¸ºvarchar(50),è¶Šç§€åŒºä¸­åŒ»åŒ»é™¢çš„ç»„åˆé¡¹ç›®ç‰¹é•¿
 alter table chk_valu alter column combin_Name varchar(50) null
 alter table chk_valu_bak alter column combin_Name varchar(50) null
 GO
@@ -379,7 +379,7 @@ IF NOT EXISTS (select 1 from syscolumns where name='Photo' and id=object_id('chk
   Alter table chk_valu_bak add Photo Image null
 go
 
---20151202Ôö¼Ó²ÉÑùÊ±¼ä×Ö¶Î
+--20151202å¢åŠ é‡‡æ ·æ—¶é—´å­—æ®µ
 IF NOT EXISTS (select 1 from syscolumns where name='TakeSampleTime' and id=object_id('chk_valu'))
   Alter table chk_valu add TakeSampleTime datetime null
 
@@ -394,72 +394,72 @@ IF NOT EXISTS (select 1 from syscolumns where name='IsEdited' and id=object_id('
   Alter table chk_valu_bak add IsEdited int null
 GO
 
---ĞŞ¸Ä±íchk_valu--20081027
+--ä¿®æ”¹è¡¨chk_valu--20081027
 IF NOT EXISTS (select 1 from syscolumns where name='ChkMethod' and id=object_id('chk_valu'))
 begin
-  Alter table chk_valu add ChkMethod varchar(30) null--¼ìÑé·½·¨
+  Alter table chk_valu add ChkMethod varchar(30) null--æ£€éªŒæ–¹æ³•
 end
 
---ĞŞ¸Ä±íchk_valu_bak--20081027
+--ä¿®æ”¹è¡¨chk_valu_bak--20081027
 IF NOT EXISTS (select 1 from syscolumns where name='ChkMethod' and id=object_id('chk_valu_bak'))
 begin
-  Alter table chk_valu_bak add ChkMethod varchar(30) null--¼ìÑé·½·¨
+  Alter table chk_valu_bak add ChkMethod varchar(30) null--æ£€éªŒæ–¹æ³•
 end
 
 --20141123
 IF NOT EXISTS (select 1 from syscolumns where name='Reserve1' and id=object_id('chk_valu'))
-  Alter table chk_valu add Reserve1 varchar(300) null--±£Áô×Ö¶Î1
+  Alter table chk_valu add Reserve1 varchar(300) null--ä¿ç•™å­—æ®µ1
 
 IF NOT EXISTS (select 1 from syscolumns where name='Reserve1' and id=object_id('chk_valu_bak'))
-  Alter table chk_valu_bak add Reserve1 varchar(300) null--±£Áô×Ö¶Î1
+  Alter table chk_valu_bak add Reserve1 varchar(300) null--ä¿ç•™å­—æ®µ1
 
 IF NOT EXISTS (select 1 from syscolumns where name='Reserve2' and id=object_id('chk_valu'))
-  Alter table chk_valu add Reserve2 varchar(300) null--±£Áô×Ö¶Î2
+  Alter table chk_valu add Reserve2 varchar(300) null--ä¿ç•™å­—æ®µ2
 
 IF NOT EXISTS (select 1 from syscolumns where name='Reserve2' and id=object_id('chk_valu_bak'))
-  Alter table chk_valu_bak add Reserve2 varchar(300) null--±£Áô×Ö¶Î2
+  Alter table chk_valu_bak add Reserve2 varchar(300) null--ä¿ç•™å­—æ®µ2
 
---±£Áô×Ö¶Î3ÎªDosage1
---±£Áô×Ö¶Î4ÎªDosage2
+--ä¿ç•™å­—æ®µ3ä¸ºDosage1
+--ä¿ç•™å­—æ®µ4ä¸ºDosage2
 
 IF NOT EXISTS (select 1 from syscolumns where name='Reserve5' and id=object_id('chk_valu'))
-  Alter table chk_valu add Reserve5 int null--±£Áô×Ö¶Î5
+  Alter table chk_valu add Reserve5 int null--ä¿ç•™å­—æ®µ5
 
 IF NOT EXISTS (select 1 from syscolumns where name='Reserve5' and id=object_id('chk_valu_bak'))
-  Alter table chk_valu_bak add Reserve5 int null--±£Áô×Ö¶Î5
+  Alter table chk_valu_bak add Reserve5 int null--ä¿ç•™å­—æ®µ5
 
 IF NOT EXISTS (select 1 from syscolumns where name='Reserve6' and id=object_id('chk_valu'))
-  Alter table chk_valu add Reserve6 int null--±£Áô×Ö¶Î6
+  Alter table chk_valu add Reserve6 int null--ä¿ç•™å­—æ®µ6
 
 IF NOT EXISTS (select 1 from syscolumns where name='Reserve6' and id=object_id('chk_valu_bak'))
-  Alter table chk_valu_bak add Reserve6 int null--±£Áô×Ö¶Î6
+  Alter table chk_valu_bak add Reserve6 int null--ä¿ç•™å­—æ®µ6
 
 IF NOT EXISTS (select 1 from syscolumns where name='Reserve7' and id=object_id('chk_valu'))
-  Alter table chk_valu add Reserve7 float null--±£Áô×Ö¶Î7
+  Alter table chk_valu add Reserve7 float null--ä¿ç•™å­—æ®µ7
 
 IF NOT EXISTS (select 1 from syscolumns where name='Reserve7' and id=object_id('chk_valu_bak'))
-  Alter table chk_valu_bak add Reserve7 float null--±£Áô×Ö¶Î7
+  Alter table chk_valu_bak add Reserve7 float null--ä¿ç•™å­—æ®µ7
 
 IF NOT EXISTS (select 1 from syscolumns where name='Reserve8' and id=object_id('chk_valu'))
-  Alter table chk_valu add Reserve8 float null--±£Áô×Ö¶Î8
+  Alter table chk_valu add Reserve8 float null--ä¿ç•™å­—æ®µ8
 
 IF NOT EXISTS (select 1 from syscolumns where name='Reserve8' and id=object_id('chk_valu_bak'))
-  Alter table chk_valu_bak add Reserve8 float null--±£Áô×Ö¶Î8
+  Alter table chk_valu_bak add Reserve8 float null--ä¿ç•™å­—æ®µ8
 
 IF NOT EXISTS (select 1 from syscolumns where name='Reserve9' and id=object_id('chk_valu'))
-  Alter table chk_valu add Reserve9 datetime null--±£Áô×Ö¶Î9
+  Alter table chk_valu add Reserve9 datetime null--ä¿ç•™å­—æ®µ9
 
 IF NOT EXISTS (select 1 from syscolumns where name='Reserve9' and id=object_id('chk_valu_bak'))
-  Alter table chk_valu_bak add Reserve9 datetime null--±£Áô×Ö¶Î9
+  Alter table chk_valu_bak add Reserve9 datetime null--ä¿ç•™å­—æ®µ9
 
 IF NOT EXISTS (select 1 from syscolumns where name='Reserve10' and id=object_id('chk_valu'))
-  Alter table chk_valu add Reserve10 datetime null--±£Áô×Ö¶Î10
+  Alter table chk_valu add Reserve10 datetime null--ä¿ç•™å­—æ®µ10
 
 IF NOT EXISTS (select 1 from syscolumns where name='Reserve10' and id=object_id('chk_valu_bak'))
-  Alter table chk_valu_bak add Reserve10 datetime null--±£Áô×Ö¶Î10
+  Alter table chk_valu_bak add Reserve10 datetime null--ä¿ç•™å­—æ®µ10
 GO
 
---20081211,ÊĞÕşÒªÇóµÄÏ¸¾ú²Î¿¼ÖµºÜ³¤,¹Ê50->250
+--20081211,å¸‚æ”¿è¦æ±‚çš„ç»†èŒå‚è€ƒå€¼å¾ˆé•¿,æ•…50->250
 alter table chk_valu alter column Min_value varchar(250) null
 alter table chk_valu alter column Max_value varchar(250) null
 alter table chk_valu_bak alter column Min_value varchar(250) null
@@ -490,61 +490,61 @@ alter table chk_con alter column TJAdvice varchar(300) null
 alter table chk_con_bak alter column TJAdvice varchar(300) null
 GO
 
---ĞŞ¸Ä±íchk_con
+--ä¿®æ”¹è¡¨chk_con
 IF NOT EXISTS (select 1 from syscolumns where name='TjJianYan' and id=object_id('chk_con'))
 begin
-  Alter table chk_con add TjJianYan varchar(300) null--¼ìÑé
+  Alter table chk_con add TjJianYan varchar(300) null--æ£€éªŒ
 end
 
---ĞŞ¸Ä±íchk_con_bak
+--ä¿®æ”¹è¡¨chk_con_bak
 IF NOT EXISTS (select 1 from syscolumns where name='TjJianYan' and id=object_id('chk_con_bak'))
 begin
-  Alter table chk_con_bak add TjJianYan varchar(300) null--¼ìÑé
+  Alter table chk_con_bak add TjJianYan varchar(300) null--æ£€éªŒ
 end
 go
 
---ĞŞ¸Ä±íchk_con--20120222
+--ä¿®æ”¹è¡¨chk_con--20120222
 IF NOT EXISTS (select 1 from syscolumns where name='Audit_Date' and id=object_id('chk_con'))
 begin
-  Alter table chk_con add Audit_Date datetime null--ÉóºËÊ±¼ä
+  Alter table chk_con add Audit_Date datetime null--å®¡æ ¸æ—¶é—´
 end
 
---ĞŞ¸Ä±íchk_con_bak--20120222
+--ä¿®æ”¹è¡¨chk_con_bak--20120222
 IF NOT EXISTS (select 1 from syscolumns where name='Audit_Date' and id=object_id('chk_con_bak'))
 begin
-  Alter table chk_con_bak add Audit_Date datetime null--ÉóºËÊ±¼ä
+  Alter table chk_con_bak add Audit_Date datetime null--å®¡æ ¸æ—¶é—´
 end
 go
 
---20120228,Ô½ĞãÇøÖĞÒ½Ò½Ôºµ¼ÈëÕïÁÆ¿¨ºÅ,¹Ê10->30
+--20120228,è¶Šç§€åŒºä¸­åŒ»åŒ»é™¢å¯¼å…¥è¯Šç–—å¡å·,æ•…10->30
 alter table chk_con alter column Caseno varchar(30) null
 alter table chk_con_bak alter column Caseno varchar(30) null
 GO
 
---20120511,ÁÙ´²Õï¶Ï,char(50)->varchar(200)
+--20120511,ä¸´åºŠè¯Šæ–­,char(50)->varchar(200)
 alter table chk_con alter column diagnose varchar(200) null
 alter table chk_con_bak alter column diagnose varchar(200) null
 GO
 
---20150517Ôö¼Ó±ê±¾·¢ËÍÈË¡¢½ÓÊÕÈË¡¢½ÓÊÕÊ±¼ä
---PushPress£¨Ô­ÊæÕÅÑ¹£©ÓÃ×÷ ·¢ËÍÈË
---PullPress£¨Ô­ÊÕËõÑ¹£©ÓÃ×÷ ½ÓÊÕÈË
---Stature£¨Ô­Éí¸ß£©ÓÃ×÷ ½ÓÊÕÊ±¼ä
+--20150517å¢åŠ æ ‡æœ¬å‘é€äººã€æ¥æ”¶äººã€æ¥æ”¶æ—¶é—´
+--PushPressï¼ˆåŸèˆ’å¼ å‹ï¼‰ç”¨ä½œ å‘é€äºº
+--PullPressï¼ˆåŸæ”¶ç¼©å‹ï¼‰ç”¨ä½œ æ¥æ”¶äºº
+--Statureï¼ˆåŸèº«é«˜ï¼‰ç”¨ä½œ æ¥æ”¶æ—¶é—´
 alter table chk_con alter column Stature datetime Null
 GO
 
 alter table chk_con_bak alter column Stature datetime Null
 GO
 
---20170816,²¡ÈËĞÕÃû,Ô½ĞãÇøÖĞÒ½Ò½Ôº±ø¼ì,ÉÙÊıÃñ×åÍ¬°ûµÄÃû³ÆºÜ³¤,varchar(14)->varchar(40)
+--20170816,ç—…äººå§“å,è¶Šç§€åŒºä¸­åŒ»åŒ»é™¢å…µæ£€,å°‘æ•°æ°‘æ—åŒèƒçš„åç§°å¾ˆé•¿,varchar(14)->varchar(40)
 alter table chk_con alter column patientname varchar(40) null
 alter table chk_con_bak alter column patientname varchar(40) null
 GO
 
---20140906ÖÊ¿ØĞŞ¸Ä
+--20140906è´¨æ§ä¿®æ”¹
 if EXISTS (select 1 from information_schema.columns where table_name = 'QCGHEAD' and column_name='qc_month' and data_type='varchar')
 begin
-  DELETE FROM QCGHEAD WHERE qc_month='AA'--´¦ÀíÀúÊ·Êı¾İ
+  DELETE FROM QCGHEAD WHERE qc_month='AA'--å¤„ç†å†å²æ•°æ®
   alter table qcghead alter column qc_year int NOT NULL
   alter table qcghead alter column qc_month int NOT NULL
 end
@@ -570,7 +570,7 @@ create table HisCombItem
 )
 GO
 
---20150719Ôö¼Ó×Ö¶Î
+--20150719å¢åŠ å­—æ®µ
 IF NOT EXISTS (select 1 from syscolumns where name='ExtSystemId' and id=object_id('HisCombItem'))
   Alter table HisCombItem add ExtSystemId varchar(50) null
 
@@ -578,7 +578,7 @@ IF NOT EXISTS (select 1 from syscolumns where name='Create_Date_Time' and id=obj
   Alter table HisCombItem add Create_Date_Time datetime null DEFAULT (getdate())
 GO
 
---20100125´òÓ¡ÌõÂë±êÇ©¹¤×÷Õ¾µÄ²¡ÈË»ù±¾ĞÅÏ¢±í
+--20100125æ‰“å°æ¡ç æ ‡ç­¾å·¥ä½œç«™çš„ç—…äººåŸºæœ¬ä¿¡æ¯è¡¨
 if not exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[chk_con_his]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
 begin
 CREATE TABLE chk_con_his (
@@ -746,24 +746,24 @@ CREATE TABLE chk_valu_his_bak (
 end
 GO
 
---2015-06-11´Óvarchar(15)¸ÄÎªvarchar(50),Ê¹Ö®ÄÜÈİÄÉHISÉêÇëµ¥ºÅ
+--2015-06-11ä»varchar(15)æ”¹ä¸ºvarchar(50),ä½¿ä¹‹èƒ½å®¹çº³HISç”³è¯·å•å·
 alter table chk_valu_his alter column Surem1 varchar(50) null
 alter table chk_valu_his_bak alter column Surem1 varchar(50) null
 GO
 
---2015-06-11´Óvarchar(15)¸ÄÎªvarchar(50),Ê¹Ö®ÄÜÈİÄÉHIS×éºÏÏîÄ¿ºÅ
+--2015-06-11ä»varchar(15)æ”¹ä¸ºvarchar(50),ä½¿ä¹‹èƒ½å®¹çº³HISç»„åˆé¡¹ç›®å·
 alter table chk_valu_his alter column Surem2 varchar(50) null
 alter table chk_valu_his_bak alter column Surem2 varchar(50) null
 GO
 
 IF NOT EXISTS (select 1 from syscolumns where name='IfSel' and id=object_id('chk_valu_his'))
-  Alter table chk_valu_his add IfSel bit null DEFAULT (1)--Ñ¡Ôñ
+  Alter table chk_valu_his add IfSel bit null DEFAULT (1)--é€‰æ‹©
 
 IF NOT EXISTS (select 1 from syscolumns where name='IfSel' and id=object_id('chk_valu_his_bak'))
-  Alter table chk_valu_his_bak add IfSel bit null--Ñ¡Ôñ
+  Alter table chk_valu_his_bak add IfSel bit null--é€‰æ‹©
 GO
 
---20151202Ôö¼Ó²ÉÑùÊ±¼ä×Ö¶Î
+--20151202å¢åŠ é‡‡æ ·æ—¶é—´å­—æ®µ
 IF NOT EXISTS (select 1 from syscolumns where name='TakeSampleTime' and id=object_id('chk_valu_his'))
   Alter table chk_valu_his add TakeSampleTime datetime null
 
@@ -771,40 +771,40 @@ IF NOT EXISTS (select 1 from syscolumns where name='TakeSampleTime' and id=objec
   Alter table chk_valu_his_bak add TakeSampleTime datetime null
 go
 
---ĞŞ¸Ä±íchk_con_his--20120313
+--ä¿®æ”¹è¡¨chk_con_his--20120313
 IF NOT EXISTS (select 1 from syscolumns where name='Audit_Date' and id=object_id('chk_con_his'))
 begin
-  Alter table chk_con_his add Audit_Date datetime null--ÉóºËÊ±¼ä
+  Alter table chk_con_his add Audit_Date datetime null--å®¡æ ¸æ—¶é—´
 end
 
---ĞŞ¸Ä±íchk_con_his_bak--20120313
+--ä¿®æ”¹è¡¨chk_con_his_bak--20120313
 IF NOT EXISTS (select 1 from syscolumns where name='Audit_Date' and id=object_id('chk_con_his_bak'))
 begin
-  Alter table chk_con_his_bak add Audit_Date datetime null--ÉóºËÊ±¼ä
+  Alter table chk_con_his_bak add Audit_Date datetime null--å®¡æ ¸æ—¶é—´
 end
 go
 
---20120228,Ô½ĞãÇøÖĞÒ½Ò½Ôºµ¼ÈëÕïÁÆ¿¨ºÅ,¹Ê10->30
+--20120228,è¶Šç§€åŒºä¸­åŒ»åŒ»é™¢å¯¼å…¥è¯Šç–—å¡å·,æ•…10->30
 alter table chk_con_his alter column Caseno varchar(30) null
 alter table chk_con_his_bak alter column Caseno varchar(30) null
 GO
 
---2012-03-08´Óvarchar(30)¸ÄÎªvarchar(50),Ô½ĞãÇøÖĞÒ½Ò½ÔºµÄ×éºÏÏîÄ¿ÌØ³¤
+--2012-03-08ä»varchar(30)æ”¹ä¸ºvarchar(50),è¶Šç§€åŒºä¸­åŒ»åŒ»é™¢çš„ç»„åˆé¡¹ç›®ç‰¹é•¿
 alter table chk_valu_his alter column combin_Name varchar(50) null
 alter table chk_valu_his_bak alter column combin_Name varchar(50) null
 GO
 
---20120511,ÁÙ´²Õï¶Ï,char(50)->varchar(200)
+--20120511,ä¸´åºŠè¯Šæ–­,char(50)->varchar(200)
 alter table chk_con_his alter column diagnose varchar(200) null
 alter table chk_con_his_bak alter column diagnose varchar(200) null
 GO
 
---20170816,²¡ÈËĞÕÃû,Ô½ĞãÇøÖĞÒ½Ò½Ôº±ø¼ì,ÉÙÊıÃñ×åÍ¬°ûµÄÃû³ÆºÜ³¤,varchar(14)->varchar(40)
+--20170816,ç—…äººå§“å,è¶Šç§€åŒºä¸­åŒ»åŒ»é™¢å…µæ£€,å°‘æ•°æ°‘æ—åŒèƒçš„åç§°å¾ˆé•¿,varchar(14)->varchar(40)
 alter table chk_con_his alter column patientname varchar(40) null
 alter table chk_con_his_bak alter column patientname varchar(40) null
 GO
 
---20151205±íApiToken´´½¨½Å±¾
+--20151205è¡¨ApiTokenåˆ›å»ºè„šæœ¬
 if not exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[ApiToken]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
 CREATE TABLE ApiToken (
 	UserId varchar (20) primary key ,
@@ -814,7 +814,7 @@ CREATE TABLE ApiToken (
 ) 
 GO
 
---20160422ÓÃ»§·ÃÎÊÓ¦ÓÃ³ÌĞò¼ÇÂ¼±í(ÓÃ»§ĞÅÏ¢ÊÕ¼¯)´´½¨½Å±¾
+--20160422ç”¨æˆ·è®¿é—®åº”ç”¨ç¨‹åºè®°å½•è¡¨(ç”¨æˆ·ä¿¡æ¯æ”¶é›†)åˆ›å»ºè„šæœ¬
 if not exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[AppVisit]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
 create table AppVisit
  (Unid int identity primary key,
@@ -842,11 +842,11 @@ GO
 
 IF NOT EXISTS (select 1 from syscolumns where name='ComputerName' and id=object_id('AppVisit'))
 begin
-  Alter table AppVisit add ComputerName varchar (50) null--¼ÆËã»úÃû³Æ
+  Alter table AppVisit add ComputerName varchar (50) null--è®¡ç®—æœºåç§°
 end
 go
 
---20180426É¾³ıÕâĞ©×Ö¶Î
+--20180426åˆ é™¤è¿™äº›å­—æ®µ
 IF EXISTS (select 1 from syscolumns where name='Reserve3' and id=object_id('clinicchkitem'))
   Alter table clinicchkitem drop column Reserve3
 IF EXISTS (select 1 from syscolumns where name='Reserve4' and id=object_id('clinicchkitem'))
@@ -883,22 +883,22 @@ IF EXISTS (select 1 from syscolumns where name='ChkMethod' and id=object_id('chk
   Alter table chk_valu_bak drop column ChkMethod
 GO
 
---É¾³ı±íChkStatus
+--åˆ é™¤è¡¨ChkStatus
 if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[ChkStatus]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
   drop table [dbo].[ChkStatus]
 
---É¾³ı±íclinicdiagnose
+--åˆ é™¤è¡¨clinicdiagnose
 if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[clinicdiagnose]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
   drop table [dbo].[clinicdiagnose]
 
---É¾³ı±ícodeexpress
+--åˆ é™¤è¡¨codeexpress
 if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[codeexpress]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
   drop table [dbo].[codeexpress]
 
---É¾³ı±ídepartment
+--åˆ é™¤è¡¨department
 if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[department]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
 begin
---É¾³ı¿ÆÊÒ±íÖ®Ç°½«ÈËÔ±×ªÒÆ start
+--åˆ é™¤ç§‘å®¤è¡¨ä¹‹å‰å°†äººå‘˜è½¬ç§» start
   DECLARE Cur_worker Cursor For 
     select Unid,pkdeptid FROM worker
 
@@ -910,11 +910,11 @@ begin
   BEGIN
     Declare @Name varchar(30)
     select @Name=Name from department where Unid=@pkdeptid
-    if @Name is not null --¸ÃÈËÔ±²»ÊôÓÚÈÎºÎ¿ÆÊÒ
+    if @Name is not null --è¯¥äººå‘˜ä¸å±äºä»»ä½•ç§‘å®¤
     begin
       Declare @Unid2 int
-      select @Unid2=Unid from CommCode where TypeName='²¿ÃÅ' and Name=@Name
-      if @Unid2 is not null --¸ÃÈËÔ±²»ÊôÓÚÈÎºÎ¿ÆÊÒ
+      select @Unid2=Unid from CommCode where TypeName='éƒ¨é—¨' and Name=@Name
+      if @Unid2 is not null --è¯¥äººå‘˜ä¸å±äºä»»ä½•ç§‘å®¤
         update worker set pkdeptid=@Unid2 where Unid=@Unid
     end
 
@@ -922,31 +922,31 @@ begin
   END
   CLOSE Cur_worker
   DEALLOCATE Cur_worker
---É¾³ı¿ÆÊÒ±íÖ®Ç°½«ÈËÔ±×ªÒÆ end
+--åˆ é™¤ç§‘å®¤è¡¨ä¹‹å‰å°†äººå‘˜è½¬ç§» end
   drop table [dbo].[department]
 end
 
---É¾³ı±íGerms
+--åˆ é™¤è¡¨Germs
 if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[Germs]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
   drop table [dbo].[Germs]
 
---É¾³ı±íInfoGroup
+--åˆ é™¤è¡¨InfoGroup
 if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[InfoGroup]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
   drop table [dbo].[InfoGroup]
 
---É¾³ı±íMEMO
+--åˆ é™¤è¡¨MEMO
 if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[MEMO]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
   drop table [dbo].[MEMO]
 
---É¾³ı±íspecimencase
+--åˆ é™¤è¡¨specimencase
 if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[specimencase]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
   drop table [dbo].[specimencase]
 
---É¾³ı±íspecimentype
+--åˆ é™¤è¡¨specimentype
 if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[specimentype]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
   drop table [dbo].[specimentype]
 
----------------º¯ÊıÏà¹Ø²Ù×÷---------------
+---------------å‡½æ•°ç›¸å…³æ“ä½œ---------------
 
 if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[uf_GetPy]') and xtype in (N'FN', N'IF', N'TF'))
 drop function [dbo].[uf_GetPy]
@@ -967,18 +967,18 @@ begin
 declare @strlen int,@re nvarchar(4000)
 declare @t table(chr nchar(1) collate Chinese_PRC_CI_AS,letter nchar(1))
 insert into @t(chr,letter)
-  select 'ß¹','A' union all select '°Ë','B' union all
-  select 'àê','C' union all select '…ö','D' union all
-  select 'ŠŠ','E' union all select '·¢','F' union all
-  select 'ê¸','G' union all select 'îş','H' union all
-  select 'Ø¢','J' union all select 'ßÇ','K' union all
-  select 'À¬','L' union all select '‡`','M' union all
-  select '’‚','N' union all select 'àŞ','O' union all
-  select 'Šr','P' union all select 'Æß','Q' union all
-  select '…ß','R' union all select 'Øí','S' union all
-  select 'Ëû','T' union all select 'ŒÜ','W' union all
-  select 'Ï¦','X' union all select 'Ñ¾','Y' union all
-  select '‰','Z'
+  select 'å–','A' union all select 'å…«','B' union all
+  select 'åš“','C' union all select 'å’‘','D' union all
+  select 'å¦¸','E' union all select 'å‘','F' union all
+  select 'æ—®','G' union all select 'é“ª','H' union all
+  select 'ä¸Œ','J' union all select 'å’”','K' union all
+  select 'åƒ','L' union all select 'å˜¸','M' union all
+  select 'æ‹','N' union all select 'å™¢','O' union all
+  select 'å¦‘','P' union all select 'ä¸ƒ','Q' union all
+  select 'å‘¥','R' union all select 'ä»¨','S' union all
+  select 'ä»–','T' union all select 'å±²','W' union all
+  select 'å¤•','X' union all select 'ä¸«','Y' union all
+  select 'å¸€','Z'
   select @strlen=len(@str),@re=''
   while @strlen>0
   begin
@@ -1006,21 +1006,21 @@ GO
 SET ANSI_NULLS ON 
 GO
 
---·µ»ØÄêÁäµÄÊµÊıÖµ(·ÖÖÓÖµ)
---2006-01-05ÄêÁä´«Èë'³É'ÔòÄ¬ÈÏÎª18Ëê
+--è¿”å›å¹´é¾„çš„å®æ•°å€¼(åˆ†é’Ÿå€¼)
+--2006-01-05å¹´é¾„ä¼ å…¥'æˆ'åˆ™é»˜è®¤ä¸º18å²
 CREATE FUNCTION uf_GetAgeReal
 (
-  @ageStr varchar(50)--ageStr='1Ëê2ÔÂ3Ìì4Ğ¡Ê±5·ÖÖÓ'
+  @ageStr varchar(50)--ageStr='1å²2æœˆ3å¤©4å°æ—¶5åˆ†é’Ÿ'
 )  
 RETURNS float AS  
 BEGIN 
-  declare @re_age float --·µ»ØÖµ
+  declare @re_age float --è¿”å›å€¼
   set @re_age=0
 
   if(@agestr='')or(@agestr is null) return 0
-  if(ltrim(rtrim(@agestr))='³É') return 18*365*24*60
+  if(ltrim(rtrim(@agestr))='æˆ') return 18*365*24*60
 
-  if isnumeric(@agestr)=1 --//Ö»ÓĞÊı×ÖÊ±°´ËêÀ´¼ÆËã
+  if isnumeric(@agestr)=1 --//åªæœ‰æ•°å­—æ—¶æŒ‰å²æ¥è®¡ç®—
   begin
     set @re_age=convert(float,@agestr)*365*24*60
     return @re_age
@@ -1030,7 +1030,7 @@ BEGIN
   declare @temp varchar(50),@temp_ageStr varchar(50)
 
   set @temp_ageStr=@ageStr
-  set @yPos=charindex('Ëê',@temp_ageStr)
+  set @yPos=charindex('å²',@temp_ageStr)
   if @yPos<>0
   begin
     set @temp=substring(@temp_ageStr,1,@yPos-1)
@@ -1041,7 +1041,7 @@ BEGIN
     end
   end
   
-  set @mPos=charindex('ÔÂ',@temp_ageStr)
+  set @mPos=charindex('æœˆ',@temp_ageStr)
   if @mPos<>0
   begin
     set @temp=substring(@temp_ageStr,1,@mPos-1)
@@ -1052,7 +1052,7 @@ BEGIN
     end
   end
 
-  set @dpos=charindex('Ìì',@temp_ageStr)
+  set @dpos=charindex('å¤©',@temp_ageStr)
   if @dPos<>0
   begin
     set @temp=substring(@temp_ageStr,1,@dPos-1)
@@ -1063,7 +1063,7 @@ BEGIN
     end
   end
 
-  set @hpos=charindex('Ğ¡Ê±',@temp_ageStr)
+  set @hpos=charindex('å°æ—¶',@temp_ageStr)
   if @hPos<>0
   begin
     set @temp=substring(@temp_ageStr,1,@hPos-1)
@@ -1074,7 +1074,7 @@ BEGIN
     end
   end
 
-  set @minpos=charindex('·ÖÖÓ',@temp_ageStr)
+  set @minpos=charindex('åˆ†é’Ÿ',@temp_ageStr)
   if @minPos<>0
   begin
     set @temp=substring(@temp_ageStr,1,@minPos-1)
@@ -1103,23 +1103,23 @@ GO
 SET ANSI_NULLS ON 
 GO
 
---·µ»ØÉúÈÕ
---2006-01-05ÄêÁä´«Èë'³É'ÔòÄ¬ÈÏÎª18Ëê
+--è¿”å›ç”Ÿæ—¥
+--2006-01-05å¹´é¾„ä¼ å…¥'æˆ'åˆ™é»˜è®¤ä¸º18å²
 CREATE FUNCTION uf_GetBirthday
 (
-  @ageStr varchar(50),--ageStr='1Ëê2ÔÂ3ÈÕ4Ğ¡Ê±5·ÖÖÓ'
-  @op_date datetime --ËÍ¼ìÈÕÆÚ
+  @ageStr varchar(50),--ageStr='1å²2æœˆ3æ—¥4å°æ—¶5åˆ†é’Ÿ'
+  @op_date datetime --é€æ£€æ—¥æœŸ
 )  
 RETURNS datetime AS   
 BEGIN 
   if(@agestr='')or(@agestr is null) return null
-  if isdate(@op_date)=0 return null --²»ÊÇºÏ·¨µÄÈÕÆÚ
+  if isdate(@op_date)=0 return null --ä¸æ˜¯åˆæ³•çš„æ—¥æœŸ
   if(@op_date='')or(@op_date is null) return null 
-  declare @re_age datetime --·µ»ØÖµ
+  declare @re_age datetime --è¿”å›å€¼
   set @re_age=null
 
-  if(ltrim(rtrim(@agestr))='³É') set @agestr='18'
-  if isnumeric(@agestr)=1 --//Ö»ÓĞÊı×ÖÊ±°´ËêÀ´¼ÆËã
+  if(ltrim(rtrim(@agestr))='æˆ') set @agestr='18'
+  if isnumeric(@agestr)=1 --//åªæœ‰æ•°å­—æ—¶æŒ‰å²æ¥è®¡ç®—
   begin
     set @re_age=@op_date-convert(float,@agestr)*365
     return @re_age
@@ -1129,7 +1129,7 @@ BEGIN
   declare @temp varchar(50),@temp_ageStr varchar(50)
 
   set @temp_ageStr=@ageStr
-  set @yPos=charindex('Ëê',@temp_ageStr)
+  set @yPos=charindex('å²',@temp_ageStr)
   if @yPos<>0
   begin
     set @temp=substring(@temp_ageStr,1,@yPos-1)
@@ -1140,7 +1140,7 @@ BEGIN
     end
   end
   
-  set @mPos=charindex('ÔÂ',@temp_ageStr)
+  set @mPos=charindex('æœˆ',@temp_ageStr)
   if @mPos<>0
   begin
     set @temp=substring(@temp_ageStr,1,@mPos-1)
@@ -1151,7 +1151,7 @@ BEGIN
     end
   end
 
-  set @dpos=charindex('Ìì',@temp_ageStr)
+  set @dpos=charindex('å¤©',@temp_ageStr)
   if @dPos<>0
   begin
     set @temp=substring(@temp_ageStr,1,@dPos-1)
@@ -1162,7 +1162,7 @@ BEGIN
     end
   end
 
-  set @hpos=charindex('Ğ¡Ê±',@temp_ageStr)
+  set @hpos=charindex('å°æ—¶',@temp_ageStr)
   if @hPos<>0
   begin
     set @temp=substring(@temp_ageStr,1,@hPos-1)
@@ -1173,7 +1173,7 @@ BEGIN
     end
   end
 
-  set @minpos=charindex('·ÖÖÓ',@temp_ageStr)
+  set @minpos=charindex('åˆ†é’Ÿ',@temp_ageStr)
   if @minPos<>0
   begin
     set @temp=substring(@temp_ageStr,1,@minPos-1)
@@ -1193,7 +1193,7 @@ GO
 SET ANSI_NULLS ON 
 GO
 
---Éú³É²Î¿¼·¶Î§º¯Êı£¬ÓÃÓÚ±¨¸æÏÔÊ¾ 20161111
+--ç”Ÿæˆå‚è€ƒèŒƒå›´å‡½æ•°ï¼Œç”¨äºæŠ¥å‘Šæ˜¾ç¤º 20161111
 if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[uf_Reference_Value_B1]') and xtype in (N'FN', N'IF', N'TF'))
 drop function [dbo].[uf_Reference_Value_B1]
 GO
@@ -1238,7 +1238,7 @@ END
 
 GO
 
---20150616¸ù¾İLIS×éºÏÏîÄ¿µÃµ½¶ÔÓ¦µÄHISÏîÄ¿´®
+--20150616æ ¹æ®LISç»„åˆé¡¹ç›®å¾—åˆ°å¯¹åº”çš„HISé¡¹ç›®ä¸²
 if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[uf_GetHisCombItem]') and xtype in (N'FN', N'IF', N'TF'))
 drop function [dbo].[uf_GetHisCombItem]
 GO
@@ -1250,7 +1250,7 @@ GO
 
 CREATE FUNCTION uf_GetHisCombItem
 (
-  @LisCombUnid int --LIS×éºÏÏîÄ¿UNID
+  @LisCombUnid int --LISç»„åˆé¡¹ç›®UNID
 )  
 RETURNS varchar(500) AS  
 BEGIN 
@@ -1268,7 +1268,7 @@ GO
 SET ANSI_NULLS ON 
 GO
 
---20150616¸ù¾İÏîÄ¿µÃµ½ÏîÄ¿µÄ³£¼û½á¹û´®
+--20150616æ ¹æ®é¡¹ç›®å¾—åˆ°é¡¹ç›®çš„å¸¸è§ç»“æœä¸²
 if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[uf_GetCommValue]') and xtype in (N'FN', N'IF', N'TF'))
 drop function [dbo].[uf_GetCommValue]
 GO
@@ -1280,13 +1280,13 @@ GO
 
 CREATE FUNCTION uf_GetCommValue
 (
-  @ItemUnid int --ÏîÄ¿UNID
+  @ItemUnid int --é¡¹ç›®UNID
 )  
 RETURNS varchar(500) AS  
 BEGIN 
   declare @ret varchar(500)
   set @ret=''
-  select @ret=@ret+','+sValue+(case dfValue when 1 then '(Ä¬ÈÏÖµ)' else '' end) from CommValue WHERE ItemUnid=@ItemUnid
+  select @ret=@ret+','+sValue+(case dfValue when 1 then '(é»˜è®¤å€¼)' else '' end) from CommValue WHERE ItemUnid=@ItemUnid
   set @ret=stuff(@ret,1,1,'')
 
   return @ret
@@ -1307,8 +1307,8 @@ GO
 SET ANSI_NULLS ON 
 GO
 
---ÊÇ·ñ´æÔÚÀúÊ·½á¹û
---ÓĞÔò·µ»Ø1,·ñÔò·µ»Ø0
+--æ˜¯å¦å­˜åœ¨å†å²ç»“æœ
+--æœ‰åˆ™è¿”å›1,å¦åˆ™è¿”å›0
 CREATE FUNCTION uf_ifHasHistoricalValue
 (
   @ValueUnid int
@@ -1318,7 +1318,7 @@ BEGIN
   if @ValueUnid is null return 0
   declare @pkunid int,@itemid varchar(50)
   SELECT @pkunid=pkunid,@itemid=itemid FROM chk_valu where valueid=@ValueUnid 
-  if (@pkunid is null)  return 0--±íÊ¾Ã»ÕÒµ½¸Õ¸Õ²åÈë¼ÇÂ¼Ïà¶ÔÓ¦µÄÖ÷¼ÇÂ¼
+  if (@pkunid is null)  return 0--è¡¨ç¤ºæ²¡æ‰¾åˆ°åˆšåˆšæ’å…¥è®°å½•ç›¸å¯¹åº”çš„ä¸»è®°å½•
 
   declare @patientname varchar(50),@age varchar(50),@sex varchar(50),@report_date datetime
   select @patientname=patientname,@age=age,@sex=sex,@report_date=report_date from chk_con where unid=@pkunid
@@ -1349,7 +1349,7 @@ GO
 SET ANSI_NULLS ON 
 GO
 
---º¯Êıuf_ValueAlarm´´½¨½Å±¾
+--å‡½æ•°uf_ValueAlarmåˆ›å»ºè„šæœ¬
 if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[uf_ValueAlarm]') and xtype in (N'FN', N'IF', N'TF'))
 drop function [dbo].[uf_ValueAlarm]
 GO
@@ -1361,15 +1361,15 @@ GO
 
 CREATE FUNCTION dbo.uf_ValueAlarm
 (
-  --20140926ĞŞ¸Ä³ÌĞò,@ItemChnName´«ÈëµÄÖµ¸ÄÎªÏîÄ¿±àÂëItemId
-  @ItemChnName varchar(50),--ÏîÄ¿µÄÖĞÎÄÃû.20070128Ôö¼Ó,ÒÔ±ãÌØÊâÏîÄ¿µÄ±¨¾¯.ÈçRHÑªĞÍ,ÖĞ¹úµÄÊµ¼ÊÇé¿öÊÇ´ó¶àÊıÈËÎªÑôĞÔ
+  --20140926ä¿®æ”¹ç¨‹åº,@ItemChnNameä¼ å…¥çš„å€¼æ”¹ä¸ºé¡¹ç›®ç¼–ç ItemId
+  @ItemChnName varchar(50),--é¡¹ç›®çš„ä¸­æ–‡å.20070128å¢åŠ ,ä»¥ä¾¿ç‰¹æ®Šé¡¹ç›®çš„æŠ¥è­¦.å¦‚RHè¡€å‹,ä¸­å›½çš„å®é™…æƒ…å†µæ˜¯å¤§å¤šæ•°äººä¸ºé˜³æ€§
   @min_value varchar(50),
   @max_value varchar(50),
   @cur_value varchar(50)
 )  
 RETURNS int AS  
 BEGIN 
-  --20140926·ÇÊıÖµ½á¹ûÒì³£Öµ¹ÜÀístart
+  --20140926éæ•°å€¼ç»“æœå¼‚å¸¸å€¼ç®¡ç†start
   declare @HighOrLowFlag int
 
   select @HighOrLowFlag=iev.HighOrLowFlag from ItemExceptionValue iev,clinicchkitem cci where iev.itemunid=cci.unid and cci.itemid=@ItemChnName and iev.MatchMode=0 and @cur_value like '%'+iev.ItemValue+'%'
@@ -1380,48 +1380,48 @@ BEGIN
   if @HighOrLowFlag in (1,2) return @HighOrLowFlag
   select @HighOrLowFlag=iev.HighOrLowFlag from ItemExceptionValue iev,clinicchkitem cci where iev.itemunid=cci.unid and cci.itemid=@ItemChnName and iev.MatchMode=3 and @cur_value = iev.ItemValue
   if @HighOrLowFlag in (1,2) return @HighOrLowFlag
-  --20140926·ÇÊıÖµ½á¹ûÒì³£Öµ¹ÜÀístop
+  --20140926éæ•°å€¼ç»“æœå¼‚å¸¸å€¼ç®¡ç†stop
 
-  --20161110²Î¿¼ÖµÖ§³Ö¡°´óÓÚ¡±¡¢¡°Ğ¡ÓÚ¡±¡¢¡°´óÓÚµÈÓÚ¡±¡¢¡°Ğ¡ÓÚµÈÓÚ¡± start
+  --20161110å‚è€ƒå€¼æ”¯æŒâ€œå¤§äºâ€ã€â€œå°äºâ€ã€â€œå¤§äºç­‰äºâ€ã€â€œå°äºç­‰äºâ€ start
   declare @min_value_temp varchar(50),@max_value_temp varchar(50)
   
   set @min_value_temp=@min_value
   set @max_value_temp=@max_value
   
-  if LEFT(@min_value,1) in ('¡Ü','£¼','<')
+  if LEFT(@min_value,1) in ('â‰¤','ï¼œ','<')
   begin
 	set @min_value_temp='-99999999999999999999999999999999999999'
 	set @max_value_temp=SUBSTRING(@min_value,2,8000)
   end
   
-  if LEFT(@min_value,1) in ('¡İ','£¾','>')
+  if LEFT(@min_value,1) in ('â‰¥','ï¼','>')
   begin
 	set @min_value_temp=SUBSTRING(@min_value,2,8000)
 	set @max_value_temp='99999999999999999999999999999999999999'
   end
   
-  if LEFT(@max_value,1) in ('¡Ü','£¼','<')
+  if LEFT(@max_value,1) in ('â‰¤','ï¼œ','<')
   begin
 	set @min_value_temp='-99999999999999999999999999999999999999'
 	set @max_value_temp=SUBSTRING(@max_value,2,8000)
   end
   
-  if LEFT(@max_value,1) in ('¡İ','£¾','>')
+  if LEFT(@max_value,1) in ('â‰¥','ï¼','>')
   begin
 	set @min_value_temp=SUBSTRING(@max_value,2,8000)
 	set @max_value_temp='99999999999999999999999999999999999999'
   end    
-  --20161110²Î¿¼ÖµÖ§³Ö¡°´óÓÚ¡±¡¢¡°Ğ¡ÓÚ¡±¡¢¡°´óÓÚµÈÓÚ¡±¡¢¡°Ğ¡ÓÚµÈÓÚ¡± stop
+  --20161110å‚è€ƒå€¼æ”¯æŒâ€œå¤§äºâ€ã€â€œå°äºâ€ã€â€œå¤§äºç­‰äºâ€ã€â€œå°äºç­‰äºâ€ stop
 
   declare @min_value_float float,@max_value_float float,@cur_value_float float,@re_Alarm int
 
   if(ISNUMERIC(@min_value_temp)=0)or(ISNUMERIC(@max_value_temp)=0)or(ISNUMERIC(@cur_value)=0) return 0
-  --ÀàËÆISNUMERIC('-   0')·µ»Ø1,µ«ÏÂÃæµÄCONVERT×ª»»±¨´í¡£ÕâÑùµÄÇé¿öÒ²Ó¦·µ»Ø0
+  --ç±»ä¼¼ISNUMERIC('-   0')è¿”å›1,ä½†ä¸‹é¢çš„CONVERTè½¬æ¢æŠ¥é”™ã€‚è¿™æ ·çš„æƒ…å†µä¹Ÿåº”è¿”å›0
   if CHARINDEX(' ',ltrim(rtrim(@min_value_temp)))<>0 return 0
   if CHARINDEX(' ',ltrim(rtrim(@max_value_temp)))<>0 return 0
   if CHARINDEX(' ',ltrim(rtrim(@cur_value)))<>0 return 0
   
-  --ISNUMERIC('-'),ISNUMERIC('+')¾ù·µ»Ø1,µ«ÏÂÃæµÄCONVERT×ª»»±¨´í¡£ÕâÑùµÄÇé¿öÒ²Ó¦·µ»Ø0
+  --ISNUMERIC('-'),ISNUMERIC('+')å‡è¿”å›1,ä½†ä¸‹é¢çš„CONVERTè½¬æ¢æŠ¥é”™ã€‚è¿™æ ·çš„æƒ…å†µä¹Ÿåº”è¿”å›0
   if (ltrim(rtrim(@min_value_temp))='+')or(ltrim(rtrim(@min_value_temp))='-')or(ltrim(rtrim(@min_value_temp))='.')or(ltrim(rtrim(@min_value_temp))='+.')or(ltrim(rtrim(@min_value_temp))='-.') return 0
   if (ltrim(rtrim(@max_value_temp))='+')or(ltrim(rtrim(@max_value_temp))='-')or(ltrim(rtrim(@max_value_temp))='.')or(ltrim(rtrim(@max_value_temp))='+.')or(ltrim(rtrim(@max_value_temp))='-.') return 0
   if (ltrim(rtrim(@cur_value))='+')or(ltrim(rtrim(@cur_value))='-')or(ltrim(rtrim(@cur_value))='.')or(ltrim(rtrim(@cur_value))='+.')or(ltrim(rtrim(@cur_value))='-.') return 0
@@ -1455,7 +1455,7 @@ SET ANSI_NULLS ON
 GO
 
 CREATE FUNCTION uf_Peis_Br_Barcode
---µÃµ½±êÈí¹«Ë¾Ìå¼ìÏµÍ³µÄÌõÂë
+--å¾—åˆ°æ ‡è½¯å…¬å¸ä½“æ£€ç³»ç»Ÿçš„æ¡ç 
 (
   @chk_con_his_unid int
 )  
@@ -1485,7 +1485,7 @@ SET ANSI_NULLS ON
 GO
 
 CREATE FUNCTION uf_GetExtBarcode
---»ñÈ¡ÌõÂëºÅ
+--è·å–æ¡ç å·
 (
   @chk_con_his_unid int
 )  
@@ -1493,7 +1493,7 @@ RETURNS varchar(500) AS
 BEGIN 
   declare @ret varchar(500),@tempS1 varchar(500)
 
-  /*20180112ÌõÂëÒÑÍ¨¹ıWAR-Schedule»ØĞ´µ½chk_con_his.TjJianYan
+  /*20180112æ¡ç å·²é€šè¿‡WAR-Scheduleå›å†™åˆ°chk_con_his.TjJianYan
   select @tempS1=dbo.uf_Peis_Br_Barcode(@chk_con_his_unid)
 
   if isnull(@tempS1,'')='' 
@@ -1527,7 +1527,7 @@ GO
 
 create FUNCTION uf_GetHisStationCombName
 (
-  @Unid int --HisStation²¡ÈËµÄUNID
+  @Unid int --HisStationç—…äººçš„UNID
 )  
 RETURNS varchar(500) AS  
 BEGIN 
@@ -1545,7 +1545,7 @@ GO
 SET ANSI_NULLS ON 
 GO
 
---20150808»ñÈ¡×îĞÂÁ÷Ë®ºÅ
+--20150808è·å–æœ€æ–°æµæ°´å·
 if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[uf_GetNextSerialNum]') and xtype in (N'FN', N'IF', N'TF'))
 drop function [dbo].[uf_GetNextSerialNum]
 GO
@@ -1557,16 +1557,16 @@ GO
 
 CREATE FUNCTION uf_GetNextSerialNum
 (
-  @WorkGroup varchar(30), --¹¤×÷×é
-  @CHECK_DATE varchar(10),--¼ì²éÈÕÆÚ,YYYY-MM-DD
-  @Diagnosetype varchar(10) --ÓÅÏÈ¼¶±ğ
+  @WorkGroup varchar(30), --å·¥ä½œç»„
+  @CHECK_DATE varchar(10),--æ£€æŸ¥æ—¥æœŸ,YYYY-MM-DD
+  @Diagnosetype varchar(10) --ä¼˜å…ˆçº§åˆ«
 )  
 RETURNS varchar(50) AS  
 BEGIN 
-  --»ñÈ¡×îĞÂÁ÷Ë®ºÅ
+  --è·å–æœ€æ–°æµæ°´å·
 
-  if isnull(@Diagnosetype,'')<>'³£¹æ' and isnull(@Diagnosetype,'')<>'¼±Õï' and isnull(@Diagnosetype,'')<>'¼Ó¼±'
-    set @Diagnosetype='³£¹æ'
+  if isnull(@Diagnosetype,'')<>'å¸¸è§„' and isnull(@Diagnosetype,'')<>'æ€¥è¯Š' and isnull(@Diagnosetype,'')<>'åŠ æ€¥'
+    set @Diagnosetype='å¸¸è§„'
 
   declare @MaxSerialNum varchar(50),@ret varchar(50)
 
@@ -1588,14 +1588,14 @@ GO
 SET ANSI_NULLS ON 
 GO
 
---É¾³ıº¯Êıuf_GetNextXxNo
+--åˆ é™¤å‡½æ•°uf_GetNextXxNo
 if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[uf_GetNextXxNo]') and xtype in (N'FN', N'IF', N'TF'))
 drop function [dbo].[uf_GetNextXxNo]
 GO
 
---20170106Ô½ĞãÇøÖĞÒ½Ò½Ôº»¹ÓĞºÜ¶à¾É¿Í»§¶Ë³ÌĞòÒıÓÃÁË¸Ãº¯Êı£¬¹ÊÔİÊ±±£Áô£¬´ıËùÓĞ¿Í»§¶Ë¾ù¸üĞÂºóÔÙÉ¾³ı
---É¾³ıº¯Êıuf_Reference_Ranges.ÓÃº¯Êıuf_Reference_Value_B1Óëuf_Reference_Value_B2´úÌæ
---Éú³É²Î¿¼·¶Î§º¯Êı 20140412
+--20170106è¶Šç§€åŒºä¸­åŒ»åŒ»é™¢è¿˜æœ‰å¾ˆå¤šæ—§å®¢æˆ·ç«¯ç¨‹åºå¼•ç”¨äº†è¯¥å‡½æ•°ï¼Œæ•…æš‚æ—¶ä¿ç•™ï¼Œå¾…æ‰€æœ‰å®¢æˆ·ç«¯å‡æ›´æ–°åå†åˆ é™¤
+--åˆ é™¤å‡½æ•°uf_Reference_Ranges.ç”¨å‡½æ•°uf_Reference_Value_B1ä¸uf_Reference_Value_B2ä»£æ›¿
+--ç”Ÿæˆå‚è€ƒèŒƒå›´å‡½æ•° 20140412
 if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[uf_Reference_Ranges]') and xtype in (N'FN', N'IF', N'TF'))
   drop function [dbo].[uf_Reference_Ranges]
 GO
@@ -1620,9 +1620,9 @@ END
 
 GO
 
----------------´æ´¢¹ı³ÌÏà¹Ø²Ù×÷---------------
+---------------å­˜å‚¨è¿‡ç¨‹ç›¸å…³æ“ä½œ---------------
 
---´æ´¢¹ı³Ìpro_PrintCombinItem´´½¨½Å±¾
+--å­˜å‚¨è¿‡ç¨‹pro_PrintCombinItemåˆ›å»ºè„šæœ¬
 if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[pro_PrintCombinItem]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
 drop procedure [dbo].[pro_PrintCombinItem]
 GO
@@ -1632,7 +1632,7 @@ GO
 SET ANSI_NULLS ON 
 GO
 
---´òÓ¡/µ¼³ö×éºÏÏîÄ¿
+--æ‰“å°/å¯¼å‡ºç»„åˆé¡¹ç›®
 CREATE PROCEDURE [dbo].[pro_PrintCombinItem] 
 AS
 
@@ -1655,9 +1655,9 @@ Declare @Unid int,@Name varchar(60)
 FETCH NEXT FROM Cur_combinitem INTO @Unid,@Name
 WHILE @@FETCH_STATUS=0
 BEGIN
-  --²åÈë×éºÏÏîÄ¿Ãû
-  insert into #temp01 (ItemName,ItemDefault) values (@Name+'(×éºÏÏîÄ¿)',dbo.uf_GetHisCombItem(@Unid))
-  --²åÈëÏîÄ¿ĞÅÏ¢
+  --æ’å…¥ç»„åˆé¡¹ç›®å
+  insert into #temp01 (ItemName,ItemDefault) values (@Name+'(ç»„åˆé¡¹ç›®)',dbo.uf_GetHisCombItem(@Unid))
+  --æ’å…¥é¡¹ç›®ä¿¡æ¯
   insert into #temp01 (ItemName,ItemEName,itemUnit,ItemPrice,ItemDefault)
     select (select top 1 name from clinicchkitem A where A.unid=ItemUnid),
            (select top 1 english_name from clinicchkitem B where B.unid=ItemUnid),
@@ -1673,11 +1673,11 @@ DEALLOCATE Cur_combinitem
 
 select 
    --Unid int IDENTITY PRIMARY KEY,
-   ItemName Ãû³Æ,
-   ItemEName Ó¢ÎÄÃû,
-   itemUnit µ¥Î»,
-   ItemPrice ¼Û¸ñ,
-   ItemDefault ³£¼û½á¹û
+   ItemName åç§°,
+   ItemEName è‹±æ–‡å,
+   itemUnit å•ä½,
+   ItemPrice ä»·æ ¼,
+   ItemDefault å¸¸è§ç»“æœ
 from #temp01
 
 GO
@@ -1695,30 +1695,30 @@ GO
 SET ANSI_NULLS ON 
 GO
 
---°´×éºÏÏîÄ¿Í³¼ÆÊıÁ¿¡¢½ğ¶î 
---±àĞ´Ê±¼ä£º2005-12-09 
---±àĞ´ÈË£ºÁõÓ¥
---BUG£ºÆôÓÃ¡°¸ù¾İ×éºÏÏîÄ¿±àºÅ²åÈë×éºÏÏîÄ¿Ãû³Æ¡±´¥·¢Æ÷Ö®Ç°£¬×Ö¶ÎCombin_Name¿ÉÄÜÎª¿Õ£¬
---¹ÊÔÚÊ¹ÓÃ´Ë´æ´¢¹ı³ÌÖĞ£¬Ğèµ÷Õû¿ªÊ¼ÈÕÆÚ£¬Ö±µ½ÎŞ¿ÕµÄ×éºÏÏîÄ¿Ãû³Æ³öÏÖ¡£
---´Ë¿ªÊ¼ÈÕÆÚÖ®Ç°µÄ½á¹û²»ÄÜÓÃ´Ë·½·¨Í³¼Æ(ÈçÓÃ£¬Ôò½ğ¶îÊÇ×¼È·µÄ£¬µ«×éºÏÏîÄ¿ÊıÁ¿²»×¼È·)
---2006/11/14:½«°´ËÍ¼ìÒ½Éú¡¢°´²Ù×÷Õß×éºÏ½øÀ´
+--æŒ‰ç»„åˆé¡¹ç›®ç»Ÿè®¡æ•°é‡ã€é‡‘é¢ 
+--ç¼–å†™æ—¶é—´ï¼š2005-12-09 
+--ç¼–å†™äººï¼šåˆ˜é¹°
+--BUGï¼šå¯ç”¨â€œæ ¹æ®ç»„åˆé¡¹ç›®ç¼–å·æ’å…¥ç»„åˆé¡¹ç›®åç§°â€è§¦å‘å™¨ä¹‹å‰ï¼Œå­—æ®µCombin_Nameå¯èƒ½ä¸ºç©ºï¼Œ
+--æ•…åœ¨ä½¿ç”¨æ­¤å­˜å‚¨è¿‡ç¨‹ä¸­ï¼Œéœ€è°ƒæ•´å¼€å§‹æ—¥æœŸï¼Œç›´åˆ°æ— ç©ºçš„ç»„åˆé¡¹ç›®åç§°å‡ºç°ã€‚
+--æ­¤å¼€å§‹æ—¥æœŸä¹‹å‰çš„ç»“æœä¸èƒ½ç”¨æ­¤æ–¹æ³•ç»Ÿè®¡(å¦‚ç”¨ï¼Œåˆ™é‡‘é¢æ˜¯å‡†ç¡®çš„ï¼Œä½†ç»„åˆé¡¹ç›®æ•°é‡ä¸å‡†ç¡®)
+--2006/11/14:å°†æŒ‰é€æ£€åŒ»ç”Ÿã€æŒ‰æ“ä½œè€…ç»„åˆè¿›æ¥
 CREATE PROCEDURE [dbo].[pro_StaticCombItem] 
 @in_StartDate datetime, 
 @in_StopDate datetime,
-@in_StaticType varchar(50)--Í³¼ÆÀàĞÍ
+@in_StaticType varchar(50)--ç»Ÿè®¡ç±»å‹
 AS
 
 	CREATE TABLE #temp02
 	(
-           d_TypeName varchar(50) null,--ÈçËÍ¼ìÒ½Éú¡¢²Ù×÷Õß...
-	   d_Combin_Name varchar(50) null,--×éºÏÏîÄ¿Ãû³Æ
-	   d_Getmoney money null,--½ğ¶î,
-	   d_sum int null, --ÊıÁ¿
-	   d_Reserve1 varchar(50) null--±£Áô×Ö¶Î1
+           d_TypeName varchar(50) null,--å¦‚é€æ£€åŒ»ç”Ÿã€æ“ä½œè€…...
+	   d_Combin_Name varchar(50) null,--ç»„åˆé¡¹ç›®åç§°
+	   d_Getmoney money null,--é‡‘é¢,
+	   d_sum int null, --æ•°é‡
+	   d_Reserve1 varchar(50) null--ä¿ç•™å­—æ®µ1
 	)
-  declare @hj_getmoney float,@hj_sum int--ºÏ¼Æ½ğ¶î¡¢ºÏ¼ÆÊıÁ¿
+  declare @hj_getmoney float,@hj_sum int--åˆè®¡é‡‘é¢ã€åˆè®¡æ•°é‡
 
-if @in_StaticType='½ö°´×éºÏÏîÄ¿'
+if @in_StaticType='ä»…æŒ‰ç»„åˆé¡¹ç›®'
 begin	
 	insert into #temp02(d_Combin_Name,d_Getmoney,d_sum)
 	select Combin_Name,
@@ -1735,19 +1735,19 @@ begin
 	        and itemvalue<>''
 	        and itemvalue is not null
 		GROUP BY pkunid,Combin_Name
-               ) tmpView --ÄÚÇ¶ÊÓÍ¼tmpView:°´¿ÍÈË·Ö×é,È»ºó°´×éºÏÏîÄ¿·Ö×éµÄ
+               ) tmpView --å†…åµŒè§†å›¾tmpView:æŒ‰å®¢äººåˆ†ç»„,ç„¶åæŒ‰ç»„åˆé¡¹ç›®åˆ†ç»„çš„
 	  group by Combin_Name
 	
 	select @hj_Getmoney=sum(d_Getmoney),@hj_sum=sum(d_sum) from #temp02
-	insert into #temp02(d_Combin_Name,d_Getmoney,d_sum) values ('ºÏ¼Æ',@hj_Getmoney,@hj_sum)
+	insert into #temp02(d_Combin_Name,d_Getmoney,d_sum) values ('åˆè®¡',@hj_Getmoney,@hj_sum)
 	
-	select d_Combin_Name as ×éºÏÏîÄ¿Ãû³Æ,
-	  d_Getmoney as ½ğ¶î,
-	  d_sum as ÊıÁ¿
+	select d_Combin_Name as ç»„åˆé¡¹ç›®åç§°,
+	  d_Getmoney as é‡‘é¢,
+	  d_sum as æ•°é‡
 	  from #temp02 
 end else
 
-if @in_StaticType='°´ËÍ¼ìÒ½Éú'
+if @in_StaticType='æŒ‰é€æ£€åŒ»ç”Ÿ'
 begin
   DECLARE Cur_check_doctor Cursor For 
     select isnull(check_doctor,'') FROM Chk_Con_BAK where 
@@ -1756,7 +1756,7 @@ begin
 
   Open Cur_check_doctor
 
-  Declare @check_doctor varchar(50)--¾­¹ıÉÏÃæisnullµÄ×ª»»,@check_doctor²»¿ÉÄÜ³öÏÖnullµÄÇé¿ö
+  Declare @check_doctor varchar(50)--ç»è¿‡ä¸Šé¢isnullçš„è½¬æ¢,@check_doctorä¸å¯èƒ½å‡ºç°nullçš„æƒ…å†µ
   FETCH NEXT FROM Cur_check_doctor INTO @check_doctor
   WHILE @@FETCH_STATUS=0
   BEGIN
@@ -1777,14 +1777,14 @@ begin
 	        and itemvalue<>''
 	        and itemvalue is not null
 		GROUP BY pkunid,Combin_Name
-	     ) tmpView --ÄÚÇ¶ÊÓÍ¼tmpView:°´¿ÍÈË·Ö×é,È»ºó°´×éºÏÏîÄ¿·Ö×éµÄ
+	     ) tmpView --å†…åµŒè§†å›¾tmpView:æŒ‰å®¢äººåˆ†ç»„,ç„¶åæŒ‰ç»„åˆé¡¹ç›®åˆ†ç»„çš„
         group by Combin_Name
 
 
       declare @a float,@b int
       select @a=sum(d_Getmoney),@b=sum(d_sum) from #temp02 where d_TypeName=@check_doctor
       if @a is not null and @b is not null
-        INSERT INTO #temp02(d_TypeName,d_Combin_Name,d_Getmoney,d_sum) values ('Ğ¡¼Æ',null,@a,@b)
+        INSERT INTO #temp02(d_TypeName,d_Combin_Name,d_Getmoney,d_sum) values ('å°è®¡',null,@a,@b)
 
     FETCH NEXT FROM Cur_check_doctor INTO @check_doctor
   END
@@ -1794,16 +1794,16 @@ begin
 	select 
         @hj_getmoney=sum(d_Getmoney),
         @hj_sum=sum(d_sum)
-        from #temp02 where d_TypeName='Ğ¡¼Æ'
-      INSERT INTO #temp02(d_TypeName,d_Combin_Name,d_Getmoney,d_sum) values ('ºÏ¼Æ',null,@hj_getmoney,@hj_sum)
+        from #temp02 where d_TypeName='å°è®¡'
+      INSERT INTO #temp02(d_TypeName,d_Combin_Name,d_Getmoney,d_sum) values ('åˆè®¡',null,@hj_getmoney,@hj_sum)
 
-select d_TypeName  as ËÍ¼ìÒ½Éú,d_Combin_Name as ×éºÏÏîÄ¿Ãû³Æ,
-  d_getmoney as ½ğ¶î,
-  d_sum as ÊıÁ¿ 
+select d_TypeName  as é€æ£€åŒ»ç”Ÿ,d_Combin_Name as ç»„åˆé¡¹ç›®åç§°,
+  d_getmoney as é‡‘é¢,
+  d_sum as æ•°é‡ 
   from #temp02
 end else
 
-if @in_StaticType='°´²Ù×÷Õß'
+if @in_StaticType='æŒ‰æ“ä½œè€…'
 begin
   DECLARE Cur_operator Cursor For 
     select isnull(operator,'') FROM Chk_Con_BAK where 
@@ -1812,7 +1812,7 @@ begin
 
   Open Cur_operator
 
-  Declare @operator varchar(50)--¾­¹ıÉÏÃæisnullµÄ×ª»»,@operator²»¿ÉÄÜ³öÏÖnullµÄÇé¿ö
+  Declare @operator varchar(50)--ç»è¿‡ä¸Šé¢isnullçš„è½¬æ¢,@operatorä¸å¯èƒ½å‡ºç°nullçš„æƒ…å†µ
   FETCH NEXT FROM Cur_operator INTO @operator
   WHILE @@FETCH_STATUS=0
   BEGIN
@@ -1833,14 +1833,14 @@ begin
 	        and itemvalue<>''
 	        and itemvalue is not null
 		GROUP BY pkunid,Combin_Name
-	     ) tmpView --ÄÚÇ¶ÊÓÍ¼tmpView:°´¿ÍÈË·Ö×é,È»ºó°´×éºÏÏîÄ¿·Ö×éµÄ
+	     ) tmpView --å†…åµŒè§†å›¾tmpView:æŒ‰å®¢äººåˆ†ç»„,ç„¶åæŒ‰ç»„åˆé¡¹ç›®åˆ†ç»„çš„
  	 group by Combin_Name
 
 
       declare @c float,@d int
       select @c=sum(d_Getmoney),@d=sum(d_sum) from #temp02 where d_TypeName=@operator
       if @c is not null and @d is not null
-        INSERT INTO #temp02(d_TypeName,d_Combin_Name,d_Getmoney,d_sum) values ('Ğ¡¼Æ',null,@c,@d)
+        INSERT INTO #temp02(d_TypeName,d_Combin_Name,d_Getmoney,d_sum) values ('å°è®¡',null,@c,@d)
 
     FETCH NEXT FROM Cur_operator INTO @operator
   END
@@ -1850,17 +1850,17 @@ begin
 	select 
         @hj_getmoney=sum(d_Getmoney),
         @hj_sum=sum(d_sum)
-        from #temp02 where d_TypeName='Ğ¡¼Æ'
-      INSERT INTO #temp02(d_TypeName,d_Combin_Name,d_Getmoney,d_sum) values ('ºÏ¼Æ',null,@hj_getmoney,@hj_sum)
+        from #temp02 where d_TypeName='å°è®¡'
+      INSERT INTO #temp02(d_TypeName,d_Combin_Name,d_Getmoney,d_sum) values ('åˆè®¡',null,@hj_getmoney,@hj_sum)
 
-select d_TypeName  as ²Ù×÷Õß,d_Combin_Name as ×éºÏÏîÄ¿Ãû³Æ,
-  d_getmoney as ½ğ¶î,
-  d_sum as ÊıÁ¿ 
+select d_TypeName  as æ“ä½œè€…,d_Combin_Name as ç»„åˆé¡¹ç›®åç§°,
+  d_getmoney as é‡‘é¢,
+  d_sum as æ•°é‡ 
   from #temp02
 
 end else
 
-if @in_StaticType='°´ËÍ¼ì¿ÆÊÒ'--add by liuying 20100504
+if @in_StaticType='æŒ‰é€æ£€ç§‘å®¤'--add by liuying 20100504
 begin
   DECLARE Cur_deptname Cursor For 
     select isnull(deptname,'') FROM Chk_Con_BAK where 
@@ -1869,7 +1869,7 @@ begin
 
   Open Cur_deptname
 
-  Declare @deptname varchar(50)--¾­¹ıÉÏÃæisnullµÄ×ª»»,@deptname²»¿ÉÄÜ³öÏÖnullµÄÇé¿ö
+  Declare @deptname varchar(50)--ç»è¿‡ä¸Šé¢isnullçš„è½¬æ¢,@deptnameä¸å¯èƒ½å‡ºç°nullçš„æƒ…å†µ
   FETCH NEXT FROM Cur_deptname INTO @deptname
   WHILE @@FETCH_STATUS=0
   BEGIN
@@ -1890,14 +1890,14 @@ begin
 	        and itemvalue<>''
 	        and itemvalue is not null
 		GROUP BY pkunid,Combin_Name
-	     ) tmpView --ÄÚÇ¶ÊÓÍ¼tmpView:°´ËÍ¼ì¿ÆÊÒ·Ö×é,È»ºó°´×éºÏÏîÄ¿·Ö×éµÄ
+	     ) tmpView --å†…åµŒè§†å›¾tmpView:æŒ‰é€æ£€ç§‘å®¤åˆ†ç»„,ç„¶åæŒ‰ç»„åˆé¡¹ç›®åˆ†ç»„çš„
         group by Combin_Name
 
 
       declare @e float,@f int
       select @e=sum(d_Getmoney),@f=sum(d_sum) from #temp02 where d_TypeName=@deptname
       if @e is not null and @f is not null
-        INSERT INTO #temp02(d_TypeName,d_Combin_Name,d_Getmoney,d_sum) values ('Ğ¡¼Æ',null,@e,@f)
+        INSERT INTO #temp02(d_TypeName,d_Combin_Name,d_Getmoney,d_sum) values ('å°è®¡',null,@e,@f)
 
     FETCH NEXT FROM Cur_deptname INTO @deptname
   END
@@ -1907,16 +1907,16 @@ begin
 	select 
         @hj_getmoney=sum(d_Getmoney),
         @hj_sum=sum(d_sum)
-        from #temp02 where d_TypeName='Ğ¡¼Æ'
-      INSERT INTO #temp02(d_TypeName,d_Combin_Name,d_Getmoney,d_sum) values ('ºÏ¼Æ',null,@hj_getmoney,@hj_sum)
+        from #temp02 where d_TypeName='å°è®¡'
+      INSERT INTO #temp02(d_TypeName,d_Combin_Name,d_Getmoney,d_sum) values ('åˆè®¡',null,@hj_getmoney,@hj_sum)
 
-select d_TypeName  as ËÍ¼ì¿ÆÊÒ,d_Combin_Name as ×éºÏÏîÄ¿Ãû³Æ,
-  d_getmoney as ½ğ¶î,
-  d_sum as ÊıÁ¿ 
+select d_TypeName  as é€æ£€ç§‘å®¤,d_Combin_Name as ç»„åˆé¡¹ç›®åç§°,
+  d_getmoney as é‡‘é¢,
+  d_sum as æ•°é‡ 
   from #temp02
 end else
 
-if @in_StaticType='°´ËÍ¼ì¿ÆÊÒ+ËÍ¼ìÒ½Éú'--add by liuying 20120830
+if @in_StaticType='æŒ‰é€æ£€ç§‘å®¤+é€æ£€åŒ»ç”Ÿ'--add by liuying 20120830
 begin
 
       INSERT INTO #temp02(d_TypeName,d_Combin_Name,d_Getmoney,d_sum,d_Reserve1)
@@ -1945,19 +1945,19 @@ begin
 	group by deptname,check_doctor,combin_name
 
       select @hj_Getmoney=sum(d_Getmoney),@hj_sum=sum(d_sum) from #temp02
-      INSERT INTO #temp02(d_TypeName,d_Combin_Name,d_Getmoney,d_sum,d_Reserve1) values ('ºÏ¼Æ',null,@hj_getmoney,@hj_sum,null)
+      INSERT INTO #temp02(d_TypeName,d_Combin_Name,d_Getmoney,d_sum,d_Reserve1) values ('åˆè®¡',null,@hj_getmoney,@hj_sum,null)
 
 
-select d_TypeName as ËÍ¼ì¿ÆÊÒ,d_Reserve1 as ËÍ¼ìÒ½Éú,d_Combin_Name as ×éºÏÏîÄ¿Ãû³Æ,
-  d_getmoney as ½ğ¶î,
-  d_sum as ÊıÁ¿ 
+select d_TypeName as é€æ£€ç§‘å®¤,d_Reserve1 as é€æ£€åŒ»ç”Ÿ,d_Combin_Name as ç»„åˆé¡¹ç›®åç§°,
+  d_getmoney as é‡‘é¢,
+  d_sum as æ•°é‡ 
   from #temp02
 
 end else
 
-select d_TypeName  as Í³¼ÆÀàĞÍ,d_Combin_Name as ×éºÏÏîÄ¿Ãû³Æ,
-  d_getmoney as ½ğ¶î,
-  d_sum as ÊıÁ¿ 
+select d_TypeName  as ç»Ÿè®¡ç±»å‹,d_Combin_Name as ç»„åˆé¡¹ç›®åç§°,
+  d_getmoney as é‡‘é¢,
+  d_sum as æ•°é‡ 
   from #temp02
 
 GO
@@ -1966,7 +1966,7 @@ GO
 SET ANSI_NULLS ON 
 GO
 
---pro_PrintDepartWorker´´½¨½Å±¾
+--pro_PrintDepartWorkeråˆ›å»ºè„šæœ¬
 if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[pro_PrintDepartWorker]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
 drop procedure [dbo].[pro_PrintDepartWorker]
 GO
@@ -1987,7 +1987,7 @@ CREATE TABLE #temp01
 )
 
 DECLARE Cur_combinitem Cursor For 
-	select Unid,ID,Name from CommCode WHERE (TypeName = '²¿ÃÅ') order by ID
+	select Unid,ID,Name from CommCode WHERE (TypeName = 'éƒ¨é—¨') order by ID
 
 Open Cur_combinitem
 
@@ -1995,9 +1995,9 @@ Declare @Unid int,@id varchar(50),@Name varchar(50)
 FETCH NEXT FROM Cur_combinitem INTO @Unid,@id,@Name
 WHILE @@FETCH_STATUS=0
 BEGIN
-  --²åÈë²¿ÃÅ
-  insert into #temp01 (ItemID) values ('²¿ÃÅ:'+@id+' '+@Name)
-  --²åÈëÈËÔ±
+  --æ’å…¥éƒ¨é—¨
+  insert into #temp01 (ItemID) values ('éƒ¨é—¨:'+@id+' '+@Name)
+  --æ’å…¥äººå‘˜
   insert into #temp01 (ItemID,ItemName)
     select ID,name from WORKER where pkdeptid=@unid
 
@@ -2008,8 +2008,8 @@ DEALLOCATE Cur_combinitem
 
 select 
    --Unid int IDENTITY PRIMARY KEY,
-   ItemID ¹¤ºÅ,
-   ItemName Ãû³Æ
+   ItemID å·¥å·,
+   ItemName åç§°
 from #temp01
 
 GO
@@ -2018,7 +2018,7 @@ GO
 SET ANSI_NULLS ON 
 GO
 
---´æ´¢¹ı³Ìpro_Static´´½¨½Å±¾
+--å­˜å‚¨è¿‡ç¨‹pro_Staticåˆ›å»ºè„šæœ¬
 if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[pro_Static]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
 drop procedure [dbo].[pro_Static]
 GO
@@ -2028,7 +2028,7 @@ GO
 SET ANSI_NULLS ON 
 GO
 
---Í³¼Æ¹¤×÷Á¿
+--ç»Ÿè®¡å·¥ä½œé‡
 CREATE  PROCEDURE [dbo].[pro_Static] 
 @in_StartDate varchar(50), 
 @in_StopDate varchar(50),
@@ -2041,9 +2041,9 @@ CREATE TABLE #temp01
    d_itemname varchar(50) null,
    d_number int null,
    d_money money null,
-   d_AnomalyRate float null--Òì³£ÂÊ 
+   d_AnomalyRate float null--å¼‚å¸¸ç‡ 
 )
-if @in_tag=0 --°´¼ìÑéÕßÍ³¼Æ
+if @in_tag=0 --æŒ‰æ£€éªŒè€…ç»Ÿè®¡
 begin
   DECLARE Cur_operator Cursor For 
     select isnull(operator,'') FROM Chk_Con_BAK where 
@@ -2053,7 +2053,7 @@ begin
 
   Open Cur_operator
 
-  Declare @operator varchar(50)--¾­¹ıÉÏÃæisnullµÄ×ª»»,@operator²»¿ÉÄÜ³öÏÖnullµÄÇé¿ö
+  Declare @operator varchar(50)--ç»è¿‡ä¸Šé¢isnullçš„è½¬æ¢,@operatorä¸å¯èƒ½å‡ºç°nullçš„æƒ…å†µ
   FETCH NEXT FROM Cur_operator INTO @operator
   WHILE @@FETCH_STATUS=0
   BEGIN
@@ -2070,12 +2070,12 @@ begin
 	     and isnull(chk_con_bak.operator,'')=@operator
              group by isnull(chk_con_bak.operator,''),chk_valu_bak.name
 
-    --²åÈë¸Ã¼ìÑéÕßµÄĞ¡¼Æ
+    --æ’å…¥è¯¥æ£€éªŒè€…çš„å°è®¡
     Declare @XJ_operator_NUM INT,@XJ_operator_number INT,@XJ_operator_money MONEY
 	select @XJ_operator_NUM=COUNT(*),@XJ_operator_number=sum(d_number),@XJ_operator_money=sum(d_money) from #temp01 
         where d_modename=@operator
     IF @XJ_operator_NUM<>0
-      INSERT INTO #temp01 (d_modename,d_number,d_money)VALUES('Ğ¡¼Æ',@XJ_operator_number,@XJ_operator_money)
+      INSERT INTO #temp01 (d_modename,d_number,d_money)VALUES('å°è®¡',@XJ_operator_number,@XJ_operator_money)
     ------------------
 
     FETCH NEXT FROM Cur_operator INTO @operator
@@ -2083,21 +2083,21 @@ begin
   CLOSE Cur_operator
   DEALLOCATE Cur_operator
 
-  --²åÈëºÏ¼Æ
+  --æ’å…¥åˆè®¡
     Declare @HJ_operator_number INT,@HJ_operator_money MONEY
 	select @HJ_operator_number=sum(d_number),@HJ_operator_money=sum(d_money) from #temp01 
-        where d_modename='Ğ¡¼Æ'
-    INSERT INTO #temp01 (d_modename,d_number,d_money)VALUES('ºÏ¼Æ',@HJ_operator_number,@HJ_operator_money)
+        where d_modename='å°è®¡'
+    INSERT INTO #temp01 (d_modename,d_number,d_money)VALUES('åˆè®¡',@HJ_operator_number,@HJ_operator_money)
   ---------
 
-  select d_modename as ¼ìÑéÕß,
-       d_itemname AS ÏîÄ¿Ãû³Æ,
-       d_number AS ÊıÁ¿,
-       d_money as ½ğ¶î
+  select d_modename as æ£€éªŒè€…,
+       d_itemname AS é¡¹ç›®åç§°,
+       d_number AS æ•°é‡,
+       d_money as é‡‘é¢
        from #temp01 
 end
 
-if @in_tag=1 --°´ËÍ¼ì¿ÆÊÒÍ³¼Æ
+if @in_tag=1 --æŒ‰é€æ£€ç§‘å®¤ç»Ÿè®¡
 begin
   DECLARE Cur_deptname Cursor For 
     select isnull(deptname,'') FROM Chk_Con_BAK where 
@@ -2107,7 +2107,7 @@ begin
 
   Open Cur_deptname
 
-  Declare @deptname varchar(50)--¾­¹ıÉÏÃæisnullµÄ×ª»»,@deptname²»¿ÉÄÜ³öÏÖnullµÄÇé¿ö
+  Declare @deptname varchar(50)--ç»è¿‡ä¸Šé¢isnullçš„è½¬æ¢,@deptnameä¸å¯èƒ½å‡ºç°nullçš„æƒ…å†µ
   FETCH NEXT FROM Cur_deptname INTO @deptname
   WHILE @@FETCH_STATUS=0
   BEGIN
@@ -2124,12 +2124,12 @@ begin
 	     and isnull(chk_con_bak.deptname,'')=@deptname
              group by isnull(chk_con_bak.deptname,''),chk_valu_bak.name
 
-    --²åÈë¸ÃËÍ¼ì¿ÆÊÒµÄĞ¡¼Æ
+    --æ’å…¥è¯¥é€æ£€ç§‘å®¤çš„å°è®¡
     Declare @XJ_deptname_NUM INT,@XJ_deptname_number INT,@XJ_deptname_money MONEY
 	select @XJ_deptname_NUM=COUNT(*),@XJ_deptname_number=sum(d_number),@XJ_deptname_money=sum(d_money) from #temp01 
         where d_modename=@deptname
     IF @XJ_deptname_NUM<>0
-      INSERT INTO #temp01 (d_modename,d_number,d_money)VALUES('Ğ¡¼Æ',@XJ_deptname_number,@XJ_deptname_money)
+      INSERT INTO #temp01 (d_modename,d_number,d_money)VALUES('å°è®¡',@XJ_deptname_number,@XJ_deptname_money)
     ------------------
 
     FETCH NEXT FROM Cur_deptname INTO @deptname
@@ -2137,22 +2137,22 @@ begin
   CLOSE Cur_deptname
   DEALLOCATE Cur_deptname
 
-  --²åÈëºÏ¼Æ
+  --æ’å…¥åˆè®¡
     Declare @HJ_deptname_number INT,@HJ_deptname_money MONEY
 	select @HJ_deptname_number=sum(d_number),@HJ_deptname_money=sum(d_money) from #temp01 
-        where d_modename='Ğ¡¼Æ'    
-    INSERT INTO #temp01 (d_modename,d_number,d_money)VALUES('ºÏ¼Æ',@HJ_deptname_number,@HJ_deptname_money)
+        where d_modename='å°è®¡'    
+    INSERT INTO #temp01 (d_modename,d_number,d_money)VALUES('åˆè®¡',@HJ_deptname_number,@HJ_deptname_money)
   ---------
 
 
-  select d_modename as ËÍ¼ì¿ÆÊÒ,
-       d_itemname AS ÏîÄ¿Ãû³Æ,
-       d_number AS ÊıÁ¿,
-       d_money as ½ğ¶î
+  select d_modename as é€æ£€ç§‘å®¤,
+       d_itemname AS é¡¹ç›®åç§°,
+       d_number AS æ•°é‡,
+       d_money as é‡‘é¢
        from #temp01 
 end
 
-if @in_tag=2 --°´¼ìÑéÏîÄ¿Í³¼Æ
+if @in_tag=2 --æŒ‰æ£€éªŒé¡¹ç›®ç»Ÿè®¡
 begin
     INSERT INTO #temp01 (d_itemname,d_number,d_money)
           select chk_valu_bak.name, 
@@ -2166,18 +2166,18 @@ begin
              and chk_valu_bak.itemid in(select itemid from static_temp) 
              group by chk_valu_bak.name
 
-  --²åÈëºÏ¼Æ
+  --æ’å…¥åˆè®¡
     Declare @HJ_item_number INT,@HJ_item_money MONEY
 	select @HJ_item_number=sum(d_number),@HJ_item_money=sum(d_money) from #temp01 
-    INSERT INTO #temp01 (d_itemname,d_number,d_money)VALUES('ºÏ¼Æ',@HJ_item_number,@HJ_item_money)
+    INSERT INTO #temp01 (d_itemname,d_number,d_money)VALUES('åˆè®¡',@HJ_item_number,@HJ_item_money)
   ---------
 
-  --²åÈëÒì³£ÂÊ
+  --æ’å…¥å¼‚å¸¸ç‡
   DECLARE Cur_itemname_2 Cursor For 
     select 
        d_itemname ,
        d_number 
-       from #temp01 where d_itemname<>'ºÏ¼Æ' and d_itemname<>'Ğ¡¼Æ'
+       from #temp01 where d_itemname<>'åˆè®¡' and d_itemname<>'å°è®¡'
 
   Open Cur_itemname_2
   Declare @itemname_2 varchar(50),@itemCount_2 float
@@ -2204,14 +2204,14 @@ begin
   ------------------
 
   select 
-       d_itemname AS ÏîÄ¿Ãû³Æ,
-       d_number AS ÊıÁ¿,
-       d_money as ½ğ¶î,
-       rtrim(ltrim(str(d_AnomalyRate*100)))+'%' as Òì³£ÂÊ
+       d_itemname AS é¡¹ç›®åç§°,
+       d_number AS æ•°é‡,
+       d_money as é‡‘é¢,
+       rtrim(ltrim(str(d_AnomalyRate*100)))+'%' as å¼‚å¸¸ç‡
        from #temp01 
 end
 
-if @in_tag=3 --°´ËÍ¼ìÒ½ÉúÍ³¼Æ
+if @in_tag=3 --æŒ‰é€æ£€åŒ»ç”Ÿç»Ÿè®¡
 begin
   DECLARE Cur_check_doctor Cursor For 
     select isnull(check_doctor,'') FROM Chk_Con_BAK where 
@@ -2221,7 +2221,7 @@ begin
 
   Open Cur_check_doctor
 
-  Declare @check_doctor varchar(50)--¾­¹ıÉÏÃæisnullµÄ×ª»»,@check_doctor²»¿ÉÄÜ³öÏÖnullµÄÇé¿ö
+  Declare @check_doctor varchar(50)--ç»è¿‡ä¸Šé¢isnullçš„è½¬æ¢,@check_doctorä¸å¯èƒ½å‡ºç°nullçš„æƒ…å†µ
   FETCH NEXT FROM Cur_check_doctor INTO @check_doctor
   WHILE @@FETCH_STATUS=0
   BEGIN
@@ -2238,12 +2238,12 @@ begin
 	     and isnull(chk_con_bak.check_doctor,'')=@check_doctor
              group by isnull(chk_con_bak.check_doctor,''),chk_valu_bak.name
 
-    --²åÈë¸ÃËÍ¼ìÒ½ÉúµÄĞ¡¼Æ
+    --æ’å…¥è¯¥é€æ£€åŒ»ç”Ÿçš„å°è®¡
     Declare @XJ_check_doctor_NUM INT,@XJ_check_doctor_number INT,@XJ_check_doctor_money MONEY
 	select @XJ_check_doctor_NUM=COUNT(*),@XJ_check_doctor_number=sum(d_number),@XJ_check_doctor_money=sum(d_money) from #temp01 
         where d_modename=@check_doctor
     IF @XJ_check_doctor_NUM<>0
-      INSERT INTO #temp01 (d_modename,d_number,d_money)VALUES('Ğ¡¼Æ',@XJ_check_doctor_number,@XJ_check_doctor_money)
+      INSERT INTO #temp01 (d_modename,d_number,d_money)VALUES('å°è®¡',@XJ_check_doctor_number,@XJ_check_doctor_money)
     ------------------
 
     FETCH NEXT FROM Cur_check_doctor INTO @check_doctor
@@ -2251,22 +2251,22 @@ begin
   CLOSE Cur_check_doctor
   DEALLOCATE Cur_check_doctor
 
-  --²åÈëºÏ¼Æ
+  --æ’å…¥åˆè®¡
     Declare @HJ_check_doctor_number INT,@HJ_check_doctor_money MONEY
 	select @HJ_check_doctor_number=sum(d_number),@HJ_check_doctor_money=sum(d_money) from #temp01 
-        where d_modename='Ğ¡¼Æ'
-    INSERT INTO #temp01 (d_modename,d_number,d_money)VALUES('ºÏ¼Æ',@HJ_check_doctor_number,@HJ_check_doctor_money)
+        where d_modename='å°è®¡'
+    INSERT INTO #temp01 (d_modename,d_number,d_money)VALUES('åˆè®¡',@HJ_check_doctor_number,@HJ_check_doctor_money)
   ---------
 
 
-  select d_modename as ËÍ¼ìÒ½Éú,
-       d_itemname AS ÏîÄ¿Ãû³Æ,
-       d_number AS ÊıÁ¿,
-       d_money as ½ğ¶î
+  select d_modename as é€æ£€åŒ»ç”Ÿ,
+       d_itemname AS é¡¹ç›®åç§°,
+       d_number AS æ•°é‡,
+       d_money as é‡‘é¢
        from #temp01 
 end
 
-if @in_tag=4 --°´±¨¸æÈÕÆÚÍ³¼Æ
+if @in_tag=4 --æŒ‰æŠ¥å‘Šæ—¥æœŸç»Ÿè®¡
 begin
   DECLARE Cur_report_date Cursor For 
     select convert(varchar(10),report_date,111) FROM Chk_Con_BAK where 
@@ -2291,12 +2291,12 @@ begin
 	     and convert(varchar(10),chk_con_bak.report_date,111)=@report_date
              group by chk_con_bak.report_date,chk_valu_bak.name
 
-    --²åÈë¸Ã±¨¸æÈÕÆÚµÄĞ¡¼Æ
+    --æ’å…¥è¯¥æŠ¥å‘Šæ—¥æœŸçš„å°è®¡
     Declare @XJ_report_date_NUM INT,@XJ_report_date_number INT,@XJ_report_date_money MONEY
 	select @XJ_report_date_NUM=COUNT(*),@XJ_report_date_number=sum(d_number),@XJ_report_date_money=sum(d_money) from #temp01 
         where d_modename=@report_date
     IF @XJ_report_date_NUM<>0
-      INSERT INTO #temp01 (d_modename,d_number,d_money)VALUES('Ğ¡¼Æ',@XJ_report_date_number,@XJ_report_date_money)
+      INSERT INTO #temp01 (d_modename,d_number,d_money)VALUES('å°è®¡',@XJ_report_date_number,@XJ_report_date_money)
     ------------------
 
     FETCH NEXT FROM Cur_report_date INTO @report_date
@@ -2304,22 +2304,22 @@ begin
   CLOSE Cur_report_date
   DEALLOCATE Cur_report_date
 
-  --²åÈëºÏ¼Æ
+  --æ’å…¥åˆè®¡
     Declare @HJ_report_date_number INT,@HJ_report_date_money MONEY
 	select @HJ_report_date_number=sum(d_number),@HJ_report_date_money=sum(d_money) from #temp01 
-        where d_modename='Ğ¡¼Æ'
-    INSERT INTO #temp01 (d_modename,d_number,d_money)VALUES('ºÏ¼Æ',@HJ_report_date_number,@HJ_report_date_money)
+        where d_modename='å°è®¡'
+    INSERT INTO #temp01 (d_modename,d_number,d_money)VALUES('åˆè®¡',@HJ_report_date_number,@HJ_report_date_money)
   ---------
 
 
-  select d_modename as ±¨¸æÈÕÆÚ,
-       d_itemname AS ÏîÄ¿Ãû³Æ,
-       d_number AS ÊıÁ¿,
-       d_money as ½ğ¶î
+  select d_modename as æŠ¥å‘Šæ—¥æœŸ,
+       d_itemname AS é¡¹ç›®åç§°,
+       d_number AS æ•°é‡,
+       d_money as é‡‘é¢
        from #temp01 
 end
 
-if @in_tag=5 --°´²¡ÈËËùÊô²¿ÃÅÍ³¼Æ
+if @in_tag=5 --æŒ‰ç—…äººæ‰€å±éƒ¨é—¨ç»Ÿè®¡
 begin
   DECLARE Cur_WorkDepartment Cursor For 
     select isnull(WorkDepartment,'') FROM Chk_Con_BAK where 
@@ -2329,7 +2329,7 @@ begin
 
   Open Cur_WorkDepartment
 
-  Declare @WorkDepartment varchar(50)--¾­¹ıÉÏÃæisnullµÄ×ª»»,@WorkDepartment²»¿ÉÄÜ³öÏÖnullµÄÇé¿ö
+  Declare @WorkDepartment varchar(50)--ç»è¿‡ä¸Šé¢isnullçš„è½¬æ¢,@WorkDepartmentä¸å¯èƒ½å‡ºç°nullçš„æƒ…å†µ
   FETCH NEXT FROM Cur_WorkDepartment INTO @WorkDepartment
   WHILE @@FETCH_STATUS=0
   BEGIN
@@ -2346,12 +2346,12 @@ begin
 	     and isnull(chk_con_bak.WorkDepartment,'')=@WorkDepartment
              group by isnull(chk_con_bak.WorkDepartment,''),chk_valu_bak.name
 
-    --²åÈë¸Ã¼ìÑéÕßµÄĞ¡¼Æ
+    --æ’å…¥è¯¥æ£€éªŒè€…çš„å°è®¡
     Declare @XJ_WorkDepartment_NUM INT,@XJ_WorkDepartment_number INT,@XJ_WorkDepartment_money MONEY
 	select @XJ_WorkDepartment_NUM=COUNT(*),@XJ_WorkDepartment_number=sum(d_number),@XJ_WorkDepartment_money=sum(d_money) from #temp01 
         where d_modename=@WorkDepartment
     IF @XJ_WorkDepartment_NUM<>0
-      INSERT INTO #temp01 (d_modename,d_number,d_money)VALUES('Ğ¡¼Æ',@XJ_WorkDepartment_number,@XJ_WorkDepartment_money)
+      INSERT INTO #temp01 (d_modename,d_number,d_money)VALUES('å°è®¡',@XJ_WorkDepartment_number,@XJ_WorkDepartment_money)
     ------------------
 
     FETCH NEXT FROM Cur_WorkDepartment INTO @WorkDepartment
@@ -2359,19 +2359,19 @@ begin
   CLOSE Cur_WorkDepartment
   DEALLOCATE Cur_WorkDepartment
 
-  --²åÈëºÏ¼Æ
+  --æ’å…¥åˆè®¡
     Declare @HJ_WorkDepartment_number INT,@HJ_WorkDepartment_money MONEY
 	select @HJ_WorkDepartment_number=sum(d_number),@HJ_WorkDepartment_money=sum(d_money) from #temp01 
-        where d_modename='Ğ¡¼Æ'
-    INSERT INTO #temp01 (d_modename,d_number,d_money)VALUES('ºÏ¼Æ',@HJ_WorkDepartment_number,@HJ_WorkDepartment_money)
+        where d_modename='å°è®¡'
+    INSERT INTO #temp01 (d_modename,d_number,d_money)VALUES('åˆè®¡',@HJ_WorkDepartment_number,@HJ_WorkDepartment_money)
   ---------
 
-  --²åÈëÒì³£ÂÊ
+  --æ’å…¥å¼‚å¸¸ç‡
   DECLARE Cur_itemname_5 Cursor For 
     select d_modename ,
        d_itemname ,
        d_number 
-       from #temp01 where d_modename<>'ºÏ¼Æ' and d_modename<>'Ğ¡¼Æ'
+       from #temp01 where d_modename<>'åˆè®¡' and d_modename<>'å°è®¡'
 
   Open Cur_itemname_5
   Declare @modename_5 varchar(50),@itemname_5 varchar(50),@itemCount_5 float
@@ -2398,15 +2398,15 @@ begin
   DEALLOCATE Cur_itemname_5
   ------------------
 
-  select d_modename as ËùÊô²¿ÃÅ,
-       d_itemname AS ÏîÄ¿Ãû³Æ,
-       d_number AS ÊıÁ¿,
-       d_money as ½ğ¶î,
-       rtrim(ltrim(str(d_AnomalyRate*100)))+'%' as Òì³£ÂÊ
+  select d_modename as æ‰€å±éƒ¨é—¨,
+       d_itemname AS é¡¹ç›®åç§°,
+       d_number AS æ•°é‡,
+       d_money as é‡‘é¢,
+       rtrim(ltrim(str(d_AnomalyRate*100)))+'%' as å¼‚å¸¸ç‡
        from #temp01 
 end
 
-if @in_tag=6 --°´²¡ÈËËùÊô¹¤ÖÖÍ³¼Æ
+if @in_tag=6 --æŒ‰ç—…äººæ‰€å±å·¥ç§ç»Ÿè®¡
 begin
   DECLARE Cur_WorkCategory Cursor For 
     select isnull(WorkCategory,'') FROM Chk_Con_BAK where 
@@ -2416,7 +2416,7 @@ begin
 
   Open Cur_WorkCategory
 
-  Declare @WorkCategory varchar(50)--¾­¹ıÉÏÃæisnullµÄ×ª»»,@WorkCategory²»¿ÉÄÜ³öÏÖnullµÄÇé¿ö
+  Declare @WorkCategory varchar(50)--ç»è¿‡ä¸Šé¢isnullçš„è½¬æ¢,@WorkCategoryä¸å¯èƒ½å‡ºç°nullçš„æƒ…å†µ
   FETCH NEXT FROM Cur_WorkCategory INTO @WorkCategory
   WHILE @@FETCH_STATUS=0
   BEGIN
@@ -2432,12 +2432,12 @@ begin
              and chk_valu_bak.itemid in(select itemid from static_temp) 
 	     and isnull(chk_con_bak.WorkCategory,'')=@WorkCategory
              group by isnull(chk_con_bak.WorkCategory,''),chk_valu_bak.name
-    --²åÈë¸Ã¼ìÑéÕßµÄĞ¡¼Æ
+    --æ’å…¥è¯¥æ£€éªŒè€…çš„å°è®¡
     Declare @XJ_WorkCategory_NUM INT,@XJ_WorkCategory_number INT,@XJ_WorkCategory_money MONEY
 	select @XJ_WorkCategory_NUM=COUNT(*),@XJ_WorkCategory_number=sum(d_number),@XJ_WorkCategory_money=sum(d_money) from #temp01 
         where d_modename=@WorkCategory
     IF @XJ_WorkCategory_NUM<>0
-      INSERT INTO #temp01 (d_modename,d_number,d_money)VALUES('Ğ¡¼Æ',@XJ_WorkCategory_number,@XJ_WorkCategory_money)
+      INSERT INTO #temp01 (d_modename,d_number,d_money)VALUES('å°è®¡',@XJ_WorkCategory_number,@XJ_WorkCategory_money)
     ------------------
 
     FETCH NEXT FROM Cur_WorkCategory INTO @WorkCategory
@@ -2445,19 +2445,19 @@ begin
   CLOSE Cur_WorkCategory
   DEALLOCATE Cur_WorkCategory
 
-  --²åÈëºÏ¼Æ
+  --æ’å…¥åˆè®¡
     Declare @HJ_WorkCategory_number INT,@HJ_WorkCategory_money MONEY
 	select @HJ_WorkCategory_number=sum(d_number),@HJ_WorkCategory_money=sum(d_money) from #temp01 
-        where d_modename='Ğ¡¼Æ'
-    INSERT INTO #temp01 (d_modename,d_number,d_money)VALUES('ºÏ¼Æ',@HJ_WorkCategory_number,@HJ_WorkCategory_money)
+        where d_modename='å°è®¡'
+    INSERT INTO #temp01 (d_modename,d_number,d_money)VALUES('åˆè®¡',@HJ_WorkCategory_number,@HJ_WorkCategory_money)
   ---------
 
-  --²åÈëÒì³£ÂÊ
+  --æ’å…¥å¼‚å¸¸ç‡
   DECLARE Cur_itemname_6 Cursor For 
     select d_modename ,
        d_itemname ,
        d_number 
-       from #temp01 where d_modename<>'ºÏ¼Æ' and d_modename<>'Ğ¡¼Æ'
+       from #temp01 where d_modename<>'åˆè®¡' and d_modename<>'å°è®¡'
 
   Open Cur_itemname_6
   Declare @modename_6 varchar(50),@itemname_6 varchar(50),@itemCount_6 float
@@ -2484,11 +2484,11 @@ begin
   DEALLOCATE Cur_itemname_6
   ------------------
 
-  select d_modename as ËùÊô¹¤ÖÖ,
-       d_itemname AS ÏîÄ¿Ãû³Æ,
-       d_number AS ÊıÁ¿,
-       d_money as ½ğ¶î,
-       rtrim(ltrim(str(d_AnomalyRate*100)))+'%' as Òì³£ÂÊ
+  select d_modename as æ‰€å±å·¥ç§,
+       d_itemname AS é¡¹ç›®åç§°,
+       d_number AS æ•°é‡,
+       d_money as é‡‘é¢,
+       rtrim(ltrim(str(d_AnomalyRate*100)))+'%' as å¼‚å¸¸ç‡
        from #temp01 
 end
 
@@ -2498,7 +2498,7 @@ GO
 SET ANSI_NULLS ON 
 GO
 
---´æ´¢¹ı³Ìpro_StaticHBV´´½¨½Å±¾
+--å­˜å‚¨è¿‡ç¨‹pro_StaticHBVåˆ›å»ºè„šæœ¬
 if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[pro_StaticHBV]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
 drop procedure [dbo].[pro_StaticHBV]
 GO
@@ -2560,11 +2560,11 @@ t_HBcAb varchar(50) null
 	and t_HBeAb like  '%'+@in_HBeAb+'%'
 	and t_HBcAb like  '%'+@in_HBcAb+'%'
 
-  select lsh as Á÷Ë®ºÅ,checkid as Áª»úºÅ,caseno as ²¡ÀúºÅ,
-         patientname as ĞÕÃû,sex as ĞÔ±ğ,age as ÄêÁä,
+  select lsh as æµæ°´å·,checkid as è”æœºå·,caseno as ç—…å†å·,
+         patientname as å§“å,sex as æ€§åˆ«,age as å¹´é¾„,
          B.t_HBsAg,B.t_HBsAb,B.t_HBeAg,B.t_HBeAb,B.t_HBcAb,
-         bedno as ´²ºÅ,deptname as ËÍ¼ì¿ÆÊÒ,check_doctor as ËÍ¼ìÒ½Éú,
-         check_date as ¼ì²éÈÕÆÚ,issure as ±¸×¢
+         bedno as åºŠå·,deptname as é€æ£€ç§‘å®¤,check_doctor as é€æ£€åŒ»ç”Ÿ,
+         check_date as æ£€æŸ¥æ—¥æœŸ,issure as å¤‡æ³¨
 	 from #temp01 B,dbo.view_Chk_Con_All A 
 	where t_pkunid=A.unid
 	and t_HBsAg like  '%'+@in_HBsAg+'%'
@@ -2574,7 +2574,7 @@ t_HBcAb varchar(50) null
 	and t_HBcAb like  '%'+@in_HBcAb+'%'
 	--order by A.check_date
   UNION ALL
-  select 'ºÏ¼Æ',ltrim(rtrim(str(@RecordNum))),null,
+  select 'åˆè®¡',ltrim(rtrim(str(@RecordNum))),null,
 	 null,null,null,
 	 null,null,null,null,null,
 	 null,null,null,
@@ -2586,7 +2586,7 @@ GO
 SET ANSI_NULLS ON 
 GO
 
---2011-01-06´æ´¢¹ı³ÌPRO_Completion_Chk_His´´½¨½Å±¾
+--2011-01-06å­˜å‚¨è¿‡ç¨‹PRO_Completion_Chk_Hisåˆ›å»ºè„šæœ¬
 if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[PRO_Completion_Chk_His]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
 drop procedure [dbo].[PRO_Completion_Chk_His]
 GO
@@ -2598,7 +2598,7 @@ GO
 
 CREATE PROCEDURE PRO_Completion_Chk_His
 AS
---¹éµµÈ«²¿Íê³ÉµÄchk_his
+--å½’æ¡£å…¨éƒ¨å®Œæˆçš„chk_his
 Declare @Current_Date datetime
 select @Current_Date=getdate()
 
@@ -2663,7 +2663,7 @@ GO
 SET ANSI_NULLS ON 
 GO
 
---´æ´¢¹ı³Ìpro_MergeRequestBill´´½¨½Å±¾
+--å­˜å‚¨è¿‡ç¨‹pro_MergeRequestBillåˆ›å»ºè„šæœ¬
 if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[pro_MergeRequestBill]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
   drop procedure [dbo].[pro_MergeRequestBill]
 GO
@@ -2673,10 +2673,10 @@ GO
 SET ANSI_NULLS ON 
 GO
 
---¸ù¾İ²¡ÀúºÅ¡¢Ñù±¾ÀàĞÍ¡¢Ñù±¾·Ö¸ô·ûºÏ²¢ÉêÇëµ¥
---Âú×ãÒÔÏÂÌõ¼şµÄÉêÇëµ¥²Å²ÎÓëºÏ²¢
---1¡¢´Ó½Ó¿Ú´«ÈëµÄÉêÇëµ¥£»2¡¢²¡ÀúºÅ²»Îª¿Õ
---20151202Ô½ĞãÖĞÒ½PEISÒªÇó²ÉÑùÊ±¼äÒ»ÑùµÄ²ÅºÏ²¢
+--æ ¹æ®ç—…å†å·ã€æ ·æœ¬ç±»å‹ã€æ ·æœ¬åˆ†éš”ç¬¦åˆå¹¶ç”³è¯·å•
+--æ»¡è¶³ä»¥ä¸‹æ¡ä»¶çš„ç”³è¯·å•æ‰å‚ä¸åˆå¹¶
+--1ã€ä»æ¥å£ä¼ å…¥çš„ç”³è¯·å•ï¼›2ã€ç—…å†å·ä¸ä¸ºç©º
+--20151202è¶Šç§€ä¸­åŒ»PEISè¦æ±‚é‡‡æ ·æ—¶é—´ä¸€æ ·çš„æ‰åˆå¹¶
 CREATE PROCEDURE [dbo].[pro_MergeRequestBill] 
 AS
 
@@ -2689,10 +2689,10 @@ AS
         from chk_con_his cch
         inner join chk_valu_his cvh on cch.unid=cvh.pkunid
         inner join combinitem cbi on cbi.id=cvh.pkcombin_id
-        where isnull(cch.his_unid,'')<>''--±íÊ¾½Ó¿Ú´«ÈëµÄÉêÇëµ¥
+        where isnull(cch.his_unid,'')<>''--è¡¨ç¤ºæ¥å£ä¼ å…¥çš„ç”³è¯·å•
         and 
-        isnull(cch.caseno,'')<>''--±íÊ¾ÓĞ²¡ÀúºÅµÄÉêÇëµ¥
-        and (select count(*) from chk_valu_his cvh2 where cvh2.pkunid=cch.unid and isnull(cvh2.itemvalue,'')='1')<=0--±íÊ¾Î´±»LISÈ¡¹ıµÄÉêÇëµ¥
+        isnull(cch.caseno,'')<>''--è¡¨ç¤ºæœ‰ç—…å†å·çš„ç”³è¯·å•
+        and (select count(*) from chk_valu_his cvh2 where cvh2.pkunid=cch.unid and isnull(cvh2.itemvalue,'')='1')<=0--è¡¨ç¤ºæœªè¢«LISå–è¿‡çš„ç”³è¯·å•
         group by cch.caseno,isnull(cbi.specimentype_DfValue,''),isnull(cbi.itemtype,''),isnull(cvh.TakeSampleTime,0)
 
   Open Cur_WaitMergeRequestBill
@@ -2706,13 +2706,13 @@ AS
         from chk_con_his cch
         inner join chk_valu_his cvh on cch.unid=cvh.pkunid
         inner join combinitem cbi on cbi.id=cvh.pkcombin_id
-        where isnull(cch.his_unid,'')<>''--±íÊ¾½Ó¿Ú´«ÈëµÄÉêÇëµ¥
+        where isnull(cch.his_unid,'')<>''--è¡¨ç¤ºæ¥å£ä¼ å…¥çš„ç”³è¯·å•
         and 
-        isnull(cch.caseno,'')<>''--±íÊ¾ÓĞ²¡ÀúºÅµÄÉêÇëµ¥
-        and (select count(*) from chk_valu_his cvh2 where cvh2.pkunid=cch.unid and isnull(cvh2.itemvalue,'')='1')<=0--±íÊ¾Î´±»LISÈ¡¹ıµÄÉêÇëµ¥
-        --·Çµ±Ç°ÉêÇëµ¥
+        isnull(cch.caseno,'')<>''--è¡¨ç¤ºæœ‰ç—…å†å·çš„ç”³è¯·å•
+        and (select count(*) from chk_valu_his cvh2 where cvh2.pkunid=cch.unid and isnull(cvh2.itemvalue,'')='1')<=0--è¡¨ç¤ºæœªè¢«LISå–è¿‡çš„ç”³è¯·å•
+        --éå½“å‰ç”³è¯·å•
         and cch.unid<>@Unid
-        --²¡ÀúºÅ¡¢Ñù±¾ÀàĞÍ¡¢Ñù±¾·Ö¸ô·û¡¢²ÉÑùÊ±¼äÒ»ÑùµÄºÏ²¢
+        --ç—…å†å·ã€æ ·æœ¬ç±»å‹ã€æ ·æœ¬åˆ†éš”ç¬¦ã€é‡‡æ ·æ—¶é—´ä¸€æ ·çš„åˆå¹¶
         and cch.caseno=@CaseNo and isnull(cbi.specimentype_DfValue,'')=isnull(@SpecimenType,'') and isnull(cbi.itemtype,'')=isnull(@ItemType,'') and isnull(cvh.TakeSampleTime,0)=isnull(@TakeSampleTime,0)
       )
       
@@ -2721,11 +2721,11 @@ AS
   CLOSE Cur_WaitMergeRequestBill
   DEALLOCATE Cur_WaitMergeRequestBill
 
-  --É¾³ıÎŞÃ÷Ï¸(×éºÏÏîÄ¿)µÄÖ÷¼ÇÂ¼
+  --åˆ é™¤æ— æ˜ç»†(ç»„åˆé¡¹ç›®)çš„ä¸»è®°å½•
   delete from chk_con_his 
-  where isnull(chk_con_his.his_unid,'')<>''--±íÊ¾½Ó¿Ú´«ÈëµÄÉêÇëµ¥
+  where isnull(chk_con_his.his_unid,'')<>''--è¡¨ç¤ºæ¥å£ä¼ å…¥çš„ç”³è¯·å•
   and 
-  isnull(chk_con_his.caseno,'')<>''--±íÊ¾ÓĞ²¡ÀúºÅµÄÉêÇëµ¥
+  isnull(chk_con_his.caseno,'')<>''--è¡¨ç¤ºæœ‰ç—…å†å·çš„ç”³è¯·å•
   and (select count(*) from Chk_Valu_His cvh where cvh.PkUnid=chk_con_his.Unid)=0
 
 GO
@@ -2734,7 +2734,7 @@ GO
 SET ANSI_NULLS ON 
 GO
 
---´æ´¢¹ı³Ìpro_SplitRequestBill´´½¨½Å±¾
+--å­˜å‚¨è¿‡ç¨‹pro_SplitRequestBillåˆ›å»ºè„šæœ¬
 if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[pro_SplitRequestBill]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
   drop procedure [dbo].[pro_SplitRequestBill]
 GO
@@ -2744,19 +2744,19 @@ GO
 SET ANSI_NULLS ON 
 GO
 
---¸ù¾İÑù±¾ÀàĞÍ¡¢Ñù±¾·Ö¸ô·û²ğ·ÖÉêÇëµ¥
---Âú×ãÒÔÏÂÌõ¼şµÄÉêÇëµ¥²Å²ÎÓë²ğ·Ö
---1¡¢´Ó½Ó¿Ú´«ÈëµÄÉêÇëµ¥£»
---20151202Ô½ĞãÖĞÒ½PEISÒªÇó°´²ÉÑùÊ±¼ä²ğ¿ª
+--æ ¹æ®æ ·æœ¬ç±»å‹ã€æ ·æœ¬åˆ†éš”ç¬¦æ‹†åˆ†ç”³è¯·å•
+--æ»¡è¶³ä»¥ä¸‹æ¡ä»¶çš„ç”³è¯·å•æ‰å‚ä¸æ‹†åˆ†
+--1ã€ä»æ¥å£ä¼ å…¥çš„ç”³è¯·å•ï¼›
+--20151202è¶Šç§€ä¸­åŒ»PEISè¦æ±‚æŒ‰é‡‡æ ·æ—¶é—´æ‹†å¼€
 CREATE PROCEDURE [dbo].[pro_SplitRequestBill] 
 AS
 
   DECLARE Cur_WaitSplitRequestBill Cursor For 
 	select cch.unid
         from chk_con_his cch
-        where isnull(cch.his_unid,'')<>''--±íÊ¾½Ó¿Ú´«ÈëµÄÉêÇëµ¥
+        where isnull(cch.his_unid,'')<>''--è¡¨ç¤ºæ¥å£ä¼ å…¥çš„ç”³è¯·å•
         and 
-        (select count(*) from chk_valu_his cvh2 where cvh2.pkunid=cch.unid and isnull(cvh2.itemvalue,'')='1')<=0--±íÊ¾Î´±»LISÈ¡¹ıµÄÉêÇëµ¥
+        (select count(*) from chk_valu_his cvh2 where cvh2.pkunid=cch.unid and isnull(cvh2.itemvalue,'')='1')<=0--è¡¨ç¤ºæœªè¢«LISå–è¿‡çš„ç”³è¯·å•
 
   Open Cur_WaitSplitRequestBill
 
@@ -2838,9 +2838,9 @@ GO
 SET ANSI_NULLS ON 
 GO
 
----------------ÊÓÍ¼Ïà¹Ø²Ù×÷---------------
+---------------è§†å›¾ç›¸å…³æ“ä½œ---------------
 
---ÊÓÍ¼view_chk_valu_AllµÄ´´½¨½Å±¾
+--è§†å›¾view_chk_valu_Allçš„åˆ›å»ºè„šæœ¬
 SET QUOTED_IDENTIFIER ON 
 GO
 SET ANSI_NULLS ON 
@@ -2850,7 +2850,7 @@ if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[view_chk_v
 drop view [dbo].[view_chk_valu_All]
 GO
 
---AspÍøÂç²éÑ¯¼°´òÓ¡Ã¿ÈÕ´æ¸ùÒªÓÃµ½
+--Aspç½‘ç»œæŸ¥è¯¢åŠæ‰“å°æ¯æ—¥å­˜æ ¹è¦ç”¨åˆ°
 --2007-03-21
 CREATE VIEW view_chk_valu_All
   AS
@@ -2870,7 +2870,7 @@ if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[view_HBV_V
 drop view [dbo].[view_HBV_Value]
 GO
 
---ÊÓÍ¼view_HBV_ValueµÄ´´½¨½Å±¾
+--è§†å›¾view_HBV_Valueçš„åˆ›å»ºè„šæœ¬
 SET QUOTED_IDENTIFIER ON 
 GO
 SET ANSI_NULLS ON 
@@ -2894,7 +2894,7 @@ GO
 SET ANSI_NULLS ON 
 GO
 
---20160802ÊÓÍ¼view_Chk_Con_All´´½¨½Å±¾
+--20160802è§†å›¾view_Chk_Con_Allåˆ›å»ºè„šæœ¬
 IF EXISTS (SELECT * FROM dbo.sysobjects where id = OBJECT_ID(N'[dbo].[view_Chk_Con_All]') and OBJECTPROPERTY(id, N'IsView') = 1)
 DROP VIEW [dbo].[view_Chk_Con_All]
 GO
@@ -2915,7 +2915,7 @@ CREATE  VIEW [dbo].[view_Chk_Con_All]
   
 GO
 
---20150719´´½¨ÊÓÍ¼view_UT_LIS_RESULT
+--20150719åˆ›å»ºè§†å›¾view_UT_LIS_RESULT
 if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[view_UT_LIS_RESULT]') and OBJECTPROPERTY(id, N'IsView') = 1)
 drop view [dbo].[view_UT_LIS_RESULT]
 GO
@@ -2927,7 +2927,7 @@ GO
 
 CREATE VIEW view_UT_LIS_RESULT
 AS
---LISÌá¹©¸ø±êÈíPEISµÄ½á¹ûÊÓÍ¼
+--LISæä¾›ç»™æ ‡è½¯PEISçš„ç»“æœè§†å›¾
 select	cv.valueid as RESULT_ID,
 	cc.Caseno as SAMPLE_NO,
 	cv.itemid as ITEM_CODE,
@@ -2973,7 +2973,7 @@ if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[view_Show_
 drop view [dbo].[view_Show_chk_Con_His]
 GO
 
---2010-12-30ÊÓÍ¼view_Show_chk_Con_His´´½¨½Å±¾
+--2010-12-30è§†å›¾view_Show_chk_Con_Hisåˆ›å»ºè„šæœ¬
 SET QUOTED_IDENTIFIER ON 
 GO
 SET ANSI_NULLS ON 
@@ -2981,7 +2981,7 @@ GO
 
 CREATE VIEW view_Show_chk_Con_His
 AS
---²ğ·Ö¡¢ºÏ²¢Ê±³öÏÖÎÊÌâ,»³ÒÉËÀËøÔì³É.¸ÃÊÓÍ¼½öÓÃÓÚÔÚLISÖĞ¸ù¾İÊÔ¹ÜÌõ¼ş²éÑ¯ÉêÇëµ¥,¹ÊÔàÊı¾İ²»»á±»ÓÃµ½
+--æ‹†åˆ†ã€åˆå¹¶æ—¶å‡ºç°é—®é¢˜,æ€€ç–‘æ­»é”é€ æˆ.è¯¥è§†å›¾ä»…ç”¨äºåœ¨LISä¸­æ ¹æ®è¯•ç®¡æ¡ä»¶æŸ¥è¯¢ç”³è¯·å•,æ•…è„æ•°æ®ä¸ä¼šè¢«ç”¨åˆ°
 select cch.* from chk_con_his cch WITH(NOLOCK)
 where (SELECT count(*) FROM chk_valu_his cvh WITH(NOLOCK) WHERE cvh.pkunid=cch.unid and isnull(cvh.itemvalue,'')<>'1')>0
 --where cch.unid in(
@@ -3004,7 +3004,7 @@ if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[view_LeakI
 drop view [dbo].[view_LeakItem_Warning]
 GO
 
---2018-05-30Â©ÏîÔ¤¾¯ÊÓÍ¼´´½¨½Å±¾
+--2018-05-30æ¼é¡¹é¢„è­¦è§†å›¾åˆ›å»ºè„šæœ¬
 SET QUOTED_IDENTIFIER ON 
 GO
 SET ANSI_NULLS ON 
@@ -3013,13 +3013,13 @@ GO
 CREATE VIEW view_LeakItem_Warning
 AS
 select 
-T1.PKUNID as ÊÜ¼ì±ê±¾Î¨Ò»ID
-,CN.patientname AS ÊÜ¼ìÕßĞÕÃû
-,CN.combin_id AS ¹¤×÷×é
-,T1.PKCOMBIN_ID as ×éºÏÏîÄ¿´úÂë
-,T2.Name AS ×éºÏÏîÄ¿Ãû³Æ
-,T1.ITEMNUM AS ½á¹ûµÄ×éºÏÏîÄ¿Ğ¡ÏîÄ¿ÊıÁ¿
-,T2.ITEMNUM as ÉèÖÃµÄ×éºÏÏîÄ¿Ğ¡ÏîÄ¿ÊıÁ¿ 
+T1.PKUNID as å—æ£€æ ‡æœ¬å”¯ä¸€ID
+,CN.patientname AS å—æ£€è€…å§“å
+,CN.combin_id AS å·¥ä½œç»„
+,T1.PKCOMBIN_ID as ç»„åˆé¡¹ç›®ä»£ç 
+,T2.Name AS ç»„åˆé¡¹ç›®åç§°
+,T1.ITEMNUM AS ç»“æœçš„ç»„åˆé¡¹ç›®å°é¡¹ç›®æ•°é‡
+,T2.ITEMNUM as è®¾ç½®çš„ç»„åˆé¡¹ç›®å°é¡¹ç›®æ•°é‡ 
 from
 (
 	select 
@@ -3033,14 +3033,14 @@ from
 	  ,pkcombin_id    
 	  FROM chk_valu WITH(NOLOCK)
 	  where issure='1'
-	  and Surem2 is not null and Surem2<>'' and Surem2<>'-1' --±íÊ¾É¨ÂëµÄ
+	  and Surem2 is not null and Surem2<>'' and Surem2<>'-1' --è¡¨ç¤ºæ‰«ç çš„
 	  group by pkunid,pkcombin_id
-	) T5--±íT5:É¨ÂëµÄÊÜ¼ì±ê±¾¡¢×éºÏÏîÄ¿
+	) T5--è¡¨T5:æ‰«ç çš„å—æ£€æ ‡æœ¬ã€ç»„åˆé¡¹ç›®
 	WHERE CV.pkunid=T5.pkunid
 	AND CV.pkcombin_id=T5.pkcombin_id
 	and CV.issure='1'
 	group by CV.pkunid,CV.pkcombin_id
-) T1,--±íT1:É¨ÂëµÄÊÜ¼ì±ê±¾¡¢×éºÏÏîÄ¿¡¢×éºÏÏîÄ¿°üº¬Ğ¡ÏîÄ¿ÊıÁ¿.ÊÖ¹¤¹´Ñ¡´¦Àíºó²»ÔÙÔ¤¾¯,¹ÊT1·â×°T5
+) T1,--è¡¨T1:æ‰«ç çš„å—æ£€æ ‡æœ¬ã€ç»„åˆé¡¹ç›®ã€ç»„åˆé¡¹ç›®åŒ…å«å°é¡¹ç›®æ•°é‡.æ‰‹å·¥å‹¾é€‰å¤„ç†åä¸å†é¢„è­¦,æ•…T1å°è£…T5
 (
 	select 
 	ci.id
@@ -3050,7 +3050,7 @@ from
 	where csci.combunid=ci.unid 
 	and csci.itemunid=cci.unid
 	group by id,ci.Name
-) T2,--±íT1:×éºÏÏîÄ¿¼°×éºÏÏîÄ¿°üº¬Ğ¡ÏîÄ¿ÊıÁ¿
+) T2,--è¡¨T1:ç»„åˆé¡¹ç›®åŠç»„åˆé¡¹ç›®åŒ…å«å°é¡¹ç›®æ•°é‡
 chk_con CN
 WHERE T1.PKCOMBIN_ID=T2.ID
 AND T1.itemNum<T2.itemNum
@@ -3062,9 +3062,9 @@ GO
 SET ANSI_NULLS ON 
 GO
 
----------------´¥·¢Æ÷Ïà¹Ø²Ù×÷---------------
+---------------è§¦å‘å™¨ç›¸å…³æ“ä½œ---------------
 
---´¥·¢Æ÷TRIGGER_chk_con_CKZ_Update´´½¨½Å±¾
+--è§¦å‘å™¨TRIGGER_chk_con_CKZ_Updateåˆ›å»ºè„šæœ¬
 SET QUOTED_IDENTIFIER ON 
 GO
 SET ANSI_NULLS ON 
@@ -3077,16 +3077,16 @@ go
 CREATE TRIGGER TRIGGER_chk_con_CKZ_Update ON chk_con
 FOR UPDATE
 AS
---ĞŞ¸Ä²Î¿¼Öµ
+--ä¿®æ”¹å‚è€ƒå€¼
   declare @unid int,@age varchar(50),@sex varchar(50),@ageReal float,@age_old varchar(50),@sex_old varchar(50),@flagetype varchar(50),@flagetype_old varchar(50)
   SELECT @unid=unid,@age=age,@sex=sex,@flagetype=flagetype FROM Inserted
   SELECT @age_old=age,@sex_old=sex,@flagetype_old=flagetype FROM deleted
-  if (@unid is null) return --±íÊ¾Ã»ÕÒµ½¸Õ¸ÕupdateµÄ¼ÇÂ¼
-  if (isnull(@age_old,'')<>isnull(@age,''))or(isnull(@sex_old,'')<>isnull(@sex,''))or(isnull(@flagetype_old,'')<>isnull(@flagetype,''))--±íÊ¾ĞŞ¸Ä¹ıÄêÁä»òĞÔ±ğ×Ö¶Î
+  if (@unid is null) return --è¡¨ç¤ºæ²¡æ‰¾åˆ°åˆšåˆšupdateçš„è®°å½•
+  if (isnull(@age_old,'')<>isnull(@age,''))or(isnull(@sex_old,'')<>isnull(@sex,''))or(isnull(@flagetype_old,'')<>isnull(@flagetype,''))--è¡¨ç¤ºä¿®æ”¹è¿‡å¹´é¾„æˆ–æ€§åˆ«å­—æ®µ
   begin
 	  set @ageReal=dbo.uf_GetAgeReal(@age)
-	  if (@ageReal=0) set @ageReal=18*365*24*60 --Ã»ÄêÁäÊ±°´18ËêÀ´ÕÒ²Î¿¼Öµ
-	  --if (@sex='')or(@sex is null) set @sex='ÄĞ'--20130707×¢ÊÍ
+	  if (@ageReal=0) set @ageReal=18*365*24*60 --æ²¡å¹´é¾„æ—¶æŒ‰18å²æ¥æ‰¾å‚è€ƒå€¼
+	  --if (@sex='')or(@sex is null) set @sex='ç”·'--20130707æ³¨é‡Š
 	
 	  DECLARE cur_chk_valu CURSOR FOR 
 	    select valueid,itemid from chk_valu WITH(NOLOCK) where pkunid=@unid
@@ -3096,13 +3096,13 @@ AS
 	  OPEN cur_chk_valu 
 	  FETCH NEXT FROM cur_chk_valu INTO  @valueid,@itemid
 	
-	  WHILE @@FETCH_STATUS = 0 --Öğ¸öÏîÄ¿½øĞĞÑ­»·
+	  WHILE @@FETCH_STATUS = 0 --é€ä¸ªé¡¹ç›®è¿›è¡Œå¾ªç¯
 	  BEGIN
-	    declare @minvalue varchar(250),@maxvalue varchar(250)--20081211,ÊĞÕşÒªÇóµÄÏ¸¾ú²Î¿¼ÖµºÜ³¤,¹Ê50->250
+	    declare @minvalue varchar(250),@maxvalue varchar(250)--20081211,å¸‚æ”¿è¦æ±‚çš„ç»†èŒå‚è€ƒå€¼å¾ˆé•¿,æ•…50->250
 	    set @minvalue=null
 	    set @maxvalue=null
-	    select @minvalue=minvalue,@maxvalue=maxvalue from referencevalue where id=@itemid and age_low<=@ageReal and age_high>=@ageReal and (sex=@sex or sex='ÄĞ/Å®' or isnull(sex,'')='' or isnull(@sex,'')='')and (flagetype=@flagetype or isnull(flagetype,'')='' or isnull(@flagetype,'')='')--20130707ĞŞ¸ÄĞÔ±ğÌõ¼ş
-	    if ((@minvalue is not null) and (@minvalue<>'')) or ((@maxvalue is not null) and (@maxvalue<>''))--20080917,½â¾öÎÊÌâ:µ¼ÈëExcelÊı¾İºó,ÖØĞÂ±£´æ²¡ÈËĞÅÏ¢Ê±Çå¿ÕÒÑÓĞµÄ²Î¿¼Öµ
+	    select @minvalue=minvalue,@maxvalue=maxvalue from referencevalue where id=@itemid and age_low<=@ageReal and age_high>=@ageReal and (sex=@sex or sex='ç”·/å¥³' or isnull(sex,'')='' or isnull(@sex,'')='')and (flagetype=@flagetype or isnull(flagetype,'')='' or isnull(@flagetype,'')='')--20130707ä¿®æ”¹æ€§åˆ«æ¡ä»¶
+	    if ((@minvalue is not null) and (@minvalue<>'')) or ((@maxvalue is not null) and (@maxvalue<>''))--20080917,è§£å†³é—®é¢˜:å¯¼å…¥Excelæ•°æ®å,é‡æ–°ä¿å­˜ç—…äººä¿¡æ¯æ—¶æ¸…ç©ºå·²æœ‰çš„å‚è€ƒå€¼
 	      update chk_valu set min_value=@minvalue,max_value=@maxvalue where valueid=@valueid
 	
 	    FETCH NEXT FROM cur_chk_valu INTO  @valueid,@itemid
@@ -3119,7 +3119,7 @@ SET ANSI_NULLS ON
 GO
 
 
---´¥·¢Æ÷TRIGGER_chk_valu_CKZ_insert´´½¨½Å±¾
+--è§¦å‘å™¨TRIGGER_chk_valu_CKZ_insertåˆ›å»ºè„šæœ¬
 SET QUOTED_IDENTIFIER ON 
 GO
 SET ANSI_NULLS ON 
@@ -3132,19 +3132,19 @@ go
 CREATE TRIGGER TRIGGER_chk_valu_CKZ_insert ON chk_valu
 FOR INSERT
 AS
---²åÈë²Î¿¼Öµ
+--æ’å…¥å‚è€ƒå€¼
   declare @valueid int,@pkunid int,@itemid varchar(50)
   SELECT @valueid=valueid,@pkunid=pkunid,@itemid=itemid FROM Inserted
-  if (@valueid is null) return --±íÊ¾Ã»ÕÒµ½¸Õ¸Õ²åÈëµÄ¼ÇÂ¼
-  if (@pkunid is null) return  --±íÊ¾Ã»ÕÒµ½¸Õ¸Õ²åÈë¼ÇÂ¼Ïà¶ÔÓ¦µÄÖ÷¼ÇÂ¼
+  if (@valueid is null) return --è¡¨ç¤ºæ²¡æ‰¾åˆ°åˆšåˆšæ’å…¥çš„è®°å½•
+  if (@pkunid is null) return  --è¡¨ç¤ºæ²¡æ‰¾åˆ°åˆšåˆšæ’å…¥è®°å½•ç›¸å¯¹åº”çš„ä¸»è®°å½•
   declare @patientname varchar(50),@age varchar(50),@sex varchar(50),@report_date datetime,@ageReal float,@flagetype varchar(50)
   select @patientname=patientname,@age=age,@sex=sex,@report_date=report_date,@flagetype=flagetype from chk_con where unid=@pkunid
   set @ageReal=dbo.uf_GetAgeReal(@age)
-  if (@ageReal=0) set @ageReal=18*365*24*60 --Ã»ÄêÁäÊ±°´18ËêÀ´ÕÒ²Î¿¼Öµ
-  --if (@sex='')or(@sex is null) set @sex='ÄĞ'--20130707×¢ÊÍ
+  if (@ageReal=0) set @ageReal=18*365*24*60 --æ²¡å¹´é¾„æ—¶æŒ‰18å²æ¥æ‰¾å‚è€ƒå€¼
+  --if (@sex='')or(@sex is null) set @sex='ç”·'--20130707æ³¨é‡Š
 
-  declare @minvalue varchar(250),@maxvalue varchar(250)--20081211,ÊĞÕşÒªÇóµÄÏ¸¾ú²Î¿¼ÖµºÜ³¤,¹Ê50->250
-  select @minvalue=minvalue,@maxvalue=maxvalue from referencevalue where id=@itemid and age_low<=@ageReal and age_high>=@ageReal and (sex=@sex or sex='ÄĞ/Å®' or isnull(sex,'')='' or isnull(@sex,'')='') and (flagetype=@flagetype or isnull(flagetype,'')='' or isnull(@flagetype,'')='')--20130707ĞŞ¸ÄĞÔ±ğÌõ¼ş
+  declare @minvalue varchar(250),@maxvalue varchar(250)--20081211,å¸‚æ”¿è¦æ±‚çš„ç»†èŒå‚è€ƒå€¼å¾ˆé•¿,æ•…50->250
+  select @minvalue=minvalue,@maxvalue=maxvalue from referencevalue where id=@itemid and age_low<=@ageReal and age_high>=@ageReal and (sex=@sex or sex='ç”·/å¥³' or isnull(sex,'')='' or isnull(@sex,'')='') and (flagetype=@flagetype or isnull(flagetype,'')='' or isnull(@flagetype,'')='')--20130707ä¿®æ”¹æ€§åˆ«æ¡ä»¶
   if ((@minvalue is not null) and (@minvalue<>'')) or ((@maxvalue is not null) and (@maxvalue<>''))
     update chk_valu set min_value=@minvalue,max_value=@maxvalue where valueid=@valueid
 
@@ -3155,7 +3155,7 @@ SET ANSI_NULLS ON
 GO
 
 
---´¥·¢Æ÷TRIGGER_chk_valu_IsEdited_Update´´½¨½Å±¾
+--è§¦å‘å™¨TRIGGER_chk_valu_IsEdited_Updateåˆ›å»ºè„šæœ¬
 SET QUOTED_IDENTIFIER ON 
 GO
 SET ANSI_NULLS ON 
@@ -3169,11 +3169,11 @@ CREATE TRIGGER TRIGGER_chk_valu_IsEdited_Update ON [dbo].[chk_valu]
 FOR UPDATE
 AS
 
---²åÈë ¡°½á¹ûÊÇ·ñĞŞ¸Ä¡±µÄ±êÖ¾
+--æ’å…¥ â€œç»“æœæ˜¯å¦ä¿®æ”¹â€çš„æ ‡å¿—
   declare @valueid int,@itemvalue varchar(50),@itemvalue_Old varchar(50)
   SELECT @valueid=valueid,@itemvalue=itemvalue FROM Inserted
   SELECT @itemvalue_Old=itemvalue FROM deleted
-  if (@valueid is null) return --±íÊ¾Ã»ÕÒµ½¸Õ¸Õ²åÈëµÄ¼ÇÂ¼
+  if (@valueid is null) return --è¡¨ç¤ºæ²¡æ‰¾åˆ°åˆšåˆšæ’å…¥çš„è®°å½•
 
   if (@itemvalue_Old<>@itemvalue)and(@itemvalue_Old<>'')
      update chk_valu set IsEdited=1 where valueid=@valueid
@@ -3184,7 +3184,7 @@ GO
 SET ANSI_NULLS ON 
 GO
 
---´¥·¢Æ÷TRIGGER_chk_con_FastKey´´½¨½Å±¾
+--è§¦å‘å™¨TRIGGER_chk_con_FastKeyåˆ›å»ºè„šæœ¬
 SET QUOTED_IDENTIFIER ON 
 GO
 SET ANSI_NULLS ON 
@@ -3197,22 +3197,22 @@ go
 CREATE TRIGGER TRIGGER_chk_con_FastKey ON chk_valu
 FOR UPDATE,Insert
 AS
---2011-01-10·­Òë½á¹ûÖµ
+--2011-01-10ç¿»è¯‘ç»“æœå€¼
   declare @valueid int,@itemvalue varchar(100),@itemvalue_Old varchar(100),@name varchar(200)
   SELECT @valueid=valueid,@itemvalue=itemvalue FROM Inserted
 
-  if (@valueid is null) return --±íÊ¾Ã»ÕÒµ½¸Õ¸Õupdate»òinsertµÄ¼ÇÂ¼
+  if (@valueid is null) return --è¡¨ç¤ºæ²¡æ‰¾åˆ°åˆšåˆšupdateæˆ–insertçš„è®°å½•
 
   set @itemvalue_Old=null
-  If Exists(Select 0 From Deleted)--±íÊ¾UPDATE´¥·¢
+  If Exists(Select 0 From Deleted)--è¡¨ç¤ºUPDATEè§¦å‘
   Begin
     SELECT @itemvalue_Old=itemvalue FROM Deleted
   End
 
   if isnull(@itemvalue,'')='' return
-  if isnull(@itemvalue_Old,'')=isnull(@itemvalue,'') return--±íÊ¾½á¹ûÖµÃ»±ä
+  if isnull(@itemvalue_Old,'')=isnull(@itemvalue,'') return--è¡¨ç¤ºç»“æœå€¼æ²¡å˜
 
-  select @name=name from CommCode where typename='½á¹û¿ì½İÂë' and rtrim(ltrim(upper(id)))=rtrim(ltrim(upper(@itemvalue)))
+  select @name=name from CommCode where typename='ç»“æœå¿«æ·ç ' and rtrim(ltrim(upper(id)))=rtrim(ltrim(upper(@itemvalue)))
   if isnull(@name,'')<>'' 
   begin
     update chk_valu set itemvalue=@name where valueid=@valueid
@@ -3224,7 +3224,7 @@ GO
 SET ANSI_NULLS ON 
 GO
 
---´¥·¢Æ÷TRIGGER_chk_con_CommCode´´½¨½Å±¾
+--è§¦å‘å™¨TRIGGER_chk_con_CommCodeåˆ›å»ºè„šæœ¬
 SET QUOTED_IDENTIFIER ON 
 GO
 SET ANSI_NULLS ON 
@@ -3237,45 +3237,45 @@ go
 CREATE TRIGGER TRIGGER_chk_con_CommCode ON chk_con
 FOR UPDATE,Insert
 AS
---½«²»´æÔÚµÄÍ¨ÓÃ´úÂë²åÈëÍ¨ÓÃ´úÂë±í
+--å°†ä¸å­˜åœ¨çš„é€šç”¨ä»£ç æ’å…¥é€šç”¨ä»£ç è¡¨
   declare @IDENTITY int,@unid int,@deptname  varchar(50),@check_doctor varchar(50),@flagetype varchar(50),@typeflagcase varchar(50),@diagnose varchar(50),@GermName varchar(50),@issure varchar(50),@combin_id varchar(50)
   SELECT @unid=unid,@deptname=deptname,@check_doctor=check_doctor,@flagetype=flagetype,@typeflagcase=typeflagcase,@diagnose=diagnose,@GermName=GermName,@issure=issure,@combin_id=combin_id FROM Inserted
-  if (@unid is null) return --±íÊ¾Ã»ÕÒµ½¸Õ¸ÕupdateµÄ¼ÇÂ¼
-  select @IDENTITY=Unid from commcode where name=@deptname and typename='²¿ÃÅ'
+  if (@unid is null) return --è¡¨ç¤ºæ²¡æ‰¾åˆ°åˆšåˆšupdateçš„è®°å½•
+  select @IDENTITY=Unid from commcode where name=@deptname and typename='éƒ¨é—¨'
   if (@IDENTITY is null)and(isnull(@deptname,'')<>'')
   begin
-    insert into commcode (TypeName,ID,Name) values ('²¿ÃÅ',@deptname,@deptname)
+    insert into commcode (TypeName,ID,Name) values ('éƒ¨é—¨',@deptname,@deptname)
     SELECT @IDENTITY=@@IDENTITY 
   end
-  if (@IDENTITY is null) select @IDENTITY=Unid from commcode where typename='²¿ÃÅ'--Èç¹ûÊµÔÚÃ»ÓĞ²¿ÃÅ,Ëæ±ã¸øÒ½ÉúÕÒ¸ö²¿ÃÅ°É
+  if (@IDENTITY is null) select @IDENTITY=Unid from commcode where typename='éƒ¨é—¨'--å¦‚æœå®åœ¨æ²¡æœ‰éƒ¨é—¨,éšä¾¿ç»™åŒ»ç”Ÿæ‰¾ä¸ªéƒ¨é—¨å§
   if (not exists(select 1 from worker where name=@check_doctor))and(isnull(@check_doctor,'')<>'')and(@IDENTITY is not null)
   begin
     insert into worker (pkdeptid,id,name,pinyin) values (@IDENTITY,@check_doctor,@check_doctor,dbo.uf_getpy(@check_doctor))
   end
-  if (not exists(select 1 from commcode where name=@flagetype and typename='Ñù±¾ÀàĞÍ'))and(isnull(@flagetype,'')<>'')
+  if (not exists(select 1 from commcode where name=@flagetype and typename='æ ·æœ¬ç±»å‹'))and(isnull(@flagetype,'')<>'')
   begin
-    insert into commcode (TypeName,ID,Name) values ('Ñù±¾ÀàĞÍ',@flagetype,@flagetype)
+    insert into commcode (TypeName,ID,Name) values ('æ ·æœ¬ç±»å‹',@flagetype,@flagetype)
   end
-  if (not exists(select 1 from commcode where name=@typeflagcase and typename='Ñù±¾×´Ì¬'))and(isnull(@typeflagcase,'')<>'')
+  if (not exists(select 1 from commcode where name=@typeflagcase and typename='æ ·æœ¬çŠ¶æ€'))and(isnull(@typeflagcase,'')<>'')
   begin
-    insert into commcode (TypeName,ID,Name) values ('Ñù±¾×´Ì¬',@typeflagcase,@typeflagcase)
+    insert into commcode (TypeName,ID,Name) values ('æ ·æœ¬çŠ¶æ€',@typeflagcase,@typeflagcase)
   end
-  if (not exists(select 1 from commcode where name=@diagnose and typename='ÁÙ´²Õï¶Ï'))and(isnull(@diagnose,'')<>'')
+  if (not exists(select 1 from commcode where name=@diagnose and typename='ä¸´åºŠè¯Šæ–­'))and(isnull(@diagnose,'')<>'')
   begin
-    insert into commcode (TypeName,ID,Name) values ('ÁÙ´²Õï¶Ï',@diagnose,@diagnose)
+    insert into commcode (TypeName,ID,Name) values ('ä¸´åºŠè¯Šæ–­',@diagnose,@diagnose)
   end
-  if (not exists(select 1 from commcode where name=@GermName and typename='Ï¸¾ú'))and(isnull(@GermName,'')<>'')
+  if (not exists(select 1 from commcode where name=@GermName and typename='ç»†èŒ'))and(isnull(@GermName,'')<>'')
   begin
-    insert into commcode (TypeName,ID,Name) values ('Ï¸¾ú',@GermName,@GermName)
+    insert into commcode (TypeName,ID,Name) values ('ç»†èŒ',@GermName,@GermName)
   end
-  if (not exists(select 1 from commcode where name=@issure and typename='±¸×¢'))and(isnull(@issure,'')<>'')
+  if (not exists(select 1 from commcode where name=@issure and typename='å¤‡æ³¨'))and(isnull(@issure,'')<>'')
   begin
-    insert into commcode (TypeName,ID,Name) values ('±¸×¢',@issure,@issure)
+    insert into commcode (TypeName,ID,Name) values ('å¤‡æ³¨',@issure,@issure)
   end
-  --2011-01-10ÎªÖ§³ÖHisÕ¾Ñù±¾ÀàĞÍµÄÄ¬ÈÏ¹¤×÷×é±ğ
-  if (not exists(select 1 from commcode where name=@combin_id and typename='¼ìÑé×é±ğ'))and(isnull(@combin_id,'')<>'')
+  --2011-01-10ä¸ºæ”¯æŒHisç«™æ ·æœ¬ç±»å‹çš„é»˜è®¤å·¥ä½œç»„åˆ«
+  if (not exists(select 1 from commcode where name=@combin_id and typename='æ£€éªŒç»„åˆ«'))and(isnull(@combin_id,'')<>'')
   begin
-    insert into commcode (TypeName,ID,Name) values ('¼ìÑé×é±ğ',@combin_id,@combin_id)
+    insert into commcode (TypeName,ID,Name) values ('æ£€éªŒç»„åˆ«',@combin_id,@combin_id)
   end
 
 GO
@@ -3284,7 +3284,7 @@ GO
 SET ANSI_NULLS ON 
 GO
 
---´¥·¢Æ÷TRIGGER_chk_valu_ItemName´´½¨½Å±¾
+--è§¦å‘å™¨TRIGGER_chk_valu_ItemNameåˆ›å»ºè„šæœ¬
 SET QUOTED_IDENTIFIER ON 
 GO
 SET ANSI_NULLS ON 
@@ -3297,54 +3297,54 @@ go
 CREATE TRIGGER TRIGGER_chk_valu_ItemName ON chk_valu
 FOR insert
 AS
---Ïòchk_valuÖĞ²åÈëÏîÄ¿´úÂëÊ±×Ô¶¯²åÈëÏîÄ¿Ãû³Æ¡¢¼ìÑé½á¹û(Ä¬ÈÏÖµ¡¢ÒÑ¼ìÖµ)µÈ¸½¼ÓĞÅÏ¢
---ÓĞ´Ë´¥·¢Æ÷£¬ÔòÏòchk_valuÖĞ²åÈë¼ÇÂ¼Ê±£¬¿É²»²åÈëÏîÄ¿Ãû³Æ¡¢¼ìÑé½á¹ûµÈ¸½¼ÓĞÅÏ¢¡£µ±È»£¬²åÈëÒ²ÎŞ·Á!
---20081027,Ôö¼Ó¼ìÑé·½·¨×Ö¶ÎChkMethod
+--å‘chk_valuä¸­æ’å…¥é¡¹ç›®ä»£ç æ—¶è‡ªåŠ¨æ’å…¥é¡¹ç›®åç§°ã€æ£€éªŒç»“æœ(é»˜è®¤å€¼ã€å·²æ£€å€¼)ç­‰é™„åŠ ä¿¡æ¯
+--æœ‰æ­¤è§¦å‘å™¨ï¼Œåˆ™å‘chk_valuä¸­æ’å…¥è®°å½•æ—¶ï¼Œå¯ä¸æ’å…¥é¡¹ç›®åç§°ã€æ£€éªŒç»“æœç­‰é™„åŠ ä¿¡æ¯ã€‚å½“ç„¶ï¼Œæ’å…¥ä¹Ÿæ— å¦¨!
+--20081027,å¢åŠ æ£€éªŒæ–¹æ³•å­—æ®µChkMethod
   declare @valueid int,@pkunid int,@itemid varchar(50),@Name varchar(50),@english_name varchar(50),@Unit varchar(50),@printorder int,@getmoney money,@Reserve1 varchar(300),@Reserve2 varchar(300),@Dosage1 varchar(100),@Dosage2 varchar(200),@Reserve5 int,@Reserve6 int,@Reserve7 float,@Reserve8 float,@Reserve9 datetime,@Reserve10 datetime,@itemvalue varchar(500),@histogram varchar(4000)
   SELECT @valueid=valueid,@pkunid=pkunid,@itemid=itemid,@Name=Name,@english_name=english_name,@itemvalue=itemvalue,@histogram=histogram FROM Inserted
-  if @valueid is null return --±íÊ¾Ã»ÕÒµ½¸Õ¸ÕInsertedµÄ¼ÇÂ¼
-  if @pkunid is null return --±íÊ¾Ã»ÕÒµ½¸Õ¸ÕInsertedµÄ¼ÇÂ¼
-  if isnull(@itemid,'')='' return --±íÊ¾Ã»ÕÒµ½¸Õ¸ÕInsertedµÄ¼ÇÂ¼
-  if isnull(@Name,'')='' and isnull(@english_name,'')=''--Èç¹û²åÈëÁËÏîÄ¿»ù±¾ĞÅÏ¢,Ôò²»update,Èç´ÓExcelµ¼Èë
+  if @valueid is null return --è¡¨ç¤ºæ²¡æ‰¾åˆ°åˆšåˆšInsertedçš„è®°å½•
+  if @pkunid is null return --è¡¨ç¤ºæ²¡æ‰¾åˆ°åˆšåˆšInsertedçš„è®°å½•
+  if isnull(@itemid,'')='' return --è¡¨ç¤ºæ²¡æ‰¾åˆ°åˆšåˆšInsertedçš„è®°å½•
+  if isnull(@Name,'')='' and isnull(@english_name,'')=''--å¦‚æœæ’å…¥äº†é¡¹ç›®åŸºæœ¬ä¿¡æ¯,åˆ™ä¸update,å¦‚ä»Excelå¯¼å…¥
   begin
     select @Name=Name,@english_name=english_name,@Unit=Unit,@printorder=printorder,@getmoney=price,@Reserve1=Reserve1,@Reserve2=Reserve2,@Dosage1=Dosage1,@Dosage2=Dosage2,@Reserve5=Reserve5,@Reserve6=Reserve6,@Reserve7=Reserve7,@Reserve8=Reserve8,@Reserve9=Reserve9,@Reserve10=Reserve10 from clinicchkitem where itemid=@itemid
 
     update chk_valu set Name=@Name,english_name=@english_name,Unit=@Unit,printorder=@printorder,getmoney=@getmoney,Reserve1=@Reserve1,Reserve2=@Reserve2,Dosage1=@Dosage1,Dosage2=@Dosage2,Reserve5=@Reserve5,Reserve6=@Reserve6,Reserve7=@Reserve7,Reserve8=@Reserve8,Reserve9=@Reserve9,Reserve10=@Reserve10 where valueid=@valueid
   end
 
-  if isnull(@itemvalue,'')=''--Èç¹û²åÈëÁË¼ìÑé½á¹û,Ôò²»update,Èç´ÓÒÇÆ÷´«Èë¡¢´ÓExcelµ¼Èë
+  if isnull(@itemvalue,'')=''--å¦‚æœæ’å…¥äº†æ£€éªŒç»“æœ,åˆ™ä¸update,å¦‚ä»ä»ªå™¨ä¼ å…¥ã€ä»Excelå¯¼å…¥
   begin
     --select @itemvalue=isnull(defaultvalue,'') from clinicchkitem where itemid=@itemid
-    select @itemvalue=isnull(sValue,'') from CommValue,clinicchkitem where CommValue.ItemUnid=clinicchkitem.Unid and clinicchkitem.itemid=@itemid and CommValue.dfValue=1--20110607 add ³£¼û½á¹û±í
+    select @itemvalue=isnull(sValue,'') from CommValue,clinicchkitem where CommValue.ItemUnid=clinicchkitem.Unid and clinicchkitem.itemid=@itemid and CommValue.dfValue=1--20110607 add å¸¸è§ç»“æœè¡¨
 
     --declare @CommaPos int
     --set @CommaPos=charindex(',',@itemvalue)
     --if @CommaPos<>0 set @itemvalue=left(@itemvalue,@CommaPos-1)
 
-    if exists(select 1 from chk_valu WITH(NOLOCK) where pkunid=@pkunid and itemid=@itemid and valueid<>@valueid)--//²¡ÈË¼ìÑé½á¹û¼¯ÖĞÒÑÓĞ¸Ã¼ìÑéÏîÄ¿,ÔòÈ¡¸Ã½á¹û
+    if exists(select 1 from chk_valu WITH(NOLOCK) where pkunid=@pkunid and itemid=@itemid and valueid<>@valueid)--//ç—…äººæ£€éªŒç»“æœé›†ä¸­å·²æœ‰è¯¥æ£€éªŒé¡¹ç›®,åˆ™å–è¯¥ç»“æœ
       select @itemvalue=isnull(itemvalue,'') from chk_valu WITH(NOLOCK) where pkunid=@pkunid and itemid=@itemid and valueid<>@valueid
 
     if @itemvalue<>'' update chk_valu set itemvalue=@itemvalue where valueid=@valueid
   end
 
-  if isnull(@histogram,'')=''--Èç¹û²åÈëÁËÖ±·½Í¼(»æµã),Ôò²»update,Èç´ÓÒÇÆ÷´«Èë
+  if isnull(@histogram,'')=''--å¦‚æœæ’å…¥äº†ç›´æ–¹å›¾(ç»˜ç‚¹),åˆ™ä¸update,å¦‚ä»ä»ªå™¨ä¼ å…¥
   begin
-    if exists(select 1 from chk_valu WITH(NOLOCK) where pkunid=@pkunid and itemid=@itemid and valueid<>@valueid and isnull(histogram,'')<>'')--//²¡ÈË¼ìÑé½á¹û¼¯ÖĞÒÑÓĞ¸Ã¼ìÑéÏîÄ¿,ÔòÈ¡¸Ã½á¹û
+    if exists(select 1 from chk_valu WITH(NOLOCK) where pkunid=@pkunid and itemid=@itemid and valueid<>@valueid and isnull(histogram,'')<>'')--//ç—…äººæ£€éªŒç»“æœé›†ä¸­å·²æœ‰è¯¥æ£€éªŒé¡¹ç›®,åˆ™å–è¯¥ç»“æœ
     begin
       select @histogram=histogram from chk_valu WITH(NOLOCK) where pkunid=@pkunid and itemid=@itemid and valueid<>@valueid and isnull(histogram,'')<>''
       update chk_valu set histogram=@histogram where valueid=@valueid
     end
   end  
 
-  --20180211Í¬²½ÏàÍ¬ÏîÄ¿ÒÑ´æÔÚµÄPhotoÖµ
-  --¡¾²»ÄÜÔÚ 'inserted' ±íºÍ 'deleted' ±íÖĞÊ¹ÓÃ text¡¢ntext »ò image ÁĞ¡¿¹ÊÖ»ÄÜÔÚÔ´±í(chk_valu)ÖĞ¸ø@Photo¸³Öµ
-  if exists(select 1 from chk_valu where valueid=@valueid and Photo is null)--Èç¹û²åÈëÁËÍ¼Ïñ,Ôò²»update,Èç´ÓÒÇÆ÷´«Èë
+  --20180211åŒæ­¥ç›¸åŒé¡¹ç›®å·²å­˜åœ¨çš„Photoå€¼
+  --ã€ä¸èƒ½åœ¨ 'inserted' è¡¨å’Œ 'deleted' è¡¨ä¸­ä½¿ç”¨ textã€ntext æˆ– image åˆ—ã€‘æ•…åªèƒ½åœ¨æºè¡¨(chk_valu)ä¸­ç»™@Photoèµ‹å€¼
+  if exists(select 1 from chk_valu where valueid=@valueid and Photo is null)--å¦‚æœæ’å…¥äº†å›¾åƒ,åˆ™ä¸update,å¦‚ä»ä»ªå™¨ä¼ å…¥
   begin
     if exists(select 1 from chk_valu WITH(NOLOCK) where pkunid=@pkunid and itemid=@itemid and valueid<>@valueid and Photo is not null)
     begin
-      --ÕâÖÖĞ´·¨SQL SERVER 2008¿ÉĞĞ,SQL SERVER 2000±¨´í¡¾ÔÚÕâÒ»×Ó²éÑ¯»ò¾ÛºÏ±í´ïÊ½ÖĞ,text,ntext ºÍ image Êı¾İÀàĞÍÎŞĞ§¡¿
+      --è¿™ç§å†™æ³•SQL SERVER 2008å¯è¡Œ,SQL SERVER 2000æŠ¥é”™ã€åœ¨è¿™ä¸€å­æŸ¥è¯¢æˆ–èšåˆè¡¨è¾¾å¼ä¸­,text,ntext å’Œ image æ•°æ®ç±»å‹æ— æ•ˆã€‘
       --update chk_valu set Photo=(select top 1 Photo from chk_valu where pkunid=@pkunid and itemid=@itemid and valueid<>@valueid and Photo is not null) 
-      --¸ÄÓÃÏÂÃæµÄĞ´·¨
+      --æ”¹ç”¨ä¸‹é¢çš„å†™æ³•
       update chk_valu set Photo=tmpT1.Photo FROM (select top 1 Photo from chk_valu WITH(NOLOCK) where pkunid=@pkunid and itemid=@itemid and valueid<>@valueid and Photo is not null) tmpT1
       where valueid=@valueid
     end
@@ -3355,7 +3355,7 @@ GO
 SET ANSI_NULLS ON 
 GO
 
---´¥·¢Æ÷TRIGGER_chk_con_his_CommCode´´½¨½Å±¾20101223
+--è§¦å‘å™¨TRIGGER_chk_con_his_CommCodeåˆ›å»ºè„šæœ¬20101223
 SET QUOTED_IDENTIFIER ON 
 GO
 SET ANSI_NULLS ON 
@@ -3368,40 +3368,40 @@ go
 CREATE TRIGGER TRIGGER_chk_con_his_CommCode ON chk_con_his
 FOR UPDATE,Insert
 AS
---½«²»´æÔÚµÄÍ¨ÓÃ´úÂë²åÈëÍ¨ÓÃ´úÂë±í
+--å°†ä¸å­˜åœ¨çš„é€šç”¨ä»£ç æ’å…¥é€šç”¨ä»£ç è¡¨
   declare @IDENTITY int,@unid int,@deptname  varchar(50),@check_doctor varchar(50),@flagetype varchar(50),@typeflagcase varchar(50),@diagnose varchar(50),@GermName varchar(50),@issure varchar(50)
   SELECT @unid=unid,@deptname=deptname,@check_doctor=check_doctor,@flagetype=flagetype,@typeflagcase=typeflagcase,@diagnose=diagnose,@GermName=GermName,@issure=issure FROM Inserted
-  if (@unid is null) return --±íÊ¾Ã»ÕÒµ½¸Õ¸ÕupdateµÄ¼ÇÂ¼
-  select @IDENTITY=Unid from commcode where name=@deptname and typename='²¿ÃÅ'
+  if (@unid is null) return --è¡¨ç¤ºæ²¡æ‰¾åˆ°åˆšåˆšupdateçš„è®°å½•
+  select @IDENTITY=Unid from commcode where name=@deptname and typename='éƒ¨é—¨'
   if (@IDENTITY is null)and(isnull(@deptname,'')<>'')
   begin
-    insert into commcode (TypeName,ID,Name) values ('²¿ÃÅ',@deptname,@deptname)
+    insert into commcode (TypeName,ID,Name) values ('éƒ¨é—¨',@deptname,@deptname)
     SELECT @IDENTITY=@@IDENTITY 
   end
-  if (@IDENTITY is null) select @IDENTITY=Unid from commcode where typename='²¿ÃÅ'--Èç¹ûÊµÔÚÃ»ÓĞ²¿ÃÅ,Ëæ±ã¸øÒ½ÉúÕÒ¸ö²¿ÃÅ°É
+  if (@IDENTITY is null) select @IDENTITY=Unid from commcode where typename='éƒ¨é—¨'--å¦‚æœå®åœ¨æ²¡æœ‰éƒ¨é—¨,éšä¾¿ç»™åŒ»ç”Ÿæ‰¾ä¸ªéƒ¨é—¨å§
   if (not exists(select 1 from worker where name=@check_doctor))and(isnull(@check_doctor,'')<>'')and(@IDENTITY is not null)
   begin
     insert into worker (pkdeptid,id,name,pinyin) values (@IDENTITY,@check_doctor,@check_doctor,dbo.uf_getpy(@check_doctor))
   end
-  if (not exists(select 1 from commcode where name=@flagetype and typename='Ñù±¾ÀàĞÍ'))and(isnull(@flagetype,'')<>'')
+  if (not exists(select 1 from commcode where name=@flagetype and typename='æ ·æœ¬ç±»å‹'))and(isnull(@flagetype,'')<>'')
   begin
-    insert into commcode (TypeName,ID,Name) values ('Ñù±¾ÀàĞÍ',@flagetype,@flagetype)
+    insert into commcode (TypeName,ID,Name) values ('æ ·æœ¬ç±»å‹',@flagetype,@flagetype)
   end
-  if (not exists(select 1 from commcode where name=@typeflagcase and typename='Ñù±¾×´Ì¬'))and(isnull(@typeflagcase,'')<>'')
+  if (not exists(select 1 from commcode where name=@typeflagcase and typename='æ ·æœ¬çŠ¶æ€'))and(isnull(@typeflagcase,'')<>'')
   begin
-    insert into commcode (TypeName,ID,Name) values ('Ñù±¾×´Ì¬',@typeflagcase,@typeflagcase)
+    insert into commcode (TypeName,ID,Name) values ('æ ·æœ¬çŠ¶æ€',@typeflagcase,@typeflagcase)
   end
-  if (not exists(select 1 from commcode where name=@diagnose and typename='ÁÙ´²Õï¶Ï'))and(isnull(@diagnose,'')<>'')
+  if (not exists(select 1 from commcode where name=@diagnose and typename='ä¸´åºŠè¯Šæ–­'))and(isnull(@diagnose,'')<>'')
   begin
-    insert into commcode (TypeName,ID,Name) values ('ÁÙ´²Õï¶Ï',@diagnose,@diagnose)
+    insert into commcode (TypeName,ID,Name) values ('ä¸´åºŠè¯Šæ–­',@diagnose,@diagnose)
   end
-  if (not exists(select 1 from commcode where name=@GermName and typename='Ï¸¾ú'))and(isnull(@GermName,'')<>'')
+  if (not exists(select 1 from commcode where name=@GermName and typename='ç»†èŒ'))and(isnull(@GermName,'')<>'')
   begin
-    insert into commcode (TypeName,ID,Name) values ('Ï¸¾ú',@GermName,@GermName)
+    insert into commcode (TypeName,ID,Name) values ('ç»†èŒ',@GermName,@GermName)
   end
-  if (not exists(select 1 from commcode where name=@issure and typename='±¸×¢'))and(isnull(@issure,'')<>'')
+  if (not exists(select 1 from commcode where name=@issure and typename='å¤‡æ³¨'))and(isnull(@issure,'')<>'')
   begin
-    insert into commcode (TypeName,ID,Name) values ('±¸×¢',@issure,@issure)
+    insert into commcode (TypeName,ID,Name) values ('å¤‡æ³¨',@issure,@issure)
   end
 
 GO
@@ -3418,10 +3418,10 @@ go
 CREATE TRIGGER TRIGGER_CommCode_PYM ON CommCode
 FOR UPDATE,Insert
 AS
---×Ô¶¯Éú³ÉÆ´ÒôÂë
+--è‡ªåŠ¨ç”Ÿæˆæ‹¼éŸ³ç 
   declare @unid int,@name  varchar(80)
   SELECT @unid=unid,@name=name FROM Inserted
-  if (@unid is null) return --±íÊ¾Ã»ÕÒµ½¸Õ¸ÕupdateµÄ¼ÇÂ¼
+  if (@unid is null) return --è¡¨ç¤ºæ²¡æ‰¾åˆ°åˆšåˆšupdateçš„è®°å½•
   update CommCode set PYM=dbo.uf_getpy(@name) where unid=@unid
 GO
 
@@ -3435,19 +3435,19 @@ AS
   declare @unid int,@Checked int,@printtimes_old datetime,@printtimes datetime,@checkid_old varchar(50),@checkid varchar(50)
   SELECT @unid=unid,@printtimes_old=isnull(printtimes,0),@checkid_old=isnull(checkid,'') FROM deleted
   SELECT @printtimes=isnull(printtimes,0),@checkid=isnull(checkid,'') FROM INSERTED
-  if (@unid is null) return --±íÊ¾Ã»ÕÒµ½¸Õ¸ÕUpdateµÄ¼ÇÂ¼
-  if @printtimes>@printtimes_old return--±íÊ¾´òÓ¡²Ù×÷
-  if @checkid_old<>@checkid return--±íÊ¾LISÖĞÈ¡ÉêÇëÊ±£¬ĞŞ¸ÄÁª»úºÅµÄ²Ù×÷
+  if (@unid is null) return --è¡¨ç¤ºæ²¡æ‰¾åˆ°åˆšåˆšUpdateçš„è®°å½•
+  if @printtimes>@printtimes_old return--è¡¨ç¤ºæ‰“å°æ“ä½œ
+  if @checkid_old<>@checkid return--è¡¨ç¤ºLISä¸­å–ç”³è¯·æ—¶ï¼Œä¿®æ”¹è”æœºå·çš„æ“ä½œ
   if exists (select 1 from chk_valu_his where pkunid=@unid and itemvalue=1)
   --select @Checked=count(*) from view_Chk_Con_All where His_Unid=@unid
   --if (@Checked>0)
   begin
-    raiserror ('¸ÃÉêÇëÒÑ±»¿ÆÊÒ´¦Àí,²»ÄÜĞŞ¸Ä!',16,1)
+    raiserror ('è¯¥ç”³è¯·å·²è¢«ç§‘å®¤å¤„ç†,ä¸èƒ½ä¿®æ”¹!',16,1)
     ROLLBACK TRANSACTION
   end
 GO
 
---´¥·¢Æ÷TRIGGER_chk_valu_His_ItemName´´½¨½Å±¾ 20110611
+--è§¦å‘å™¨TRIGGER_chk_valu_His_ItemNameåˆ›å»ºè„šæœ¬ 20110611
 SET QUOTED_IDENTIFIER ON 
 GO
 SET ANSI_NULLS ON 
@@ -3460,12 +3460,12 @@ go
 CREATE TRIGGER TRIGGER_chk_valu_His_ItemName ON chk_valu_his
 FOR insert
 AS
---Ïòchk_valu_hisÖĞ²åÈëÏîÄ¿´úÂëÊ±×Ô¶¯²åÈëÏîÄ¿Ãû³ÆµÈ¸½¼ÓĞÅÏ¢
---ÓĞ´Ë´¥·¢Æ÷£¬ÔòÏòchk_valu_hisÖĞ²åÈë¼ÇÂ¼Ê±£¬¿É²»²åÈëÏîÄ¿Ãû³ÆµÈ¸½¼ÓĞÅÏ¢¡£µ±È»£¬²åÈëÒ²ÎŞ·Á!
+--å‘chk_valu_hisä¸­æ’å…¥é¡¹ç›®ä»£ç æ—¶è‡ªåŠ¨æ’å…¥é¡¹ç›®åç§°ç­‰é™„åŠ ä¿¡æ¯
+--æœ‰æ­¤è§¦å‘å™¨ï¼Œåˆ™å‘chk_valu_hisä¸­æ’å…¥è®°å½•æ—¶ï¼Œå¯ä¸æ’å…¥é¡¹ç›®åç§°ç­‰é™„åŠ ä¿¡æ¯ã€‚å½“ç„¶ï¼Œæ’å…¥ä¹Ÿæ— å¦¨!
   declare @valueid int,@pkcombin_id varchar(50),@Name varchar(50)
   SELECT @valueid=valueid,@pkcombin_id=pkcombin_id FROM Inserted
-  if @valueid is null return --±íÊ¾Ã»ÕÒµ½¸Õ¸ÕInsertedµÄ¼ÇÂ¼
-  if isnull(@pkcombin_id,'')='' return --±íÊ¾Ã»ÕÒµ½¸Õ¸ÕInsertedµÄ¼ÇÂ¼
+  if @valueid is null return --è¡¨ç¤ºæ²¡æ‰¾åˆ°åˆšåˆšInsertedçš„è®°å½•
+  if isnull(@pkcombin_id,'')='' return --è¡¨ç¤ºæ²¡æ‰¾åˆ°åˆšåˆšInsertedçš„è®°å½•
 
   select @Name=Name from combinitem where id=@pkcombin_id
 
@@ -3544,7 +3544,7 @@ AS
     SELECT @issure_Old=issure,@Surem2_Old=Surem2 FROM Deleted where valueid=@valueid
 
     if (isnull(@issure_Old,'')=isnull(@issure,''))and(isnull(@Surem2_Old,'')=isnull(@Surem2,'')) 
-    --Èç¹û¿É¼û±êÖ¾¡¢Chk_Valu_His.ValueId¾ùÃ»¸ü¸Ä£¬Ôò²»´¦Àí
+    --å¦‚æœå¯è§æ ‡å¿—ã€Chk_Valu_His.ValueIdå‡æ²¡æ›´æ”¹ï¼Œåˆ™ä¸å¤„ç†
     begin
       FETCH NEXT FROM Cur1 INTO @issure,@Surem2,@valueid
       continue
@@ -3574,12 +3574,12 @@ go
 CREATE TRIGGER TRIGGER_chk_con_HisValue_Delete ON chk_con
 FOR DELETE 
 AS
---¸üĞÂPIX_TRAN
+--æ›´æ–°PIX_TRAN
   declare @unid int,@report_doctor varchar(50),@his_mzorzy varchar(50)
   SELECT @unid=unid,@report_doctor=report_doctor,@his_mzorzy=his_mzorzy FROM Deleted
   if (isnull(@unid,'')='') return 
   if (isnull(@report_doctor,'')='') return 
-  if (isnull(@his_mzorzy,'')='') return--his_mzorzy:HISµÄÉêÇëµ¥ºÅ 
+  if (isnull(@his_mzorzy,'')='') return--his_mzorzy:HISçš„ç”³è¯·å•å· 
 
   insert into pix_tran (pkunid,Reserve1,Reserve2,OpType) values (@unid,@his_mzorzy,'Class_Result','Del')
 
@@ -3602,12 +3602,12 @@ go
 CREATE TRIGGER TRIGGER_chk_con_HisValue_Update ON chk_con
 FOR UPDATE
 AS
---¸üĞÂPIX_TRAN
+--æ›´æ–°PIX_TRAN
   declare @unid int,@report_doctor varchar(50),@report_doctor_Old varchar(50),@his_mzorzy_Old varchar(50)
   SELECT @unid=unid,@report_doctor=report_doctor FROM Inserted
   if (isnull(@unid,'')='') return 
   SELECT @report_doctor_Old=report_doctor,@his_mzorzy_Old=his_mzorzy FROM Deleted
-  if (isnull(@his_mzorzy_Old,'')='') return--his_mzorzy:HISµÄÉêÇëµ¥ºÅ 
+  if (isnull(@his_mzorzy_Old,'')='') return--his_mzorzy:HISçš„ç”³è¯·å•å· 
 
   if isnull(@report_doctor,'')<>isnull(@report_doctor_Old,'')
   begin
@@ -3643,21 +3643,21 @@ go
 CREATE TRIGGER TRIGGER_chk_valu_HisValue_Update ON chk_valu
 FOR update
 AS
---¸üĞÂPIX_TRAN
+--æ›´æ–°PIX_TRAN
   declare @pkunid int,@report_doctor varchar(50),@issure varchar(50),@itemvalue varchar(50),@issure_Old varchar(50),@itemvalue_Old varchar(50),@his_mzorzy varchar(50)
     
   SELECT @pkunid=pkunid,@issure=issure,@itemvalue=itemvalue FROM Inserted
   if (isnull(@pkunid,'')='') return 
   SELECT @report_doctor=report_doctor,@his_mzorzy=his_mzorzy FROM chk_con where unid=@pkunid
   if (isnull(@report_doctor,'')='') return
-  if (isnull(@his_mzorzy,'')='') return--his_mzorzy:HISµÄÉêÇëµ¥ºÅ 
+  if (isnull(@his_mzorzy,'')='') return--his_mzorzy:HISçš„ç”³è¯·å•å· 
   SELECT @issure_Old=issure,@itemvalue_Old=itemvalue FROM Deleted
-  if isnull(@issure,'')=isnull(@issure_Old,'') and isnull(@itemvalue,'')=isnull(@itemvalue_Old,'') return--½á¹ûÓë¼ìÑéµ¥±êÖ¾¶¼Ã»¸Ä
+  if isnull(@issure,'')=isnull(@issure_Old,'') and isnull(@itemvalue,'')=isnull(@itemvalue_Old,'') return--ç»“æœä¸æ£€éªŒå•æ ‡å¿—éƒ½æ²¡æ”¹
 
-  if (isnull(@issure_Old,'')<>'1' or isnull(@itemvalue_Old,'')='') and (isnull(@issure,'')<>'1' or isnull(@itemvalue,'')='') return--±íÊ¾ĞŞ¸ÄÇ°ÓëĞŞ¸Äºó¶¼ÊÇÎŞĞ§½á¹û
+  if (isnull(@issure_Old,'')<>'1' or isnull(@itemvalue_Old,'')='') and (isnull(@issure,'')<>'1' or isnull(@itemvalue,'')='') return--è¡¨ç¤ºä¿®æ”¹å‰ä¸ä¿®æ”¹åéƒ½æ˜¯æ— æ•ˆç»“æœ
 
   if exists (select 1 from chk_valu where pkunid=@pkunid and issure='1' and isnull(itemvalue,'')<>'')
-  --¸ÃselectÑ¡³öµÄ¼ÇÂ¼°üº¬ĞŞ¸ÄÖ®ºóissure='1' and isnull(itemvalue,'')<>''µÄÇé¿ö
+  --è¯¥selecté€‰å‡ºçš„è®°å½•åŒ…å«ä¿®æ”¹ä¹‹åissure='1' and isnull(itemvalue,'')<>''çš„æƒ…å†µ
     insert into pix_tran (pkunid,Reserve1,Reserve2,OpType) values (@pkunid,@his_mzorzy,'Class_Result','Add')
   else insert into pix_tran (pkunid,Reserve1,Reserve2,OpType) values (@pkunid,@his_mzorzy,'Class_Result','Del')
 
@@ -3679,14 +3679,14 @@ go
 CREATE TRIGGER TRIGGER_chk_con_HIS_Audit_Update ON chk_con_his
 FOR UPDATE
 AS
---¸üĞÂPIX_TRAN
+--æ›´æ–°PIX_TRAN
   declare @unid int,@report_doctor varchar(50),@report_doctor_Old varchar(50),@His_Unid varchar(50)
   SELECT @unid=unid,@report_doctor=report_doctor,@His_Unid=His_Unid FROM Inserted
   if (isnull(@unid,'')='') return 
   SELECT @report_doctor_Old=report_doctor FROM Deleted
-  if (isnull(@His_Unid,'')='') return--@His_Unid:HISµÄÉêÇëµ¥ºÅ 
+  if (isnull(@His_Unid,'')='') return--@His_Unid:HISçš„ç”³è¯·å•å· 
 
-  if isnull(@report_doctor_Old,'')=isnull(@report_doctor,'') return--Ã»¸ü¸ÄÉóºËÕß
+  if isnull(@report_doctor_Old,'')=isnull(@report_doctor,'') return--æ²¡æ›´æ”¹å®¡æ ¸è€…
 
   if isnull(@report_doctor_Old,'')='' and isnull(@report_doctor,'')<>'' 
     insert into pix_tran (pkunid,Reserve1,Reserve2,OpType) values (@unid,@His_Unid,'Class_Fee','App_Audit')
@@ -3712,12 +3712,12 @@ go
 CREATE TRIGGER TRIGGER_chk_con_His_Audit_Delete ON chk_con_his
 FOR DELETE 
 AS
---¸üĞÂPIX_TRAN
+--æ›´æ–°PIX_TRAN
   declare @unid int,@report_doctor varchar(50),@His_Unid varchar(50)
   SELECT @unid=unid,@report_doctor=report_doctor,@His_Unid=His_Unid FROM Deleted
   if (isnull(@unid,'')='') return 
   if (isnull(@report_doctor,'')='') return 
-  if (isnull(@His_Unid,'')='') return--@His_Unid:HISµÄÉêÇëµ¥ºÅ 
+  if (isnull(@His_Unid,'')='') return--@His_Unid:HISçš„ç”³è¯·å•å· 
 
   insert into pix_tran (pkunid,Reserve1,Reserve2,OpType) values (@unid,@His_Unid,'Class_Fee','App_UnAudit')
 
@@ -3727,7 +3727,7 @@ GO
 SET ANSI_NULLS ON 
 GO
 
---´¥·¢Æ÷TRIGGER_RisDescriptType_PYM´´½¨½Å±¾
+--è§¦å‘å™¨TRIGGER_RisDescriptType_PYMåˆ›å»ºè„šæœ¬
 SET QUOTED_IDENTIFIER ON 
 GO
 SET ANSI_NULLS ON 
@@ -3740,10 +3740,10 @@ go
 CREATE TRIGGER TRIGGER_RisDescriptType_PYM ON RisDescriptType
 FOR UPDATE,Insert
 AS
---×Ô¶¯Éú³ÉÆ´ÒôÂë
+--è‡ªåŠ¨ç”Ÿæˆæ‹¼éŸ³ç 
   declare @id varchar(50),@name varchar(80)
   SELECT @id=id,@name=name FROM Inserted
-  if (@id is null) return --±íÊ¾Ã»ÕÒµ½¸Õ¸ÕupdateµÄ¼ÇÂ¼
+  if (@id is null) return --è¡¨ç¤ºæ²¡æ‰¾åˆ°åˆšåˆšupdateçš„è®°å½•
   update RisDescriptType set PYM=dbo.uf_getpy(@name) where id=@id
 
 GO
@@ -3752,7 +3752,7 @@ GO
 SET ANSI_NULLS ON 
 GO
 
---´¥·¢Æ÷TRIGGER_Worker_PYM´´½¨½Å±¾
+--è§¦å‘å™¨TRIGGER_Worker_PYMåˆ›å»ºè„šæœ¬
 SET QUOTED_IDENTIFIER ON 
 GO
 SET ANSI_NULLS ON 
@@ -3765,10 +3765,10 @@ go
 CREATE TRIGGER TRIGGER_Worker_PYM ON Worker
 FOR UPDATE,Insert
 AS
---×Ô¶¯Éú³ÉÆ´ÒôÂë
+--è‡ªåŠ¨ç”Ÿæˆæ‹¼éŸ³ç 
   declare @unid int,@name varchar(50)
   SELECT @unid=unid,@name=name FROM Inserted
-  if (@unid is null) return --±íÊ¾Ã»ÕÒµ½¸Õ¸ÕupdateµÄ¼ÇÂ¼
+  if (@unid is null) return --è¡¨ç¤ºæ²¡æ‰¾åˆ°åˆšåˆšupdateçš„è®°å½•
   update Worker set pinyin=dbo.uf_getpy(@name) where unid=@unid
 
 GO
@@ -3777,7 +3777,7 @@ GO
 SET ANSI_NULLS ON 
 GO
 
---´¥·¢Æ÷TRIGGER_RisDescription_PYM´´½¨½Å±¾
+--è§¦å‘å™¨TRIGGER_RisDescription_PYMåˆ›å»ºè„šæœ¬
 SET QUOTED_IDENTIFIER ON 
 GO
 SET ANSI_NULLS ON 
@@ -3790,10 +3790,10 @@ go
 CREATE TRIGGER TRIGGER_RisDescription_PYM ON RisDescription
 FOR UPDATE,Insert
 AS
---×Ô¶¯Éú³ÉÆ´ÒôÂë
+--è‡ªåŠ¨ç”Ÿæˆæ‹¼éŸ³ç 
   declare @unid int,@name varchar(100)
   SELECT @unid=unid,@name=name FROM Inserted
-  if (@unid is null) return --±íÊ¾Ã»ÕÒµ½¸Õ¸ÕupdateµÄ¼ÇÂ¼
+  if (@unid is null) return --è¡¨ç¤ºæ²¡æ‰¾åˆ°åˆšåˆšupdateçš„è®°å½•
   update RisDescription set PYM=dbo.uf_getpy(@name) where unid=@unid
 
 GO
@@ -3802,7 +3802,7 @@ GO
 SET ANSI_NULLS ON 
 GO
 
---´¥·¢Æ÷TRIGGER_clinicchkitem_PYM´´½¨½Å±¾
+--è§¦å‘å™¨TRIGGER_clinicchkitem_PYMåˆ›å»ºè„šæœ¬
 SET QUOTED_IDENTIFIER ON 
 GO
 SET ANSI_NULLS ON 
@@ -3815,10 +3815,10 @@ go
 CREATE TRIGGER TRIGGER_clinicchkitem_PYM ON clinicchkitem
 FOR UPDATE,Insert
 AS
---×Ô¶¯Éú³ÉÆ´ÒôÂë
+--è‡ªåŠ¨ç”Ÿæˆæ‹¼éŸ³ç 
   declare @unid int,@name varchar(100)
   SELECT @unid=unid,@name=name FROM Inserted
-  if (@unid is null) return --±íÊ¾Ã»ÕÒµ½¸Õ¸ÕupdateµÄ¼ÇÂ¼
+  if (@unid is null) return --è¡¨ç¤ºæ²¡æ‰¾åˆ°åˆšåˆšupdateçš„è®°å½•
   update clinicchkitem set PYM=dbo.uf_getpy(@name) where unid=@unid
 
 GO
@@ -3827,7 +3827,7 @@ GO
 SET ANSI_NULLS ON 
 GO
 
---´¥·¢Æ÷TRIGGER_combinitem_PYM´´½¨½Å±¾
+--è§¦å‘å™¨TRIGGER_combinitem_PYMåˆ›å»ºè„šæœ¬
 SET QUOTED_IDENTIFIER ON 
 GO
 SET ANSI_NULLS ON 
@@ -3840,10 +3840,10 @@ go
 CREATE TRIGGER TRIGGER_combinitem_PYM ON combinitem
 FOR UPDATE,Insert
 AS
---×Ô¶¯Éú³ÉÆ´ÒôÂë
+--è‡ªåŠ¨ç”Ÿæˆæ‹¼éŸ³ç 
   declare @unid int,@name varchar(100)
   SELECT @unid=unid,@name=name FROM Inserted
-  if (@unid is null) return --±íÊ¾Ã»ÕÒµ½¸Õ¸ÕupdateµÄ¼ÇÂ¼
+  if (@unid is null) return --è¡¨ç¤ºæ²¡æ‰¾åˆ°åˆšåˆšupdateçš„è®°å½•
   update combinitem set PYM=dbo.uf_getpy(@name) where unid=@unid
 
 GO
@@ -3852,7 +3852,7 @@ GO
 SET ANSI_NULLS ON 
 GO
 
---´¥·¢Æ÷TRIGGER_qcghead_insert´´½¨½Å±¾
+--è§¦å‘å™¨TRIGGER_qcghead_insertåˆ›å»ºè„šæœ¬
 SET QUOTED_IDENTIFIER ON 
 GO
 SET ANSI_NULLS ON 
@@ -3865,10 +3865,10 @@ go
 CREATE TRIGGER TRIGGER_qcghead_insert ON qcghead
 FOR INSERT,UPDATE
 AS
---¸ù¾İÏîÄ¿ID²åÈëÏîÄ¿Ãû³Æ
+--æ ¹æ®é¡¹ç›®IDæ’å…¥é¡¹ç›®åç§°
   declare @unid int,@itemID varchar(10),@Name varchar(60),@COMMWORD varchar(10),@equip varchar(30)
   SELECT @unid=unid,@itemID=itemID,@equip=equip FROM Inserted
-  if (@unid is null) return --±íÊ¾Ã»ÕÒµ½¸Õ¸Õ²åÈëµÄ¼ÇÂ¼
+  if (@unid is null) return --è¡¨ç¤ºæ²¡æ‰¾åˆ°åˆšåˆšæ’å…¥çš„è®°å½•
   select @Name=Name,@COMMWORD=COMMWORD from clinicchkitem where itemID=@itemID
   if (isnull(@Name,'')<>'')
     update qcghead set itemname=@Name where Unid=@unid
@@ -3882,7 +3882,7 @@ GO
 SET ANSI_NULLS ON 
 GO
 
---´¥·¢Æ÷TRIGGER_chk_con_PatientInfo_From_HisUnid´´½¨½Å±¾
+--è§¦å‘å™¨TRIGGER_chk_con_PatientInfo_From_HisUnidåˆ›å»ºè„šæœ¬
 if exists (select name from sysobjects where name='TRIGGER_chk_con_PatientInfo_From_HisUnid' and type='TR')
   drop TRIGGER TRIGGER_chk_con_PatientInfo_From_HisUnid
 go
@@ -3890,7 +3890,7 @@ go
 CREATE TRIGGER TRIGGER_chk_con_PatientInfo_From_HisUnid ON chk_con
 FOR Insert,Update
 AS
---¸ù¾İHis_Unid´Óchk_con_hisÈ¡²¡ÈËĞÅÏ¢
+--æ ¹æ®His_Unidä»chk_con_hiså–ç—…äººä¿¡æ¯
   declare @ChkCon_unid int,@ChkCon_His_Unid varchar(50)
   SELECT @ChkCon_unid=unid,@ChkCon_His_Unid=His_Unid FROM Inserted
   
@@ -3915,7 +3915,7 @@ AS
   from chk_con_his 
   where cast(unid as varchar)=@ChkCon_His_Unid
 
-  if exists(select 1 from Deleted)--±íÊ¾ĞŞ¸Ä
+  if exists(select 1 from Deleted)--è¡¨ç¤ºä¿®æ”¹
   begin
     update chk_con set 
          patientname=@patientname,sex=@sex,age=@age,Caseno=@Caseno,
@@ -3924,7 +3924,7 @@ AS
          diagnose=@diagnose,/*typeflagcase=@typeflagcase,issure=@issure,*/
          WorkCompany=@WorkCompany,WorkDepartment=@WorkDepartment,ifMarry=@ifMarry 
     where unid=@ChkCon_unid  
-  end else--±íÊ¾²åÈë
+  end else--è¡¨ç¤ºæ’å…¥
   begin
     update chk_con set 
          patientname=@patientname,sex=@sex,age=@age,Caseno=@Caseno,
@@ -3953,34 +3953,34 @@ GO
 SET ANSI_NULLS ON 
 GO
 
---É¾³ı´¥·¢Æ÷TRIGGER_chk_con_SCJG_Update
+--åˆ é™¤è§¦å‘å™¨TRIGGER_chk_con_SCJG_Update
 if exists (select name from sysobjects where name='TRIGGER_chk_con_SCJG_Update' and type='TR')
   drop TRIGGER TRIGGER_chk_con_SCJG_Update
 go
 
---É¾³ı´¥·¢Æ÷TRIGGER_chk_valu_SCJG_insert
+--åˆ é™¤è§¦å‘å™¨TRIGGER_chk_valu_SCJG_insert
 if exists (select name from sysobjects where name='TRIGGER_chk_valu_SCJG_insert' and type='TR')
   drop TRIGGER TRIGGER_chk_valu_SCJG_insert
 go
 
---É¾³ı´¥·¢Æ÷TRIGGER_chk_con_his_BarCode_insert
+--åˆ é™¤è§¦å‘å™¨TRIGGER_chk_con_his_BarCode_insert
 if exists (select name from sysobjects where name='TRIGGER_chk_con_his_BarCode_insert' and type='TR')
   drop TRIGGER TRIGGER_chk_con_his_BarCode_insert
 go
 
---É¾³ı´¥·¢Æ÷TRIGGER_Lsh_Verify_Con--20150517
+--åˆ é™¤è§¦å‘å™¨TRIGGER_Lsh_Verify_Con--20150517
 if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[TRIGGER_Lsh_Verify_Con]') and OBJECTPROPERTY(id, N'IsTrigger') = 1) 
   drop trigger [dbo].[TRIGGER_Lsh_Verify_Con]
 GO
 
---É¾³ı´¥·¢Æ÷TRIGGER_Lsh_Verify
+--åˆ é™¤è§¦å‘å™¨TRIGGER_Lsh_Verify
 if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[TRIGGER_Lsh_Verify]') and OBJECTPROPERTY(id, N'IsTrigger') = 1)
   drop trigger [dbo].[TRIGGER_Lsh_Verify]
 GO
 
---É¾³ı´¥·¢Æ÷TRIGGER_chk_con_PatientInfo_From_HisUnid_Insert
---´¥·¢Æ÷TRIGGER_chk_con_PatientInfo_From_HisUnid_Insert´´½¨½Å±¾
---20151021ÓÃTRIGGER_chk_con_PatientInfo_From_HisUnidÌæ´ú
+--åˆ é™¤è§¦å‘å™¨TRIGGER_chk_con_PatientInfo_From_HisUnid_Insert
+--è§¦å‘å™¨TRIGGER_chk_con_PatientInfo_From_HisUnid_Insertåˆ›å»ºè„šæœ¬
+--20151021ç”¨TRIGGER_chk_con_PatientInfo_From_HisUnidæ›¿ä»£
 SET QUOTED_IDENTIFIER ON 
 GO
 SET ANSI_NULLS ON 
@@ -3990,9 +3990,9 @@ if exists (select name from sysobjects where name='TRIGGER_chk_con_PatientInfo_F
   drop TRIGGER TRIGGER_chk_con_PatientInfo_From_HisUnid_Insert
 go
 
---É¾³ı´¥·¢Æ÷TRIGGER_chk_con_PatientInfo_From_HisUnid_Update
---´¥·¢Æ÷TRIGGER_chk_con_PatientInfo_From_HisUnid_Update´´½¨½Å±¾
---20151021ÓÃTRIGGER_chk_con_PatientInfo_From_HisUnidÌæ´ú
+--åˆ é™¤è§¦å‘å™¨TRIGGER_chk_con_PatientInfo_From_HisUnid_Update
+--è§¦å‘å™¨TRIGGER_chk_con_PatientInfo_From_HisUnid_Updateåˆ›å»ºè„šæœ¬
+--20151021ç”¨TRIGGER_chk_con_PatientInfo_From_HisUnidæ›¿ä»£
 SET QUOTED_IDENTIFIER ON 
 GO
 SET ANSI_NULLS ON 
@@ -4003,11 +4003,11 @@ if exists (select name from sysobjects where name='TRIGGER_chk_con_PatientInfo_F
 go
 
 
----------------Êı¾İÏà¹Ø²Ù×÷---------------
+---------------æ•°æ®ç›¸å…³æ“ä½œ---------------
 
---½«Êı¾İ²åÈëµ½CombSChkItem±íÖĞ start
---combinitemÖĞÔö¼Óunid×Ö¶ÎÖ®ºó
---É¾³ıclinicchkitemÖØ¸´¼ÇÂ¼Ö®Ç°
+--å°†æ•°æ®æ’å…¥åˆ°CombSChkItemè¡¨ä¸­ start
+--combinitemä¸­å¢åŠ unidå­—æ®µä¹‹å
+--åˆ é™¤clinicchkitemé‡å¤è®°å½•ä¹‹å‰
   DECLARE Cur_CombSChkItem Cursor For 
     select combinitem,itemid from clinicchkitem where (combinitem is not null) and (combinitem<>'')
   Open Cur_CombSChkItem
@@ -4028,18 +4028,18 @@ go
   CLOSE Cur_CombSChkItem
   DEALLOCATE Cur_CombSChkItem
 go
---½«Êı¾İ²åÈëµ½CombSChkItem±íÖĞ stop
+--å°†æ•°æ®æ’å…¥åˆ°CombSChkItemè¡¨ä¸­ stop
 
 IF EXISTS (select 1 from syscolumns where name='combinitem' and id=object_id('clinicchkitem'))
   delete from clinicchkitem where (combinitem is not null) and (combinitem<>'')
 GO
 
---ÉÏÃæµÄÊı¾İ²Ù×÷ĞèÒª×Ö¶Îcombinitem,¹ÊÖ»ÄÜÔÚÊı¾İ²Ù×÷Ö®ºóÉ¾³ı×Ö¶Îcombinitem
+--ä¸Šé¢çš„æ•°æ®æ“ä½œéœ€è¦å­—æ®µcombinitem,æ•…åªèƒ½åœ¨æ•°æ®æ“ä½œä¹‹ååˆ é™¤å­—æ®µcombinitem
 IF EXISTS (select 1 from syscolumns where name='combinitem' and id=object_id('clinicchkitem'))
   Alter table clinicchkitem drop column combinitem
 GO
 
---20141123ÇĞ±äÂÊÔÚ20141123Ç°ÊÇÔÚdosage2×Ö¶ÎÖĞ£¬ÏÖ×ªÒÆµ½Reserve8
+--20141123åˆ‡å˜ç‡åœ¨20141123å‰æ˜¯åœ¨dosage2å­—æ®µä¸­ï¼Œç°è½¬ç§»åˆ°Reserve8
 update clinicchkitem set Reserve8=dosage2 where isnull(dosage2,'')<>'' AND ISNUMERIC(dosage2)=1 AND Reserve8 IS NULL
 GO
 
@@ -4052,54 +4052,54 @@ GO
 update CommCode SET SysName='LIS' WHERE isnull(SysName,'')=''
 GO
 
---20140906ĞÔ±ğ×Ô¶¨Òå
-if not exists (select 1 from CommCode where TypeName='ĞÔ±ğ')
+--20140906æ€§åˆ«è‡ªå®šä¹‰
+if not exists (select 1 from CommCode where TypeName='æ€§åˆ«')
 begin
-  insert into CommCode (typename,id,name,sysname) values ('ĞÔ±ğ','0','Î´ÖªµÄĞÔ±ğ','LIS')
-  insert into CommCode (typename,id,name,sysname) values ('ĞÔ±ğ','1','ÄĞ','LIS')
-  insert into CommCode (typename,id,name,sysname) values ('ĞÔ±ğ','2','Å®','LIS')
-  insert into CommCode (typename,id,name,sysname) values ('ĞÔ±ğ','5','Å®±äÄĞ','LIS')
-  insert into CommCode (typename,id,name,sysname) values ('ĞÔ±ğ','6','ÄĞ±äÅ®','LIS')
-  insert into CommCode (typename,id,name,sysname) values ('ĞÔ±ğ','9','Î´ËµÃ÷µÄĞÔ±ğ','LIS')
+  insert into CommCode (typename,id,name,sysname) values ('æ€§åˆ«','0','æœªçŸ¥çš„æ€§åˆ«','LIS')
+  insert into CommCode (typename,id,name,sysname) values ('æ€§åˆ«','1','ç”·','LIS')
+  insert into CommCode (typename,id,name,sysname) values ('æ€§åˆ«','2','å¥³','LIS')
+  insert into CommCode (typename,id,name,sysname) values ('æ€§åˆ«','5','å¥³å˜ç”·','LIS')
+  insert into CommCode (typename,id,name,sysname) values ('æ€§åˆ«','6','ç”·å˜å¥³','LIS')
+  insert into CommCode (typename,id,name,sysname) values ('æ€§åˆ«','9','æœªè¯´æ˜çš„æ€§åˆ«','LIS')
 end
 GO
 
---20150201Èí¼ş¹ıÆÚÊ±¼ä
-if not exists (select 1 from CommCode where TypeName='ÏµÍ³´úÂë' and Remark='Èí¼ş¹ıÆÚÊ±¼ä')
-  insert into CommCode (typename,id,name,remark,sysname) values ('ÏµÍ³´úÂë','0005','B6BB07900F8E5B81BBDEC78B685A68B8','Èí¼ş¹ıÆÚÊ±¼ä','LIS')
+--20150201è½¯ä»¶è¿‡æœŸæ—¶é—´
+if not exists (select 1 from CommCode where TypeName='ç³»ç»Ÿä»£ç ' and Remark='è½¯ä»¶è¿‡æœŸæ—¶é—´')
+  insert into CommCode (typename,id,name,remark,sysname) values ('ç³»ç»Ÿä»£ç ','0005','B6BB07900F8E5B81BBDEC78B685A68B8','è½¯ä»¶è¿‡æœŸæ—¶é—´','LIS')
 GO
 
---20180512Ô¶³ÌÇëÇóµØÖ·
-if not exists (select 1 from CommCode where TypeName='ÏµÍ³´úÂë' and Remark='Ô¶³ÌÇëÇóµØÖ·')
-  insert into CommCode (typename,id,name,remark,sysname) values ('ÏµÍ³´úÂë','0007','http://211.97.0.5:8080/YkAPI/service','Ô¶³ÌÇëÇóµØÖ·','LIS')
+--20180512è¿œç¨‹è¯·æ±‚åœ°å€
+if not exists (select 1 from CommCode where TypeName='ç³»ç»Ÿä»£ç ' and Remark='è¿œç¨‹è¯·æ±‚åœ°å€')
+  insert into CommCode (typename,id,name,remark,sysname) values ('ç³»ç»Ÿä»£ç ','0007','http://211.97.0.5:8080/YkAPI/service','è¿œç¨‹è¯·æ±‚åœ°å€','LIS')
 GO
 
---20190130 WebSocket·şÎñ¶Ë-ĞÂ½á¹ûÌáĞÑ
-if not exists (select 1 from CommCode where TypeName='ÏµÍ³´úÂë' and Remark='WebSocket·şÎñ¶Ë' and Reserve='ĞÂ½á¹ûÌáĞÑ')
-  insert into CommCode (typename,id,name,remark,Reserve,sysname) values ('ÏµÍ³´úÂë','0008','ws://localhost:8080/YkSchedule','WebSocket·şÎñ¶Ë','ĞÂ½á¹ûÌáĞÑ','LIS')
+--20190130 WebSocketæœåŠ¡ç«¯-æ–°ç»“æœæé†’
+if not exists (select 1 from CommCode where TypeName='ç³»ç»Ÿä»£ç ' and Remark='WebSocketæœåŠ¡ç«¯' and Reserve='æ–°ç»“æœæé†’')
+  insert into CommCode (typename,id,name,remark,Reserve,sysname) values ('ç³»ç»Ÿä»£ç ','0008','ws://localhost:8080/YkSchedule','WebSocketæœåŠ¡ç«¯','æ–°ç»“æœæé†’','LIS')
 GO
 
-if not exists(select * from CommCode where TypeName='¹¤¾ß²Ëµ¥' and name='±¨±í±à¼­Æ÷')
+if not exists(select * from CommCode where TypeName='å·¥å…·èœå•' and name='æŠ¥è¡¨ç¼–è¾‘å™¨')
 begin
-  insert into CommCode(TypeName,ID,Name,Reserve,Reserve2) values ('¹¤¾ß²Ëµ¥',010,'±¨±í±à¼­Æ÷','FrfSet.exe','1')
-  insert into CommCode(TypeName,ID,Name,Reserve,Reserve2) values ('¹¤¾ß²Ëµ¥',015,'SQL¸ß¼¶²éÑ¯Æ÷','SQLQueryer.exe','')
-  insert into CommCode(TypeName,ID,Name,Reserve,Reserve2) values ('¹¤¾ß²Ëµ¥',020,'-','','')
-  insert into CommCode(TypeName,ID,Name,Reserve,Reserve2) values ('¹¤¾ß²Ëµ¥',025,'È¨ÏŞÉèÖÃ','PowerSet.exe','1')
-  insert into CommCode(TypeName,ID,Name,Reserve,Reserve2) values ('¹¤¾ß²Ëµ¥',030,'-','','')
-  insert into CommCode(TypeName,ID,Name,Reserve,Reserve2) values ('¹¤¾ß²Ëµ¥',035,'¼¤»îÍ¨ĞÅ½Ó¿Ú','×¢²áCOM×é¼ş.bat','')
-  insert into CommCode(TypeName,ID,Name,Reserve,Reserve2) values ('¹¤¾ß²Ëµ¥',040,'-','','')
-  insert into CommCode(TypeName,ID,Name,Reserve,Reserve2) values ('¹¤¾ß²Ëµ¥',055,'´®¿Úµ÷ÊÔÖúÊÖ','UartAssist.exe','')
-  insert into CommCode(TypeName,ID,Name,Reserve,Reserve2) values ('¹¤¾ß²Ëµ¥',060,'ÍøÂçµ÷ÊÔÖúÊÖ','NetAssist.exe','')
-  insert into CommCode(TypeName,ID,Name,Reserve,Reserve2) values ('¹¤¾ß²Ëµ¥',070,'-','','')
-  insert into CommCode(TypeName,ID,Name,Reserve,Reserve2) values ('¹¤¾ß²Ëµ¥',075,'²Ù×÷ÊÖ²á','¼ìÑéÏµÍ³²Ù×÷ÊÖ²á.pdf','')
+  insert into CommCode(TypeName,ID,Name,Reserve,Reserve2) values ('å·¥å…·èœå•',010,'æŠ¥è¡¨ç¼–è¾‘å™¨','FrfSet.exe','1')
+  insert into CommCode(TypeName,ID,Name,Reserve,Reserve2) values ('å·¥å…·èœå•',015,'SQLé«˜çº§æŸ¥è¯¢å™¨','SQLQueryer.exe','')
+  insert into CommCode(TypeName,ID,Name,Reserve,Reserve2) values ('å·¥å…·èœå•',020,'-','','')
+  insert into CommCode(TypeName,ID,Name,Reserve,Reserve2) values ('å·¥å…·èœå•',025,'æƒé™è®¾ç½®','PowerSet.exe','1')
+  insert into CommCode(TypeName,ID,Name,Reserve,Reserve2) values ('å·¥å…·èœå•',030,'-','','')
+  insert into CommCode(TypeName,ID,Name,Reserve,Reserve2) values ('å·¥å…·èœå•',035,'æ¿€æ´»é€šä¿¡æ¥å£','æ³¨å†ŒCOMç»„ä»¶.bat','')
+  insert into CommCode(TypeName,ID,Name,Reserve,Reserve2) values ('å·¥å…·èœå•',040,'-','','')
+  insert into CommCode(TypeName,ID,Name,Reserve,Reserve2) values ('å·¥å…·èœå•',055,'ä¸²å£è°ƒè¯•åŠ©æ‰‹','UartAssist.exe','')
+  insert into CommCode(TypeName,ID,Name,Reserve,Reserve2) values ('å·¥å…·èœå•',060,'ç½‘ç»œè°ƒè¯•åŠ©æ‰‹','NetAssist.exe','')
+  insert into CommCode(TypeName,ID,Name,Reserve,Reserve2) values ('å·¥å…·èœå•',070,'-','','')
+  insert into CommCode(TypeName,ID,Name,Reserve,Reserve2) values ('å·¥å…·èœå•',075,'æ“ä½œæ‰‹å†Œ','æ£€éªŒç³»ç»Ÿæ“ä½œæ‰‹å†Œ.pdf','')
 end
 GO
 
---´¦ÀíÀúÊ·Êı¾İ
+--å¤„ç†å†å²æ•°æ®
 update qcghead set itemid='-1' where itemid is null
 GO
 
----------------±íÔ¼Êø¡¢Ë÷ÒıÏà¹Ø²Ù×÷---------------
+---------------è¡¨çº¦æŸã€ç´¢å¼•ç›¸å…³æ“ä½œ---------------
 
 if not exists(select * from sysindexes where name='IX_combinitem')
   CREATE UNIQUE NONCLUSTERED INDEX [IX_combinitem] ON [dbo].[combinitem] 
@@ -4115,7 +4115,7 @@ CREATE UNIQUE NONCLUSTERED INDEX [IX_clinicchkitem] ON [dbo].[clinicchkitem]
 )
 go
 
---´´½¨qcghead.itemid²»ÄÜÎª¿Õ×Ö·û´®µÄÔ¼Êø
+--åˆ›å»ºqcghead.itemidä¸èƒ½ä¸ºç©ºå­—ç¬¦ä¸²çš„çº¦æŸ
 if not exists(select OBJECTPROPERTY(o.id,N'IsSystemTable') from sysobjects o where o.name = N'CK_qcghead_ITEMID' and user_name(o.uid) = N'dbo')
   ALTER TABLE qcghead ADD CONSTRAINT CK_qcghead_ITEMID CHECK (len(itemID) > 0)
 GO
@@ -4130,9 +4130,9 @@ CREATE UNIQUE NONCLUSTERED INDEX IX_HisCombItem ON dbo.HisCombItem
 end
 GO
 
----------------±í¹ØÏµÏà¹Ø²Ù×÷---------------
+---------------è¡¨å…³ç³»ç›¸å…³æ“ä½œ---------------
 
---´´½¨CommValueÓëclinicchkitemÖ®¼äµÄ¹ØÏµ
+--åˆ›å»ºCommValueä¸clinicchkitemä¹‹é—´çš„å…³ç³»
 if not exists(select OBJECTPROPERTY(o.id,N'IsSystemTable') from sysobjects o where o.name = N'FK_CommValue_clinicchkitem' and user_name(o.uid) = N'dbo')
 ALTER TABLE dbo.CommValue ADD CONSTRAINT
 	FK_CommValue_clinicchkitem FOREIGN KEY
@@ -4145,7 +4145,7 @@ ALTER TABLE dbo.CommValue ADD CONSTRAINT
 	 ON DELETE CASCADE
 go
 
---´´½¨clinicchkitemÓëCombSChkItemÖ®¼äµÄ¹ØÏµ
+--åˆ›å»ºclinicchkitemä¸CombSChkItemä¹‹é—´çš„å…³ç³»
 if not exists(select OBJECTPROPERTY(o.id,N'IsSystemTable') from sysobjects o where o.name = N'FK_CombSChkItem_clinicchkitem' and user_name(o.uid) = N'dbo')
 ALTER TABLE dbo.CombSChkItem ADD CONSTRAINT
 	FK_CombSChkItem_clinicchkitem FOREIGN KEY
@@ -4157,7 +4157,7 @@ ALTER TABLE dbo.CombSChkItem ADD CONSTRAINT
 	) ON UPDATE CASCADE
 	 ON DELETE CASCADE
 
---´´½¨combinitemÓëCombSChkItemÖ®¼äµÄ¹ØÏµ
+--åˆ›å»ºcombinitemä¸CombSChkItemä¹‹é—´çš„å…³ç³»
 if not exists(select OBJECTPROPERTY(o.id,N'IsSystemTable') from sysobjects o where o.name = N'FK_CombSChkItem_combinitem' and user_name(o.uid) = N'dbo')
 ALTER TABLE dbo.CombSChkItem ADD CONSTRAINT
 	FK_CombSChkItem_combinitem FOREIGN KEY
@@ -4171,7 +4171,7 @@ ALTER TABLE dbo.CombSChkItem ADD CONSTRAINT
 
 go
 
---´´½¨clinicchkitemÓëreferencevalueÖ®¼äµÄ¹ØÏµ
+--åˆ›å»ºclinicchkitemä¸referencevalueä¹‹é—´çš„å…³ç³»
 if not exists(select OBJECTPROPERTY(o.id,N'IsSystemTable') from sysobjects o where o.name = N'FK_referencevalue_clinicchkitem' and user_name(o.uid) = N'dbo')
 ALTER TABLE dbo.referencevalue ADD CONSTRAINT
 	FK_referencevalue_clinicchkitem FOREIGN KEY
@@ -4184,7 +4184,7 @@ ALTER TABLE dbo.referencevalue ADD CONSTRAINT
 	 ON DELETE CASCADE
 GO
 
---20140926´´½¨ItemExceptionValueÓëclinicchkitemÖ®¼äµÄ¹ØÏµ
+--20140926åˆ›å»ºItemExceptionValueä¸clinicchkitemä¹‹é—´çš„å…³ç³»
 if not exists(select OBJECTPROPERTY(o.id,N'IsSystemTable') from sysobjects o where o.name = N'FK_ItemExceptionValue_clinicchkitem' and user_name(o.uid) = N'dbo')
 ALTER TABLE dbo.ItemExceptionValue ADD CONSTRAINT
 	FK_ItemExceptionValue_clinicchkitem FOREIGN KEY
@@ -4197,7 +4197,7 @@ ALTER TABLE dbo.ItemExceptionValue ADD CONSTRAINT
 	 ON DELETE CASCADE
 GO
 
---´´½¨HisCombItemÓëcombinitemÖ®¼äµÄ¹ØÏµ
+--åˆ›å»ºHisCombItemä¸combinitemä¹‹é—´çš„å…³ç³»
 if not exists(select OBJECTPROPERTY(o.id,N'IsSystemTable') from sysobjects o where o.name = N'FK_HisCombItem_combinitem' and user_name(o.uid) = N'dbo')
 ALTER TABLE dbo.HisCombItem ADD CONSTRAINT
 	FK_HisCombItem_combinitem FOREIGN KEY
@@ -4210,7 +4210,7 @@ ALTER TABLE dbo.HisCombItem ADD CONSTRAINT
 	 ON DELETE CASCADE
 go
 
---´´½¨chk_con_hisÓëchk_valu_hisÖ®¼äµÄ¹ØÏµ
+--åˆ›å»ºchk_con_hisä¸chk_valu_hisä¹‹é—´çš„å…³ç³»
 if not exists(select OBJECTPROPERTY(o.id,N'IsSystemTable') from sysobjects o where o.name = N'FK_chk_valu_his_chk_con_his' and user_name(o.uid) = N'dbo')
 ALTER TABLE dbo.chk_valu_his ADD CONSTRAINT
 	FK_chk_valu_his_chk_con_his FOREIGN KEY
@@ -4223,19 +4223,19 @@ ALTER TABLE dbo.chk_valu_his ADD CONSTRAINT
 	 ON DELETE CASCADE
 GO
 
---É¾³ı¹ØÏµFK_worker_department
+--åˆ é™¤å…³ç³»FK_worker_department
 if exists(select OBJECTPROPERTY(o.id,N'IsSystemTable') from sysobjects o where o.name = N'FK_worker_department' and user_name(o.uid) = N'dbo')
 ALTER TABLE dbo.worker
 	DROP CONSTRAINT FK_worker_department
 GO
 
---É¾³ı¹ØÏµFK_clinicchkitem_combinitem
+--åˆ é™¤å…³ç³»FK_clinicchkitem_combinitem
 if exists(select OBJECTPROPERTY(o.id,N'IsSystemTable') from sysobjects o where o.name = N'FK_clinicchkitem_combinitem' and user_name(o.uid) = N'dbo')
 ALTER TABLE dbo.clinicchkitem
 	DROP CONSTRAINT FK_clinicchkitem_combinitem
 GO
 
----------------ÖØĞÂ±àÒëÊÓÍ¼---------------
+---------------é‡æ–°ç¼–è¯‘è§†å›¾---------------
 sp_refreshview  'dbo.view_chk_valu_All'
 GO
 sp_refreshview  'dbo.view_HBV_Value'
