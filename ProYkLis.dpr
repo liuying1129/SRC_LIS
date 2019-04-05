@@ -29,7 +29,8 @@ uses
   uQRCode in 'uQRCode.pas',
   UfrmExtItemSetup in 'UfrmExtItemSetup.pas' {frmExtItemSetup},
   UfrmExceptionValue in 'UfrmExceptionValue.pas' {frmExceptionValue},
-  UfrmLeakItemWarning in 'UfrmLeakItemWarning.pas' {frmLeakItemWarning};
+  UfrmLeakItemWarning in 'UfrmLeakItemWarning.pas' {frmLeakItemWarning},
+  UfrmModifyPwd in 'UfrmModifyPwd.pas' {frmModifyPwd};
 
 {$R *.RES}
 

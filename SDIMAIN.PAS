@@ -233,6 +233,8 @@ type
     ToolButton7: TToolButton;
     LYLed2: TLYLed;
     TimerMakeTjDescription: TTimer;
+    N85: TMenuItem;
+    N86: TMenuItem;
     procedure FileExit1Execute(Sender: TObject);
     procedure HelpAbout1Execute(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -379,6 +381,7 @@ type
     procedure LYLed1DblClick(Sender: TObject);
     procedure TimerLeakItemWarningTimer(Sender: TObject);
     procedure TimerMakeTjDescriptionTimer(Sender: TObject);
+    procedure N85Click(Sender: TObject);
   private
     procedure CheckTheListBox;//根据当前病人的结果在checklistbox1中打钩
     procedure WriteProfile;
@@ -442,7 +445,8 @@ uses  Unit_dialog_pllr,
   UfrmExcelQuery, UfrmStaticCombItem,
   UDM, UfrmFromExcelLoad,
   UfrmXDepictType, UfrmXDepict, UfrmCommCode, UfrmPlxg, UfrmCopyInfo,
-  UfrmPhoto, UfrmShowChkConHis, uQRCode, UfrmLeakItemWarning;
+  UfrmPhoto, UfrmShowChkConHis, uQRCode, UfrmLeakItemWarning,
+  UfrmModifyPwd;
 
 var
     copyName,copySex,copyage,copyCaseno,copyBedno,copydeptname,copycheck_doctor:string;//复制的病人基本信息，仅粘贴时有用
@@ -4565,6 +4569,11 @@ end;
 procedure TSDIAppForm.TimerMakeTjDescriptionTimer(Sender: TObject);
 begin
   if strtoint(ScalarSQLCmd(LisConn,'select count(*) from chk_con WITH(NOLOCK) where Weight=''待生成'' '))>0 then LYLed2.Value:=true else LYLed2.Value:=false;
+end;
+
+procedure TSDIAppForm.N85Click(Sender: TObject);
+begin
+  frmModifyPwd.ShowModal;
 end;
 
 end.
