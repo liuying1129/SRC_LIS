@@ -120,7 +120,7 @@ begin
     ' PushPress as 舒张压,PullPress as 收缩压,LeftEyesight as 左眼视力,RightEyesight as 右眼视力,Stature as 身高,Weight as 体重, '+
     ' TjJiWangShi as 既往史,TjJiaZuShi as 家族史,TjNeiKe as 内科,TjWaiKe as 外科,TjWuGuanKe as 五官科,TjFuKe as 妇科,TjLengQiangGuang as 冷强光,TjXGuang as X光,TjBChao as B超,TjXinDianTu as 心电图,TjJianYan as 检验,TjDescription as 结论,TJAdvice as 建议, '+
     ' printtimes as 打印次数,unid as 唯一编号 '+
-    ' from chk_con_bak ';
+    ' from chk_con_bak order by unid';
   
   lyquery1.Connection:=DM.ADOConnection1;
   lyquery1.SelectString:=sqlstr1;
