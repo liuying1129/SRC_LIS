@@ -4406,6 +4406,8 @@ var
   adotemp3:tadoquery;
   ini:tinifile;
   bNoCommUsed:boolean;
+
+  SS:STRING;
 begin
      clbCommUsed.Items.Clear;
      clbNoCommUsed.Items.Clear;
@@ -4418,9 +4420,14 @@ begin
      adotemp3.Open;
      while not adotemp3.Eof do
      begin
-      ini:=TINIFILE.Create(ChangeFileExt(Application.ExeName,'.ini'));
-      bNoCommUsed:=ini.ReadBool('备用组合项目',trim(adotemp3.fieldbyname('id').AsString),false);
-      ini.Free;
+      SS:=trim(adotemp3.fieldbyname('id').AsString);
+      
+      if SS='' THEN bNoCommUsed:=FALSE
+      else begin
+        ini:=TINIFILE.Create(ChangeFileExt(Application.ExeName,'.ini'));
+        bNoCommUsed:=ini.ReadBool('备用组合项目',SS,false);//如果SS='',则ReadBool会报错
+        ini.Free;
+      end;
 
       if bNoCommUsed then
         clbNoCommUsed.Items.Add(trim(adotemp3.fieldbyname('id').AsString)+'   '+adotemp3.fieldbyname('name').AsString)
