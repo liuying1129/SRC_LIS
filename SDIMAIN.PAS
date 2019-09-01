@@ -4425,7 +4425,7 @@ begin
       if SS='' THEN bNoCommUsed:=FALSE
       else begin
         ini:=TINIFILE.Create(ChangeFileExt(Application.ExeName,'.ini'));
-        bNoCommUsed:=ini.ReadBool('备用组合项目',SS,false);//如果SS='',则ReadBool会报错
+        bNoCommUsed:=ini.ReadBool('备用组合项目',SS,false);//如果SS='',则ReadBool会报错ntdll.dll
         ini.Free;
       end;
 
@@ -4466,6 +4466,12 @@ begin
   s2:=CheckListBox.Items.Strings[i];
   b:=pos('   ',s2);
   s2:=copy(s2,1,b-1);
+
+  if s2='' then//如果s2='',则WriteBool、DeleteKey会报错ntdll.dll
+  begin
+    MESSAGEDLG('组合项目代码为空,不能移除!',mtError,[MBOK],0);
+    exit;
+  end;
 
   if uppercase(CheckListBox.Name)=uppercase('clbCommUsed') then
   begin
