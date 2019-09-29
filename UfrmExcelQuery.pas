@@ -67,7 +67,7 @@ const
     'Z.check_doctor as 送检医生,Z.operator as 操作者,Z.report_doctor as 审核者,Z.report_date as 申请日期,'+
     'Z.diagnosetype as 优先级别,Z.combin_id as 工作组别,'+
     'Z.flagetype as 样本类型,Z.typeflagcase as 样本情况,Z.diagnose as 临床诊断,'+
-    'Z.issure as 备注,Z.germname as 细菌, '+
+    'Z.issure as 备注1z2y3xTABLENAME1T2S3RZ,Z.germname as 细菌, '+
     'Z.WorkCompany as 所属公司,Z.WorkDepartment as 所属部门,Z.WorkCategory as 工种,Z.WorkID as 工号,Z.ifMarry as 婚否,Z.OldAddress as 籍贯,'+
     'Z.Address as 住址,Z.Telephone as 电话,Z.PushPress as 舒张压,Z.PullPress as 收缩压,'+
     'Z.LeftEyesight as 左眼视力,Z.RightEyesight as 右眼视力,Z.Stature as 身高,Z.Weight as 体重,'+

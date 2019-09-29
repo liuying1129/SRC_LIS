@@ -58,7 +58,7 @@ object frmExcelQuery: TfrmExcelQuery
     Left = 0
     Top = 35
     Width = 778
-    Height = 377
+    Height = 376
     Align = alClient
     Color = 16767438
     Ctl3D = False
