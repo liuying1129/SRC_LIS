@@ -1673,7 +1673,7 @@ begin
   adotemp2.Parameters.ParamByName('P_patientname').Value:=Copy(Ppatientname,1,14) ;
   adotemp2.Parameters.ParamByName('P_sex').Value:=Copy(Psex,1,8) ;
   adotemp2.Parameters.ParamByName('P_age').Value:=Copy(Page,1,14) ;
-  adotemp2.Parameters.ParamByName('P_Caseno').Value:=Copy(PCaseno,1,10) ;
+  adotemp2.Parameters.ParamByName('P_Caseno').Value:=Copy(PCaseno,1,20) ;
   adotemp2.Parameters.ParamByName('P_bedno').Value:=Copy(Pbedno,1,10) ;
   adotemp2.Parameters.ParamByName('P_deptname').Value:=Copy(Pdeptname,1,40) ;
   adotemp2.Parameters.ParamByName('P_check_date').Value:=strtodatetime(datetostr(Pcheck_date)+' '+timetostr(pJCSJ)) ;
