@@ -146,8 +146,6 @@ type
     N37: TMenuItem;
     DosMove1: TDosMove;
     N42: TMenuItem;
-    N32: TMenuItem;
-    N33: TMenuItem;
     N24: TMenuItem;
     N25: TMenuItem;
     N26: TMenuItem;
@@ -162,7 +160,6 @@ type
     SpeedButton5: TSpeedButton;
     CheckBox1: TCheckBox;
     Action3: TAction;
-    N19: TMenuItem;
     N64: TMenuItem;
     N65: TMenuItem;
     N16: TMenuItem;
@@ -330,7 +327,6 @@ type
     procedure N42Click(Sender: TObject);
     procedure ADO_dtlBeforeClose(DataSet: TDataSet);
     procedure pmChangeGroupPopup(Sender: TObject);
-    procedure N32Click(Sender: TObject);
     procedure N25Click(Sender: TObject);
     procedure N26Click(Sender: TObject);
     procedure N36Click(Sender: TObject);
@@ -343,7 +339,6 @@ type
     procedure LabeledEdit3Change(Sender: TObject);
     procedure TimerIdleTrackerTimer(Sender: TObject);
     procedure SpeedButton5Click(Sender: TObject);
-    procedure N19Click(Sender: TObject);
     procedure N64Click(Sender: TObject);
     procedure N16Click(Sender: TObject);
     procedure N69Click(Sender: TObject);
@@ -402,7 +397,6 @@ type
     procedure miToolItemClick(Sender: TObject);
     procedure ShowPictureValue(const ACheckUnid:integer);
     procedure ShowBarcode2D(const ACheckUnid:integer);
-    //procedure SingleMakeTjDescription(const ACheckUnid:integer);//指定病人生成体检结论、建议
   public
       { Public declarations }
     ifnewadd:boolean;
@@ -505,6 +499,9 @@ var
   IdHTTP_Tmp1:TIdHTTP;
   sLocalIP,sLocalName:STRING;
   IdIPWatch:TIdIPWatch;
+  adotemp11:tadoquery;
+  i:integer;
+  d1:TDate;
 begin
   if ifRegister then bRegister:=true else bRegister:=false;
   
@@ -581,6 +578,16 @@ begin
   //调用用户信息接口stop
 
   TimerIdleTracker.Enabled:=true;//TimerIdleTrackerTimer事件中需用到配置文件变量LoginTime
+
+  //【结束当批检验工作】功能提示begin
+  adotemp11:=tadoquery.Create(nil);
+  adotemp11.clone(ADObasic);
+  i:=adotemp11.RecordCount;
+  d1:=adotemp11.FieldByName('检查日期').AsDateTime;
+  adotemp11.Free;
+  if (i>1000)and(now()-d1>40)then
+    MESSAGEDLG('尝试使用【信息录入->结束当批检验工作】,可以将已审核的验单转入历史库',MTINFORMATION,[MBOK],0);
+  //【结束当批检验工作】功能提示end
 end;
 
 procedure TSDIAppForm.ClearAll(CONST Clear_TYPE:integer);
@@ -3158,118 +3165,6 @@ begin
      adotemp3.Free;
 end;
 
-procedure TSDIAppForm.N32Click(Sender: TObject);
-var
-  ss:string;
-  ini:tinifile;
-  dbname,backfile:string;
-  sqlstr:string;
-  adotemp11:tadoquery;
-  Save_Cursor:TCursor;
-begin
-  if not ifhaspower(sender,powerstr_js_main) then exit;
-
-  ss:='数据库名称'+#2+'Edit'+#2+#2+'0'+#2+#2+#3+
-      '备份文件名称'+#2+'File'+#2+#2+'1'+#2+'请填写备份文件名称'+#2;
-  if not ShowOptionForm('数据库备份','数据库备份',Pchar(ss),Pchar(ChangeFileExt(Application.ExeName,'.ini'))) then exit;
-
-  ini:=tinifile.Create(ChangeFileExt(Application.ExeName,'.ini'));
-  dbname:=ini.ReadString('数据库备份','数据库名称','');
-  backfile:=ini.ReadString('数据库备份','备份文件名称','');
-  ini.Free;
-
-  Save_Cursor := Screen.Cursor;
-  Screen.Cursor := crHourGlass;
-  sqlstr:=' BACKUP DATABASE :P_DataBaseName TO disk=:P_physical_name ';
-  adotemp11:=tadoquery.Create(nil);
-  adotemp11.Connection:=dm.ADOConnection1;
-  adotemp11.Close;
-  adotemp11.SQL.Clear;
-  adotemp11.SQL.Text:=sqlstr;
-  adotemp11.Parameters.ParamByName('P_DataBaseName').Value:=dbname;
-  adotemp11.Parameters.ParamByName('P_physical_name').Value:=backfile;
-  try
-    adotemp11.ExecSQL;
-    showmessage('备份完毕！');
-  except
-    showmessage('备份出错,请检查数据库或文件名是否存在！');
-    adotemp11.Free;
-    Screen.Cursor := Save_Cursor;  { Always restore to normal }
-  end;
-  Screen.Cursor := Save_Cursor;  { Always restore to normal }
-  adotemp11.Free;
-end;
-
-procedure TSDIAppForm.N19Click(Sender: TObject);
-var
-  ss:string;
-  ini:tinifile;
-  dbname,backfile,mdf,ldf:string;
-  sqlstr:string;
-  adotemp11:tadoquery;
-  Save_Cursor:TCursor;
-begin
-  if not ifhaspower(sender,powerstr_js_main) then exit;
-  
-  ss:='数据库名称'+#2+'Edit'+#2+#2+'0'+#2+#2+#3+
-      '备份文件名称'+#2+'File'+#2+#2+'1'+#2+'请选择备份文件名称'+#2+#3+
-      '主数据文件'+#2+'File'+#2+#2+'1'+#2+'请填写文件名,后缀名必须为mdf'+#2+#3+
-      '日志文件'+#2+'File'+#2+#2+'1'+#2+'请填写文件名,后缀名必须为ldf'+#2;
-  if not ShowOptionForm('数据库恢复','数据库恢复',Pchar(ss),Pchar(ChangeFileExt(Application.ExeName,'.ini'))) then exit;
-
-  ini:=tinifile.Create(ChangeFileExt(Application.ExeName,'.ini'));
-  dbname:=ini.ReadString('数据库恢复','数据库名称','');
-  backfile:=ini.ReadString('数据库恢复','备份文件名称','');
-  mdf:=ini.ReadString('数据库恢复','主数据文件','');
-  ldf:=ini.ReadString('数据库恢复','日志文件','');
-  ini.Free;
-
-  if not directoryexists(ExtractFilePath(mdf)) then
-  begin
-    if not ForceDirectories(ExtractFilePath(mdf)) then
-    begin
-      showmessage('主数据文件的路径不存在');
-      exit;
-    end;
-  end;
-
-  if not directoryexists(ExtractFilePath(ldf)) then
-  begin
-    if not ForceDirectories(ExtractFilePath(ldf)) then
-    begin
-      showmessage('日志文件的路径不存在');
-      exit;
-    end;
-  end;
-
-  Save_Cursor := Screen.Cursor;
-  Screen.Cursor := crHourGlass;
-  sqlstr:=' restore database :P_database_name '+
-          ' from disk=:P_backup_physic_name '+
-          ' WITH MOVE ''clinic2004_dat'' TO :P_physics_data '+
-          ' ,MOVE ''clinic2004_log'' TO :P_physics_LOG ';
-  adotemp11:=tadoquery.Create(nil);
-  adotemp11.Connection:=dm.ADOConnection1;
-  adotemp11.Close;
-  adotemp11.SQL.Clear;
-  adotemp11.SQL.Text:=sqlstr;
-  adotemp11.Parameters.ParamByName('P_database_name').Value:=dbname;
-  adotemp11.Parameters.ParamByName('P_backup_physic_name').Value:=backfile;
-  adotemp11.Parameters.ParamByName('P_physics_data').Value:=mdf;
-  adotemp11.Parameters.ParamByName('P_physics_LOG').Value:=ldf;
-  try
-    adotemp11.ExecSQL;
-    showmessage('恢复完毕！');
-  except
-    showmessage('恢复出错,请检查文件名是否存在！');
-    adotemp11.Free;
-    Screen.Cursor := Save_Cursor;  { Always restore to normal }
-  end;
-  adotemp11.Free;
-
-  Screen.Cursor := Save_Cursor;  { Always restore to normal }
-end;
-
 procedure TSDIAppForm.N25Click(Sender: TObject);
 begin
   if not ifhaspower(sender,powerstr_js_main) then exit;
@@ -4093,160 +3988,9 @@ begin
   frmXDepict(2).Show;
 end;
 
-{procedure TSDIAppForm.SingleMakeTjDescription(const ACheckUnid: integer);
-var
-  Pre_Combin_Name,Combin_Name,ItemId,ItemChnName,cur_value,min_value,max_value:string;
-  adotemp11,adotemp22,adotemp33:Tadoquery;
-  i,k,m:integer;
-  sCR:string;//回车符
-  LvlInd:string;
-
-  sPatientname,sSex,sAge,sCheck_Date:string;
-
-  sTjjl_Unid,sTjjy_Unid:string;//体检结论、体检建议的结果记录的唯一编号
-  Ex_TjDescription,Ex_TJAdvice:string;
-  TJAdvice_L,TJAdvice_H:string;
-
-  spkcombin_id,sitemid:string;
-  Save_Cursor:TCursor;
-  Combin_Name_Flag:string;
-begin
-  adotemp11:=Tadoquery.Create(nil);
-  adotemp11.Connection:=dm.ADOConnection1;
-  adotemp11.Close;
-  adotemp11.SQL.Clear;
-  adotemp11.SQL.Text:='select * from chk_con cc where cc.unid='+inttostr(ACheckUnid);
-  adotemp11.Open;
-  if adotemp11.RecordCount<=0 then begin adotemp11.Free;exit; end;
-
-  sPatientname:=adotemp11.fieldbyname('patientname').AsString;
-  sSex:=adotemp11.fieldbyname('sex').AsString;
-  sAge:=adotemp11.fieldbyname('age').AsString;
-  sCheck_Date:=FormatDateTime('yyyy-mm-dd',adotemp11.fieldbyname('check_date').AsDateTime);
-
-  adotemp11.Free;
-  
-  if trim(sPatientname)='' then exit;//无姓名则不更新
-
-  Save_Cursor := Screen.Cursor;
-  Screen.Cursor := crHourGlass;
-
-  adotemp33:=Tadoquery.Create(nil);
-  adotemp33.Connection:=dm.ADOConnection1;
-  adotemp33.Close;
-  adotemp33.SQL.Clear;
-  adotemp33.SQL.Text:=' select cv.*,cci.Reserve1 as TJAdvice_L,cci.Reserve2 as TJAdvice_H '+
-                      ' from chk_con cc,chk_valu cv,clinicchkitem cci '+
-                      ' where cc.unid=cv.pkunid and cc.patientname='''+sPatientname+''' and isnull(cc.sex,'''')='''+sSex+''' and dbo.uf_GetAgeReal(cc.age)=dbo.uf_GetAgeReal('''+sAge+
-                      ''') and cv.issure=1 and ltrim(rtrim(isnull(itemvalue,'''')))<>'''' '+
-                      ' and cci.itemid=cv.itemid '+
-                      ' and (isnull(cci.Reserve1,'''')<>'''' or isnull(cci.Reserve2,'''')<>'''') '+
-                      ' union all '+
-                      ' select cv.*, '+
-                      ' (select cci.Reserve1 from clinicchkitem cci where cci.itemid=cv.itemid) as TJAdvice_L,'+
-                      ' (select cci.Reserve2 from clinicchkitem cci where cci.itemid=cv.itemid) as TJAdvice_H '+
-                      ' from chk_con_bak cc,chk_valu_bak cv,clinicchkitem cci '+
-                      ' where cc.unid=cv.pkunid and cc.patientname='''+sPatientname+''' and isnull(cc.sex,'''')='''+sSex+''' and dbo.uf_GetAgeReal(cc.age)=dbo.uf_GetAgeReal('''+sAge+
-                      ''') and cv.issure=1 and ltrim(rtrim(isnull(itemvalue,'''')))<>'''' '+
-                      ' and cci.itemid=cv.itemid '+
-                      ' and (isnull(cci.Reserve1,'''')<>'''' or isnull(cci.Reserve2,'''')<>'''') '+
-                      ' and CONVERT(CHAR(10),cc.check_date,121)>=DATEADD(day,'+inttostr(-1*MakeTjDescDays)+','''+sCheck_Date+''') '+
-                      ' and CONVERT(CHAR(10),cc.check_date,121)<=DATEADD(day,'+inttostr(MakeTjDescDays)+','''+sCheck_Date+''') '+
-                      ' order by cv.pkunid,cv.pkcombin_id,cv.printorder ';
-  adotemp33.Open;
-  while not adotemp33.Eof do
-  begin
-    sTjjl_Unid:=ScalarSQLCmd(LisConn,'select cv.valueid from chk_valu cv,clinicchkitem cci where cv.pkunid='+inttostr(ACheckUnid)+' and cci.itemid=cv.itemid and cci.Reserve5=1 and cci.SysName='''+SYSNAME+''' ');
-    sTjjy_Unid:=ScalarSQLCmd(LisConn,'select cv.valueid from chk_valu cv,clinicchkitem cci where cv.pkunid='+inttostr(ACheckUnid)+' and cci.itemid=cv.itemid and cci.Reserve5=2 and cci.SysName='''+SYSNAME+''' ');
-
-    ItemId:=trim(adotemp33.fieldbyname('itemid').AsString);
-    ItemChnName:=trim(adotemp33.fieldbyname('name').AsString);
-    cur_value:=trim(adotemp33.fieldbyname('itemvalue').AsString);
-    min_value:=trim(adotemp33.fieldbyname('min_value').AsString);
-    max_value:=trim(adotemp33.fieldbyname('max_value').AsString);
-    TJAdvice_L:=trim(adotemp33.fieldbyname('TJAdvice_L').AsString);
-    TJAdvice_H:=trim(adotemp33.fieldbyname('TJAdvice_H').AsString);
-
-    adotemp22:=Tadoquery.Create(nil);
-    adotemp22.Connection:=dm.ADOConnection1;
-    adotemp22.Close;
-    adotemp22.SQL.Clear;
-    adotemp22.SQL.Text:='select dbo.uf_ValueAlarm('''+ItemId+''','''+min_value+''','''+max_value+''','''+cur_value+''') as ifValueAlarm';
-    try//uf_ValueAlarm中的convert函数可能抛出异常
-      adotemp22.Open;
-      i:=adotemp22.fieldbyname('ifValueAlarm').AsInteger;
-    except
-      i:=0;
-    end;
-    adotemp22.Free;
-
-    if (i<>1) and (i<>2) then begin adotemp33.Next;continue;end;//该项目无异常
-
-    //写结论
-    LvlInd:='';
-    if i=1 then LvlInd:='偏低;' else if i=2 then LvlInd:='偏高;';
-
-    Pre_Combin_Name:=Combin_Name;//记录上一个组合项目名称
-    Combin_Name:=trim(adotemp33.fieldbyname('combin_name').AsString);
-      
-    Combin_Name_Flag:='';
-    if Pre_Combin_Name<>Combin_Name then Combin_Name_Flag:=Combin_Name+':';
-      
-    if sTjjl_Unid<>'' then
-    begin
-      Ex_TjDescription:=ScalarSQLCmd(LisConn,'select itemvalue from chk_valu where valueid='+sTjjl_Unid);//unid='+sUnid
-      k:=LastPos(#13,pchar(Ex_TjDescription));
-      Ex_TjDescription:=copy(Ex_TjDescription,k,MaxInt);
-
-      sCR:='';
-      if length(Ex_TjDescription+Combin_Name_Flag+ItemChnName)+length(LvlInd)>70 then sCR:=#13;
-        
-      ExecSQLCmd(LisConn,'update chk_valu set issure=1,itemvalue=isnull(itemvalue,'''')+'''+sCR+Combin_Name_Flag+ItemChnName+LvlInd+''' where valueid='+sTjjl_Unid);
-    end else
-    begin
-      sitemid:=ScalarSQLCmd(LisConn,'select cci.itemid from clinicchkitem cci where cci.Reserve5=1 and cci.SysName='''+SYSNAME+''' ');
-      spkcombin_id:=ScalarSQLCmd(LisConn,'select cbi.id from clinicchkitem cci,CombSChkItem csi,combinitem cbi where cci.Reserve5=1 and cci.unid=csi.itemunid and csi.combunid=cbi.unid and cci.SysName='''+SYSNAME+''' and cbi.SysName='''+SYSNAME+''' ');
-      if (sitemid<>'') and (spkcombin_id<>'') then 
-        ExecSQLCmd(LisConn,'insert into chk_valu(pkunid,issure,pkcombin_id,itemid,itemvalue) values (' + inttostr(ACheckUnid)+',1,''' +spkcombin_id+''','''+sitemid+''','''+Combin_Name_Flag+ItemChnName+LvlInd+''') ');
-    end;
-      
-    //写建议
-    LvlInd:='';
-    if i=1 then LvlInd:=TJAdvice_L else if i=2 then LvlInd:=TJAdvice_H;
-
-    if LvlInd<>'' then
-    begin
-      if sTjjy_Unid<>'' then
-      begin
-        Ex_TJAdvice:=ScalarSQLCmd(LisConn,'select itemvalue from chk_valu where valueid='+sTjjy_Unid);
-        k:=LastPos(#13,pchar(Ex_TJAdvice));
-        Ex_TJAdvice:=copy(Ex_TJAdvice,k,MaxInt);
-
-        sCR:='';
-        if length(Ex_TJAdvice)+length(LvlInd)>70 then sCR:=#13;
-
-        m:=ExecSQLCmd(LisConn,'update chk_valu set issure=1,itemvalue=isnull(itemvalue,'''')+'''+sCR+LvlInd+''' where valueid='+sTjjy_Unid);
-        if m<0 then WriteLog(pchar('唯一编号:'+inttostr(ACheckUnid)+',姓名:'+sPatientname+',更新体检建议出错!'));
-      end else
-      begin
-        sitemid:=ScalarSQLCmd(LisConn,'select cci.itemid from clinicchkitem cci where cci.Reserve5=2 and cci.SysName='''+SYSNAME+''' ');
-        spkcombin_id:=ScalarSQLCmd(LisConn,'select cbi.id from clinicchkitem cci,CombSChkItem csi,combinitem cbi where cci.Reserve5=2 and cci.unid=csi.itemunid and csi.combunid=cbi.unid and cci.SysName='''+SYSNAME+''' and cbi.SysName='''+SYSNAME+''' ');
-        if (sitemid<>'') and (spkcombin_id<>'') then 
-          ExecSQLCmd(LisConn,'insert into chk_valu(pkunid,issure,pkcombin_id,itemid,itemvalue) values (' + inttostr(ACheckUnid)+',1,''' +spkcombin_id+''','''+sitemid+''','''+LvlInd+''') ');
-      end;
-    end;
-      
-    adotemp33.Next;
-  end;
-  adotemp33.Free;
-
-  Screen.Cursor := Save_Cursor;
-end;//}
-
 procedure TSDIAppForm.N29Click(Sender: TObject);
 var
   adotemp11:Tadoquery;
-  //RecNum:integer;
 begin
   if not ADObasic.Active then exit;
   if not ADObasic.RecordCount=0 then exit;
@@ -4255,7 +3999,6 @@ begin
 
   if (MessageDlg('确定要为当前界面的所有体检者生成体检结论？', mtWarning, [mbYes, mbNo], 0) <> mrYes) then exit;
 
-  //WriteLog(pchar('开始批量生成体检结论、建议'));
   adotemp11:=tadoquery.Create(nil);
   adotemp11.clone(ADObasic);
   while not adotemp11.Eof do
@@ -4263,26 +4006,9 @@ begin
 
     ExecSQLCmd(LisConn,'update chk_con set Weight=''待生成'' where unid='+adotemp11.fieldbyname('唯一编号').AsString+' and isnull(Weight,'''')<>''待生成'' ');
 
-    {if bAppendMakeTjDesc<>'是' then
-    begin
-      RecNum:=strtoint(ScalarSQLCmd(LisConn,'select count(*) from chk_valu cv,clinicchkitem cci where cv.itemid=cci.itemid and cv.pkunid='+adotemp11.fieldbyname('唯一编号').AsString+' and cci.Reserve5 in (1,2) and isnull(cv.itemvalue,'''')<>'''' '));
-      if RecNum>0 then
-      begin
-        ExecSQLCmd(LisConn,'update chk_valu set issure=1 where pkunid='+adotemp11.fieldbyname('唯一编号').AsString+' and isnull(issure,'''')<>''1'' and (select cci.Reserve5 from clinicchkitem cci where cci.itemid=chk_valu.itemid) in (1,2)');
-
-        adotemp11.Next;
-        continue;
-      end;
-    end;
-    
-    SingleMakeTjDescription(adotemp11.fieldbyname('唯一编号').AsInteger);//}
-
     adotemp11.Next;
   end;
   adotemp11.Free;
-  //WriteLog(pchar('批量生成体检结论、建议完成'));
-
-  //MessageDlg('生成体检结论完成', mtInformation, [mbOK], 0);
 end;
 
 procedure TSDIAppForm.N76Click(Sender: TObject);
@@ -4295,10 +4021,6 @@ begin
   if (MessageDlg('确定要为当前体检者生成体检结论？', mtWarning, [mbYes, mbNo], 0) <> mrYes) then exit;
 
   ExecSQLCmd(LisConn,'update chk_con set Weight=''待生成'' where unid='+ADObasic.fieldbyname('唯一编号').AsString+' and isnull(Weight,'''')<>''待生成'' ');
-
-  //SingleMakeTjDescription(ADObasic.fieldbyname('唯一编号').AsInteger);
-
-  //MessageDlg('生成体检结论完成', mtInformation, [mbOK], 0);
 end;
 
 procedure TSDIAppForm.lbedtifMarryExit(Sender: TObject);
