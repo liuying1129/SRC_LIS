@@ -377,6 +377,7 @@ type
     procedure TimerLeakItemWarningTimer(Sender: TObject);
     procedure TimerMakeTjDescriptionTimer(Sender: TObject);
     procedure N85Click(Sender: TObject);
+    procedure FormActivate(Sender: TObject);
   private
     procedure CheckTheListBox;//根据当前病人的结果在checklistbox1中打钩
     procedure WriteProfile;
@@ -447,6 +448,7 @@ var
     HQCLIB:THANDLE;
     lsGroupShow:TStrings;
     lsTransUnid:TStringList;//仪器传输（需刷新）的病人基本资料UNID列表
+    bFirstOverWorkTips:boolean;//是否第一次提示【结束当批检验工作】
 
 {$R *.dfm}
 //自定义资源文件，源代码为YkLisCustom.rc
@@ -499,9 +501,6 @@ var
   IdHTTP_Tmp1:TIdHTTP;
   sLocalIP,sLocalName:STRING;
   IdIPWatch:TIdIPWatch;
-  adotemp11:tadoquery;
-  i:integer;
-  d1:TDate;
 begin
   if ifRegister then bRegister:=true else bRegister:=false;
   
@@ -578,16 +577,6 @@ begin
   //调用用户信息接口stop
 
   TimerIdleTracker.Enabled:=true;//TimerIdleTrackerTimer事件中需用到配置文件变量LoginTime
-
-  //【结束当批检验工作】功能提示begin
-  adotemp11:=tadoquery.Create(nil);
-  adotemp11.clone(ADObasic);
-  i:=adotemp11.RecordCount;
-  d1:=adotemp11.FieldByName('检查日期').AsDateTime;
-  adotemp11.Free;
-  if (i>1000)and(now()-d1>40)then
-    MESSAGEDLG('尝试使用【信息录入->结束当批检验工作】,可以将已审核的验单转入历史库',MTINFORMATION,[MBOK],0);
-  //【结束当批检验工作】功能提示end
 end;
 
 procedure TSDIAppForm.ClearAll(CONST Clear_TYPE:integer);
@@ -949,6 +938,8 @@ Begin
     application.Terminate;
   end;
   //试用版有效期控制 stop
+
+  bFirstOverWorkTips:=true;
 end;
 
 procedure TSDIAppForm.N4Click(Sender: TObject);
@@ -4309,6 +4300,26 @@ end;
 procedure TSDIAppForm.N85Click(Sender: TObject);
 begin
   frmModifyPwd.ShowModal;
+end;
+
+procedure TSDIAppForm.FormActivate(Sender: TObject);
+VAR
+  adotemp11:tadoquery;
+  i:integer;
+  d1:TDate;
+begin
+  if not bFirstOverWorkTips then exit;//让下面的提示只出现一次
+  bFirstOverWorkTips:=false;
+
+  //【结束当批检验工作】功能提示begin
+  adotemp11:=tadoquery.Create(nil);
+  adotemp11.clone(ADObasic);
+  i:=adotemp11.RecordCount;
+  d1:=adotemp11.FieldByName('检查日期').AsDateTime;
+  adotemp11.Free;
+  if (i>10)and(now()-d1>40)then
+    MESSAGEDLG('当前界面的验单这么多,不影响您的正常工作吗!!!'+#$D+'尝试使用【信息录入->结束当批检验工作】,可以将已审核的验单转入历史库',MTINFORMATION,[MBOK],0);
+  //【结束当批检验工作】功能提示end
 end;
 
 end.

@@ -15,6 +15,7 @@ object SDIAppForm: TSDIAppForm
   Menu = MainMenu1
   OldCreateOrder = False
   WindowState = wsMaximized
+  OnActivate = FormActivate
   OnClose = FormClose
   OnCreate = FormCreate
   OnDestroy = FormDestroy
