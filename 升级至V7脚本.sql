@@ -490,6 +490,26 @@ alter table chk_con alter column TJAdvice varchar(300) null
 alter table chk_con_bak alter column TJAdvice varchar(300) null
 GO
 
+--20191130
+IF NOT EXISTS (select 1 from syscolumns where name='EquipUnid' and id=object_id('chk_valu'))
+  Alter table chk_valu add EquipUnid int null--设备唯一编号
+
+IF NOT EXISTS (select 1 from syscolumns where name='EquipType' and id=object_id('chk_valu'))
+  Alter table chk_valu add EquipType varchar(50) null--设备类型
+
+IF NOT EXISTS (select 1 from syscolumns where name='EquipModel' and id=object_id('chk_valu'))
+  Alter table chk_valu add EquipModel varchar(50) null--设备型号
+
+IF NOT EXISTS (select 1 from syscolumns where name='EquipUnid' and id=object_id('chk_valu_bak'))
+  Alter table chk_valu_bak add EquipUnid int null--设备唯一编号
+
+IF NOT EXISTS (select 1 from syscolumns where name='EquipType' and id=object_id('chk_valu_bak'))
+  Alter table chk_valu_bak add EquipType varchar(50) null--设备类型
+
+IF NOT EXISTS (select 1 from syscolumns where name='EquipModel' and id=object_id('chk_valu_bak'))
+  Alter table chk_valu_bak add EquipModel varchar(50) null--设备型号
+GO
+
 --修改表chk_con
 IF NOT EXISTS (select 1 from syscolumns where name='TjJianYan' and id=object_id('chk_con'))
 begin
@@ -881,6 +901,20 @@ IF EXISTS (select 1 from syscolumns where name='Urine2' and id=object_id('chk_va
   Alter table chk_valu_bak drop column Urine2
 IF EXISTS (select 1 from syscolumns where name='ChkMethod' and id=object_id('chk_valu_bak'))
   Alter table chk_valu_bak drop column ChkMethod
+GO
+
+--20191130设备管理
+if not exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[EquipManage]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
+create table EquipManage
+ (Unid int identity primary key,
+  Type varchar (50) NOT NULL,
+  Model varchar (50) NOT NULL,
+  Remark varchar (50) NULL,
+  Supplier varchar(50) NULL,
+  Brand varchar (50) NULL,
+  ManuFacturer varchar (50) NULL,
+  Create_Date_Time datetime NULL DEFAULT (getdate())
+)
 GO
 
 --删除表ChkStatus

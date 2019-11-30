@@ -1948,6 +1948,10 @@ object SDIAppForm: TSDIAppForm
         Caption = #39033#30446#35774#32622
         OnClick = N28Click
       end
+      object N19: TMenuItem
+        Caption = #35774#22791#31649#29702
+        OnClick = N19Click
+      end
       object N14: TMenuItem
         Caption = '-'
       end

@@ -30,7 +30,8 @@ uses
   UfrmExtItemSetup in 'UfrmExtItemSetup.pas' {frmExtItemSetup},
   UfrmExceptionValue in 'UfrmExceptionValue.pas' {frmExceptionValue},
   UfrmLeakItemWarning in 'UfrmLeakItemWarning.pas' {frmLeakItemWarning},
-  UfrmModifyPwd in 'UfrmModifyPwd.pas' {frmModifyPwd};
+  UfrmModifyPwd in 'UfrmModifyPwd.pas' {frmModifyPwd},
+  UfrmEquipManage in 'UfrmEquipManage.pas' {frmEquipManage};
 
 {$R *.RES}
 

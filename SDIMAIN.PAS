@@ -232,6 +232,7 @@ type
     TimerMakeTjDescription: TTimer;
     N85: TMenuItem;
     N86: TMenuItem;
+    N19: TMenuItem;
     procedure FileExit1Execute(Sender: TObject);
     procedure HelpAbout1Execute(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -378,6 +379,7 @@ type
     procedure TimerMakeTjDescriptionTimer(Sender: TObject);
     procedure N85Click(Sender: TObject);
     procedure FormActivate(Sender: TObject);
+    procedure N19Click(Sender: TObject);
   private
     procedure CheckTheListBox;//根据当前病人的结果在checklistbox1中打钩
     procedure WriteProfile;
@@ -441,7 +443,7 @@ uses  Unit_dialog_pllr,
   UDM, UfrmFromExcelLoad,
   UfrmXDepictType, UfrmXDepict, UfrmCommCode, UfrmPlxg, UfrmCopyInfo,
   UfrmPhoto, UfrmShowChkConHis, uQRCode, UfrmLeakItemWarning,
-  UfrmModifyPwd;
+  UfrmModifyPwd, UfrmEquipManage;
 
 var
     copyName,copySex,copyage,copyCaseno,copyBedno,copydeptname,copycheck_doctor:string;//复制的病人基本信息，仅粘贴时有用
@@ -4317,9 +4319,16 @@ begin
   i:=adotemp11.RecordCount;
   d1:=adotemp11.FieldByName('检查日期').AsDateTime;
   adotemp11.Free;
-  if (i>10)and(now()-d1>40)then
+  if (i>1000)and(now()-d1>40)then
     MESSAGEDLG('当前界面的验单这么多,不影响您的正常工作吗!!!'+#$D+'尝试使用【信息录入->结束当批检验工作】,可以将已审核的验单转入历史库',MTINFORMATION,[MBOK],0);
   //【结束当批检验工作】功能提示end
+end;
+
+procedure TSDIAppForm.N19Click(Sender: TObject);
+begin
+  if not ifhaspower(sender,powerstr_js_main) then exit;
+
+  frmEquipManage.ShowModal;
 end;
 
 end.
