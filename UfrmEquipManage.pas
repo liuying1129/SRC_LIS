@@ -12,7 +12,6 @@ type
     ADOQuery1: TADOQuery;
     DataSource1: TDataSource;
     Panel1: TPanel;
-    LabeledEdit1: TLabeledEdit;
     LabeledEdit2: TLabeledEdit;
     LabeledEdit3: TLabeledEdit;
     LabeledEdit4: TLabeledEdit;
@@ -21,9 +20,8 @@ type
     BitBtn1: TBitBtn;
     BitBtn2: TBitBtn;
     BitBtn3: TBitBtn;
-    Label1: TLabel;
-    Label2: TLabel;
-    Label3: TLabel;
+    ComboBox1: TComboBox;
+    Label4: TLabel;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -98,7 +96,7 @@ procedure TfrmEquipManage.updateEdit;
 begin
   if adoquery1.RecordCount>0 then
   begin
-    LabeledEdit1.Text:=trim(adoquery1.fieldbyname('类型').AsString);
+    ComboBox1.Text:=trim(adoquery1.fieldbyname('类型').AsString);
     LabeledEdit2.Text:=trim(adoquery1.fieldbyname('型号').AsString);
     LabeledEdit3.Text:=trim(adoquery1.fieldbyname('备注').AsString);
     LabeledEdit4.Text:=trim(adoquery1.fieldbyname('供应商').AsString);
@@ -112,7 +110,7 @@ end;
 
 procedure TfrmEquipManage.ClearEdit;
 begin
-  LabeledEdit1.Clear;
+  ComboBox1.Text:='';
   LabeledEdit2.Clear;
   LabeledEdit3.Clear;
   LabeledEdit4.Clear;
@@ -123,7 +121,7 @@ end;
 procedure TfrmEquipManage.BitBtn1Click(Sender: TObject);
 begin
   ClearEdit;
-  LabeledEdit1.SetFocus;
+  ComboBox1.SetFocus;
   ifNewAdd:=true;
 end;
 
@@ -133,6 +131,20 @@ var
   sqlstr:string;
   Insert_Identity:integer;
 begin
+  if trim(ComboBox1.Text)='' then
+  begin
+    MESSAGEDLG('设备类型不能为空!',mtWarning,[MBOK],0);
+    ComboBox1.SetFocus;
+    exit;
+  end;
+
+  if trim(LabeledEdit2.Text)='' then
+  begin
+    MESSAGEDLG('设备型号不能为空!',mtWarning,[MBOK],0);
+    LabeledEdit2.SetFocus;
+    exit;
+  end;
+
   adotemp11:=tadoquery.Create(nil);
   adotemp11.Connection:=DM.ADOConnection1;
   if ifNewAdd then //新增
@@ -146,7 +158,7 @@ begin
     adotemp11.SQL.Clear;
     adotemp11.SQL.Add(sqlstr);
     adotemp11.SQL.Add(' SELECT SCOPE_IDENTITY() AS Insert_Identity ');
-    adotemp11.Parameters.ParamByName('Type').Value:=trim(LabeledEdit1.Text);
+    adotemp11.Parameters.ParamByName('Type').Value:=trim(ComboBox1.Text);
     adotemp11.Parameters.ParamByName('Model').Value:=trim(LabeledEdit2.Text);
     adotemp11.Parameters.ParamByName('Remark').Value:=trim(LabeledEdit3.Text);
     adotemp11.Parameters.ParamByName('Supplier').Value:=trim(LabeledEdit4.Text);
@@ -169,7 +181,7 @@ begin
     adotemp11.SQL.Text:=' Update EquipManage  '+
     '  set Type=:Type,Model=:Model,Remark=:Remark,Supplier=:Supplier,Brand=:Brand,ManuFacturer=:ManuFacturer '+
     '  Where    Unid=:Unid      ';
-    adotemp11.Parameters.ParamByName('Type').Value:=trim(LabeledEdit1.Text);
+    adotemp11.Parameters.ParamByName('Type').Value:=trim(ComboBox1.Text);
     adotemp11.Parameters.ParamByName('Model').Value:=trim(LabeledEdit2.Text);
     adotemp11.Parameters.ParamByName('Remark').Value:=trim(LabeledEdit3.Text);
     adotemp11.Parameters.ParamByName('Supplier').Value:=trim(LabeledEdit4.Text);

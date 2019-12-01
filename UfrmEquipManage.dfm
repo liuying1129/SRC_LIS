@@ -24,6 +24,7 @@ object frmEquipManage: TfrmEquipManage
     Height = 461
     Align = alClient
     DataSource = DataSource1
+    ReadOnly = True
     TabOrder = 0
     TitleFont.Charset = ANSI_CHARSET
     TitleFont.Color = clWindowText
@@ -38,104 +39,62 @@ object frmEquipManage: TfrmEquipManage
     Height = 461
     Align = alLeft
     TabOrder = 1
-    object Label1: TLabel
-      Left = 12
-      Top = 352
-      Width = 65
-      Height = 13
-      Caption = #35774#22791#31867#22411#65306
-      Font.Charset = ANSI_CHARSET
-      Font.Color = clBlue
-      Font.Height = -13
-      Font.Name = #23435#20307
-      Font.Style = []
-      ParentFont = False
-    end
-    object Label2: TLabel
-      Left = 12
-      Top = 368
-      Width = 260
-      Height = 13
-      Caption = #20840#33258#21160#34880#28082#32454#32990#20998#26512#20202#12289#20840#33258#21160#29983#21270#20998#26512#20202#12289
-      Font.Charset = ANSI_CHARSET
-      Font.Color = clBlue
-      Font.Height = -13
-      Font.Name = #23435#20307
-      Font.Style = []
-      ParentFont = False
-    end
-    object Label3: TLabel
-      Left = 12
-      Top = 384
-      Width = 202
-      Height = 13
-      Caption = #23615#28082#20998#26512#20202#12289#20813#30123#21457#20809#26816#27979#20202' '#31561#31561
-      Font.Charset = ANSI_CHARSET
-      Font.Color = clBlue
-      Font.Height = -13
-      Font.Name = #23435#20307
-      Font.Style = []
-      ParentFont = False
-    end
-    object LabeledEdit1: TLabeledEdit
+    object Label4: TLabel
       Left = 32
-      Top = 32
-      Width = 121
-      Height = 21
-      EditLabel.Width = 52
-      EditLabel.Height = 13
-      EditLabel.Caption = #35774#22791#31867#22411
-      TabOrder = 0
+      Top = 16
+      Width = 52
+      Height = 13
+      Caption = #35774#22791#31867#22411
     end
     object LabeledEdit2: TLabeledEdit
       Left = 32
       Top = 80
-      Width = 121
+      Width = 200
       Height = 21
       EditLabel.Width = 26
       EditLabel.Height = 13
       EditLabel.Caption = #22411#21495
-      TabOrder = 1
+      TabOrder = 0
     end
     object LabeledEdit3: TLabeledEdit
       Left = 32
       Top = 120
-      Width = 121
+      Width = 200
       Height = 21
       EditLabel.Width = 26
       EditLabel.Height = 13
       EditLabel.Caption = #22791#27880
-      TabOrder = 2
+      TabOrder = 1
     end
     object LabeledEdit4: TLabeledEdit
       Left = 32
       Top = 168
-      Width = 121
+      Width = 200
       Height = 21
       EditLabel.Width = 39
       EditLabel.Height = 13
       EditLabel.Caption = #20379#24212#21830
-      TabOrder = 3
+      TabOrder = 2
     end
     object LabeledEdit5: TLabeledEdit
       Left = 32
       Top = 216
-      Width = 121
+      Width = 200
       Height = 21
       EditLabel.Width = 26
       EditLabel.Height = 13
       EditLabel.Caption = #21697#29260
-      TabOrder = 4
+      TabOrder = 3
     end
     object LabeledEdit6: TLabeledEdit
       Left = 32
       Top = 256
-      Width = 121
+      Width = 200
       Height = 21
       EditLabel.Width = 52
       EditLabel.Height = 13
       EditLabel.Caption = #29983#20135#21378#23478
-      TabOrder = 5
+      TabOrder = 4
     end
     object BitBtn1: TBitBtn
       Left = 27
@@ -143,7 +102,7 @@ object frmEquipManage: TfrmEquipManage
       Width = 75
       Height = 25
       Caption = #26032#22686
-      TabOrder = 6
+      TabOrder = 5
       OnClick = BitBtn1Click
     end
     object BitBtn2: TBitBtn
@@ -152,7 +111,7 @@ object frmEquipManage: TfrmEquipManage
       Width = 75
       Height = 25
       Caption = #20445#23384
-      TabOrder = 7
+      TabOrder = 6
       OnClick = BitBtn2Click
     end
     object BitBtn3: TBitBtn
@@ -161,8 +120,31 @@ object frmEquipManage: TfrmEquipManage
       Width = 75
       Height = 25
       Caption = #21024#38500
-      TabOrder = 8
+      TabOrder = 7
       OnClick = BitBtn3Click
+    end
+    object ComboBox1: TComboBox
+      Left = 32
+      Top = 32
+      Width = 200
+      Height = 21
+      DropDownCount = 20
+      ItemHeight = 13
+      TabOrder = 8
+      Items.Strings = (
+        #20840#33258#21160#34880#28082#20998#26512#20202
+        #20840#33258#21160#29983#21270#20998#26512#20202
+        #20840#33258#21160#24178#24335#29983#21270#20998#26512#20202
+        #23615#28082#20998#26512#20202
+        #20813#30123#21457#20809#26816#27979#20202
+        #20840#33258#21160#21270#23398#21457#20809#27979#23450#20202
+        #24178#24335#33639#20809#20813#30123#20998#26512#20202
+        #30005#35299#36136#20998#26512#20202
+        #20840#33258#21160#34880#27969#21464#27979#35797#20202
+        #34880#27668#20998#26512#20202
+        #20840#33258#21160#34880#20957#20998#26512#20202
+        #20840#33258#21160#31958#21270#34880#32418#34507#30333#20998#26512#20202
+        #20840#33258#21160#24494#29983#29289#26816#27979#31995#32479)
     end
   end
   object ADOQuery1: TADOQuery
