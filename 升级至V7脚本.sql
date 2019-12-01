@@ -3975,12 +3975,28 @@ GO
 SET ANSI_NULLS ON 
 GO
 
-GO
-SET QUOTED_IDENTIFIER OFF 
+--20191201触发器TRIGGER_chk_valu_EquipInfo_insert创建脚本
+SET QUOTED_IDENTIFIER ON 
 GO
 SET ANSI_NULLS ON 
 GO
 
+if exists (select name from sysobjects where name='TRIGGER_chk_valu_EquipInfo_insert' and type='TR')
+  drop TRIGGER TRIGGER_chk_valu_EquipInfo_insert
+go
+
+CREATE TRIGGER [dbo].[TRIGGER_chk_valu_EquipInfo_insert] ON [dbo].[chk_valu]
+FOR INSERT
+AS
+--根据设备唯一编号插入设备信息
+  declare @valueid int,@EquipUnid int,@EquipType varchar(50),@EquipModel varchar(50)
+  SELECT @valueid=valueid,@EquipUnid=EquipUnid FROM Inserted
+  if (@valueid is null) return --表示没找到刚刚插入的记录
+  if (@EquipUnid is null) return --表示无设备信息
+  select @EquipType=Type,@EquipModel=Model from EquipManage where Unid=@EquipUnid
+  if ISNULL(@EquipType,'')='' and ISNULL(@EquipModel,'')='' return
+  
+  update chk_valu set EquipType=@EquipType,EquipModel=@EquipModel where valueid=@valueid
 GO
 SET QUOTED_IDENTIFIER OFF 
 GO
