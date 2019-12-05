@@ -2888,10 +2888,10 @@ GO
 --2007-03-21
 CREATE VIEW view_chk_valu_All
   AS
-  SELECT *
+  SELECT *,0 as ifCompleted
   FROM chk_valu
   UNION ALL
-  SELECT *
+  SELECT *,1 as ifCompleted
   FROM chk_valu_bak
 
 GO
