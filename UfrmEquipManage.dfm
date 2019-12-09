@@ -98,7 +98,7 @@ object frmEquipManage: TfrmEquipManage
     end
     object BitBtn1: TBitBtn
       Left = 27
-      Top = 298
+      Top = 336
       Width = 75
       Height = 25
       Caption = #26032#22686
@@ -107,7 +107,7 @@ object frmEquipManage: TfrmEquipManage
     end
     object BitBtn2: TBitBtn
       Left = 102
-      Top = 298
+      Top = 336
       Width = 75
       Height = 25
       Caption = #20445#23384
@@ -116,7 +116,7 @@ object frmEquipManage: TfrmEquipManage
     end
     object BitBtn3: TBitBtn
       Left = 177
-      Top = 298
+      Top = 336
       Width = 75
       Height = 25
       Caption = #21024#38500
@@ -145,6 +145,16 @@ object frmEquipManage: TfrmEquipManage
         #20840#33258#21160#34880#20957#20998#26512#20202
         #20840#33258#21160#31958#21270#34880#32418#34507#30333#20998#26512#20202
         #20840#33258#21160#24494#29983#29289#26816#27979#31995#32479)
+    end
+    object LabeledEdit1: TLabeledEdit
+      Left = 32
+      Top = 302
+      Width = 200
+      Height = 21
+      EditLabel.Width = 39
+      EditLabel.Height = 13
+      EditLabel.Caption = #39034#24207#21495
+      TabOrder = 9
     end
   end
   object ADOQuery1: TADOQuery

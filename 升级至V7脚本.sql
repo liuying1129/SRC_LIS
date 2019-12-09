@@ -913,6 +913,7 @@ create table EquipManage
   Supplier varchar(50) NULL,
   Brand varchar (50) NULL,
   ManuFacturer varchar (50) NULL,
+  OrderNo int null,
   Create_Date_Time datetime NULL DEFAULT (getdate())
 )
 GO

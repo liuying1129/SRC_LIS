@@ -22,6 +22,7 @@ type
     BitBtn3: TBitBtn;
     ComboBox1: TComboBox;
     Label4: TLabel;
+    LabeledEdit1: TLabeledEdit;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -70,6 +71,8 @@ end;
 procedure TfrmEquipManage.FormCreate(Sender: TObject);
 begin
   adoquery1.Connection:=DM.ADOConnection1;
+  
+  SetWindowLong(LabeledEdit1.Handle, GWL_STYLE, GetWindowLong(LabeledEdit1.Handle, GWL_STYLE) or ES_NUMBER);//只能输入数字
 end;
 
 procedure TfrmEquipManage.FormShow(Sender: TObject);
@@ -81,7 +84,7 @@ procedure TfrmEquipManage.UpdateAdoquery1;
 begin
   adoquery1.Close;
   adoquery1.SQL.Clear;
-  adoquery1.SQL.Text:='select Unid as 唯一编号,Type as 类型,Model as 型号,Remark as 备注,Supplier as 供应商,Brand as 品牌,ManuFacturer as 生产厂家,Create_Date_Time AS 创建时间 from EquipManage ';
+  adoquery1.SQL.Text:='select Unid as 唯一编号,OrderNo as 顺序号,Type as 类型,Model as 型号,Remark as 备注,Supplier as 供应商,Brand as 品牌,ManuFacturer as 生产厂家,Create_Date_Time AS 创建时间 from EquipManage ';
   adoquery1.Open;
 end;
 
@@ -102,6 +105,7 @@ begin
     LabeledEdit4.Text:=trim(adoquery1.fieldbyname('供应商').AsString);
     LabeledEdit5.Text:=trim(adoquery1.fieldbyname('品牌').AsString);
     LabeledEdit6.Text:=trim(adoquery1.fieldbyname('生产厂家').AsString);
+    LabeledEdit1.Text:=trim(adoquery1.fieldbyname('顺序号').AsString);
   end else
   begin
     ClearEdit;
@@ -116,6 +120,7 @@ begin
   LabeledEdit4.Clear;
   LabeledEdit5.Clear;
   LabeledEdit6.Clear;
+  LabeledEdit1.Clear;
 end;
 
 procedure TfrmEquipManage.BitBtn1Click(Sender: TObject);
@@ -130,6 +135,7 @@ var
   adotemp11:tadoquery;
   sqlstr:string;
   Insert_Identity:integer;
+  iOrderNo:integer;
 begin
   if trim(ComboBox1.Text)='' then
   begin
@@ -152,8 +158,8 @@ begin
     ifNewAdd:=false;
 
     sqlstr:='Insert into EquipManage ('+
-                        ' Type, Model, Remark, Supplier, Brand, ManuFacturer) values ('+
-                        ':Type,:Model,:Remark,:Supplier,:Brand,:ManuFacturer) ';
+                        ' Type, Model, Remark, Supplier, Brand, ManuFacturer, OrderNo) values ('+
+                        ':Type,:Model,:Remark,:Supplier,:Brand,:ManuFacturer,:OrderNo) ';
     adotemp11.Close;
     adotemp11.SQL.Clear;
     adotemp11.SQL.Add(sqlstr);
@@ -164,6 +170,9 @@ begin
     adotemp11.Parameters.ParamByName('Supplier').Value:=trim(LabeledEdit4.Text);
     adotemp11.Parameters.ParamByName('Brand').Value:=trim(LabeledEdit5.Text);
     adotemp11.Parameters.ParamByName('ManuFacturer').Value:=trim(LabeledEdit6.Text);
+    if trystrtoint(LabeledEdit1.Text,iOrderNo) then
+      adotemp11.Parameters.ParamByName('OrderNo').Value:=iOrderNo
+    else adotemp11.Parameters.ParamByName('OrderNo').Value:=null;
     adotemp11.Open;
     ADOQuery1.Requery([]);
     Insert_Identity:=adotemp11.fieldbyname('Insert_Identity').AsInteger;
@@ -179,7 +188,7 @@ begin
     adotemp11.Close;
     adotemp11.SQL.Clear;
     adotemp11.SQL.Text:=' Update EquipManage  '+
-    '  set Type=:Type,Model=:Model,Remark=:Remark,Supplier=:Supplier,Brand=:Brand,ManuFacturer=:ManuFacturer '+
+    '  set Type=:Type,Model=:Model,Remark=:Remark,Supplier=:Supplier,Brand=:Brand,ManuFacturer=:ManuFacturer,OrderNo=:OrderNo '+
     '  Where    Unid=:Unid      ';
     adotemp11.Parameters.ParamByName('Type').Value:=trim(ComboBox1.Text);
     adotemp11.Parameters.ParamByName('Model').Value:=trim(LabeledEdit2.Text);
@@ -187,6 +196,9 @@ begin
     adotemp11.Parameters.ParamByName('Supplier').Value:=trim(LabeledEdit4.Text);
     adotemp11.Parameters.ParamByName('Brand').Value:=trim(LabeledEdit5.Text);
     adotemp11.Parameters.ParamByName('ManuFacturer').Value:=trim(LabeledEdit6.Text);
+    if trystrtoint(LabeledEdit1.Text,iOrderNo) then
+      adotemp11.Parameters.ParamByName('OrderNo').Value:=iOrderNo
+    else adotemp11.Parameters.ParamByName('OrderNo').Value:=null;
     adotemp11.Parameters.ParamByName('Unid').Value:=Insert_Identity;
     adotemp11.ExecSQL;
     AdoQuery1.Refresh;
@@ -211,11 +223,12 @@ procedure TfrmEquipManage.ADOQuery1AfterOpen(DataSet: TDataSet);
 begin
   if not DataSet.Active then exit;
   dbgrid1.Columns.Items[0].Width:=55;
-  dbgrid1.Columns.Items[1].Width:=150;
-  dbgrid1.Columns.Items[2].Width:=60;
-  dbgrid1.Columns.Items[3].Width:=150;
+  dbgrid1.Columns.Items[1].Width:=45;
+  dbgrid1.Columns.Items[2].Width:=150;
+  dbgrid1.Columns.Items[3].Width:=60;
   dbgrid1.Columns.Items[4].Width:=150;
   dbgrid1.Columns.Items[5].Width:=150;
+  dbgrid1.Columns.Items[6].Width:=150;
 end;
 
 initialization
