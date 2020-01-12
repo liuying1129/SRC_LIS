@@ -338,7 +338,7 @@ begin
     if parname='结论' then ParValue:=ADObasic.fieldbyname('结论').AsString;
     if parname='建议' then ParValue:=ADObasic.fieldbyname('建议').AsString;//}
     
-    if parname='检验设备' then ParValue:=ScalarSQLCmd(LisConn,'select dbo.uf_GetEquipFromChkUnid(0,'+ADObasic.fieldbyname('唯一编号').AsString+')');
+    if parname='检验设备' then ParValue:=ScalarSQLCmd(LisConn,'select dbo.uf_GetEquipFromChkUnid(1,'+ADObasic.fieldbyname('唯一编号').AsString+')');
 end;
 
 procedure TfrmCommQuery.BitBtn2Click(Sender: TObject);
