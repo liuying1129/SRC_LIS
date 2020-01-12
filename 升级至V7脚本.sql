@@ -1616,8 +1616,38 @@ BEGIN
 
   return @ret
 END
-
 GO
+
+--20200112获取检验单的检验设备
+if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[uf_GetEquipFromChkUnid]') and xtype in (N'FN', N'IF', N'TF'))
+drop function [dbo].[uf_GetEquipFromChkUnid]
+GO
+
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE FUNCTION [dbo].[uf_GetEquipFromChkUnid]
+(
+  @ifCompleted int,
+  @Unid int --Chk_Con.Unid
+)  
+RETURNS varchar(500) AS  
+BEGIN 
+  
+  declare @ret varchar(500)
+  set @ret=''
+  if @ifCompleted=1
+    select @ret=@ret+','+EquipModel from chk_valu_bak WHERE pkunid=@Unid group by EquipModel
+  else select @ret=@ret+','+EquipModel from chk_valu WHERE pkunid=@Unid group by EquipModel
+  set @ret=stuff(@ret,1,1,'')
+
+  return @ret
+END
+GO
+
 SET QUOTED_IDENTIFIER OFF 
 GO
 SET ANSI_NULLS ON 
