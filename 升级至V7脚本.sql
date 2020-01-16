@@ -1640,8 +1640,8 @@ BEGIN
   declare @ret varchar(500)
   set @ret=''
   if @ifCompleted=1
-    select @ret=@ret+','+EquipModel from chk_valu_bak WHERE pkunid=@Unid group by EquipModel
-  else select @ret=@ret+','+EquipModel from chk_valu WHERE pkunid=@Unid group by EquipModel
+    select @ret=@ret+','+EquipModel+EquipType from chk_valu_bak WHERE pkunid=@Unid group by EquipModel
+  else select @ret=@ret+','+EquipModel+EquipType from chk_valu WHERE pkunid=@Unid group by EquipModel
   set @ret=stuff(@ret,1,1,'')
 
   return @ret
