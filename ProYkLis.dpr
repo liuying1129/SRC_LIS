@@ -31,7 +31,8 @@ uses
   UfrmExceptionValue in 'UfrmExceptionValue.pas' {frmExceptionValue},
   UfrmLeakItemWarning in 'UfrmLeakItemWarning.pas' {frmLeakItemWarning},
   UfrmModifyPwd in 'UfrmModifyPwd.pas' {frmModifyPwd},
-  UfrmEquipManage in 'UfrmEquipManage.pas' {frmEquipManage};
+  UfrmEquipManage in 'UfrmEquipManage.pas' {frmEquipManage},
+  UfrmSJ_JBXX in 'UfrmSJ_JBXX.pas' {frmSJ_JBXX};
 
 {$R *.RES}
 

@@ -233,6 +233,7 @@ type
     N85: TMenuItem;
     N86: TMenuItem;
     N19: TMenuItem;
+    N32: TMenuItem;
     procedure FileExit1Execute(Sender: TObject);
     procedure HelpAbout1Execute(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -380,6 +381,7 @@ type
     procedure N85Click(Sender: TObject);
     procedure FormActivate(Sender: TObject);
     procedure N19Click(Sender: TObject);
+    procedure N32Click(Sender: TObject);
   private
     procedure CheckTheListBox;//根据当前病人的结果在checklistbox1中打钩
     procedure WriteProfile;
@@ -443,7 +445,7 @@ uses  Unit_dialog_pllr,
   UDM, UfrmFromExcelLoad,
   UfrmXDepictType, UfrmXDepict, UfrmCommCode, UfrmPlxg, UfrmCopyInfo,
   UfrmPhoto, UfrmShowChkConHis, uQRCode, UfrmLeakItemWarning,
-  UfrmModifyPwd, UfrmEquipManage;
+  UfrmModifyPwd, UfrmEquipManage, UfrmSJ_JBXX;
 
 var
     copyName,copySex,copyage,copyCaseno,copyBedno,copydeptname,copycheck_doctor:string;//复制的病人基本信息，仅粘贴时有用
@@ -4331,6 +4333,13 @@ begin
   if not ifhaspower(sender,powerstr_js_main) then exit;
 
   frmEquipManage.ShowModal;
+end;
+
+procedure TSDIAppForm.N32Click(Sender: TObject);
+begin
+  if not ifhaspower(sender,powerstr_js_main) then exit;
+
+  frmSJ_JBXX.ShowModal;
 end;
 
 end.
