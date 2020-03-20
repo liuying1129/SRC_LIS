@@ -1953,7 +1953,7 @@ object SDIAppForm: TSDIAppForm
         OnClick = N19Click
       end
       object N32: TMenuItem
-        Caption = #35797#21058#22522#26412#20449#24687
+        Caption = #32791#26448#22522#26412#20449#24687
         OnClick = N32Click
       end
       object N14: TMenuItem

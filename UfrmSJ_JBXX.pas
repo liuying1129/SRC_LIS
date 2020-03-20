@@ -332,13 +332,13 @@ begin
     exit;
   end;
 
-  if (trim(LabeledEdit9.Text)<>'')
-  and (strtoint(ScalarSQLCmd(LisConn,'select count(*) from SJ_Pack where SJUnid='+ADOQuery1.fieldbyname('Unid').AsString+' and SonPackName='''+trim(LabeledEdit9.Text)+''' '))>0) then
-  begin
-    MESSAGEDLG('已存在相同的【下级包装单位】!',mtError,[MBOK],0);
-    LabeledEdit9.SetFocus;
-    exit;
-  end;
+  //if (trim(LabeledEdit9.Text)<>'')
+  //and (strtoint(ScalarSQLCmd(LisConn,'select count(*) from SJ_Pack where SJUnid='+ADOQuery1.fieldbyname('Unid').AsString+' and SonPackName='''+trim(LabeledEdit9.Text)+''' '))>0) then
+  //begin
+  //  MESSAGEDLG('已存在相同的【下级包装单位】!',mtError,[MBOK],0);
+  //  LabeledEdit9.SetFocus;
+  //  exit;
+  //end;
 
   if not ADOQuery1.Active then exit;
   if ADOQuery1.RecordCount=0 then exit;
