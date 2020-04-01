@@ -918,6 +918,107 @@ create table EquipManage
 )
 GO
 
+IF NOT EXISTS (select 1 from syscolumns where name='Model' and id=object_id('SJ_JBXX'))
+  Alter table SJ_JBXX add Model varchar(50) null
+GO
+
+IF NOT EXISTS (select 1 from syscolumns where name='ApprovalNo' and id=object_id('SJ_JBXX'))
+  Alter table SJ_JBXX add ApprovalNo varchar(30) null
+GO
+
+IF NOT EXISTS (select 1 from syscolumns where name='Create_Date_Time' and id=object_id('SJ_JBXX'))
+  Alter table SJ_JBXX add Create_Date_Time datetime null DEFAULT (getdate())
+GO
+
+IF NOT EXISTS (select 1 from syscolumns where name='SonPackName' and id=object_id('SJ_Pack'))
+  Alter table SJ_Pack add SonPackName varchar(10) null
+GO
+
+IF NOT EXISTS (select 1 from syscolumns where name='Create_Date_Time' and id=object_id('SJ_Pack'))
+  Alter table SJ_Pack add Create_Date_Time datetime null DEFAULT (getdate())
+GO
+
+alter table SJ_Pack alter column ParentSL int null
+GO
+
+IF NOT EXISTS (select 1 from syscolumns where name='Model' and id=object_id('SJ_RK_Fu'))
+  Alter table SJ_RK_Fu add Model varchar(50) null
+GO
+
+IF NOT EXISTS (select 1 from syscolumns where name='ApprovalNo' and id=object_id('SJ_RK_Fu'))
+  Alter table SJ_RK_Fu add ApprovalNo varchar(30) null
+GO
+
+IF NOT EXISTS (select 1 from syscolumns where name='Vendor' and id=object_id('SJ_RK_Fu'))
+  Alter table SJ_RK_Fu add Vendor varchar(50) null
+GO
+
+IF NOT EXISTS (select 1 from syscolumns where name='DJH' and id=object_id('SJ_RK_Fu'))
+  Alter table SJ_RK_Fu add DJH varchar(20) null
+GO
+
+IF NOT EXISTS (select 1 from syscolumns where name='Auditer' and id=object_id('SJ_RK_Fu'))
+  Alter table SJ_RK_Fu add Auditer varchar(20) null
+GO
+
+IF NOT EXISTS (select 1 from syscolumns where name='Audit_Date' and id=object_id('SJ_RK_Fu'))
+  Alter table SJ_RK_Fu add Audit_Date datetime null
+GO
+
+IF NOT EXISTS (select 1 from syscolumns where name='Create_Date_Time' and id=object_id('SJ_RK_Fu'))
+  Alter table SJ_RK_Fu add Create_Date_Time datetime null DEFAULT (getdate())
+GO
+
+alter table SJ_RK_Fu alter column SL int not null
+GO
+
+alter table SJ_RK_Fu alter column RKRQ datetime not null
+GO
+
+IF NOT EXISTS (select 1 from syscolumns where name='Model' and id=object_id('SJ_KC'))
+  Alter table SJ_KC add Model varchar(50) null
+GO
+
+IF NOT EXISTS (select 1 from syscolumns where name='ApprovalNo' and id=object_id('SJ_KC'))
+  Alter table SJ_KC add ApprovalNo varchar(30) null
+GO
+
+IF NOT EXISTS (select 1 from syscolumns where name='Create_Date_Time' and id=object_id('SJ_KC'))
+  Alter table SJ_KC add Create_Date_Time datetime null DEFAULT (getdate())
+GO
+
+alter table SJ_KC alter column SL int null
+GO
+
+alter table SJ_KC alter column RKID int null
+GO
+
+IF NOT EXISTS (select 1 from syscolumns where name='Model' and id=object_id('SJ_CK_Fu'))
+  Alter table SJ_CK_Fu add Model varchar(50) null
+GO
+
+IF NOT EXISTS (select 1 from syscolumns where name='ApprovalNo' and id=object_id('SJ_CK_Fu'))
+  Alter table SJ_CK_Fu add ApprovalNo varchar(30) null
+GO
+
+IF NOT EXISTS (select 1 from syscolumns where name='Vendor' and id=object_id('SJ_CK_Fu'))
+  Alter table SJ_CK_Fu add Vendor varchar(50) null
+GO
+
+IF NOT EXISTS (select 1 from syscolumns where name='RLR' and id=object_id('SJ_CK_Fu'))
+  Alter table SJ_CK_Fu add RLR varchar(20) null
+GO
+
+IF NOT EXISTS (select 1 from syscolumns where name='Create_Date_Time' and id=object_id('SJ_CK_Fu'))
+  Alter table SJ_CK_Fu add Create_Date_Time datetime null DEFAULT (getdate())
+GO
+
+alter table SJ_CK_Fu alter column SL int not null
+GO
+
+alter table SJ_CK_Fu alter column CKRQ datetime not null
+GO
+
 --删除表ChkStatus
 if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[ChkStatus]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
   drop table [dbo].[ChkStatus]
@@ -4037,6 +4138,55 @@ GO
 SET ANSI_NULLS ON 
 GO
 
+--20200316触发器TRIGGER_SJ_RK_Fu_ItemName创建脚本
+if exists (select name from sysobjects where name='TRIGGER_SJ_RK_Fu_ItemName' and type='TR')
+  drop TRIGGER TRIGGER_SJ_RK_Fu_ItemName
+go
+
+CREATE TRIGGER TRIGGER_SJ_RK_Fu_ItemName ON SJ_RK_Fu
+FOR insert,UPDATE
+AS
+--向SJ_RK_Fu中插入耗材唯一编号时自动插入耗材名称等附加信息
+  declare @Unid int,@SJUnid int,@old_SJUnid int,@SJID varchar(50),@Name varchar(50),@Model varchar(50),@GG varchar(50),@SCCJ varchar(50),@ApprovalNo varchar(50)
+  SELECT @Unid=Unid,@SJUnid=SJUnid FROM Inserted
+  
+  if @Unid is null return --表示没找到刚刚Inserted的记录
+  if @SJUnid is null return --表示没找到刚刚Inserted的记录
+  
+  --if exists(select 1 from Deleted)--表示修改
+  --begin
+    select @old_SJUnid=SJUnid from Deleted
+    if @old_SJUnid=@SJUnid return
+  --end
+  
+  select @SJId=SJId,@Name=Name,@Model=Model,@GG=GG,@SCCJ=SCCJ,@ApprovalNo=ApprovalNo from SJ_JBXX where Unid=@SJUnid
+
+  update SJ_RK_Fu set SJID=@SJID,Name=@Name,Model=@Model,GG=@GG,SCCJ=@SCCJ,ApprovalNo=@ApprovalNo where Unid=@Unid
+  
+GO
+
+--20200320触发器TRIGGER_SJ_RK_Fu_KC创建脚本
+if exists (select name from sysobjects where name='TRIGGER_SJ_RK_Fu_KC' and type='TR')
+  drop TRIGGER TRIGGER_SJ_RK_Fu_KC
+go
+
+CREATE TRIGGER TRIGGER_SJ_RK_Fu_KC ON SJ_RK_Fu
+FOR UPDATE
+AS
+--入库审核则生成库存信息
+  declare @Audit_Date datetime,@old_Audit_Date datetime
+
+  SELECT @old_Audit_Date=Audit_Date FROM Deleted
+  if @old_Audit_Date is not null return --表示非审核操作
+
+  SELECT @Audit_Date=Audit_Date FROM Inserted
+  if @Audit_Date is null return --表示非审核操作
+    
+  insert into SJ_KC (RKID,SJUnid,SJID,Name,Model,GG,SCCJ,ApprovalNo,GYS,PH,YXQ,SL,DW,RKRQ,SHR,Memo) 
+  select Unid,SJUnid,SJID,Name,Model,GG,SCCJ,ApprovalNo,Vendor,PH,YXQ,SL,DW,RKRQ,SHR,Memo from Inserted
+
+GO
+
 --删除触发器TRIGGER_chk_con_SCJG_Update
 if exists (select name from sysobjects where name='TRIGGER_chk_con_SCJG_Update' and type='TR')
   drop TRIGGER TRIGGER_chk_con_SCJG_Update
@@ -4217,6 +4367,28 @@ CREATE UNIQUE NONCLUSTERED INDEX IX_HisCombItem ON dbo.HisCombItem
 end
 GO
 
+--索引IX_SJ_Pack创建脚本
+if not exists(select * from sysindexes where name='IX_SJ_Pack')
+begin
+  CREATE UNIQUE NONCLUSTERED INDEX IX_SJ_Pack ON dbo.SJ_Pack
+	(
+	SJUnid,
+	PackName
+	) ON [PRIMARY]
+end
+GO
+
+--索引IX_SJ_Son_Pack创建脚本
+if not exists(select * from sysindexes where name='IX_SJ_Son_Pack')
+begin
+  CREATE UNIQUE NONCLUSTERED INDEX IX_SJ_Son_Pack ON dbo.SJ_Pack
+	(
+	SJUnid,
+	SonPackName
+	) ON [PRIMARY]
+end
+GO
+
 ---------------表关系相关操作---------------
 
 --创建CommValue与clinicchkitem之间的关系
@@ -4320,6 +4492,18 @@ GO
 if exists(select OBJECTPROPERTY(o.id,N'IsSystemTable') from sysobjects o where o.name = N'FK_clinicchkitem_combinitem' and user_name(o.uid) = N'dbo')
 ALTER TABLE dbo.clinicchkitem
 	DROP CONSTRAINT FK_clinicchkitem_combinitem
+GO
+
+--删除关系FK_SJ_RK_Fu_SJ_RK_Zhu
+if exists(select OBJECTPROPERTY(o.id,N'IsSystemTable') from sysobjects o where o.name = N'FK_SJ_RK_Fu_SJ_RK_Zhu' and user_name(o.uid) = N'dbo')
+ALTER TABLE dbo.SJ_RK_Fu
+	DROP CONSTRAINT FK_SJ_RK_Fu_SJ_RK_Zhu
+GO
+
+--删除关系FK_SJ_CK_Fu_SJ_CK_Zhu
+if exists(select OBJECTPROPERTY(o.id,N'IsSystemTable') from sysobjects o where o.name = N'FK_SJ_CK_Fu_SJ_CK_Zhu' and user_name(o.uid) = N'dbo')
+ALTER TABLE dbo.SJ_CK_Fu
+	DROP CONSTRAINT FK_SJ_CK_Fu_SJ_CK_Zhu
 GO
 
 ---------------重新编译视图---------------
