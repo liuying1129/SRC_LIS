@@ -55,7 +55,7 @@ end;
 
 procedure TfrmModifyPwd.BitBtn1Click(Sender: TObject);
 begin
-  if strtoint(ScalarSQLCmd(LisConn,'select count(*) from worker where ID='''+operator_id+''' AND passwd='''+LabeledEdit1.Text+''' '))<=0 then
+  if strtoint(ScalarSQLCmd(LisConn,'select count(*) from worker where ID='''+operator_id+''' AND isnull(passwd,'''')='''+LabeledEdit1.Text+''' '))<=0 then
   begin
     messagedlg('原密码不正确！',mtInformation,[mbok],0);
     LabeledEdit1.SetFocus;
