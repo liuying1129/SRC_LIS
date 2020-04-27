@@ -2936,7 +2936,11 @@ begin
   s1:=' select   *  from chk_con where isnull(chk_con.report_doctor,'''')<>'''' and combin_id='''+cbxConnChar.Text+''' ';//所有已审核的单
   s2:=' select unid from chk_con where isnull(chk_con.report_doctor,'''')<>'''' and combin_id='''+cbxConnChar.Text+''' ';//与S1相同，除了选择范围不同外
   s3:='             from chk_con where isnull(chk_con.report_doctor,'''')<>'''' and combin_id='''+cbxConnChar.Text+''' ';//与S1相同，除了选择范围不同外
-  //SQL SERVER事务具有【原子性】.即要么一起成功,要么一起失败
+  //事务4特性ACID
+  //Atomicity【原子性】:要么一起成功,要么一起失败
+  //Consistency【一致性】:事务前后数据的完整性保持一致
+  //Isolation【隔离性】:多个用户并发访问数据库时,数据库为每个用户开启事务,不会被其他事务的操作数据所干扰,多个并发事务之间相互隔离
+  //Durability【持久性】:事务一旦被提交,它对数据库中数据的改变就是永久性的,接下来即使数据库发生故障也不对其有任何影响
   DM.ADOConnection1.BeginTrans;
   try//经测试(设置断点并中止执行或断电)，BeginTrans与CommitTrans之间的语句中止执行，数据不会提交
     adotemp11:=tadoquery.Create(nil);
