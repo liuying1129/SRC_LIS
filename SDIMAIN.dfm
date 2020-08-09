@@ -605,6 +605,13 @@ object SDIAppForm: TSDIAppForm
         Height = 13
         Caption = #26816#26597#26085#26399
       end
+      object Label9: TLabel
+        Left = 24
+        Top = 15
+        Width = 52
+        Height = 13
+        Caption = #20248#20808#32423#21035
+      end
       object suiButton6: TBitBtn
         Left = 79
         Top = 539
@@ -844,20 +851,6 @@ object SDIAppForm: TSDIAppForm
         Caption = #36830#32493#24405#20837
         TabOrder = 26
       end
-      object LabeledEdit12: TLabeledEdit
-        Left = 79
-        Top = 13
-        Width = 100
-        Height = 19
-        Ctl3D = False
-        EditLabel.Width = 52
-        EditLabel.Height = 13
-        EditLabel.Caption = #20248#20808#32423#21035
-        LabelPosition = lpLeft
-        ParentCtl3D = False
-        TabOrder = 27
-        OnKeyDown = LabeledEdit12KeyDown
-      end
       object lbedtWorkID: TLabeledEdit
         Left = 79
         Top = 378
@@ -968,6 +961,17 @@ object SDIAppForm: TSDIAppForm
         LabelPosition = lpLeft
         ParentCtl3D = False
         TabOrder = 24
+      end
+      object LabeledEdit12: TComboBox
+        Left = 79
+        Top = 11
+        Width = 100
+        Height = 21
+        Ctl3D = False
+        ItemHeight = 13
+        ParentCtl3D = False
+        TabOrder = 27
+        OnKeyDown = LabeledEdit12KeyDown
       end
     end
   end

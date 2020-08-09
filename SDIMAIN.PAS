@@ -186,7 +186,6 @@ type
     ScrollBoxPicture: TScrollBox;
     N66: TMenuItem;
     N71: TMenuItem;
-    LabeledEdit12: TLabeledEdit;
     TabSheet3: TTabSheet;
     ImageBarcode2D: TImage;
     N29: TMenuItem;
@@ -234,6 +233,8 @@ type
     N86: TMenuItem;
     N19: TMenuItem;
     N32: TMenuItem;
+    LabeledEdit12: TComboBox;
+    Label9: TLabel;
     procedure FileExit1Execute(Sender: TObject);
     procedure HelpAbout1Execute(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -581,6 +582,8 @@ begin
   //调用用户信息接口stop
 
   TimerIdleTracker.Enabled:=true;//TimerIdleTrackerTimer事件中需用到配置文件变量LoginTime
+  
+  LoadGroupName(LabeledEdit12,'select name from CommCode where TypeName=''优先级别'' ');
 end;
 
 procedure TSDIAppForm.ClearAll(CONST Clear_TYPE:integer);
