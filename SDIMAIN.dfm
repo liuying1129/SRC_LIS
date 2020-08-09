@@ -612,6 +612,41 @@ object SDIAppForm: TSDIAppForm
         Height = 13
         Caption = #20248#20808#32423#21035
       end
+      object Label10: TLabel
+        Left = 50
+        Top = 116
+        Width = 26
+        Height = 13
+        Caption = #24615#21035
+      end
+      object Label11: TLabel
+        Left = 24
+        Top = 156
+        Width = 52
+        Height = 13
+        Caption = #36865#26816#31185#23460
+      end
+      object Label12: TLabel
+        Left = 24
+        Top = 196
+        Width = 52
+        Height = 13
+        Caption = #36865#26816#21307#29983
+      end
+      object Label13: TLabel
+        Left = 24
+        Top = 216
+        Width = 52
+        Height = 13
+        Caption = #26679#26412#31867#22411
+      end
+      object Label14: TLabel
+        Left = 24
+        Top = 236
+        Width = 52
+        Height = 13
+        Caption = #26679#26412#29366#24577
+      end
       object suiButton6: TBitBtn
         Left = 79
         Top = 539
@@ -678,20 +713,6 @@ object SDIAppForm: TSDIAppForm
         TabOrder = 5
         OnExit = LabeledEdit5Exit
       end
-      object LabeledEdit6: TLabeledEdit
-        Left = 79
-        Top = 153
-        Width = 100
-        Height = 19
-        Ctl3D = False
-        EditLabel.Width = 52
-        EditLabel.Height = 13
-        EditLabel.Caption = #36865#26816#31185#23460
-        LabelPosition = lpLeft
-        ParentCtl3D = False
-        TabOrder = 6
-        OnKeyDown = LabeledEdit6KeyDown
-      end
       object LabeledEdit7: TLabeledEdit
         Left = 79
         Top = 173
@@ -705,48 +726,6 @@ object SDIAppForm: TSDIAppForm
         LabelPosition = lpLeft
         ParentCtl3D = False
         TabOrder = 7
-      end
-      object LabeledEdit8: TLabeledEdit
-        Left = 79
-        Top = 213
-        Width = 100
-        Height = 19
-        Ctl3D = False
-        EditLabel.Width = 52
-        EditLabel.Height = 13
-        EditLabel.Caption = #26679#26412#31867#22411
-        LabelPosition = lpLeft
-        ParentCtl3D = False
-        TabOrder = 9
-        OnKeyDown = LabeledEdit8KeyDown
-      end
-      object LabeledEdit9: TLabeledEdit
-        Left = 79
-        Top = 233
-        Width = 100
-        Height = 19
-        Ctl3D = False
-        EditLabel.Width = 52
-        EditLabel.Height = 13
-        EditLabel.Caption = #26679#26412#29366#24577
-        LabelPosition = lpLeft
-        ParentCtl3D = False
-        TabOrder = 10
-        OnKeyDown = LabeledEdit9KeyDown
-      end
-      object LabeledEdit10: TLabeledEdit
-        Left = 79
-        Top = 193
-        Width = 100
-        Height = 19
-        Ctl3D = False
-        EditLabel.Width = 52
-        EditLabel.Height = 13
-        EditLabel.Caption = #36865#26816#21307#29983
-        LabelPosition = lpLeft
-        ParentCtl3D = False
-        TabOrder = 8
-        OnKeyDown = LabeledEdit10KeyDown
       end
       object DateTimePicker1: TDateTimePicker
         Left = 79
@@ -770,20 +749,6 @@ object SDIAppForm: TSDIAppForm
         ParentCtl3D = False
         TabOrder = 11
         OnKeyDown = LabeledEdit14KeyDown
-      end
-      object LabeledEdit4: TLabeledEdit
-        Left = 79
-        Top = 113
-        Width = 100
-        Height = 19
-        Ctl3D = False
-        EditLabel.Width = 26
-        EditLabel.Height = 13
-        EditLabel.Caption = #24615#21035
-        LabelPosition = lpLeft
-        ParentCtl3D = False
-        TabOrder = 4
-        OnKeyDown = LabeledEdit4KeyDown
       end
       object LabeledEdit15: TLabeledEdit
         Left = 79
@@ -972,6 +937,61 @@ object SDIAppForm: TSDIAppForm
         ParentCtl3D = False
         TabOrder = 27
         OnKeyDown = LabeledEdit12KeyDown
+      end
+      object LabeledEdit4: TComboBox
+        Left = 79
+        Top = 112
+        Width = 100
+        Height = 21
+        Ctl3D = False
+        ItemHeight = 13
+        ParentCtl3D = False
+        TabOrder = 4
+        OnKeyDown = LabeledEdit4KeyDown
+      end
+      object LabeledEdit6: TComboBox
+        Left = 79
+        Top = 152
+        Width = 100
+        Height = 21
+        Ctl3D = False
+        ItemHeight = 13
+        ParentCtl3D = False
+        TabOrder = 6
+        OnKeyDown = LabeledEdit6KeyDown
+      end
+      object LabeledEdit10: TComboBox
+        Left = 79
+        Top = 192
+        Width = 100
+        Height = 21
+        Ctl3D = False
+        ItemHeight = 13
+        ParentCtl3D = False
+        TabOrder = 8
+        OnKeyDown = LabeledEdit10KeyDown
+      end
+      object LabeledEdit8: TComboBox
+        Left = 79
+        Top = 212
+        Width = 100
+        Height = 21
+        Ctl3D = False
+        ItemHeight = 13
+        ParentCtl3D = False
+        TabOrder = 9
+        OnKeyDown = LabeledEdit8KeyDown
+      end
+      object LabeledEdit9: TComboBox
+        Left = 79
+        Top = 232
+        Width = 100
+        Height = 21
+        Ctl3D = False
+        ItemHeight = 13
+        ParentCtl3D = False
+        TabOrder = 10
+        OnKeyDown = LabeledEdit9KeyDown
       end
     end
   end

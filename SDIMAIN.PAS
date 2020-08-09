@@ -128,14 +128,9 @@ type
     LabeledEdit2: TLabeledEdit;
     LabeledEdit3: TLabeledEdit;
     LabeledEdit5: TLabeledEdit;
-    LabeledEdit6: TLabeledEdit;
     LabeledEdit7: TLabeledEdit;
-    LabeledEdit8: TLabeledEdit;
-    LabeledEdit9: TLabeledEdit;
-    LabeledEdit10: TLabeledEdit;
     DateTimePicker1: TDateTimePicker;
     LabeledEdit14: TLabeledEdit;
-    LabeledEdit4: TLabeledEdit;
     LabeledEdit15: TLabeledEdit;
     DateTimePicker2: TDateTimePicker;
     LabeledEdit16: TLabeledEdit;
@@ -235,6 +230,16 @@ type
     N32: TMenuItem;
     LabeledEdit12: TComboBox;
     Label9: TLabel;
+    Label10: TLabel;
+    LabeledEdit4: TComboBox;
+    Label11: TLabel;
+    LabeledEdit6: TComboBox;
+    Label12: TLabel;
+    LabeledEdit10: TComboBox;
+    Label13: TLabel;
+    LabeledEdit8: TComboBox;
+    Label14: TLabel;
+    LabeledEdit9: TComboBox;
     procedure FileExit1Execute(Sender: TObject);
     procedure HelpAbout1Execute(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -584,6 +589,11 @@ begin
   TimerIdleTracker.Enabled:=true;//TimerIdleTrackerTimer事件中需用到配置文件变量LoginTime
   
   LoadGroupName(LabeledEdit12,'select name from CommCode where TypeName=''优先级别'' ');
+  LoadGroupName(LabeledEdit4,'select name from CommCode where TypeName=''性别'' ');
+  LoadGroupName(LabeledEdit6,'select name from CommCode where TypeName=''部门'' ');
+  LoadGroupName(LabeledEdit10,'select name from worker');
+  LoadGroupName(LabeledEdit8,'select name from CommCode where TypeName=''样本类型'' ');
+  LoadGroupName(LabeledEdit9,'select name from CommCode where TypeName=''样本状态'' ');
 end;
 
 procedure TSDIAppForm.ClearAll(CONST Clear_TYPE:integer);
