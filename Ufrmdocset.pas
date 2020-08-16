@@ -59,7 +59,7 @@ function frmdocset: Tfrmdocset;
 //var
 
 implementation
-uses  UDM;
+uses  UDM, SDIMAIN;
 const
   sqlstr=' SELECT  id AS 用户代码, name AS 用户名称, pinyin AS 英文名,ShowAllTj as 所有科室项目,unid AS 唯一编号'+
          ' FROM worker where pkdeptid=:P_pkdeptid order by id';
@@ -135,7 +135,6 @@ Begin
         ADOdoclist.Close;
         ADOdoclist.Open;
         ADOdoclist.Locate('用户代码',iid,[loCaseInsensitive]);
-        exit;
    end else
    begin
         adotemp11:=tadoquery.Create(nil);
@@ -159,6 +158,7 @@ Begin
         ADOdoclist.Refresh;
    end;
 
+   LoadGroupName(sdiappform.LabeledEdit10,'select name from worker');
 end;
 
 procedure Tfrmdocset.docrefresh;

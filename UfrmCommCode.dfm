@@ -3,12 +3,12 @@ object frmCommCode: TfrmCommCode
   Top = 176
   Width = 700
   Height = 500
-  Caption = '通用代码'
+  Caption = #36890#29992#20195#30721
   Color = clSkyBlue
   Font.Charset = ANSI_CHARSET
   Font.Color = clWindowText
   Font.Height = -13
-  Font.Name = '宋体'
+  Font.Name = #23435#20307
   Font.Style = []
   KeyPreview = True
   OldCreateOrder = False
@@ -22,7 +22,7 @@ object frmCommCode: TfrmCommCode
     Left = 225
     Top = 0
     Width = 459
-    Height = 462
+    Height = 461
     Align = alClient
     Color = 16767438
     DataSource = DataSource1
@@ -31,14 +31,14 @@ object frmCommCode: TfrmCommCode
     TitleFont.Charset = ANSI_CHARSET
     TitleFont.Color = clWindowText
     TitleFont.Height = -13
-    TitleFont.Name = '宋体'
+    TitleFont.Name = #23435#20307
     TitleFont.Style = []
   end
   object Panel1: TPanel
     Left = 0
     Top = 0
     Width = 225
-    Height = 462
+    Height = 461
     Align = alLeft
     Color = clSkyBlue
     TabOrder = 1
@@ -47,18 +47,18 @@ object frmCommCode: TfrmCommCode
       Top = 36
       Width = 52
       Height = 13
-      Caption = '代码类型'
+      Caption = #20195#30721#31867#22411
     end
     object Label2: TLabel
       Left = 3
       Top = 441
       Width = 216
       Height = 13
-      Caption = '注:设置"系统代码"需重启程序才生效'
+      Caption = #27880':'#35774#32622'"'#31995#32479#20195#30721'"'#38656#37325#21551#31243#24207#25165#29983#25928
       Font.Charset = ANSI_CHARSET
       Font.Color = clRed
       Font.Height = -13
-      Font.Name = '宋体'
+      Font.Name = #23435#20307
       Font.Style = []
       ParentFont = False
     end
@@ -71,7 +71,7 @@ object frmCommCode: TfrmCommCode
       Ctl3D = False
       EditLabel.Width = 26
       EditLabel.Height = 13
-      EditLabel.Caption = '名称'
+      EditLabel.Caption = #21517#31216
       LabelPosition = lpLeft
       ParentCtl3D = False
       TabOrder = 2
@@ -81,7 +81,7 @@ object frmCommCode: TfrmCommCode
       Top = 379
       Width = 76
       Height = 25
-      Caption = '新增'
+      Caption = #26032#22686
       TabOrder = 15
       OnClick = BitBtn1Click
     end
@@ -90,7 +90,7 @@ object frmCommCode: TfrmCommCode
       Top = 379
       Width = 75
       Height = 25
-      Caption = '保存'
+      Caption = #20445#23384
       TabOrder = 14
       OnClick = BitBtn2Click
     end
@@ -99,7 +99,7 @@ object frmCommCode: TfrmCommCode
       Top = 403
       Width = 76
       Height = 25
-      Caption = '删除'
+      Caption = #21024#38500
       TabOrder = 16
       OnClick = BitBtn3Click
     end
@@ -112,7 +112,7 @@ object frmCommCode: TfrmCommCode
       Ctl3D = False
       EditLabel.Width = 26
       EditLabel.Height = 13
-      EditLabel.Caption = '代码'
+      EditLabel.Caption = #20195#30721
       LabelPosition = lpLeft
       ParentCtl3D = False
       TabOrder = 1
@@ -126,7 +126,7 @@ object frmCommCode: TfrmCommCode
       Ctl3D = False
       EditLabel.Width = 26
       EditLabel.Height = 13
-      EditLabel.Caption = '备注'
+      EditLabel.Caption = #22791#27880
       LabelPosition = lpLeft
       ParentCtl3D = False
       TabOrder = 3
@@ -147,7 +147,7 @@ object frmCommCode: TfrmCommCode
       Top = 403
       Width = 75
       Height = 25
-      Caption = '导出'
+      Caption = #23548#20986
       TabOrder = 17
       OnClick = BitBtn4Click
     end
@@ -160,7 +160,7 @@ object frmCommCode: TfrmCommCode
       Ctl3D = False
       EditLabel.Width = 59
       EditLabel.Height = 13
-      EditLabel.Caption = '保留字段1'
+      EditLabel.Caption = #20445#30041#23383#27573'1'
       LabelPosition = lpLeft
       ParentCtl3D = False
       TabOrder = 4
@@ -174,7 +174,7 @@ object frmCommCode: TfrmCommCode
       Ctl3D = False
       EditLabel.Width = 59
       EditLabel.Height = 13
-      EditLabel.Caption = '保留字段2'
+      EditLabel.Caption = #20445#30041#23383#27573'2'
       LabelPosition = lpLeft
       ParentCtl3D = False
       TabOrder = 5
@@ -188,7 +188,7 @@ object frmCommCode: TfrmCommCode
       Ctl3D = False
       EditLabel.Width = 59
       EditLabel.Height = 13
-      EditLabel.Caption = '保留字段3'
+      EditLabel.Caption = #20445#30041#23383#27573'3'
       LabelPosition = lpLeft
       ParentCtl3D = False
       TabOrder = 6
@@ -202,7 +202,7 @@ object frmCommCode: TfrmCommCode
       Ctl3D = False
       EditLabel.Width = 59
       EditLabel.Height = 13
-      EditLabel.Caption = '保留字段4'
+      EditLabel.Caption = #20445#30041#23383#27573'4'
       LabelPosition = lpLeft
       ParentCtl3D = False
       TabOrder = 7
@@ -216,7 +216,7 @@ object frmCommCode: TfrmCommCode
       Ctl3D = False
       EditLabel.Width = 59
       EditLabel.Height = 13
-      EditLabel.Caption = '保留字段5'
+      EditLabel.Caption = #20445#30041#23383#27573'5'
       LabelPosition = lpLeft
       ParentCtl3D = False
       TabOrder = 8
@@ -230,7 +230,7 @@ object frmCommCode: TfrmCommCode
       Ctl3D = False
       EditLabel.Width = 59
       EditLabel.Height = 13
-      EditLabel.Caption = '保留字段6'
+      EditLabel.Caption = #20445#30041#23383#27573'6'
       LabelPosition = lpLeft
       ParentCtl3D = False
       TabOrder = 9
@@ -244,7 +244,7 @@ object frmCommCode: TfrmCommCode
       Ctl3D = False
       EditLabel.Width = 59
       EditLabel.Height = 13
-      EditLabel.Caption = '保留字段7'
+      EditLabel.Caption = #20445#30041#23383#27573'7'
       LabelPosition = lpLeft
       ParentCtl3D = False
       TabOrder = 10
@@ -258,7 +258,7 @@ object frmCommCode: TfrmCommCode
       Ctl3D = False
       EditLabel.Width = 59
       EditLabel.Height = 13
-      EditLabel.Caption = '保留字段8'
+      EditLabel.Caption = #20445#30041#23383#27573'8'
       LabelPosition = lpLeft
       ParentCtl3D = False
       TabOrder = 11
@@ -292,7 +292,7 @@ object frmCommCode: TfrmCommCode
       Ctl3D = False
       EditLabel.Width = 59
       EditLabel.Height = 13
-      EditLabel.Caption = '保留字段9'
+      EditLabel.Caption = #20445#30041#23383#27573'9'
       LabelPosition = lpLeft
       ParentCtl3D = False
       TabOrder = 12
@@ -306,7 +306,7 @@ object frmCommCode: TfrmCommCode
       Ctl3D = False
       EditLabel.Width = 66
       EditLabel.Height = 13
-      EditLabel.Caption = '保留字段10'
+      EditLabel.Caption = #20445#30041#23383#27573'10'
       LabelPosition = lpLeft
       ParentCtl3D = False
       TabOrder = 13
@@ -316,7 +316,7 @@ object frmCommCode: TfrmCommCode
       Top = 3
       Width = 145
       Height = 25
-      Caption = '增加代码类型'
+      Caption = #22686#21152#20195#30721#31867#22411
       TabOrder = 20
       OnClick = BitBtn5Click
     end

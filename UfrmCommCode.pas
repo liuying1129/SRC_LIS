@@ -261,6 +261,11 @@ begin
   updateEdit;
 
   if ComboBox1.Text='检验组别' then LoadGroupName(sdiappform.cbxConnChar,'select name from CommCode where TypeName=''检验组别'' AND SysName='''+SYSNAME+''' group by name');
+  if ComboBox1.Text='优先级别' then LoadGroupName(sdiappform.LabeledEdit12,'select name from CommCode where TypeName=''优先级别'' ');
+  if ComboBox1.Text='性别' then LoadGroupName(sdiappform.LabeledEdit4,'select name from CommCode where TypeName=''性别'' ');
+  if ComboBox1.Text='部门' then LoadGroupName(sdiappform.LabeledEdit6,'select name from CommCode where TypeName=''部门'' ');
+  if ComboBox1.Text='样本类型' then LoadGroupName(sdiappform.LabeledEdit8,'select name from CommCode where TypeName=''样本类型'' ');
+  if ComboBox1.Text='样本状态' then LoadGroupName(sdiappform.LabeledEdit9,'select name from CommCode where TypeName=''样本状态'' ');
 end;
 
 procedure TfrmCommCode.ADOQuery1AfterScroll(DataSet: TDataSet);

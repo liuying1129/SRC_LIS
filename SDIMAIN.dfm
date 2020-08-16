@@ -953,6 +953,7 @@ object SDIAppForm: TSDIAppForm
         Width = 100
         Height = 21
         BevelKind = bkFlat
+        DropDownCount = 20
         ItemHeight = 13
         TabOrder = 6
         OnKeyDown = LabeledEdit6KeyDown
@@ -963,6 +964,7 @@ object SDIAppForm: TSDIAppForm
         Width = 100
         Height = 21
         BevelKind = bkFlat
+        DropDownCount = 20
         ItemHeight = 13
         TabOrder = 8
         OnKeyDown = LabeledEdit10KeyDown
@@ -973,6 +975,7 @@ object SDIAppForm: TSDIAppForm
         Width = 100
         Height = 21
         BevelKind = bkFlat
+        DropDownCount = 20
         ItemHeight = 13
         TabOrder = 9
         OnKeyDown = LabeledEdit8KeyDown
@@ -983,6 +986,7 @@ object SDIAppForm: TSDIAppForm
         Width = 100
         Height = 21
         BevelKind = bkFlat
+        DropDownCount = 20
         ItemHeight = 13
         TabOrder = 10
         OnKeyDown = LabeledEdit9KeyDown

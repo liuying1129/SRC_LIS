@@ -22,7 +22,7 @@ object frmdocset: Tfrmdocset
     Left = 0
     Top = 98
     Width = 528
-    Height = 239
+    Height = 238
     Align = alClient
     Color = 16767438
     DataSource = DataSourcedoclist
