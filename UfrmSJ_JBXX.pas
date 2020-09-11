@@ -4,7 +4,8 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, ExtCtrls, Grids, DBGrids, Buttons, DB, ADODB, DosMove;
+  Dialogs, StdCtrls, ExtCtrls, Grids, DBGrids, Buttons, DB, ADODB, DosMove,
+  UfrmLocateRecord;
 
 type
   TfrmSJ_JBXX = class(TForm)
@@ -36,6 +37,7 @@ type
     BitBtn6: TBitBtn;
     Label1: TLabel;
     Label2: TLabel;
+    BitBtn7: TBitBtn;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -48,6 +50,7 @@ type
     procedure BitBtn4Click(Sender: TObject);
     procedure BitBtn5Click(Sender: TObject);
     procedure BitBtn6Click(Sender: TObject);
+    procedure BitBtn7Click(Sender: TObject);
   private
     { Private declarations }
     procedure updateAdoQuery1;
@@ -404,6 +407,16 @@ begin
   if (MessageDlg('是否真要删除当前记录？', mtConfirmation, [mbYes, mbNo], 0) <> mrYes) then exit;
 
   ADOQuery2.Delete;
+end;
+
+procedure TfrmSJ_JBXX.BitBtn7Click(Sender: TObject);
+var
+  LYLocateRecord:TLYLocateRecord;
+begin
+  LYLocateRecord:=TLYLocateRecord.create(nil);
+  LYLocateRecord.DataSource:=DataSource1;
+  LYLocateRecord.Execute;
+  LYLocateRecord.free;
 end;
 
 initialization

@@ -137,6 +137,15 @@ object frmSJ_JBXX: TfrmSJ_JBXX
       EditLabel.Caption = #22791#27880
       TabOrder = 6
     end
+    object BitBtn7: TBitBtn
+      Left = 253
+      Top = 90
+      Width = 75
+      Height = 25
+      Caption = #26597#25214
+      TabOrder = 10
+      OnClick = BitBtn7Click
+    end
   end
   object Panel2: TPanel
     Left = 0
@@ -265,7 +274,7 @@ object frmSJ_JBXX: TfrmSJ_JBXX
   end
   object DosMove1: TDosMove
     Active = True
-    Left = 280
+    Left = 512
     Top = 88
   end
 end
