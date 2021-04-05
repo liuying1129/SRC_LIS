@@ -579,77 +579,77 @@ object SDIAppForm: TSDIAppForm
       TabOrder = 1
       object Label3: TLabel
         Left = 24
-        Top = 311
+        Top = 308
         Width = 52
         Height = 13
         Caption = #30003#35831#26102#38388
       end
       object Label4: TLabel
         Left = 24
-        Top = 353
+        Top = 350
         Width = 52
         Height = 13
         Caption = #26816#26597#26102#38388
       end
       object Label5: TLabel
         Left = 24
-        Top = 291
+        Top = 288
         Width = 52
         Height = 13
         Caption = #30003#35831#26085#26399
       end
       object Label6: TLabel
         Left = 24
-        Top = 333
+        Top = 330
         Width = 52
         Height = 13
         Caption = #26816#26597#26085#26399
       end
       object Label9: TLabel
         Left = 24
-        Top = 19
+        Top = 16
         Width = 52
         Height = 13
         Caption = #20248#20808#32423#21035
       end
       object Label10: TLabel
         Left = 50
-        Top = 121
+        Top = 118
         Width = 26
         Height = 13
         Caption = #24615#21035
       end
       object Label11: TLabel
         Left = 24
-        Top = 163
+        Top = 160
         Width = 52
         Height = 13
         Caption = #36865#26816#31185#23460
       end
       object Label12: TLabel
         Left = 24
-        Top = 205
+        Top = 202
         Width = 52
         Height = 13
         Caption = #36865#26816#21307#29983
       end
       object Label13: TLabel
         Left = 24
-        Top = 227
+        Top = 224
         Width = 52
         Height = 13
         Caption = #26679#26412#31867#22411
       end
       object Label14: TLabel
         Left = 24
-        Top = 249
+        Top = 246
         Width = 52
         Height = 13
         Caption = #26679#26412#29366#24577
       end
       object suiButton6: TBitBtn
         Left = 79
-        Top = 553
+        Top = 549
         Width = 100
         Height = 22
         Caption = #20445#23384#26816#39564#21333'F3'
@@ -658,7 +658,7 @@ object SDIAppForm: TSDIAppForm
       end
       object LabeledEdit1: TLabeledEdit
         Left = 79
-        Top = 57
+        Top = 54
         Width = 100
         Height = 19
         Ctl3D = False
@@ -672,7 +672,7 @@ object SDIAppForm: TSDIAppForm
       end
       object LabeledEdit2: TLabeledEdit
         Left = 79
-        Top = 77
+        Top = 74
         Width = 100
         Height = 19
         Ctl3D = False
@@ -686,7 +686,7 @@ object SDIAppForm: TSDIAppForm
       end
       object LabeledEdit3: TLabeledEdit
         Left = 79
-        Top = 97
+        Top = 94
         Width = 100
         Height = 19
         Ctl3D = False
@@ -701,7 +701,7 @@ object SDIAppForm: TSDIAppForm
       end
       object LabeledEdit5: TLabeledEdit
         Left = 79
-        Top = 139
+        Top = 136
         Width = 100
         Height = 19
         Ctl3D = False
@@ -715,7 +715,7 @@ object SDIAppForm: TSDIAppForm
       end
       object LabeledEdit7: TLabeledEdit
         Left = 79
-        Top = 181
+        Top = 178
         Width = 100
         Height = 19
         Ctl3D = False
@@ -729,7 +729,7 @@ object SDIAppForm: TSDIAppForm
       end
       object DateTimePicker1: TDateTimePicker
         Left = 79
-        Top = 287
+        Top = 284
         Width = 100
         Height = 21
         Date = 37833.628041087960000000
@@ -738,7 +738,7 @@ object SDIAppForm: TSDIAppForm
       end
       object LabeledEdit14: TLabeledEdit
         Left = 79
-        Top = 267
+        Top = 264
         Width = 100
         Height = 19
         Ctl3D = False
@@ -752,7 +752,7 @@ object SDIAppForm: TSDIAppForm
       end
       object LabeledEdit15: TLabeledEdit
         Left = 79
-        Top = 372
+        Top = 369
         Width = 100
         Height = 19
         Ctl3D = False
@@ -767,7 +767,7 @@ object SDIAppForm: TSDIAppForm
       end
       object DateTimePicker2: TDateTimePicker
         Left = 79
-        Top = 329
+        Top = 326
         Width = 100
         Height = 21
         Date = 37833.628041087960000000
@@ -776,7 +776,7 @@ object SDIAppForm: TSDIAppForm
       end
       object LabeledEdit16: TLabeledEdit
         Left = 79
-        Top = 37
+        Top = 34
         Width = 100
         Height = 19
         Ctl3D = False
@@ -790,7 +790,7 @@ object SDIAppForm: TSDIAppForm
       end
       object DateTimePicker3: TDateTimePicker
         Left = 79
-        Top = 308
+        Top = 305
         Width = 100
         Height = 21
         Date = 38238.447083333330000000
@@ -800,7 +800,7 @@ object SDIAppForm: TSDIAppForm
       end
       object DateTimePicker4: TDateTimePicker
         Left = 79
-        Top = 350
+        Top = 347
         Width = 100
         Height = 21
         Date = 38238.447083333330000000
@@ -809,16 +809,22 @@ object SDIAppForm: TSDIAppForm
         TabOrder = 15
       end
       object CheckBox1: TCheckBox
-        Left = 3
-        Top = 556
+        Left = 79
+        Top = 571
         Width = 73
         Height = 17
         Caption = #36830#32493#24405#20837
+        Font.Charset = GB2312_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -13
+        Font.Name = #23435#20307
+        Font.Style = []
+        ParentFont = False
         TabOrder = 26
       end
       object lbedtWorkID: TLabeledEdit
         Left = 79
-        Top = 392
+        Top = 389
         Width = 100
         Height = 19
         Ctl3D = False
@@ -831,7 +837,7 @@ object SDIAppForm: TSDIAppForm
       end
       object lbedtWorkCompany: TLabeledEdit
         Left = 79
-        Top = 412
+        Top = 409
         Width = 100
         Height = 19
         Ctl3D = False
@@ -846,7 +852,7 @@ object SDIAppForm: TSDIAppForm
       end
       object lbedtWorkDepartment: TLabeledEdit
         Left = 79
-        Top = 432
+        Top = 429
         Width = 100
         Height = 19
         Ctl3D = False
@@ -860,7 +866,7 @@ object SDIAppForm: TSDIAppForm
       end
       object lbedtWorkCategory: TLabeledEdit
         Left = 79
-        Top = 452
+        Top = 449
         Width = 100
         Height = 19
         Ctl3D = False
@@ -874,7 +880,7 @@ object SDIAppForm: TSDIAppForm
       end
       object lbedtifMarry: TLabeledEdit
         Left = 79
-        Top = 472
+        Top = 469
         Width = 100
         Height = 19
         Ctl3D = False
@@ -888,7 +894,7 @@ object SDIAppForm: TSDIAppForm
       end
       object lbedtOldAddress: TLabeledEdit
         Left = 79
-        Top = 492
+        Top = 489
         Width = 100
         Height = 19
         Ctl3D = False
@@ -902,7 +908,7 @@ object SDIAppForm: TSDIAppForm
       end
       object lbedtAddress: TLabeledEdit
         Left = 79
-        Top = 512
+        Top = 509
         Width = 100
         Height = 19
         Ctl3D = False
@@ -916,7 +922,7 @@ object SDIAppForm: TSDIAppForm
       end
       object lbedtTelephone: TLabeledEdit
         Left = 79
-        Top = 532
+        Top = 529
         Width = 100
         Height = 19
         Ctl3D = False
@@ -929,7 +935,7 @@ object SDIAppForm: TSDIAppForm
       end
       object LabeledEdit12: TComboBox
         Left = 79
-        Top = 15
+        Top = 12
         Width = 100
         Height = 21
         BevelKind = bkFlat
@@ -939,7 +945,7 @@ object SDIAppForm: TSDIAppForm
       end
       object LabeledEdit4: TComboBox
         Left = 79
-        Top = 117
+        Top = 114
         Width = 100
         Height = 21
         BevelKind = bkFlat
@@ -949,7 +955,7 @@ object SDIAppForm: TSDIAppForm
       end
       object LabeledEdit6: TComboBox
         Left = 79
-        Top = 159
+        Top = 156
         Width = 100
         Height = 21
         BevelKind = bkFlat
@@ -960,7 +966,7 @@ object SDIAppForm: TSDIAppForm
       end
       object LabeledEdit10: TComboBox
         Left = 79
-        Top = 201
+        Top = 198
         Width = 100
         Height = 21
         BevelKind = bkFlat
@@ -971,7 +977,7 @@ object SDIAppForm: TSDIAppForm
       end
       object LabeledEdit8: TComboBox
         Left = 79
-        Top = 223
+        Top = 220
         Width = 100
         Height = 21
         BevelKind = bkFlat
@@ -982,7 +988,7 @@ object SDIAppForm: TSDIAppForm
       end
       object LabeledEdit9: TComboBox
         Left = 79
-        Top = 245
+        Top = 242
         Width = 100
         Height = 21
         BevelKind = bkFlat
@@ -2129,7 +2135,7 @@ object SDIAppForm: TSDIAppForm
       OnClick = N79Click
     end
     object N80: TMenuItem
-      Caption = #25152#23646#24037#31181
+      Caption = #24037#31181
       OnClick = N80Click
     end
     object N81: TMenuItem

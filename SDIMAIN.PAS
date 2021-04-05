@@ -590,10 +590,10 @@ begin
   
   LoadGroupName(LabeledEdit12,'select name from CommCode where TypeName=''优先级别'' ');
   LoadGroupName(LabeledEdit4,'select name from CommCode where TypeName=''性别'' ');
-  LoadGroupName(LabeledEdit6,'select name from CommCode where TypeName=''部门'' ');
-  LoadGroupName(LabeledEdit10,'select name from worker');
-  LoadGroupName(LabeledEdit8,'select name from CommCode where TypeName=''样本类型'' ');
-  LoadGroupName(LabeledEdit9,'select name from CommCode where TypeName=''样本状态'' ');
+  LoadGroupName(LabeledEdit6,'select name from CommCode WITH(NOLOCK) where TypeName=''部门'' ');
+  LoadGroupName(LabeledEdit10,'select name from worker WITH(NOLOCK)');
+  LoadGroupName(LabeledEdit8,'select name from CommCode WITH(NOLOCK) where TypeName=''样本类型'' ');
+  LoadGroupName(LabeledEdit9,'select name from CommCode WITH(NOLOCK) where TypeName=''样本状态'' ');
 end;
 
 procedure TSDIAppForm.ClearAll(CONST Clear_TYPE:integer);
