@@ -240,6 +240,10 @@ type
     LabeledEdit8: TComboBox;
     Label14: TLabel;
     LabeledEdit9: TComboBox;
+    SpeedButton3: TSpeedButton;
+    SpeedButton4: TSpeedButton;
+    SpeedButton6: TSpeedButton;
+    SpeedButton7: TSpeedButton;
     procedure FileExit1Execute(Sender: TObject);
     procedure HelpAbout1Execute(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -388,6 +392,10 @@ type
     procedure FormActivate(Sender: TObject);
     procedure N19Click(Sender: TObject);
     procedure N32Click(Sender: TObject);
+    procedure SpeedButton3Click(Sender: TObject);
+    procedure SpeedButton4Click(Sender: TObject);
+    procedure SpeedButton6Click(Sender: TObject);
+    procedure SpeedButton7Click(Sender: TObject);
   private
     procedure CheckTheListBox;//根据当前病人的结果在checklistbox1中打钩
     procedure WriteProfile;
@@ -4357,6 +4365,26 @@ begin
   if not ifhaspower(sender,powerstr_js_main) then exit;
 
   frmSJ_JBXX.ShowModal;
+end;
+
+procedure TSDIAppForm.SpeedButton3Click(Sender: TObject);
+begin
+  LoadGroupName(LabeledEdit6,'select name from CommCode WITH(NOLOCK) where TypeName=''部门'' ');
+end;
+
+procedure TSDIAppForm.SpeedButton4Click(Sender: TObject);
+begin
+  LoadGroupName(LabeledEdit10,'select name from worker WITH(NOLOCK)');
+end;
+
+procedure TSDIAppForm.SpeedButton6Click(Sender: TObject);
+begin
+  LoadGroupName(LabeledEdit8,'select name from CommCode WITH(NOLOCK) where TypeName=''样本类型'' ');
+end;
+
+procedure TSDIAppForm.SpeedButton7Click(Sender: TObject);
+begin
+  LoadGroupName(LabeledEdit9,'select name from CommCode WITH(NOLOCK) where TypeName=''样本状态'' ');
 end;
 
 end.
