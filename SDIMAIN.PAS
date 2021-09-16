@@ -459,7 +459,7 @@ uses  Unit_dialog_pllr,
   UDM, UfrmFromExcelLoad,
   UfrmXDepictType, UfrmXDepict, UfrmCommCode, UfrmPlxg, UfrmCopyInfo,
   UfrmPhoto, UfrmShowChkConHis, uQRCode, UfrmLeakItemWarning,
-  UfrmModifyPwd, UfrmEquipManage, UfrmSJ_JBXX;
+  UfrmModifyPwd, UfrmEquipManage, UfrmSJ_JBXX, softMeter_globalVar;
 
 var
     copyName,copySex,copyage,copyCaseno,copyBedno,copydeptname,copycheck_doctor:string;//复制的病人基本信息，仅粘贴时有用
@@ -602,6 +602,9 @@ begin
   LoadGroupName(LabeledEdit10,'select name from worker WITH(NOLOCK)');
   LoadGroupName(LabeledEdit8,'select name from CommCode WITH(NOLOCK) where TypeName=''样本类型'' ');
   LoadGroupName(LabeledEdit9,'select name from CommCode WITH(NOLOCK) where TypeName=''样本状态'' ');
+
+  // send a pageView hit on Form Show
+  dllSoftMeter.sendPageview(PChar(UTF8Encode(SCSYDW)+'/'+UTF8Encode(operator_id)),'frmMain Show Event');
 end;
 
 procedure TSDIAppForm.ClearAll(CONST Clear_TYPE:integer);

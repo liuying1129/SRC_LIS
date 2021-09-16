@@ -32,7 +32,8 @@ uses
   UfrmLeakItemWarning in 'UfrmLeakItemWarning.pas' {frmLeakItemWarning},
   UfrmModifyPwd in 'UfrmModifyPwd.pas' {frmModifyPwd},
   UfrmEquipManage in 'UfrmEquipManage.pas' {frmEquipManage},
-  UfrmSJ_JBXX in 'UfrmSJ_JBXX.pas' {frmSJ_JBXX};
+  UfrmSJ_JBXX in 'UfrmSJ_JBXX.pas' {frmSJ_JBXX},
+  softMeter_globalVar in 'softMeter_globalVar.pas';
 
 {$R *.RES}
 
