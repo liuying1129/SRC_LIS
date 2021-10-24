@@ -36,8 +36,8 @@ const
   GooglePropertyID =  'UA-207373569-1';
                       
   // put here your application information
-  AppName = 'ProYkLis';
-  AppVersion = '0.0.7.2';
+  AppName = 'ykhis_clinic_doctor';
+  AppVersion = '1.2';
   AppLicense = 'Free';
   AppEdition = 'Free download edition';
   // if you have a SoftMeter PRO subscription
@@ -59,7 +59,7 @@ initialization
   try
     dllSoftMeter := TDllAppTelemetry.Create(DLLfilename);
   Except
-    ShowMessage('Error loading '+ DLLfilename);
+    MessageDlg('Error loading '+ DLLfilename,mtError,[mbOK],0);
   end;
 
   dllSoftMeter.enableLogfile('Delphi demo');
@@ -67,10 +67,10 @@ initialization
 
   if Length(GooglePropertyID)<10 then
   begin
-    ShowMessage('You are running this demo with the propertyID: ' + GooglePropertyID + CHR(10)+CHR(13) +
+    MessageDlg('You are running this demo with the propertyID: ' + GooglePropertyID + CHR(10)+CHR(13) +
                 'Are you sure this is YOUR Google propertyID?' + CHR(10)+CHR(13) +
                 'Go to softMeter_globalVar.pas to review it.' + CHR(10)+CHR(13) +
-                'Will not enable telemetry now.');
+                'Will not enable telemetry now.',mtWarning,[mbOK],0);
     exit;
   end;
 
@@ -86,18 +86,18 @@ initialization
   try
     startResult := dllSoftMeter.start(AppName, AppVersion, AppLicense, AppEdition, GooglePropertyID, userGaveConsent );
   Except
-    ShowMessage('Exception while calling dllSoftMeter.start');
+    MessageDlg('Exception while calling dllSoftMeter.start',mtError,[mbOK],0);
   end;
-  if not startResult then ShowMessage('start() returned false');
+  if not startResult then MessageDlg('dllSoftMeter.start returned false',mtError,[mbOK],0);
 
-  if dllSoftMeter.errorsExist then showMessage('Errors in dllSoftMeter:' + dllSoftMeter.getErrorText);
+  if dllSoftMeter.errorsExist then MessageDlg('Errors in dllSoftMeter:' + dllSoftMeter.getErrorText,mtError,[mbOK],0);
 
 finalization
 
   try
     dllSoftMeter.stop;
   Except
-    ShowMessage('Error calling dllSoftMeter.stop');
+    MessageDlg('Error calling dllSoftMeter.stop',mtError,[mbOK],0);
   end;
 
   // during the development (not for release) open the logFile
