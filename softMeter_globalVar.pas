@@ -36,8 +36,8 @@ const
   GooglePropertyID =  'UA-207373569-1';
                       
   // put here your application information
-  AppName = 'ykhis_clinic_doctor';
-  AppVersion = '1.2';
+  AppName = 'ProYkLis';
+  AppVersion = '0.0.7.2';
   AppLicense = 'Free';
   AppEdition = 'Free download edition';
   // if you have a SoftMeter PRO subscription
