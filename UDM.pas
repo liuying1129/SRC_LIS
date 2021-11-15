@@ -71,7 +71,6 @@ var
   MergePrintDays:integer;//历史结果合并打印的偏差天数
   MakeTjDescDays:integer;//生成体检结论、建议的偏差天数
   bAppendMakeTjDesc:string;//是否允许追加生成体检结论
-  BASE_URL:STRING;//远程请求地址//'http://211.97.0.5:8080/YkAPI/service';
   SmoothNum:integer;//直方图光滑次数
   LisConn:string;//Lis连接字符串,MakeDBConn过程中被赋值,然后传入QC.DLL、CalcItemPro.dll
   gServerName:string;//服务名,用于显示在状态栏

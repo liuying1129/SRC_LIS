@@ -8,9 +8,7 @@ uses Windows,Messages, Classes,SysUtils, Graphics, Forms, Controls, Menus,
   DB,inifiles,FR_DBSet, FR_Class, LYAboutBox,Printers,
   StrUtils,  TeEngine, Series, TeeProcs, Chart,fr_chart,shellapi{ShellExecute}, 
   DateUtils, FR_DSet, ADOLYGetcode,Math,Jpeg,Variants, UfrmLocateRecord,
-  ExtDlgs, UADOLYQuery,HTTPApp{HTTPEncode},IdHashMessageDigest{TIdHashMessageDigest5},
-  IdHash, IdBaseComponent, IdComponent, IdTCPConnection, IdTCPClient,
-  IdHTTP{T4x4LongWordRecord}, IdIPWatch, LYLed;
+  ExtDlgs, UADOLYQuery, LYLed;
 
 //==为了通过发送消息更新主窗体状态栏而增加==//
 const
@@ -509,16 +507,6 @@ begin
 end;
 
 procedure TSDIAppForm.FormShow(Sender: TObject);
-var
-  s3,sign:string;
-  //t1:string;
-  MyMD5: TIdHashMessageDigest5;
-  Digest: T4x4LongWordRecord;
-  s1,sort_params:string;
-  RespData:TStringStream;
-  IdHTTP_Tmp1:TIdHTTP;
-  sLocalIP,sLocalName:STRING;
-  IdIPWatch:TIdIPWatch;
 begin
   if ifRegister then bRegister:=true else bRegister:=false;
   
@@ -543,56 +531,6 @@ begin
   update_Ado_dtl;
 
   LoadToolMenu(N65,'select name from CommCode where TypeName=''工具菜单'' order by ID');
-
-  //调用用户信息接口start
-  IdIPWatch:=TIdIPWatch.Create(nil);
-  IdIPWatch.HistoryEnabled:=false;
-  sLocalIP:=IdIPWatch.LocalIP;
-  sLocalName:='';//IdIPWatch.LocalName;//indy10无该属性
-  IdIPWatch.Free;
-  
-  //t1:=FormatDateTime('YYYY-MM-DD hh:nn:ss',now);
-  s1:='insert into AppVisit (SysName,PageName,IP,ComputerName,Customer,UserName,ActionName,ActionTime) values ('''+SYSNAME+''','''+Name+''','''+sLocalIP+''','''+sLocalName+''','''+SCSYDW+''','''+operator_name+''','''+'Show'+''',getdate())';
-  s3:='methodNum='+HTTPEncode(UTF8Encode('AIF012'));
-  //s3:=s3+'&customer='+(HTTPEncode(UTF8Encode(SCSYDW)));
-  //s3:=s3+'&actionTime='+HTTPEncode(UTF8Encode(t1));
-  //s3:=s3+'&sysName='+HTTPEncode(UTF8Encode(SYSNAME));
-  //s3:=s3+'&pageName='+HTTPEncode(UTF8Encode(Name));
-  //s3:=s3+'&ip='+HTTPEncode(UTF8Encode('10.1.2.3'));
-  //s3:=s3+'&userName='+HTTPEncode(UTF8Encode(operator_name));
-  //s3:=s3+'&actionName='+HTTPEncode(UTF8Encode('Show'));
-  s3:=s3+'&sql='+HTTPEncode(UTF8Encode(s1));
-
-  MyMD5 := TIdHashMessageDigest5.Create; 
-  //Digest := MyMD5.HashValue(HTTPEncode(UTF8Encode('actionNameShowactionTime'+t1+'customer'+SCSYDW+'ip10.1.2.3methodNumAIF015pageName'+Name+'sysName'+SYSNAME+'userName'+operator_name)));
-  sort_params:=HTTPEncode(UTF8Encode('methodNumAIF012sql'+s1));
-  sort_params:=StringReplace(sort_params,'!','%21',[rfReplaceAll, rfIgnoreCase]);
-  sort_params:=StringReplace(sort_params,'''','%27',[rfReplaceAll, rfIgnoreCase]);
-  sort_params:=StringReplace(sort_params,'(','%28',[rfReplaceAll, rfIgnoreCase]);
-  sort_params:=StringReplace(sort_params,')','%29',[rfReplaceAll, rfIgnoreCase]);
-  Digest := MyMD5.HashValue(sort_params);
-  sign:=MyMD5.AsHex(Digest);
-
-  s3:=s3+'&sign='+sign;
-
-  IdHTTP_Tmp1:=TIdHTTP.Create(nil);
-  //经测试
-  //本机有网络，但连接HTTP服务很慢时，如不加超时，会一直挂起
-  //本机无网络，就算不加超时也没问题
-  IdHTTP_Tmp1.ReadTimeout:=2*1000;//毫秒
-  //IdHTTP_Tmp1.ConnectTimeout:=2*1000;//Connect超时设置//indy9无该属性.故要安装indy10
-  RespData:=TStringStream.Create('');
-
-  if trim(BASE_URL)<>'' then
-    try
-      IdHTTP_Tmp1.Get(BASE_URL+'?'+s3,RespData);
-      //showmessage(UTF8Decode(RespData.DataString));//返回信息//IdHTTP是同步的
-    except
-    end;
-    
-  RespData.Free;
-  IdHTTP_Tmp1.Free;
-  //调用用户信息接口stop
 
   TimerIdleTracker.Enabled:=true;//TimerIdleTrackerTimer事件中需用到配置文件变量LoginTime
   
@@ -3033,8 +2971,6 @@ begin
   MergePrintDays:=strtointdef(ScalarSQLCmd(LisConn,'select Name from CommCode where TypeName=''系统代码'' and ReMark=''历史结果合并打印的偏差天数'' '),0);
   MakeTjDescDays:=strtointdef(ScalarSQLCmd(LisConn,'select Name from CommCode where TypeName=''系统代码'' and ReMark=''生成体检结论的偏差天数'' '),0);
   bAppendMakeTjDesc:=ScalarSQLCmd(LisConn,'select Name from CommCode where TypeName=''系统代码'' and ReMark=''允许追加生成体检结论'' ');
-  BASE_URL:=ScalarSQLCmd(LisConn,'select Name from CommCode where TypeName=''系统代码'' and ReMark=''远程请求地址'' ');
-  //if trim(BASE_URL)='' then BASE_URL:='http://211.97.0.5:8080/YkAPI/service';
 
   CONFIGINI:=TINIFILE.Create(ChangeFileExt(Application.ExeName,'.ini'));
 
