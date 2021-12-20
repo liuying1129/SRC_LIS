@@ -3080,8 +3080,6 @@ begin
 end;//}
 
 procedure TSDIAppForm.pmChangeGroupPopup(Sender: TObject);
-const
-  sqll='select name from CommCode where TypeName=''检验组别'' and Sysname='''+SYSNAME+''' group by name';
 var
   adotemp3:tadoquery;
   delMenuItem,TempMenuItem:TMenuItem;
@@ -3092,7 +3090,7 @@ begin
      adotemp3.Connection:=DM.ADOConnection1;
      adotemp3.Close;
      adotemp3.SQL.Clear;
-     adotemp3.SQL.Text:=sqll;
+     adotemp3.SQL.Text:='select name from CommCode where TypeName=''检验组别'' and Sysname='''+SYSNAME+''' group by name';
      adotemp3.Open;
      adotemp3.First;
      
@@ -4083,8 +4081,6 @@ begin
 end;
 
 procedure TSDIAppForm.MakeCombinChecklistbox;
-const
-  sqll='select id,name from combinitem where sysname='''+SYSNAME+''' order by id';
 var
   adotemp3:tadoquery;
   ini:tinifile;
@@ -4099,7 +4095,7 @@ begin
      adotemp3.Connection:=DM.ADOConnection1;
      adotemp3.Close;
      adotemp3.SQL.Clear;
-     adotemp3.SQL.Text:=sqll;
+     adotemp3.SQL.Text:='select id,name from combinitem where sysname='''+SYSNAME+''' order by id';
      adotemp3.Open;
      while not adotemp3.Eof do
      begin
