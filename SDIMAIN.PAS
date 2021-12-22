@@ -541,7 +541,7 @@ begin
   LoadGroupName(LabeledEdit8,'select name from CommCode WITH(NOLOCK) where TypeName=''样本类型'' ');
   LoadGroupName(LabeledEdit9,'select name from CommCode WITH(NOLOCK) where TypeName=''样本状态'' ');
 
-  // send a pageView hit on Form Show
+  //用户在登录界面【退出】,该语句也会执行(出乎我的意料),此时operator_id为空
   dllSoftMeter.sendPageview(PChar(UTF8Encode(SCSYDW)+'/'+UTF8Encode(operator_id)),'frmMain Show Event');
 end;
 
