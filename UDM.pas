@@ -26,6 +26,15 @@ type
   end;
 
 const
+  //条件编译指令
+  //取消定义的简单办法,在{$...}的$前面随便加点什么,让它变成"注释",譬如:{.$}
+  {.$DEFINE VERSION_PEIS}
+  {$IFDEF VERSION_PEIS}
+    SYSNAME='PEIS';
+  {$ELSE}
+    SYSNAME='LIS';
+  {$ENDIF}
+
   sDBALIAS='ALIAS_SHHJ';
   CGYXJB='常规';//常规优先级别字符串
 
@@ -95,7 +104,6 @@ var
 
   //读取ini文件，则可做为仪器供应商的绑定销售版本
   CryptStr:String;//加解密种子,从市政版本开始改为'lc'，以前版本为'YIDA'
-  SYSNAME:String;
 
 //**********************Dll接口函数部分***************************************//
 //该函数计算pSourStr中有多少个pSS
@@ -156,15 +164,6 @@ begin
   CONFIGINI:=TINIFILE.Create(ChangeFileExt(Application.ExeName,'.ini'));
   CryptStr:=CONFIGINI.ReadString('Interface','CompanyId','lc');
   CONFIGINI.Free;
-
-  //条件编译指令
-  //取消定义的简单办法,在{$...}的$前面随便加点什么,让它变成"注释",譬如:{.$}
-  {.$DEFINE VERSION_PEIS}
-  {$IFDEF VERSION_PEIS}
-    SYSNAME:='PEIS';
-  {$ELSE}
-    SYSNAME:='LIS';
-  {$ENDIF}
 
   MakeDBConn;
 end;

@@ -51,8 +51,8 @@ const
   // put here your application information
   AppName = 'ProYkLis';
   AppVersion = '0.0.7.2';
-  AppLicense = 'Free';
-  AppEdition = 'Free download edition';
+  AppEdition = 'Enterprise Edition';//GA的Source值:以上3个变量连接
+  AppLicense = 'Free';//GA的Medium值
   // if you have a SoftMeter PRO subscription
   PROsubscription = 'subscriptionID=your-subscription-id' + CHR(10) + 'subscriptionType=2';
 
