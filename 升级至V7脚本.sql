@@ -4304,9 +4304,13 @@ if not exists (select 1 from CommCode where TypeName='系统代码' and Remark='
 GO
 
 --20180512远程请求地址
-if not exists (select 1 from CommCode where TypeName='系统代码' and Remark='远程请求地址')
+--if not exists (select 1 from CommCode where TypeName='系统代码' and Remark='远程请求地址')
   --http://211.97.0.5:8080/YkAPI/service
-  insert into CommCode (typename,id,name,remark,sysname) values ('系统代码','0007','','远程请求地址','LIS')
+--  insert into CommCode (typename,id,name,remark,sysname) values ('系统代码','0007','','远程请求地址','LIS')
+--GO
+
+--20220209,已使用GA代替该功能
+delete from CommCode where typename='系统代码' and id='0007' and remark='远程请求地址'
 GO
 
 --20190130 WebSocket服务端-新结果提醒
