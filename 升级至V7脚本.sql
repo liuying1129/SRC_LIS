@@ -4298,6 +4298,10 @@ begin
 end
 GO
 
+--20220215
+delete from CommCode where typename='系统代码' and id='0002' and remark='网页访问次数'
+GO
+
 --20150201软件过期时间
 if not exists (select 1 from CommCode where TypeName='系统代码' and Remark='软件过期时间')
   insert into CommCode (typename,id,name,remark,sysname) values ('系统代码','0005','B6BB07900F8E5B81BBDEC78B685A68B8','软件过期时间','LIS')
