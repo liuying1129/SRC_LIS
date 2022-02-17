@@ -23,16 +23,6 @@
 ///
 //////////////////////////////////////////////////////////////
 
-//////////////////////////////////////////////////////////////
-///
-///     QA:Windows XP系统无法发送埋点数据到GA
-///
-///     原因:WinXP原生不支持TLS1.1和TLS1.2,无法访问HTTPS
-///     解决方法:
-///     https://blog.csdn.net/xc917563264/article/details/100554235
-///
-//////////////////////////////////////////////////////////////
-
 
 unit softMeter_globalVar;
 
@@ -66,6 +56,8 @@ const
   // if you have a SoftMeter PRO subscription
   PROsubscription = 'subscriptionID=your-subscription-id' + CHR(10) + 'subscriptionType=2';
 
+  //libSoftMeter64.dll只能被64位windows的64位应用程序调用
+  //Delphi7编译的程序为32位应用,故理论上只会调用到libSoftMeter.dll
   {$IFDEF WIN32}
       DLLfilename =  'libSoftMeter.dll';
   {$ENDIF}
