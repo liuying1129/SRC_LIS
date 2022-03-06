@@ -37,24 +37,19 @@ var
 implementation
 
 uses
-  dialogs, ShellApi{ShellExecute}; 
-
-var
-  userGaveConsent:boolean;
+  dialogs, ShellApi{ShellExecute}, SysUtils{ChangeFileExt}, Forms{Application}, Windows{DWORD};
 
 const
   // put here your Google Analytics property ID as given to you 
   // from your Google Analytics account.
   // Or put the Matomo/Piwik tracking ID if you you are using Matomo
   GooglePropertyID =  'UA-207373569-1';
-                      
-  // put here your application information
-  AppName = 'ProYkLis';
-  AppVersion = '0.0.7.2';
-  AppEdition = 'Enterprise Edition';//GA的Source值:以上3个变量连接
+
+  //GA的Source值:应用名称+AppVersion+AppEdition                    
+  AppEdition = 'Enterprise Edition';
   AppLicense = 'Free';//GA的Medium值
   // if you have a SoftMeter PRO subscription
-  PROsubscription = 'subscriptionID=your-subscription-id' + CHR(10) + 'subscriptionType=2';
+  //PROsubscription = 'subscriptionID=your-subscription-id' + CHR(10) + 'subscriptionType=2';
 
   //libSoftMeter64.dll只能被64位windows的64位应用程序调用
   //Delphi7编译的程序为32位应用,故理论上只会调用到libSoftMeter.dll
@@ -66,8 +61,34 @@ const
   {$ENDIF}
 
 var
+  userGaveConsent:boolean;
   startResult: boolean;
   logFilename: string;
+
+function GetBuildInfo(const AFileName:string):string;//获取文件版本号函数
+var
+  VerInfoSize,VerValueSize,Dummy: DWORD;
+  VerInfo: Pointer;
+  VerValue: PVSFixedFileInfo;
+  V1,V2,V3,V4: Word;
+begin
+  Result:='';
+  if not FileExists(AFileName) then exit;
+  VerInfoSize:=GetFileVersionInfoSize(PChar(AFileName),Dummy);
+  if VerInfoSize=0 then exit;
+  GetMem(VerInfo,VerInfoSize);
+  if not GetFileVersionInfo(PChar(AFileName),0,VerInfoSize,VerInfo) then exit;
+  VerQueryValue(VerInfo, '\', Pointer(VerValue), VerValueSize);
+  with VerValue^ do
+  begin
+    V1:=dwFileVersionMS shr 16;
+    V2:=dwFileVersionMS and $FFFF;
+    V3:=dwFileVersionLS shr 16;
+    V4:=dwFileVersionLS and $FFFF;
+    Result:=inttostr(v1)+'.'+inttostr(v2)+'.'+inttostr(v3)+'.'+inttostr(v4);
+  end;
+  FreeMem(VerInfo,VerInfoSize);
+end;
 
 initialization
 
@@ -99,7 +120,7 @@ initialization
 
   startResult:=false;  
   try
-    startResult := dllSoftMeter.start(AppName, AppVersion, AppLicense, AppEdition, GooglePropertyID, userGaveConsent );
+    startResult := dllSoftMeter.start(PChar(ChangeFileExt(ExtractFileName(Application.ExeName),'')), PChar(GetBuildInfo(Application.ExeName)), AppLicense, AppEdition, GooglePropertyID, userGaveConsent );
   Except
     MessageDlg('Exception while calling dllSoftMeter.start',mtError,[mbOK],0);
   end;
