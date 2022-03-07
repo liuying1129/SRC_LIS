@@ -23,6 +23,14 @@
 ///
 //////////////////////////////////////////////////////////////
 
+//////////////////////////////////////////////////////////////
+///
+///  约束条件：
+///  1、因本单元调用了LYFunction.dll(动态调用函数GetVersionLY),
+///     故应用程序目录必须存在该DLL                       
+///
+//////////////////////////////////////////////////////////////
+
 
 unit softMeter_globalVar;
 
@@ -30,7 +38,7 @@ interface
 
 uses
   dll_loaderAppTelemetry;
-
+  
 var
   dllSoftMeter: TDllAppTelemetry;
 
@@ -39,58 +47,46 @@ implementation
 uses
   dialogs, ShellApi{ShellExecute}, SysUtils{ChangeFileExt}, Forms{Application}, Windows{DWORD};
 
+TYPE
+  TDLL_GetVersionLY=function(const AFileName:Pchar):Pchar;stdcall;
+
 const
-  // put here your Google Analytics property ID as given to you 
-  // from your Google Analytics account.
-  // Or put the Matomo/Piwik tracking ID if you you are using Matomo
-  GooglePropertyID =  'UA-207373569-1';
+  //Google Analytics property ID
+  GooglePropertyID = 'UA-207373569-1';
 
   //GA的Source值:应用名称+AppVersion+AppEdition                    
   AppEdition = 'Enterprise Edition';
   AppLicense = 'Free';//GA的Medium值
-  // if you have a SoftMeter PRO subscription
+  //if you have a SoftMeter PRO subscription
   //PROsubscription = 'subscriptionID=your-subscription-id' + CHR(10) + 'subscriptionType=2';
 
   //libSoftMeter64.dll只能被64位windows的64位应用程序调用
   //Delphi7编译的程序为32位应用,故理论上只会调用到libSoftMeter.dll
   {$IFDEF WIN32}
-      DLLfilename =  'libSoftMeter.dll';
+      DLLfilename = 'libSoftMeter.dll';
   {$ENDIF}
   {$IFDEF WIN64}
-      DLLfilename =  'libSoftMeter64.dll';
+      DLLfilename = 'libSoftMeter64.dll';
   {$ENDIF}
 
 var
-  userGaveConsent:boolean;
   startResult: boolean;
   logFilename: string;
-
-function GetBuildInfo(const AFileName:string):string;//获取文件版本号函数
-var
-  VerInfoSize,VerValueSize,Dummy: DWORD;
-  VerInfo: Pointer;
-  VerValue: PVSFixedFileInfo;
-  V1,V2,V3,V4: Word;
-begin
-  Result:='';
-  if not FileExists(AFileName) then exit;
-  VerInfoSize:=GetFileVersionInfoSize(PChar(AFileName),Dummy);
-  if VerInfoSize=0 then exit;
-  GetMem(VerInfo,VerInfoSize);
-  if not GetFileVersionInfo(PChar(AFileName),0,VerInfoSize,VerInfo) then exit;
-  VerQueryValue(VerInfo, '\', Pointer(VerValue), VerValueSize);
-  with VerValue^ do
-  begin
-    V1:=dwFileVersionMS shr 16;
-    V2:=dwFileVersionMS and $FFFF;
-    V3:=dwFileVersionLS shr 16;
-    V4:=dwFileVersionLS and $FFFF;
-    Result:=inttostr(v1)+'.'+inttostr(v2)+'.'+inttostr(v3)+'.'+inttostr(v4);
-  end;
-  FreeMem(VerInfo,VerInfoSize);
-end;
+  AppVersion: PChar;
+  
+  H_LYFunction_LIB:THANDLE;
+  DLL_GetVersionLY:TDLL_GetVersionLY;
 
 initialization
+
+  //动态加载LYFunction.dll,并执行函数GetVersionLY begin
+  H_LYFunction_LIB:=LOADLIBRARY('LYFunction.dll');
+  IF H_LYFunction_LIB=0 THEN BEGIN raise Exception.Create('动态链接库LYFunction.dll不存在!');EXIT; END;
+  DLL_GetVersionLY:=TDLL_GetVersionLY(GETPROCADDRESS(H_LYFunction_LIB,'GetVersionLY'));
+  IF @DLL_GetVersionLY=NIL THEN BEGIN FREELIBRARY(H_LYFunction_LIB);raise Exception.Create('方法GetVersionLY不存在!');EXIT; END;
+  AppVersion:=DLL_GetVersionLY(PChar(Application.ExeName));
+  FREELIBRARY(H_LYFunction_LIB);
+  //动态加载LYFunction.dll,并执行函数GetVersionLY end
 
   try
     dllSoftMeter := TDllAppTelemetry.Create(DLLfilename);
@@ -112,15 +108,10 @@ initialization
 
   // set your SoftMeter PRO subscription here, before calling start()
   // dllSoftMeter.setOptions(PChar(PROsubscription));
-    
-  // make sure you load this variable from the user settings
-  userGaveConsent:= true;
-  // ToDo: make this a lazy call so that the INI file with the user settings containing the 
-  // consent of the user is already loaded somewhere in the program.
 
   startResult:=false;  
   try
-    startResult := dllSoftMeter.start(PChar(ChangeFileExt(ExtractFileName(Application.ExeName),'')), PChar(GetBuildInfo(Application.ExeName)), AppLicense, AppEdition, GooglePropertyID, userGaveConsent );
+    startResult := dllSoftMeter.start(PChar(ChangeFileExt(ExtractFileName(Application.ExeName),'')), AppVersion, AppLicense, AppEdition, GooglePropertyID, true );
   Except
     MessageDlg('Exception while calling dllSoftMeter.start',mtError,[mbOK],0);
   end;
@@ -136,7 +127,6 @@ finalization
     MessageDlg('Error calling dllSoftMeter.stop',mtError,[mbOK],0);
   end;
 
-  // during the development (not for release) open the logFile
   //注释.避免应用退出时打开softMeter日志文件
   //ShellExecute( 0 , nil, PChar('notepad'), PChar(logFilename) , nil, 1{SW_SHOWNORMAL} ) ;
 
