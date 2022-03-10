@@ -3,7 +3,7 @@ unit uQRCode;
 interface
 
 uses
-  Windows, Graphics;
+  Windows;
   
 ////////////////////////////////////////////////////////////////////////////////
 //Image file reading/writing APIs and definitions.
