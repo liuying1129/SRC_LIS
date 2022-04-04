@@ -4342,6 +4342,18 @@ GO
 update qcghead set itemid='-1' where itemid is null
 GO
 
+--20220404
+delete from CommCode where typename='体检字段定义'
+GO
+
+--20220404
+delete from CommCode where typename='网站目录'
+GO
+
+--20220404
+delete from CommCode where typename='网站报表'
+GO
+
 ---------------表约束、索引相关操作---------------
 
 if not exists(select * from sysindexes where name='IX_combinitem')
