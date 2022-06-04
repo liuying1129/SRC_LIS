@@ -289,9 +289,9 @@ begin
   Alter table clinicchkitem add Reserve10 datetime null--保留字段10
 end
 
---2014-04-16 使之能容纳项目超限的建议
-alter table clinicchkitem alter column Reserve1 varchar(300) null
-alter table clinicchkitem alter column Reserve2 varchar(300) null
+--2022-06-04 使之能容纳项目超限的建议
+alter table clinicchkitem alter column Reserve1 varchar(400) null
+alter table clinicchkitem alter column Reserve2 varchar(400) null
 GO
 
 --clinicchkitem 20140411
@@ -457,6 +457,13 @@ IF NOT EXISTS (select 1 from syscolumns where name='Reserve10' and id=object_id(
 
 IF NOT EXISTS (select 1 from syscolumns where name='Reserve10' and id=object_id('chk_valu_bak'))
   Alter table chk_valu_bak add Reserve10 datetime null--保留字段10
+GO
+
+--2022-06-04
+alter table chk_valu alter column Reserve1 varchar(400) null
+alter table chk_valu_bak alter column Reserve1 varchar(400) null
+alter table chk_valu alter column Reserve2 varchar(400) null
+alter table chk_valu_bak alter column Reserve2 varchar(400) null
 GO
 
 --20081211,市政要求的细菌参考值很长,故50->250
@@ -3469,7 +3476,7 @@ AS
 --向chk_valu中插入项目代码时自动插入项目名称、检验结果(默认值、已检值)等附加信息
 --有此触发器，则向chk_valu中插入记录时，可不插入项目名称、检验结果等附加信息。当然，插入也无妨!
 --20081027,增加检验方法字段ChkMethod
-  declare @valueid int,@pkunid int,@itemid varchar(50),@Name varchar(50),@english_name varchar(50),@Unit varchar(50),@printorder int,@getmoney money,@Reserve1 varchar(300),@Reserve2 varchar(300),@Dosage1 varchar(100),@Dosage2 varchar(200),@Reserve5 int,@Reserve6 int,@Reserve7 float,@Reserve8 float,@Reserve9 datetime,@Reserve10 datetime,@itemvalue varchar(500),@histogram varchar(4000)
+  declare @valueid int,@pkunid int,@itemid varchar(50),@Name varchar(50),@english_name varchar(50),@Unit varchar(50),@printorder int,@getmoney money,@Reserve1 varchar(400),@Reserve2 varchar(400),@Dosage1 varchar(100),@Dosage2 varchar(200),@Reserve5 int,@Reserve6 int,@Reserve7 float,@Reserve8 float,@Reserve9 datetime,@Reserve10 datetime,@itemvalue varchar(500),@histogram varchar(4000)
   SELECT @valueid=valueid,@pkunid=pkunid,@itemid=itemid,@Name=Name,@english_name=english_name,@itemvalue=itemvalue,@histogram=histogram FROM Inserted
   if @valueid is null return --表示没找到刚刚Inserted的记录
   if @pkunid is null return --表示没找到刚刚Inserted的记录
