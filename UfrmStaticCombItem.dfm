@@ -15,6 +15,7 @@ object frmStaticCombItem: TfrmStaticCombItem
   WindowState = wsMaximized
   OnClose = FormClose
   OnCreate = FormCreate
+  OnDestroy = FormDestroy
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
@@ -22,7 +23,7 @@ object frmStaticCombItem: TfrmStaticCombItem
     Left = 0
     Top = 233
     Width = 684
-    Height = 229
+    Height = 228
     Align = alClient
     DataSource = DataSource1
     ReadOnly = True
@@ -59,8 +60,8 @@ object frmStaticCombItem: TfrmStaticCombItem
       Top = 24
       Width = 100
       Height = 21
-      Date = 38692.361815682870000000
-      Time = 38692.361815682870000000
+      Date = 38692.000000000000000000
+      Time = 38692.000000000000000000
       TabOrder = 0
     end
     object DateTimePicker2: TDateTimePicker
@@ -68,16 +69,16 @@ object frmStaticCombItem: TfrmStaticCombItem
       Top = 24
       Width = 100
       Height = 21
-      Date = 38692.361815682870000000
-      Time = 38692.361815682870000000
+      Date = 38692.999988425920000000
+      Time = 38692.999988425920000000
       TabOrder = 1
     end
     object BitBtn2: TBitBtn
-      Left = 230
-      Top = 20
-      Width = 147
-      Height = 25
-      Caption = #32479#35745#32467#26524#23548#20837'Excel'
+      Left = 579
+      Top = 60
+      Width = 83
+      Height = 160
+      Caption = #32467#26524#23548#20986
       TabOrder = 2
       OnClick = BitBtn2Click
     end

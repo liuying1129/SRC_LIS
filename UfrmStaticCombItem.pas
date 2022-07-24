@@ -44,6 +44,7 @@ type
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure ADOQuery1AfterOpen(DataSet: TDataSet);
     procedure BitBtn3Click(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
   private
     { Private declarations }
   public
@@ -85,7 +86,9 @@ VAR
 begin
   adoquery1.Close;
   adoquery1.SQL.Clear;
-  adoquery1.SQL.Text:='dbo.pro_StaticCombItem '''+datetostr(DateTimePicker1.Date)+''','''+datetostr(DateTimePicker2.Date)+''','''+ComboBox1.Text+''' ';
+  adoquery1.SQL.Text:='dbo.pro_StaticCombItem :P_DateTimePicker1,:P_DateTimePicker2,'''+ComboBox1.Text+''' ';
+  adoquery1.Parameters.ParamByName('P_DateTimePicker1').Value:=DateTimePicker1.DateTime;//设计期Time设置为00:00:00.放心,下拉选择日期时不会改变Time值
+  adoquery1.Parameters.ParamByName('P_DateTimePicker2').Value:=DateTimePicker2.DateTime;//设计期Time设置为23:59:59.放心,下拉选择日期时不会改变Time值
 
   Save_Cursor := Screen.Cursor;
   Screen.Cursor := crHourGlass;    { Show hourglass cursor }
@@ -109,6 +112,8 @@ const
 var
   adotemp11:Tadoquery;
   sStaticType:string;
+
+  ConfigIni:tinifile;
 begin
   DateTimePicker2.Date := date;
   DateTimePicker1.Date := date-30;
@@ -140,6 +145,10 @@ begin
   end;
   adotemp11.Free;
   //加载统计类型stop
+
+  ConfigIni:=tinifile.Create(ChangeFileExt(Application.ExeName,'.ini'));
+  ComboBox1.Text:=CONFIGINI.ReadString('Interface','StaticType','');
+  configini.Free;
 end;
 
 procedure TfrmStaticCombItem.ADOQuery1AfterOpen(DataSet: TDataSet);
@@ -156,7 +165,9 @@ VAR
 begin
   adoquery1.Close;
   adoquery1.SQL.Clear;
-  adoquery1.SQL.Text:='dbo.pro_StaticHBV '''+datetostr(DateTimePicker1.Date)+''','''+datetostr(DateTimePicker2.Date)+''','''+HBsAg.Text+''','''+HBsAb.Text+''','''+HBeAg.Text+''','''+HBeAb.Text+''','''+HBcAb.Text+''' ';
+  adoquery1.SQL.Text:='dbo.pro_StaticHBV :P_DateTimePicker1,:P_DateTimePicker2,'''+HBsAg.Text+''','''+HBsAb.Text+''','''+HBeAg.Text+''','''+HBeAb.Text+''','''+HBcAb.Text+''' ';
+  adoquery1.Parameters.ParamByName('P_DateTimePicker1').Value:=DateTimePicker1.DateTime;//设计期Time设置为00:00:00.放心,下拉选择日期时不会改变Time值
+  adoquery1.Parameters.ParamByName('P_DateTimePicker2').Value:=DateTimePicker2.DateTime;//设计期Time设置为23:59:59.放心,下拉选择日期时不会改变Time值
 
   Save_Cursor := Screen.Cursor;
   Screen.Cursor := crHourGlass;    { Show hourglass cursor }
@@ -165,6 +176,15 @@ begin
   finally
     Screen.Cursor := Save_Cursor;  { Always restore to normal }
   end;
+end;
+
+procedure TfrmStaticCombItem.FormDestroy(Sender: TObject);
+var
+  ConfigIni:tinifile;
+begin
+  ConfigIni:=tinifile.Create(ChangeFileExt(Application.ExeName,'.ini'));
+  configini.WriteString('Interface','StaticType',ComboBox1.Text);
+  configini.Free;
 end;
 
 initialization
