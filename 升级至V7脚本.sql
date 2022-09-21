@@ -3014,6 +3014,11 @@ GO
 SET ANSI_NULLS ON 
 GO
 
+--20220921删除存储过程DYMRCG
+if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[DYMRCG]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+  drop procedure [dbo].[DYMRCG]
+GO
+
 ---------------视图相关操作---------------
 
 --视图view_chk_valu_All的创建脚本
