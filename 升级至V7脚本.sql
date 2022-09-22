@@ -1089,6 +1089,10 @@ if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[specimenca
 if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[specimentype]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
   drop table [dbo].[specimentype]
 
+--20220922删除表modword
+if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[modword]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
+  drop table [dbo].[modword]  
+
 ---------------函数相关操作---------------
 
 if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[uf_GetPy]') and xtype in (N'FN', N'IF', N'TF'))
