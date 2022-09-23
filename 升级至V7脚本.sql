@@ -3023,6 +3023,11 @@ if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[DYMRCG]') 
   drop procedure [dbo].[DYMRCG]
 GO
 
+--20220923删除存储过程pro_ExcelFormatQuery
+if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[pro_ExcelFormatQuery]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+  drop procedure [dbo].[pro_ExcelFormatQuery]
+GO
+
 ---------------视图相关操作---------------
 
 --视图view_chk_valu_All的创建脚本
