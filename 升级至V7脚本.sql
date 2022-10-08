@@ -1093,6 +1093,10 @@ if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[specimenty
 if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[modword]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
   drop table [dbo].[modword]  
 
+--20221008删除表static_temp
+if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[static_temp]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
+  drop table [dbo].[static_temp]  
+
 ---------------函数相关操作---------------
 
 if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[uf_GetPy]') and xtype in (N'FN', N'IF', N'TF'))
@@ -2199,6 +2203,7 @@ SET ANSI_NULLS ON
 GO
 
 --存储过程pro_Static创建脚本
+--20221008统计所有项目,删除选择项目的表static_temp
 if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[pro_Static]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
 drop procedure [dbo].[pro_Static]
 GO
@@ -2246,7 +2251,7 @@ begin
              and chk_valu_bak.itemvalue is not null
              and chk_con_bak.check_date>=@in_StartDate
              and chk_con_bak.check_date<=@in_StopDate 
-             and chk_valu_bak.itemid in(select itemid from static_temp) 
+             --and chk_valu_bak.itemid in(select itemid from static_temp) 
 	     and isnull(chk_con_bak.operator,'')=@operator
              group by isnull(chk_con_bak.operator,''),chk_valu_bak.name
 
@@ -2300,7 +2305,7 @@ begin
              and chk_valu_bak.itemvalue is not null
              and chk_con_bak.check_date>=@in_StartDate
              and chk_con_bak.check_date<=@in_StopDate 
-             and chk_valu_bak.itemid in(select itemid from static_temp) 
+             --and chk_valu_bak.itemid in(select itemid from static_temp) 
 	     and isnull(chk_con_bak.deptname,'')=@deptname
              group by isnull(chk_con_bak.deptname,''),chk_valu_bak.name
 
@@ -2343,7 +2348,7 @@ begin
              and chk_valu_bak.itemvalue is not null
              and chk_con_bak.check_date>=@in_StartDate
              and chk_con_bak.check_date<=@in_StopDate 
-             and chk_valu_bak.itemid in(select itemid from static_temp) 
+             --and chk_valu_bak.itemid in(select itemid from static_temp) 
              group by chk_valu_bak.name
 
   --插入合计
@@ -2372,7 +2377,7 @@ begin
              and chk_valu_bak.itemvalue is not null
              and chk_con_bak.check_date>=@in_StartDate
              and chk_con_bak.check_date<=@in_StopDate
-             and chk_valu_bak.itemid in(select itemid from static_temp) 
+             --and chk_valu_bak.itemid in(select itemid from static_temp) 
 	and chk_valu_bak.name=@itemname_2 
  	and dbo.uf_ValueAlarm(Name,Min_value,Max_value,itemvalue)<>0
     update #temp01 set d_AnomalyRate=@AnomalyRate_2 where d_itemname=@itemname_2
@@ -2414,7 +2419,7 @@ begin
              and chk_valu_bak.itemvalue is not null
              and chk_con_bak.check_date>=@in_StartDate
              and chk_con_bak.check_date<=@in_StopDate 
-             and chk_valu_bak.itemid in(select itemid from static_temp) 
+             --and chk_valu_bak.itemid in(select itemid from static_temp) 
 	     and isnull(chk_con_bak.check_doctor,'')=@check_doctor
              group by isnull(chk_con_bak.check_doctor,''),chk_valu_bak.name
 
@@ -2467,7 +2472,7 @@ begin
              and chk_valu_bak.itemvalue is not null
              and chk_con_bak.check_date>=@in_StartDate
              and chk_con_bak.check_date<=@in_StopDate 
-             and chk_valu_bak.itemid in(select itemid from static_temp) 
+             --and chk_valu_bak.itemid in(select itemid from static_temp) 
 	     and convert(varchar(10),chk_con_bak.report_date,111)=@report_date
              group by chk_con_bak.report_date,chk_valu_bak.name
 
@@ -2522,7 +2527,7 @@ begin
              and chk_valu_bak.itemvalue is not null
              and chk_con_bak.check_date>=@in_StartDate
              and chk_con_bak.check_date<=@in_StopDate 
-             and chk_valu_bak.itemid in(select itemid from static_temp) 
+             --and chk_valu_bak.itemid in(select itemid from static_temp) 
 	     and isnull(chk_con_bak.WorkDepartment,'')=@WorkDepartment
              group by isnull(chk_con_bak.WorkDepartment,''),chk_valu_bak.name
 
@@ -2566,7 +2571,7 @@ begin
              and chk_valu_bak.itemvalue is not null
              and chk_con_bak.check_date>=@in_StartDate
              and chk_con_bak.check_date<=@in_StopDate
-             and chk_valu_bak.itemid in(select itemid from static_temp)  
+             --and chk_valu_bak.itemid in(select itemid from static_temp)  
 	and isnull(chk_con_bak.WorkDepartment,'')=@modename_5 
 	and chk_valu_bak.name=@itemname_5 
  	and dbo.uf_ValueAlarm(Name,Min_value,Max_value,itemvalue)<>0
@@ -2609,7 +2614,7 @@ begin
              and chk_valu_bak.itemvalue is not null
              and chk_con_bak.check_date>=@in_StartDate
              and chk_con_bak.check_date<=@in_StopDate 
-             and chk_valu_bak.itemid in(select itemid from static_temp) 
+             --and chk_valu_bak.itemid in(select itemid from static_temp) 
 	     and isnull(chk_con_bak.WorkCategory,'')=@WorkCategory
              group by isnull(chk_con_bak.WorkCategory,''),chk_valu_bak.name
     --插入该检验者的小计
@@ -2652,7 +2657,7 @@ begin
              and chk_valu_bak.itemvalue is not null
              and chk_con_bak.check_date>=@in_StartDate
              and chk_con_bak.check_date<=@in_StopDate
-             and chk_valu_bak.itemid in(select itemid from static_temp) 
+             --and chk_valu_bak.itemid in(select itemid from static_temp) 
 	and isnull(chk_con_bak.WorkCategory,'')=@modename_6 
 	and chk_valu_bak.name=@itemname_6 
  	and dbo.uf_ValueAlarm(Name,Min_value,Max_value,itemvalue)<>0
