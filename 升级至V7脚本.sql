@@ -2215,8 +2215,8 @@ GO
 
 --统计工作量
 CREATE  PROCEDURE [dbo].[pro_Static] 
-@in_StartDate varchar(50), 
-@in_StopDate varchar(50),
+@in_StartDate datetime, 
+@in_StopDate datetime,
 @in_tag int
 AS
 
@@ -2232,8 +2232,7 @@ if @in_tag=0 --按检验者统计
 begin
   DECLARE Cur_operator Cursor For 
     select isnull(operator,'') FROM Chk_Con_BAK where 
-             check_date>=@in_StartDate
-             and check_date<=@in_StopDate 
+             check_date between @in_StartDate and @in_StopDate 
 	     group by  isnull(operator,'')
 
   Open Cur_operator
@@ -2249,8 +2248,7 @@ begin
              where chk_con_bak.unid=chk_valu_bak.pkunid 
              and chk_valu_bak.itemvalue<>''
              and chk_valu_bak.itemvalue is not null
-             and chk_con_bak.check_date>=@in_StartDate
-             and chk_con_bak.check_date<=@in_StopDate 
+             and chk_con_bak.check_date between @in_StartDate and @in_StopDate 
              --and chk_valu_bak.itemid in(select itemid from static_temp) 
 	     and isnull(chk_con_bak.operator,'')=@operator
              group by isnull(chk_con_bak.operator,''),chk_valu_bak.name
@@ -2286,8 +2284,7 @@ if @in_tag=1 --按送检科室统计
 begin
   DECLARE Cur_deptname Cursor For 
     select isnull(deptname,'') FROM Chk_Con_BAK where 
-             check_date>=@in_StartDate
-             and check_date<=@in_StopDate 
+             check_date between @in_StartDate and @in_StopDate 
 	     group by  isnull(deptname,'')
 
   Open Cur_deptname
@@ -2303,8 +2300,7 @@ begin
              where chk_con_bak.unid=chk_valu_bak.pkunid 
              and chk_valu_bak.itemvalue<>''
              and chk_valu_bak.itemvalue is not null
-             and chk_con_bak.check_date>=@in_StartDate
-             and chk_con_bak.check_date<=@in_StopDate 
+             and chk_con_bak.check_date between @in_StartDate and @in_StopDate 
              --and chk_valu_bak.itemid in(select itemid from static_temp) 
 	     and isnull(chk_con_bak.deptname,'')=@deptname
              group by isnull(chk_con_bak.deptname,''),chk_valu_bak.name
@@ -2346,8 +2342,7 @@ begin
              where chk_con_bak.unid=chk_valu_bak.pkunid 
              and chk_valu_bak.itemvalue<>''
              and chk_valu_bak.itemvalue is not null
-             and chk_con_bak.check_date>=@in_StartDate
-             and chk_con_bak.check_date<=@in_StopDate 
+             and chk_con_bak.check_date between @in_StartDate and @in_StopDate 
              --and chk_valu_bak.itemid in(select itemid from static_temp) 
              group by chk_valu_bak.name
 
@@ -2375,8 +2370,7 @@ begin
              where chk_con_bak.unid=chk_valu_bak.pkunid 
              and chk_valu_bak.itemvalue<>''
              and chk_valu_bak.itemvalue is not null
-             and chk_con_bak.check_date>=@in_StartDate
-             and chk_con_bak.check_date<=@in_StopDate
+             and chk_con_bak.check_date between @in_StartDate and @in_StopDate 
              --and chk_valu_bak.itemid in(select itemid from static_temp) 
 	and chk_valu_bak.name=@itemname_2 
  	and dbo.uf_ValueAlarm(Name,Min_value,Max_value,itemvalue)<>0
@@ -2400,8 +2394,7 @@ if @in_tag=3 --按送检医生统计
 begin
   DECLARE Cur_check_doctor Cursor For 
     select isnull(check_doctor,'') FROM Chk_Con_BAK where 
-             check_date>=@in_StartDate
-             and check_date<=@in_StopDate 
+             check_date between @in_StartDate and @in_StopDate 
 	     group by  isnull(check_doctor,'')
 
   Open Cur_check_doctor
@@ -2417,8 +2410,7 @@ begin
              where chk_con_bak.unid=chk_valu_bak.pkunid 
              and chk_valu_bak.itemvalue<>''
              and chk_valu_bak.itemvalue is not null
-             and chk_con_bak.check_date>=@in_StartDate
-             and chk_con_bak.check_date<=@in_StopDate 
+             and chk_con_bak.check_date between @in_StartDate and @in_StopDate 
              --and chk_valu_bak.itemid in(select itemid from static_temp) 
 	     and isnull(chk_con_bak.check_doctor,'')=@check_doctor
              group by isnull(chk_con_bak.check_doctor,''),chk_valu_bak.name
@@ -2455,9 +2447,10 @@ if @in_tag=4 --按报告日期统计
 begin
   DECLARE Cur_report_date Cursor For 
     select convert(varchar(10),report_date,111) FROM Chk_Con_BAK where 
-             check_date>=@in_StartDate
-             and check_date<=@in_StopDate 
-	     group by  convert(varchar(10),report_date,111)  Open Cur_report_date
+             check_date between @in_StartDate and @in_StopDate 
+	     group by  convert(varchar(10),report_date,111)  
+
+  Open Cur_report_date
 
   Declare @report_date varchar(50)
   FETCH NEXT FROM Cur_report_date INTO @report_date
@@ -2470,8 +2463,7 @@ begin
              where chk_con_bak.unid=chk_valu_bak.pkunid 
              and chk_valu_bak.itemvalue<>''
              and chk_valu_bak.itemvalue is not null
-             and chk_con_bak.check_date>=@in_StartDate
-             and chk_con_bak.check_date<=@in_StopDate 
+             and chk_con_bak.check_date between @in_StartDate and @in_StopDate 
              --and chk_valu_bak.itemid in(select itemid from static_temp) 
 	     and convert(varchar(10),chk_con_bak.report_date,111)=@report_date
              group by chk_con_bak.report_date,chk_valu_bak.name
@@ -2508,8 +2500,7 @@ if @in_tag=5 --按病人所属部门统计
 begin
   DECLARE Cur_WorkDepartment Cursor For 
     select isnull(WorkDepartment,'') FROM Chk_Con_BAK where 
-             check_date>=@in_StartDate
-             and check_date<=@in_StopDate 
+             check_date between @in_StartDate and @in_StopDate 
 	     group by  isnull(WorkDepartment,'')
 
   Open Cur_WorkDepartment
@@ -2525,8 +2516,7 @@ begin
              where chk_con_bak.unid=chk_valu_bak.pkunid 
              and chk_valu_bak.itemvalue<>''
              and chk_valu_bak.itemvalue is not null
-             and chk_con_bak.check_date>=@in_StartDate
-             and chk_con_bak.check_date<=@in_StopDate 
+             and chk_con_bak.check_date between @in_StartDate and @in_StopDate 
              --and chk_valu_bak.itemid in(select itemid from static_temp) 
 	     and isnull(chk_con_bak.WorkDepartment,'')=@WorkDepartment
              group by isnull(chk_con_bak.WorkDepartment,''),chk_valu_bak.name
@@ -2569,8 +2559,7 @@ begin
              where chk_con_bak.unid=chk_valu_bak.pkunid 
              and chk_valu_bak.itemvalue<>''
              and chk_valu_bak.itemvalue is not null
-             and chk_con_bak.check_date>=@in_StartDate
-             and chk_con_bak.check_date<=@in_StopDate
+             and chk_con_bak.check_date between @in_StartDate and @in_StopDate 
              --and chk_valu_bak.itemid in(select itemid from static_temp)  
 	and isnull(chk_con_bak.WorkDepartment,'')=@modename_5 
 	and chk_valu_bak.name=@itemname_5 
@@ -2595,8 +2584,7 @@ if @in_tag=6 --按病人所属工种统计
 begin
   DECLARE Cur_WorkCategory Cursor For 
     select isnull(WorkCategory,'') FROM Chk_Con_BAK where 
-             check_date>=@in_StartDate
-             and check_date<=@in_StopDate 
+             check_date between @in_StartDate and @in_StopDate 
 	     group by  isnull(WorkCategory,'')
 
   Open Cur_WorkCategory
@@ -2612,8 +2600,7 @@ begin
              where chk_con_bak.unid=chk_valu_bak.pkunid 
              and chk_valu_bak.itemvalue<>''
              and chk_valu_bak.itemvalue is not null
-             and chk_con_bak.check_date>=@in_StartDate
-             and chk_con_bak.check_date<=@in_StopDate 
+             and chk_con_bak.check_date between @in_StartDate and @in_StopDate 
              --and chk_valu_bak.itemid in(select itemid from static_temp) 
 	     and isnull(chk_con_bak.WorkCategory,'')=@WorkCategory
              group by isnull(chk_con_bak.WorkCategory,''),chk_valu_bak.name
@@ -2655,8 +2642,7 @@ begin
              where chk_con_bak.unid=chk_valu_bak.pkunid 
              and chk_valu_bak.itemvalue<>''
              and chk_valu_bak.itemvalue is not null
-             and chk_con_bak.check_date>=@in_StartDate
-             and chk_con_bak.check_date<=@in_StopDate
+             and chk_con_bak.check_date between @in_StartDate and @in_StopDate 
              --and chk_valu_bak.itemid in(select itemid from static_temp) 
 	and isnull(chk_con_bak.WorkCategory,'')=@modename_6 
 	and chk_valu_bak.name=@itemname_6 

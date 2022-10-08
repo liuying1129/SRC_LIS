@@ -18,15 +18,13 @@ type
     RadioGroup1: TRadioGroup;
     BitBtn1: TBitBtn;
     BitBtn2: TBitBtn;
-    LabeledEdit1: TLabeledEdit;
-    LabeledEdit2: TLabeledEdit;
     tsDBGrid1: TDBGrid;
+    Label1: TLabel;
+    Label2: TLabel;
     procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure BitBtn1Click(Sender: TObject);
     procedure BitBtn2Click(Sender: TObject);
-    procedure DateTimePicker1Change(Sender: TObject);
-    procedure DateTimePicker2Change(Sender: TObject);
     procedure ADO_tempAfterOpen(DataSet: TDataSet);
   private
     { Private declarations }
@@ -60,10 +58,8 @@ end;
 procedure TFormstatic.FormCreate(Sender: TObject);
 begin
   DateTimePicker2.Date := date;
-  LabeledEdit2.Text:=datetostr(date);
   DateTimePicker1.Date := date-30;
-  LabeledEdit1.Text:=datetostr(date-30);
-  
+
   ADO_temp.Connection:=DM.ADOConnection1;
 end;
 
@@ -73,7 +69,9 @@ VAR
 begin
   ado_temp.Close;
   ado_temp.SQL.Clear;
-  ado_temp.SQL.Add('pro_Static '''+trim(LabeledEdit1.Text)+''','''+trim(LabeledEdit2.Text)+''','+INTTOSTR(RadioGroup1.ItemIndex));
+  ado_temp.SQL.Add('pro_Static :P_DateTimePicker1,:P_DateTimePicker2,'+INTTOSTR(RadioGroup1.ItemIndex));
+  ado_temp.Parameters.ParamByName('P_DateTimePicker1').Value:=DateTimePicker1.DateTime;//设计期Time设置为00:00:00.放心,下拉选择日期时不会改变Time值
+  ado_temp.Parameters.ParamByName('P_DateTimePicker2').Value:=DateTimePicker2.DateTime;//设计期Time设置为23:59:59.放心,下拉选择日期时不会改变Time值
 
   Save_Cursor := Screen.Cursor;
   Screen.Cursor := crHourGlass;    { Show hourglass cursor }
@@ -89,16 +87,6 @@ begin
   LYDataToExcel1.DataSet:= ADO_temp;                     
   LYDataToExcel1.ExcelTitel:=SCSYDW+'检验统计';
   LYDataToExcel1.Execute;
-end;
-
-procedure TFormstatic.DateTimePicker1Change(Sender: TObject);
-begin
-  LabeledEdit1.Text := Datetostr(tDateTimePicker(sender).Date);
-end;
-
-procedure TFormstatic.DateTimePicker2Change(Sender: TObject);
-begin
-  LabeledEdit2.Text := Datetostr(tDateTimePicker(sender).Date);
 end;
 
 procedure TFormstatic.ADO_tempAfterOpen(DataSet: TDataSet);
