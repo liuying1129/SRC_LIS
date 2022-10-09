@@ -1804,11 +1804,6 @@ GO
 
 --GO
 
---删除函数uf_GetAge
-if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[uf_GetAge]') and xtype in (N'FN', N'IF', N'TF'))
-  drop function [dbo].[uf_GetAge]
-GO
-
 ---------------存储过程相关操作---------------
 
 --存储过程pro_PrintCombinItem创建脚本
