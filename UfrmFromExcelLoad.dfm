@@ -67,9 +67,9 @@ object frmFromExcelLoad: TfrmFromExcelLoad
   object Label3: TLabel
     Left = -1
     Top = 129
-    Width = 383
+    Width = 396
     Height = 13
-    Caption = '(18)'#26679#26412#24773#20917',(19)'#20020#24202#35786#26029',(20)'#22791#27880',(21)'#32454#33740',(22)'#25152#23646#20844#21496','
+    Caption = '(18)'#26679#26412#29366#24577',(19)'#20020#24202#35786#26029',(20)'#22791#27880',(21)'#21344#20301#21015',(22)'#25152#23646#20844#21496','
     Font.Charset = ANSI_CHARSET
     Font.Color = clBlue
     Font.Height = -13
@@ -80,9 +80,9 @@ object frmFromExcelLoad: TfrmFromExcelLoad
   object Label4: TLabel
     Left = -1
     Top = 179
-    Width = 357
+    Width = 370
     Height = 13
-    Caption = '(33)'#21491#30524#35270#21147',(34)'#36523#39640',(35)'#20307#37325',(36)'#26082#24448#21490',(37)'#23478#26063#21490','
+    Caption = '(33)'#21344#20301#21015',(34)'#21344#20301#21015',(35)'#21344#20301#21015',(36)'#21344#20301#21015',(37)'#21344#20301#21015','
     Font.Charset = ANSI_CHARSET
     Font.Color = clBlue
     Font.Height = -13
@@ -106,9 +106,9 @@ object frmFromExcelLoad: TfrmFromExcelLoad
   object Label6: TLabel
     Left = -1
     Top = 196
-    Width = 361
+    Width = 400
     Height = 13
-    Caption = '(38)'#20869#31185#65292'(39)'#22806#31185#65292'(40)'#20116#23448#31185#65292'(41)'#22919#31185#65292'(42)'#20919#24378#20809#65292
+    Caption = '(38)'#21344#20301#21015#65292'(39)'#21344#20301#21015#65292'(40)'#21344#20301#21015#65292'(41)'#21344#20301#21015#65292'(42)'#21344#20301#21015#65292
     Font.Charset = ANSI_CHARSET
     Font.Color = clBlue
     Font.Height = -13
@@ -119,12 +119,12 @@ object frmFromExcelLoad: TfrmFromExcelLoad
   object Label7: TLabel
     Left = -1
     Top = 213
-    Width = 390
-    Height = 13
-    Caption = '(43)X'#20809#65292'(44)B'#36229#65292'(45)'#24515#30005#22270#65292'(46)'#26816#39564#65292'(47)'#32467#35770#65292'(48)'#24314#35758
+    Width = 396
+    Height = 12
+    Caption = '(43)'#21344#20301#21015',(44)'#21344#20301#21015',(45)'#21344#20301#21015',(46)'#21344#20301#21015',(47)'#21344#20301#21015',(48)'#21344#20301#21015','
     Font.Charset = ANSI_CHARSET
     Font.Color = clBlue
-    Font.Height = -13
+    Font.Height = -12
     Font.Name = #23435#20307
     Font.Style = []
     ParentFont = False
@@ -145,9 +145,9 @@ object frmFromExcelLoad: TfrmFromExcelLoad
   object Label10: TLabel
     Left = -1
     Top = 163
-    Width = 302
+    Width = 289
     Height = 13
-    Caption = '(29)'#30005#35805#65292'(30)'#33298#24352#21387',(31)'#25910#32553#21387',(32)'#24038#30524#35270#21147','
+    Caption = '(29)'#30005#35805#65292'(30)'#21344#20301#21015',(31)'#21344#20301#21015',(32)'#21344#20301#21015','
     Font.Charset = ANSI_CHARSET
     Font.Color = clBlue
     Font.Height = -13
@@ -158,9 +158,9 @@ object frmFromExcelLoad: TfrmFromExcelLoad
   object Label11: TLabel
     Left = -1
     Top = 113
-    Width = 422
+    Width = 409
     Height = 13
-    Caption = '(13)'#23457#26680#32773',(14)'#30003#35831#26085#26399',(15)'#20248#20808#32423#21035',(16)'#24037#20316#32452#21035',(17)'#26679#26412#31867#22411','
+    Caption = '(13)'#23457#26680#32773',(14)'#30003#35831#26085#26399',(15)'#20248#20808#32423#21035',(16)'#21344#20301#21015',(17)'#26679#26412#31867#22411','
     Font.Charset = ANSI_CHARSET
     Font.Color = clBlue
     Font.Height = -13
