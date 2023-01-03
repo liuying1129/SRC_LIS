@@ -664,7 +664,7 @@ begin
   if datacol=0 then //项目代码列
   begin
     ItemUnid:=tdbgrid(sender).DataSource.DataSet.fieldbyname('Unid').AsString;
-    if strtoint(ScalarSQLCmd(LisConn,'select count(*) from CombSChkItem where ItemUnid='+ItemUnid))<=0 then
+    if '1'<>ScalarSQLCmd(LisConn,'select TOP 1 1 from CombSChkItem where ItemUnid='+ItemUnid) then
     begin
       tdbgrid(sender).Canvas.Font.Color:=clBlue;
       tdbgrid(sender).DefaultDrawColumnCell(rect,datacol,column,state);

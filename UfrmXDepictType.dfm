@@ -21,13 +21,13 @@ object frmXDepictType: TfrmXDepictType
   object Splitter1: TSplitter
     Left = 241
     Top = 41
-    Height = 401
+    Height = 400
   end
   object GroupBox1: TGroupBox
     Left = 0
     Top = 41
     Width = 241
-    Height = 401
+    Height = 400
     Align = alLeft
     Caption = #31867#21035#21015#34920
     TabOrder = 0
@@ -35,7 +35,7 @@ object frmXDepictType: TfrmXDepictType
       Left = 2
       Top = 15
       Width = 237
-      Height = 384
+      Height = 383
       Align = alClient
       HideSelection = False
       Indent = 19
@@ -49,7 +49,7 @@ object frmXDepictType: TfrmXDepictType
     Left = 244
     Top = 41
     Width = 436
-    Height = 401
+    Height = 400
     Align = alClient
     TabOrder = 1
     object labWhId: TLabel

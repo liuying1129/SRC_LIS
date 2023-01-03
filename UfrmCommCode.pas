@@ -354,7 +354,6 @@ end;
 procedure TfrmCommCode.SpeedButton1Click(Sender: TObject);
 var
   sTypeName:string;
-  iNum:integer;
 begin
   if not InputQuery('提示','请输入要增加的类型',sTypeName) then exit;
   sTypeName:=trim(sTypeName);
@@ -363,8 +362,7 @@ begin
     MESSAGEDLG('类型不能为空!',MTINFORMATION,[MBOK],0);
     exit;
   end;
-  iNum:=strtoint(ScalarSQLCmd(LisConn,'select count(*) as iNum from CommCode where TypeName='''+sTypeName+''' '));
-  if iNum<=0 then
+  if '1'<>ScalarSQLCmd(LisConn,'select TOP 1 1 from CommCode where TypeName='''+sTypeName+''' ') then
   begin
     ExecSQLCmd(LisConn,'Insert into CommCode (ID,name,TypeName,SysName) values (''初始ID'',''初始Name'','''+sTypeName+''','''+SYSNAME+''') ');
 

@@ -121,12 +121,9 @@ end;
 
 procedure TfrmXDepictType.BitBtn1Click(Sender: TObject);
 var
-  RecNum:integer;
   SelectID:string;
 begin
-  RecNum:=strtoint(ScalarSQLCmd(LisConn,'select count(*) as RecNum from RisDescriptType where sysname='''+sysname+''' '));
-
-  if RecNum<>0 then//否则,没有记录SelectID为默认值空('')
+  if '1'=ScalarSQLCmd(LisConn,'select TOP 1 1 from RisDescriptType where sysname='''+sysname+''' ') then//否则,没有记录SelectID为默认值空('')
   begin
     if tvWareHouse.Selected=nil then
     begin
@@ -202,26 +199,20 @@ begin
 end;
 
 procedure TfrmXDepictType.BitBtn4Click(Sender: TObject);
-var
-  RecNum,RecNum33:integer;
 begin
   if tvWareHouse.Selected=nil then
   begin
     MessageBox(Handle, '请选择一个类别!', '系统提示', MB_OK + MB_ICONINFORMATION);
     exit;
-  end;//}
+  end;
   
-  RecNum:=strtoint(ScalarSQLCmd(LisConn,'select count(*) as RecNum from RisDescriptType where UpID='''+PDescriptType(tvWareHouse.Selected.Data)^.ID+''' '));
-
-  if RecNum<>0 then
+  if '1'=ScalarSQLCmd(LisConn,'select TOP 1 1 from RisDescriptType where UpID='''+PDescriptType(tvWareHouse.Selected.Data)^.ID+''' ') then
   begin
     MessageBox(Handle, '该节点有子节点,不能删除!', '系统提示', MB_OK + MB_ICONINFORMATION);
     exit;
   end;
 
-  RecNum33:=strtoint(ScalarSQLCmd(LisConn,'select count(*) as RecNum33 from RisDescription where PkID='''+PDescriptType(tvWareHouse.Selected.Data)^.ID+''' '));
-
-  if RecNum33<>0 then
+  if '1'=ScalarSQLCmd(LisConn,'select TOP 1 1 from RisDescription where PkID='''+PDescriptType(tvWareHouse.Selected.Data)^.ID+''' ') then
   begin
     showmessage('该节点下有描述,不能删除!');
     exit;

@@ -671,7 +671,7 @@ begin
     if Surem2='' then begin ADOtemp2.Next;continue; end;
     if not trystrtoint(Surem2,iSurem2)then begin ADOtemp2.Next;continue; end;
     if iSurem2<=0 then begin ADOtemp2.Next;continue; end;
-    if strtoint(ScalarSQLCmd(LisConn,'select count(*) from chk_valu where Surem2='''+Surem2+''' and issure=''1'' '))<=0 then
+    if '1'<>ScalarSQLCmd(LisConn,'select TOP 1 1 from chk_valu where Surem2='''+Surem2+''' and issure=''1'' ') then
       ExecSQLCmd(LisConn,'update chk_valu_his set itemvalue=null where cast(valueid as varchar)='''+Surem2+''' and isnull(itemvalue,'''')=''1'' ');
     ADOtemp2.Next;
   end;
@@ -941,7 +941,7 @@ end;
 
 procedure TSDIAppForm.suiButton3Click(Sender: TObject);
 var
-  unid,RecNum:integer;
+  unid:integer;
 begin
   if not ifhaspower(sender,powerstr_js_main) then exit;
 
@@ -950,8 +950,7 @@ begin
 
   unid:=ADObasic.fieldbyname('唯一编号').AsInteger;
 
-  RecNum:=strtoint(ScalarSQLCmd(LisConn,'select count(*) as RecNum from chk_valu where pkunid='+inttostr(unid)+' and issure=1 and ltrim(rtrim(isnull(itemvalue,'''')))<>'''' '));
-  if RecNum<=0 then
+  if '1'<>ScalarSQLCmd(LisConn,'select TOP 1 1 from chk_valu where pkunid='+inttostr(unid)+' and issure=1 and ltrim(rtrim(isnull(itemvalue,'''')))<>'''' ') then
   begin
     MESSAGEDLG('无效结果,不允许审核!',mtError,[mbOK],0);
     exit;
@@ -2278,7 +2277,7 @@ begin
     ExecSQLCmd(LisConn,'update chk_valu set issure=0 where pkunid='+inttostr(checkunid)+' and pkcombin_id='''+s2+''' ');
 
     //检验结果全部删除后取消审核
-    if strtoint(ScalarSQLCmd(LisConn,'select count(*) from chk_valu where pkunid='+inttostr(checkunid)+' and issure=1'))<=0 then
+    if '1'<>ScalarSQLCmd(LisConn,'select TOP 1 1 from chk_valu where pkunid='+inttostr(checkunid)+' and issure=1') then
       ExecSQLCmd(LisConn,'update chk_con set report_doctor='''',Audit_Date=null where unid='+inttostr(checkunid));
   end;
 
@@ -3573,15 +3572,14 @@ Var
   ti:TImage;
   adotemp22:tadoquery;//修改图片用
   FilePath:string;
-  iHasPoto,iValueId:integer;
+  iValueId:integer;
 begin
   if not ifhaspower(sender,powerstr_js_main) then exit;
 
   if TPopupMenu(TMenuItem(Sender).GetParentComponent).PopupComponent.ClassName='TGroupBox' then iValueId:=TPopupMenu(TMenuItem(Sender).GetParentComponent).PopupComponent.Tag
   else iValueId:=ADO_dtl.fieldbyname('唯一编号').AsInteger;
 
-  iHasPoto:=strtoint(ScalarSQLCmd(LisConn,'select count(*) as iHasPoto from chk_valu where valueid='+inttostr(iValueId)+' and Photo is not null '));
-  if iHasPoto>0 then
+  if '1'=ScalarSQLCmd(LisConn,'select TOP 1 1 from chk_valu where valueid='+inttostr(iValueId)+' and Photo is not null ') then
   begin
     if (MessageDlg('确实要覆盖已存在的图片?', mtConfirmation, [mbYes, mbNo], 0) <> mrYes) then exit;
   end;
@@ -4259,12 +4257,12 @@ end;
 
 procedure TSDIAppForm.TimerLeakItemWarningTimer(Sender: TObject);
 begin
-  if strtoint(ScalarSQLCmd(LisConn,'select count(*) from view_LeakItem_Warning '))>0 then LYLed1.Value:=true else LYLed1.Value:=false;
+  if '1'=ScalarSQLCmd(LisConn,'select TOP 1 1 from view_LeakItem_Warning ') then LYLed1.Value:=true else LYLed1.Value:=false;
 end;
 
 procedure TSDIAppForm.TimerMakeTjDescriptionTimer(Sender: TObject);
 begin
-  if strtoint(ScalarSQLCmd(LisConn,'select count(*) from chk_con WITH(NOLOCK) where Weight=''待生成'' '))>0 then LYLed2.Value:=true else LYLed2.Value:=false;
+  if '1'=ScalarSQLCmd(LisConn,'select TOP 1 1 from chk_con WITH(NOLOCK) where Weight=''待生成'' ') then LYLed2.Value:=true else LYLed2.Value:=false;
 end;
 
 procedure TSDIAppForm.N85Click(Sender: TObject);

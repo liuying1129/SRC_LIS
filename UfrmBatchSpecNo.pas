@@ -78,7 +78,6 @@ var
 
   Surem2:STRING;
   iSurem2:integer;
-  RecNum:integer;
 begin
   Save_Cursor := Screen.Cursor;
   Screen.Cursor := crHourGlass;    { Show hourglass cursor }
@@ -123,9 +122,7 @@ begin
     adotemp2.first;     //需要审核的数据集(病人基本信息)
     while not adotemp2.Eof do
     begin
-      RecNum:=strtoint(ScalarSQLCmd(LisConn,'select count(*) as RecNum from chk_valu where pkunid='+adotemp2.fieldbyname('unid').AsString+' and issure=1 and ltrim(rtrim(isnull(itemvalue,'''')))<>'''' '));
-      
-      if RecNum<=0 then//adotemp3.RecordCount=0
+      if '1'<>ScalarSQLCmd(LisConn,'select TOP 1 1 from chk_valu where pkunid='+adotemp2.fieldbyname('unid').AsString+' and issure=1 and ltrim(rtrim(isnull(itemvalue,'''')))<>'''' ') then//adotemp3.RecordCount=0
       begin
         adotemp2.next;
         continue;//不审核没有检验结果的项目
@@ -205,7 +202,7 @@ begin
               if Surem2='' then begin ADOtemp5.Next;continue; end;
               if not trystrtoint(Surem2,iSurem2)then begin ADOtemp5.Next;continue; end;
               if iSurem2<=0 then begin ADOtemp5.Next;continue; end;
-              if strtoint(ScalarSQLCmd(LisConn,'select count(*) from chk_valu where Surem2='''+Surem2+''' and issure=''1'' '))<=0 then
+              if '1'<>ScalarSQLCmd(LisConn,'select TOP 1 1 from chk_valu where Surem2='''+Surem2+''' and issure=''1'' ') then
                 ExecSQLCmd(LisConn,'update chk_valu_his set itemvalue=null where cast(valueid as varchar)='''+Surem2+''' and isnull(itemvalue,'''')=''1'' ');
               ADOtemp5.Next;
             end;

@@ -94,7 +94,7 @@ var
   //(53)最小值,(54)最大值,(55)组合项目号,(56)打印编号,(57)项目代码
   ZXZ,ZDZ,ZHXMH,DYBH,XMDM:STRING;
 
-  i,RecNum,ValetudinarianInfoId,RecNum_Valu:integer;
+  i,RecNum,ValetudinarianInfoId:integer;
   adotemp11,adotemp22,adotemp33:tadoquery;
   Save_Cursor:TCursor;
 begin
@@ -157,9 +157,7 @@ begin
       begin
         if (trim(JYJG)<>'')and(trim(XMDM)<>'') then//插入检验结果
         begin
-          RecNum_Valu:=strtoint(ScalarSQLCmd(LisConn,'select COUNT(*) AS RecNum_Valu from chk_valu where PkUnid='+inttostr(ValetudinarianInfoId)+' and name='''+XMMC+''' and itemvalue='''+JYJG+''' '));
-
-          IF RecNum_Valu<=0 THEN//该病人没有该检验项目的结果(通过每个病人的项目中文名及结果来判断)
+          IF '1'<>ScalarSQLCmd(LisConn,'select TOP 1 1 from chk_valu where PkUnid='+inttostr(ValetudinarianInfoId)+' and name='''+XMMC+''' and itemvalue='''+JYJG+''' ') THEN//该病人没有该检验项目的结果(通过每个病人的项目中文名及结果来判断)
           BEGIN
             adotemp33:=tadoquery.create(nil);
             adotemp33.Connection:=dm.ADOConnection1;
@@ -216,9 +214,7 @@ begin
       adotemp11.Free;
       if (trim(JYJG)<>'')and(trim(XMDM)<>'') then//插入检验结果
       begin
-        RecNum_Valu:=strtoint(ScalarSQLCmd(LisConn,'select COUNT(*) AS RecNum_Valu from chk_valu where PkUnid='+inttostr(ValetudinarianInfoId)+' and name='''+XMMC+''' and itemvalue='''+JYJG+''' '));
-
-        IF RecNum_Valu<=0 THEN//该病人没有该检验项目的结果(通过每个病人的项目中文名及结果来判断)
+        IF '1'<>ScalarSQLCmd(LisConn,'select TOP 1 1 from chk_valu where PkUnid='+inttostr(ValetudinarianInfoId)+' and name='''+XMMC+''' and itemvalue='''+JYJG+''' ') THEN//该病人没有该检验项目的结果(通过每个病人的项目中文名及结果来判断)
         BEGIN
           adotemp33:=tadoquery.create(nil);
           adotemp33.Connection:=dm.ADOConnection1;
