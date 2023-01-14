@@ -242,6 +242,7 @@ type
     SpeedButton4: TSpeedButton;
     SpeedButton6: TSpeedButton;
     SpeedButton7: TSpeedButton;
+    N33: TMenuItem;
     procedure FileExit1Execute(Sender: TObject);
     procedure HelpAbout1Execute(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -394,6 +395,7 @@ type
     procedure SpeedButton4Click(Sender: TObject);
     procedure SpeedButton6Click(Sender: TObject);
     procedure SpeedButton7Click(Sender: TObject);
+    procedure N33Click(Sender: TObject);
   private
     procedure CheckTheListBox;//根据当前病人的结果在checklistbox1中打钩
     procedure WriteProfile;
@@ -457,7 +459,8 @@ uses  Unit_dialog_pllr,
   UDM, UfrmFromExcelLoad,
   UfrmXDepictType, UfrmXDepict, UfrmCommCode, UfrmPlxg, UfrmCopyInfo,
   UfrmPhoto, UfrmShowChkConHis, uQRCode, UfrmLeakItemWarning,
-  UfrmModifyPwd, UfrmEquipManage, UfrmSJ_JBXX, softMeter_globalVar;
+  UfrmModifyPwd, UfrmEquipManage, UfrmSJ_JBXX, softMeter_globalVar,
+  UfrmHorizontalExport;
 
 var
     copyName,copySex,copyage,copyCaseno,copyBedno,copydeptname,copycheck_doctor:string;//复制的病人基本信息，仅粘贴时有用
@@ -4322,6 +4325,13 @@ end;
 procedure TSDIAppForm.SpeedButton7Click(Sender: TObject);
 begin
   LoadGroupName(LabeledEdit9,'select name from CommCode WITH(NOLOCK) where TypeName=''样本状态'' ');
+end;
+
+procedure TSDIAppForm.N33Click(Sender: TObject);
+begin
+  if not ifhaspower(sender,powerstr_js_main) then exit;
+
+  frmHorizontalExport.ShowModal;
 end;
 
 end.

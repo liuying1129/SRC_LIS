@@ -41,7 +41,8 @@ uses
   UfrmModifyPwd in 'UfrmModifyPwd.pas' {frmModifyPwd},
   UfrmEquipManage in 'UfrmEquipManage.pas' {frmEquipManage},
   UfrmSJ_JBXX in 'UfrmSJ_JBXX.pas' {frmSJ_JBXX},
-  softMeter_globalVar in 'softMeter_globalVar.pas';
+  softMeter_globalVar in 'softMeter_globalVar.pas',
+  UfrmHorizontalExport in 'UfrmHorizontalExport.pas' {frmHorizontalExport};
 
 {$R *.RES}
 

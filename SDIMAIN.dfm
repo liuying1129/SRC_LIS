@@ -2057,6 +2057,10 @@ object SDIAppForm: TSDIAppForm
         Caption = 'Excel'#26684#24335#26597#35810
         OnClick = Excel1Click
       end
+      object N33: TMenuItem
+        Caption = #32467#26524#27178#21521#23548#20986
+        OnClick = N33Click
+      end
       object N27: TMenuItem
         Caption = '-'
       end
