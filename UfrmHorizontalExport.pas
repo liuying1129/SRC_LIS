@@ -126,7 +126,7 @@ select
  from 
 (
 select cc2.unid,cc2.Caseno,cc2.check_date,cc2.patientname,cc2.sex,cc2.age,cc2.combin_id,cc2.deptname,cv2.combin_name,cv2.Name,cv2.english_name,cv2.itemvalue,cv2.Unit,cv2.Min_value,cv2.Max_value 
-from view_chk_con_all cc2,view_chk_valu_all cv2 where cc2.unid=cv2.pkunid
+from view_chk_con_all cc2 WITH(NOLOCK),view_chk_valu_all cv2 WITH(NOLOCK) where cc2.unid=cv2.pkunid
 and isnull(cv2.itemvalue,'')<>'' and cv2.issure=1
 and isnull(cc2.patientname,'')<>''
 and isnull(cc2.report_doctor,'')<>''
@@ -161,7 +161,7 @@ const
 ' from '+
 '('+
 'select cc2.unid,cc2.Caseno,cc2.check_date,cc2.patientname,cc2.sex,cc2.age,cc2.combin_id,cc2.deptname,cv2.combin_name,cv2.Name,cv2.english_name,cv2.itemvalue,cv2.Unit,cv2.Min_value,cv2.Max_value '+
-'from view_chk_con_all cc2,view_chk_valu_all cv2 where cc2.unid=cv2.pkunid '+
+'from view_chk_con_all cc2 WITH(NOLOCK),view_chk_valu_all cv2 WITH(NOLOCK) where cc2.unid=cv2.pkunid '+
 'and isnull(cv2.itemvalue,'''')<>'''' and cv2.issure=1 '+
 'and isnull(cc2.patientname,'''')<>'''' '+
 'and isnull(cc2.report_doctor,'''')<>'''' '+

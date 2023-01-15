@@ -19,7 +19,8 @@
 ///     密码：liu771129
 ///
 ///     Account Name:liuying
-///     Property name:liuyingGA44
+///     Property name:liuyingGA44{UA Property,2023-07-01不被支持}
+///     Property name:liuyingGA44 - GA4
 ///
 //////////////////////////////////////////////////////////////
 
@@ -52,7 +53,9 @@ TYPE
 
 const
   //Google Analytics property ID
-  GooglePropertyID = 'UA-207373569-1';
+  GooglePropertyID = 'G-9EXL8X8N5M';//'UA-207373569-1';
+  
+  ApiSecret = 'J_bc0WaGShOHUpUCxwweCA';
 
   //GA的Source值:应用名称+AppVersion+AppEdition                    
   AppEdition = 'Enterprise Edition';
@@ -88,6 +91,8 @@ initialization
   FREELIBRARY(H_LYFunction_LIB);
   //动态加载LYFunction.dll,并执行函数GetVersionLY end
 
+  if AppVersion=nil then AppVersion:='';//如果AppVersion=nil,函数dllSoftMeter.start会报错
+
   try
     dllSoftMeter := TDllAppTelemetry.Create(DLLfilename);
   Except
@@ -111,6 +116,7 @@ initialization
 
   startResult:=false;  
   try
+    dllSoftMeter.setOptions('ApiSecret='+ApiSecret);
     startResult := dllSoftMeter.start(PChar(ChangeFileExt(ExtractFileName(Application.ExeName),'')), AppVersion, AppLicense, AppEdition, GooglePropertyID, true );
   Except
     MessageDlg('Exception while calling dllSoftMeter.start',mtError,[mbOK],0);
