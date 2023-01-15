@@ -19,10 +19,10 @@ object frmHorizontalExport: TfrmHorizontalExport
   PixelsPerInch = 96
   TextHeight = 13
   object DBGrid1: TDBGrid
-    Left = 233
-    Top = 0
-    Width = 621
-    Height = 523
+    Left = 0
+    Top = 160
+    Width = 854
+    Height = 363
     Align = alClient
     DataSource = DataSource1
     ReadOnly = True
@@ -36,17 +36,10 @@ object frmHorizontalExport: TfrmHorizontalExport
   object Panel1: TPanel
     Left = 0
     Top = 0
-    Width = 233
-    Height = 523
-    Align = alLeft
+    Width = 854
+    Height = 160
+    Align = alTop
     TabOrder = 1
-    object Label1: TLabel
-      Left = 10
-      Top = 64
-      Width = 39
-      Height = 13
-      Caption = #24037#20316#32452
-    end
     object Label2: TLabel
       Left = 8
       Top = 10
@@ -55,25 +48,25 @@ object frmHorizontalExport: TfrmHorizontalExport
       Caption = #24320#22987#26085#26399
     end
     object Label3: TLabel
-      Left = 8
-      Top = 200
+      Left = 131
+      Top = 10
       Width = 52
       Height = 13
       Caption = #32452#21512#39033#30446
     end
     object Label4: TLabel
-      Left = 120
-      Top = 10
+      Left = 8
+      Top = 82
       Width = 52
       Height = 13
       Caption = #32467#26463#26085#26399
     end
-    object Label5: TLabel
-      Left = 50
-      Top = 64
-      Width = 170
+    object Label1: TLabel
+      Left = 8
+      Top = 141
+      Width = 118
       Height = 13
-      Caption = '('#26080#20219#20309#21246#36873#34920#31034#25152#26377#24037#20316#32452')'
+      Caption = #27880':1'#12289#20165#26597#35810#24050#23457#26680
       Font.Charset = ANSI_CHARSET
       Font.Color = clBlue
       Font.Height = -13
@@ -81,74 +74,65 @@ object frmHorizontalExport: TfrmHorizontalExport
       Font.Style = []
       ParentFont = False
     end
-    object CheckListBox1: TCheckListBox
-      Left = 8
-      Top = 80
-      Width = 210
-      Height = 100
-      Columns = 2
-      ItemHeight = 13
-      TabOrder = 0
-    end
     object DateTimePicker1: TDateTimePicker
       Left = 8
-      Top = 26
+      Top = 29
       Width = 100
       Height = 21
       Date = 44575.000000000000000000
       Time = 44575.000000000000000000
-      TabOrder = 1
+      TabOrder = 0
     end
     object DateTimePicker2: TDateTimePicker
-      Left = 120
-      Top = 26
+      Left = 8
+      Top = 100
       Width = 100
       Height = 21
       Date = 44940.999988425920000000
       Time = 44940.999988425920000000
-      TabOrder = 2
+      TabOrder = 1
     end
     object CheckListBox2: TCheckListBox
-      Left = 8
-      Top = 216
-      Width = 210
-      Height = 250
-      Columns = 2
+      Left = 185
+      Top = 10
+      Width = 580
+      Height = 110
+      Columns = 5
       ItemHeight = 13
-      TabOrder = 3
+      TabOrder = 2
     end
     object BitBtn1: TBitBtn
-      Left = 30
-      Top = 480
+      Left = 774
+      Top = 10
       Width = 75
       Height = 25
       Caption = #26597#35810
-      TabOrder = 4
+      TabOrder = 3
       OnClick = BitBtn1Click
     end
     object BitBtn2: TBitBtn
-      Left = 126
-      Top = 480
+      Left = 772
+      Top = 94
       Width = 75
       Height = 25
       Caption = #23548#20986
-      TabOrder = 5
+      TabOrder = 4
       OnClick = BitBtn2Click
     end
   end
   object ADOQuery1: TADOQuery
     AfterOpen = ADOQuery1AfterOpen
     Parameters = <>
-    Left = 320
-    Top = 56
+    Left = 144
+    Top = 208
   end
   object DataSource1: TDataSource
     DataSet = ADOQuery1
-    Left = 288
-    Top = 56
+    Left = 112
+    Top = 208
   end
   object LYDataToExcel1: TLYDataToExcel
-    Left = 368
-    Top = 56
+    Left = 192
+    Top = 208
   end
 end

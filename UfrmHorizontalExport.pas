@@ -13,8 +13,6 @@ type
     ADOQuery1: TADOQuery;
     DataSource1: TDataSource;
     Panel1: TPanel;
-    CheckListBox1: TCheckListBox;
-    Label1: TLabel;
     Label2: TLabel;
     DateTimePicker1: TDateTimePicker;
     DateTimePicker2: TDateTimePicker;
@@ -24,7 +22,7 @@ type
     BitBtn2: TBitBtn;
     LYDataToExcel1: TLYDataToExcel;
     Label4: TLabel;
-    Label5: TLabel;
+    Label1: TLabel;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormShow(Sender: TObject);
     procedure BitBtn2Click(Sender: TObject);
@@ -69,26 +67,8 @@ end;
 
 procedure TfrmHorizontalExport.FormShow(Sender: TObject);
 var
-  adotemp1,adotemp3:tadoquery;
+  adotemp3:tadoquery;
 begin
-  //工作组导入CheckListBox begin
-  CheckListBox1.Items.Clear;
-
-  adotemp1:=tadoquery.Create(nil);
-  adotemp1.Connection:=DM.ADOConnection1;
-  adotemp1.Close;
-  adotemp1.SQL.Clear;
-  adotemp1.SQL.Text:='select name from CommCode where TypeName=''检验组别'' AND SysName='''+SYSNAME+''' ';
-  adotemp1.Open;
-  while not adotemp1.Eof do
-  begin
-    CheckListBox1.Items.Add(adotemp1.fieldbyname('name').AsString);
-
-    adotemp1.Next;
-  end;
-  adotemp1.Free;
-  //工作组导入CheckListBox end
-
   //组合项目导入CheckListBox begin
   CheckListBox2.Items.Clear;
 
@@ -125,6 +105,7 @@ select
 ,TempA1.sex as 性别
 ,TempA1.age as 年龄
 ,TempA1.combin_id as 工作组
+,TempA1.deptname as 送检科室
 
 ,max(case when TempA1.combin_name='尿常规' and TempA1.name='白细胞' then TempA1.itemvalue end) as '尿常规/白细胞'
 ,max(case when TempA1.combin_name='尿常规' and TempA1.name='亚硝酸盐' then TempA1.itemvalue end) as '尿常规/亚硝酸盐'
@@ -144,13 +125,13 @@ select
 
  from 
 (
-select cc2.unid,cc2.Caseno,cc2.check_date,cc2.patientname,cc2.sex,cc2.age,cc2.combin_id,cv2.combin_name,cv2.Name,cv2.english_name,cv2.itemvalue,cv2.Unit,cv2.Min_value,cv2.Max_value 
+select cc2.unid,cc2.Caseno,cc2.check_date,cc2.patientname,cc2.sex,cc2.age,cc2.combin_id,cc2.deptname,cv2.combin_name,cv2.Name,cv2.english_name,cv2.itemvalue,cv2.Unit,cv2.Min_value,cv2.Max_value 
 from view_chk_con_all cc2,view_chk_valu_all cv2 where cc2.unid=cv2.pkunid
 and isnull(cv2.itemvalue,'')<>'' and cv2.issure=1
 and isnull(cc2.patientname,'')<>''
 and isnull(cc2.report_doctor,'')<>''
 and cc2.check_date between getdate()-30 and getdate()--控制时间范围内的检验结果
-and (cc2.combin_id='尿机组' or cc2.combin_id='血球组')--控制工作组别的人员基本信息
+and (cv2.pkcombin_id='54' or cv2.pkcombin_id='62')--控制所选组合项目
 ) TempA1
 
 group by 
@@ -161,6 +142,7 @@ group by
 ,TempA1.sex
 ,TempA1.age
 ,TempA1.combin_id
+,TempA1.deptname
 }
 procedure TfrmHorizontalExport.BitBtn1Click(Sender: TObject);
 const
@@ -172,12 +154,13 @@ const
 ',TempA1.patientname as 姓名'+
 ',TempA1.sex as 性别'+
 ',TempA1.age as 年龄'+
-',TempA1.combin_id as 工作组';
+',TempA1.combin_id as 工作组'+
+',TempA1.deptname as 送检科室';
 
   ss2=
 ' from '+
 '('+
-'select cc2.unid,cc2.Caseno,cc2.check_date,cc2.patientname,cc2.sex,cc2.age,cc2.combin_id,cv2.combin_name,cv2.Name,cv2.english_name,cv2.itemvalue,cv2.Unit,cv2.Min_value,cv2.Max_value '+
+'select cc2.unid,cc2.Caseno,cc2.check_date,cc2.patientname,cc2.sex,cc2.age,cc2.combin_id,cc2.deptname,cv2.combin_name,cv2.Name,cv2.english_name,cv2.itemvalue,cv2.Unit,cv2.Min_value,cv2.Max_value '+
 'from view_chk_con_all cc2,view_chk_valu_all cv2 where cc2.unid=cv2.pkunid '+
 'and isnull(cv2.itemvalue,'''')<>'''' and cv2.issure=1 '+
 'and isnull(cc2.patientname,'''')<>'''' '+
@@ -193,26 +176,16 @@ const
 ',TempA1.patientname'+
 ',TempA1.sex'+
 ',TempA1.age'+
-',TempA1.combin_id';
+',TempA1.combin_id'+
+',TempA1.deptname';
 var
   ss3,ss4:string;
-  i,j,b:integer;
+  i,b:integer;
   s1,s2,s3:string;
   adotemp1:tadoquery;
 begin
-  //where条件SQL:工作组
-  //无勾选则ss3为空,表示工作组不做为where条件
-  for j:=0 to CheckListBox1.Items.Count-1 do
-  begin
-    if CheckListBox1.Checked[j] then
-    begin
-      if ss3='' then ss3:=' cc2.combin_id='''+CheckListBox1.Items.Strings[j]+''''
-        else ss3:=ss3+' or cc2.combin_id='''+CheckListBox1.Items.Strings[j]+''''; 
-    end;
-  end;
-  if ss3<>'' then ss3:=' and ('+ss3+')';
-
   //拼横向字段ss4
+  //where条件SQL:组合项目ss3
   for i:=0 to CheckListBox2.Items.Count-1 do
   begin
     if not CheckListBox2.Checked[i] then continue;
@@ -221,6 +194,8 @@ begin
     b:=pos('   ',s1);
     s2:=copy(s1,1,b-1);
     s3:=copy(s1,b+3,MaxInt);
+
+    if ss3='' then ss3:=' cv2.pkcombin_id='''+s2+'''' else ss3:=ss3+' or cv2.pkcombin_id='''+s2+'''';
       
     adotemp1:=tadoquery.Create(nil);
     adotemp1.Connection:=DM.ADOConnection1;
@@ -239,6 +214,7 @@ begin
     end;
     adotemp1.Free;
   end;
+  if ss3<>'' then ss3:=' and ('+ss3+')';
 
   if ss4='' then
   begin
@@ -290,8 +266,9 @@ begin
     if i=4 then dbgrid1.Columns[i].Width:=30;//性别
     if i=5 then dbgrid1.Columns[i].Width:=30;//年龄
     if i=6 then dbgrid1.Columns[i].Width:=67;//工作组//5个汉字
+    if i=7 then dbgrid1.Columns[i].Width:=60;//送检科室
 
-    if i>=7 then dbgrid1.Columns[i].Width:=100;
+    if i>=8 then dbgrid1.Columns[i].Width:=100;
   end;
 end;
 

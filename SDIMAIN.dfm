@@ -2054,7 +2054,7 @@ object SDIAppForm: TSDIAppForm
         OnClick = Q1Click
       end
       object Excel1: TMenuItem
-        Caption = 'Excel'#26684#24335#26597#35810
+        Caption = #32467#26524#32437#21521#23548#20986
         OnClick = Excel1Click
       end
       object N33: TMenuItem

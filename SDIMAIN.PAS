@@ -2746,6 +2746,13 @@ begin
   frmExcelQuery.ShowModal;
 end;
 
+procedure TSDIAppForm.N33Click(Sender: TObject);
+begin
+  if not ifhaspower(sender,powerstr_js_main) then exit;
+
+  frmHorizontalExport.ShowModal;
+end;
+
 procedure TSDIAppForm.N31Click(Sender: TObject);
 begin
   LabeledEdit16.Enabled:=not LabeledEdit16.Enabled;
@@ -4325,13 +4332,6 @@ end;
 procedure TSDIAppForm.SpeedButton7Click(Sender: TObject);
 begin
   LoadGroupName(LabeledEdit9,'select name from CommCode WITH(NOLOCK) where TypeName=''Ñù±¾×´Ì¬'' ');
-end;
-
-procedure TSDIAppForm.N33Click(Sender: TObject);
-begin
-  if not ifhaspower(sender,powerstr_js_main) then exit;
-
-  frmHorizontalExport.ShowModal;
 end;
 
 end.
