@@ -545,7 +545,7 @@ begin
   LoadGroupName(LabeledEdit9,'select name from CommCode WITH(NOLOCK) where TypeName=''样本状态'' ');
 
   //用户在登录界面【退出】,该语句也会执行(出乎我的意料),此时operator_id为空
-  dllSoftMeter.sendPageview(PChar(UTF8Encode(SCSYDW)+'/'+UTF8Encode(operator_id)),'frmMain Show Event');
+  dllSoftMeter.sendPageview(PChar(ChangeFileExt(ExtractFileName(Application.ExeName),'')+'/'+UTF8Encode(SCSYDW)+'/'+UTF8Encode(operator_id)),'frmMain Show Event');
 end;
 
 procedure TSDIAppForm.ClearAll(CONST Clear_TYPE:integer);
