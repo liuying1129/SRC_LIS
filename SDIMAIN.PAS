@@ -925,8 +925,6 @@ end;
 
 procedure TSDIAppForm.FileOpenItemClick(Sender: TObject);
 begin
-  if not ifhaspower(sender,powerstr_js_main) then exit;
-
   close;
 end;
 

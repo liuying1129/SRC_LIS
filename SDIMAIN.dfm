@@ -1983,7 +1983,7 @@ object SDIAppForm: TSDIAppForm
       Caption = #25991#20214
       Hint = 'File related commands'
       object FileNewItem: TMenuItem
-        Caption = #37325#26032#30331#24405
+        Caption = #20999#25442#24080#21495
         OnClick = FileNewItemClick
       end
       object N1: TMenuItem
