@@ -4366,6 +4366,11 @@ GO
 delete from CommCode where typename='网站报表'
 GO
 
+--20230129
+update menuitem set menuname='结果纵向导出' where bm='099' and menuname='Excel格式查询' and SysName='LIS'
+update menuitem set menuname='结果横向导出' where bm='002' and menuname='退出系统' and SysName='LIS'
+GO
+
 ---------------表约束、索引相关操作---------------
 
 if not exists(select * from sysindexes where name='IX_combinitem')
