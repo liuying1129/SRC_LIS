@@ -29,6 +29,7 @@ type
     Label14: TLabel;
     Label15: TLabel;
     Label16: TLabel;
+    Label17: TLabel;
     procedure SpeedButton1Click(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure BitBtn1Click(Sender: TObject);
@@ -155,9 +156,9 @@ begin
       adotemp22.Free;
       IF RecNum>=1 then//该病人已存在
       begin
-        if (trim(JYJG)<>'')and(trim(XMDM)<>'') then//插入检验结果
+        if (trim(XMMC)<>'') or (trim(XMDM)<>'') then//插入检验项目//项目名称、项目代码至少一个有值
         begin
-          IF '1'<>ScalarSQLCmd(LisConn,'select TOP 1 1 from chk_valu where PkUnid='+inttostr(ValetudinarianInfoId)+' and name='''+XMMC+''' and itemvalue='''+JYJG+''' ') THEN//该病人没有该检验项目的结果(通过每个病人的项目中文名及结果来判断)
+          IF '1'<>ScalarSQLCmd(LisConn,'select TOP 1 1 from chk_valu where PkUnid='+inttostr(ValetudinarianInfoId)+' and (name='''+XMMC+''' or itemid='''+XMDM+''') ') THEN//该病人没有该检验项目(通过每个病人的项目中文名或项目代码来判断)
           BEGIN
             adotemp33:=tadoquery.create(nil);
             adotemp33.Connection:=dm.ADOConnection1;
@@ -212,9 +213,9 @@ begin
       adotemp11.Open;
       ValetudinarianInfoId:=adotemp11.fieldbyname('Insert_Identity').AsInteger;
       adotemp11.Free;
-      if (trim(JYJG)<>'')and(trim(XMDM)<>'') then//插入检验结果
+      if (trim(XMMC)<>'') or (trim(XMDM)<>'') then//插入检验项目//项目名称、项目代码至少一个有值
       begin
-        IF '1'<>ScalarSQLCmd(LisConn,'select TOP 1 1 from chk_valu where PkUnid='+inttostr(ValetudinarianInfoId)+' and name='''+XMMC+''' and itemvalue='''+JYJG+''' ') THEN//该病人没有该检验项目的结果(通过每个病人的项目中文名及结果来判断)
+        IF '1'<>ScalarSQLCmd(LisConn,'select TOP 1 1 from chk_valu where PkUnid='+inttostr(ValetudinarianInfoId)+' and (name='''+XMMC+''' or itemid='''+XMDM+''') ') THEN//该病人没有该检验项目(通过每个病人的项目中文名或项目代码来判断)
         BEGIN
           adotemp33:=tadoquery.create(nil);
           adotemp33.Connection:=dm.ADOConnection1;

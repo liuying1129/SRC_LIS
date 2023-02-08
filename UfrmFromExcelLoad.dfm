@@ -92,7 +92,7 @@ object frmFromExcelLoad: TfrmFromExcelLoad
   end
   object Label5: TLabel
     Left = 10
-    Top = 270
+    Top = 268
     Width = 185
     Height = 13
     Caption = #27880#65306'1'#12289'Excel'#20013#30340#31532#19968#34892#20026#26631#39064
@@ -196,7 +196,7 @@ object frmFromExcelLoad: TfrmFromExcelLoad
   end
   object Label14: TLabel
     Left = 36
-    Top = 286
+    Top = 284
     Width = 133
     Height = 13
     Caption = '2'#12289'"(6)'#22995#21517'"'#19981#33021#20026#31354
@@ -209,10 +209,10 @@ object frmFromExcelLoad: TfrmFromExcelLoad
   end
   object Label15: TLabel
     Left = 36
-    Top = 316
-    Width = 384
+    Top = 314
+    Width = 358
     Height = 13
-    Caption = '4'#12289#22914#38656#23548#20837#26816#39564#32467#26524',"(51)'#26816#39564#32467#26524'"'#12289'"(57)'#39033#30446#20195#30721'"'#19981#33021#20026#31354
+    Caption = '4'#12289#22914#38656#23548#20837#26816#39564#39033#30446',"(49)'#39033#30446#21517#31216'"'#12289'"(57)'#39033#30446#20195#30721'"'#33267#23569
     Font.Charset = ANSI_CHARSET
     Font.Color = clRed
     Font.Height = -13
@@ -222,7 +222,7 @@ object frmFromExcelLoad: TfrmFromExcelLoad
   end
   object Label16: TLabel
     Left = 36
-    Top = 301
+    Top = 299
     Width = 310
     Height = 13
     Caption = '3'#12289#26681#25454'"'#22995#21517'","'#24615#21035'","'#24180#40836'"'#26469#21028#26029#26159#21542#21516#19968#20010#30149#20154
@@ -233,9 +233,22 @@ object frmFromExcelLoad: TfrmFromExcelLoad
     Font.Style = []
     ParentFont = False
   end
+  object Label17: TLabel
+    Left = 55
+    Top = 330
+    Width = 78
+    Height = 13
+    Caption = #20854#20013#19968#20010#26377#20540
+    Font.Charset = ANSI_CHARSET
+    Font.Color = clRed
+    Font.Height = -13
+    Font.Name = #23435#20307
+    Font.Style = []
+    ParentFont = False
+  end
   object BitBtn1: TBitBtn
     Left = 96
-    Top = 337
+    Top = 345
     Width = 75
     Height = 25
     Caption = #30830#23450
@@ -244,7 +257,7 @@ object frmFromExcelLoad: TfrmFromExcelLoad
   end
   object BitBtn2: TBitBtn
     Left = 216
-    Top = 337
+    Top = 345
     Width = 75
     Height = 25
     Caption = #21462#28040
