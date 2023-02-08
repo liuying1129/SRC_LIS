@@ -4,7 +4,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, Buttons, ExtCtrls,ComObj,ADODB;
+  Dialogs, StdCtrls, Buttons, ExtCtrls,ComObj,ADODB,ShellAPI;
 
 type
   TfrmFromExcelLoad = class(TForm)
@@ -30,10 +30,12 @@ type
     Label15: TLabel;
     Label16: TLabel;
     Label17: TLabel;
+    Label18: TLabel;
     procedure SpeedButton1Click(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure BitBtn1Click(Sender: TObject);
     procedure BitBtn2Click(Sender: TObject);
+    procedure Label18Click(Sender: TObject);
   private
     { Private declarations }
   public
@@ -268,6 +270,12 @@ end;
 procedure TfrmFromExcelLoad.BitBtn2Click(Sender: TObject);
 begin
   CLOSE;
+end;
+
+procedure TfrmFromExcelLoad.Label18Click(Sender: TObject);
+begin
+  if ShellExecute(Handle, 'Open', Pchar(ExtractFilePath(application.ExeName)+'Patient2LIS-Template.xls'), '', '', SW_ShowNormal)<=32 then
+    MessageDlg('ExcelÄ£°å´ò¿ªÊ§°Ü!',mtError,[mbOK],0);
 end;
 
 initialization

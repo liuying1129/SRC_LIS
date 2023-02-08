@@ -246,6 +246,21 @@ object frmFromExcelLoad: TfrmFromExcelLoad
     Font.Style = []
     ParentFont = False
   end
+  object Label18: TLabel
+    Left = 365
+    Top = 37
+    Width = 61
+    Height = 12
+    Cursor = crHandPoint
+    Caption = 'Excel'#27169#26495
+    Font.Charset = ANSI_CHARSET
+    Font.Color = clBlue
+    Font.Height = -13
+    Font.Name = #23435#20307
+    Font.Style = [fsUnderline]
+    ParentFont = False
+    OnClick = Label18Click
+  end
   object BitBtn1: TBitBtn
     Left = 96
     Top = 345
