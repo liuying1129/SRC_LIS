@@ -1994,7 +1994,7 @@ var
   strsqlPrint:string;
   frGH: TfrBandView;//分组头
 
-  sUnid,sReport_Doctor:string;
+  sUnid,sReport_Doctor,sCombin_Id:string;
 
   //对姓别性别年龄的合并项做打印标记 变量
   adotemp22:tadoquery;
@@ -2014,6 +2014,7 @@ begin
 
   sUnid:=adobasic.fieldbyname('唯一编号').AsString;//防止点击打印后，马上将光标移到另一条病人信息上。故写在最前面
   sReport_Doctor:=trim(ADObasic.FieldByName('审核者').AsString);
+  sCombin_Id:=adobasic.FieldByName('组别').AsString;
 
   sPatientname:=trim(adobasic.fieldbyname('姓名').AsString);
   sSex:=adobasic.fieldbyname('性别').AsString;
@@ -2028,6 +2029,18 @@ begin
      end;
    end;
 
+  if (sCombin_Id=GP_WorkGroup_T1)
+    and frReport1.LoadFromFile(GP_TempFile_T1) then//加载模板文件是不区分大小写的.空字符串将加载失败
+  begin
+  end else
+  if (sCombin_Id=GP_WorkGroup_T2)
+    and frReport1.LoadFromFile(GP_TempFile_T2) then
+  begin
+  end else
+  if (sCombin_Id=GP_WorkGroup_T3)
+    and frReport1.LoadFromFile(GP_TempFile_T3) then
+  begin
+  end else
   if frReport1.LoadFromFile(TempFile_Group) then
   begin
   end else
@@ -2467,6 +2480,12 @@ begin
       '特殊模板2文件'+#2+'File'+#2+#2+'2'+#2+#2+#3+
       '特殊模板3工作组'+#2+'Combobox'+#2+sWorkGroup+#2+'2'+#2+#2+#3+
       '特殊模板3文件'+#2+'File'+#2+#2+'2'+#2+#2+#3+
+      '分组模板1工作组'+#2+'Combobox'+#2+sWorkGroup+#2+'2'+#2+#2+#3+
+      '分组模板1文件'+#2+'File'+#2+#2+'2'+#2+#2+#3+
+      '分组模板2工作组'+#2+'Combobox'+#2+sWorkGroup+#2+'2'+#2+#2+#3+
+      '分组模板2文件'+#2+'File'+#2+#2+'2'+#2+#2+#3+
+      '分组模板3工作组'+#2+'Combobox'+#2+sWorkGroup+#2+'2'+#2+#2+#3+
+      '分组模板3文件'+#2+'File'+#2+#2+'2'+#2+#2+#3+
       '启用项目数控制纸张长度'+#2+'CheckListBox'+#2+#2+'2'+#2+'注:对普通打印、分组打印生效'+#2+#3+
       '每页项目数最大值'+#2+'Edit'+#2+#2+'2'+#2+'注:如项目数大于该值,则纸张长度为"报告长度"的值.默认值为0'+#2+#3+
       '报告长度'+#2+'Edit'+#2+#2+'2'+#2+'默认值为2794,单位:mm'+#2+#3;
@@ -3010,12 +3029,20 @@ begin
 
   TempFile_Common:=configini.ReadString('打印模板','通用模板文件','');
   TempFile_Group:=configini.ReadString('打印模板','分组模板文件','');
+  
   WorkGroup_T1:=configini.ReadString('打印模板','特殊模板1工作组','');
   TempFile_T1:=configini.ReadString('打印模板','特殊模板1文件','');
   WorkGroup_T2:=configini.ReadString('打印模板','特殊模板2工作组','');
   TempFile_T2:=configini.ReadString('打印模板','特殊模板2文件','');
   WorkGroup_T3:=configini.ReadString('打印模板','特殊模板3工作组','');
   TempFile_T3:=configini.ReadString('打印模板','特殊模板3文件','');  
+  
+  GP_WorkGroup_T1:=configini.ReadString('打印模板','分组模板1工作组','');
+  GP_TempFile_T1:=configini.ReadString('打印模板','分组模板1文件','');
+  GP_WorkGroup_T2:=configini.ReadString('打印模板','分组模板2工作组','');
+  GP_TempFile_T2:=configini.ReadString('打印模板','分组模板2文件','');
+  GP_WorkGroup_T3:=configini.ReadString('打印模板','分组模板3工作组','');
+  GP_TempFile_T3:=configini.ReadString('打印模板','分组模板3文件','');  
 
   ifHeightForItemNum:=configini.ReadBool('打印模板','启用项目数控制纸张长度',false);
   ItemRecNum:=configini.ReadInteger('打印模板','每页项目数最大值',0);

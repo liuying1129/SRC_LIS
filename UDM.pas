@@ -95,6 +95,12 @@ var
   TempFile_T2:string;
   WorkGroup_T3:string;
   TempFile_T3:string;
+  GP_WorkGroup_T1:string;//分组模板1工作组
+  GP_TempFile_T1:string;//分组模板1文件
+  GP_WorkGroup_T2:string;//分组模板2工作组
+  GP_TempFile_T2:string;//分组模板2文件
+  GP_WorkGroup_T3:string;//分组模板3工作组
+  GP_TempFile_T3:string;//分组模板3文件
 
   ifSearchHistValue:boolean;//是否查找历史结果
 
