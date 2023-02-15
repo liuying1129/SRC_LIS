@@ -185,9 +185,6 @@ begin
     and (frReport1.LoadFromFile(TempFile_T3)) then
   begin
   end else
-  if frReport1.LoadFromFile(TempFile_Common) then
-  begin
-  end else
   if not frReport1.LoadFromFile(ExtractFilePath(application.ExeName)+'report_cur.frf') then
   begin
     showmessage('加载默认通用打印模板report_cur.frf失败，请设置:系统设置->选项->打印模板');
@@ -362,7 +359,7 @@ var
   sUnid:string;
 
   //对姓别性别年龄的合并项做打印标记 变量
-  sPatientname,sSex,sAge,sCheck_Date,sMergePrintWorkGroupRange:string;
+  sPatientname,sSex,sAge,sCheck_Date,sMergePrintWorkGroupRange,sCombin_Id:string;
   //===============================  
 
   i,j:integer;
@@ -377,8 +374,18 @@ begin
   sSex:=adobasic.fieldbyname('性别').AsString;
   sAge:=adobasic.fieldbyname('年龄').AsString;
   sCheck_Date:=FormatDateTime('yyyy-mm-dd',adobasic.fieldbyname('检查日期').AsDateTime);
+  sCombin_Id:=adobasic.FieldByName('组别').AsString;
   
-  if frReport1.LoadFromFile(TempFile_Group) then
+  if (sCombin_Id=GP_WorkGroup_T1)
+    and frReport1.LoadFromFile(GP_TempFile_T1) then//加载模板文件是不区分大小写的.空字符串将加载失败
+  begin
+  end else
+  if (sCombin_Id=GP_WorkGroup_T2)
+    and frReport1.LoadFromFile(GP_TempFile_T2) then
+  begin
+  end else
+  if (sCombin_Id=GP_WorkGroup_T3)
+    and frReport1.LoadFromFile(GP_TempFile_T3) then
   begin
   end else
   if not frReport1.LoadFromFile(ExtractFilePath(application.ExeName)+'report_Cur_group.frf') then

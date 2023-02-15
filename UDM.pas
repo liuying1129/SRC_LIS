@@ -87,8 +87,6 @@ var
   ifBatchOperater:boolean;//是否批量操作,批量操作时结果不跟随基本信息滚动.滚动太耗时,使批打慢
   LoginTime:integer;//弹出登录窗口的时间
 
-  TempFile_Common:string;
-  TempFile_Group:string;
   WorkGroup_T1:string;
   TempFile_T1:string;
   WorkGroup_T2:string;

@@ -781,9 +781,6 @@ begin
     and frReport1.LoadFromFile(TempFile_T3) then
   begin
   end else
-  if frReport1.LoadFromFile(TempFile_Common) then
-  begin
-  end else
   if not frReport1.LoadFromFile(ExtractFilePath(application.ExeName)+'report_cur.frf') then
   begin
     showmessage('加载默认通用打印模板report_cur.frf失败，请设置:系统设置->选项->打印模板');
@@ -2041,9 +2038,6 @@ begin
     and frReport1.LoadFromFile(GP_TempFile_T3) then
   begin
   end else
-  if frReport1.LoadFromFile(TempFile_Group) then
-  begin
-  end else
   if not frReport1.LoadFromFile(ExtractFilePath(application.ExeName)+'report_Cur_group.frf') then
   begin
     showmessage('加载默认分组打印模板report_Cur_group.frf失败，请设置:系统设置->选项->打印模板');
@@ -2472,8 +2466,6 @@ begin
       '病人基本信息排序方式'+#2+'Combobox'+#2+'流水号'+#13+'联机号'+#2+'1'+#2+#2+#3+
       '弹出登录窗口的时间'+#2+'Edit'+#2+#2+'1'+#2+'注:表示多长时间内无操作,则自动弹出登录窗口(单位:秒)'+#2+#3+
       '查找历史结果'+#2+'CheckListBox'+#2+#2+'1'+#2+'注:启用该选项将降低系统性能,慎用!'+#2+#3+
-      '通用模板文件'+#2+'File'+#2+#2+'2'+#2+#2+#3+
-      '分组模板文件'+#2+'File'+#2+#2+'2'+#2+#2+#3+
       '特殊模板1工作组'+#2+'Combobox'+#2+sWorkGroup+#2+'2'+#2+#2+#3+
       '特殊模板1文件'+#2+'File'+#2+#2+'2'+#2+#2+#3+
       '特殊模板2工作组'+#2+'Combobox'+#2+sWorkGroup+#2+'2'+#2+#2+#3+
@@ -3027,9 +3019,6 @@ begin
   LoginTime:=configini.ReadInteger('选项','弹出登录窗口的时间',30);
   ifSearchHistValue:=configini.ReadBool('选项','查找历史结果',false);
 
-  TempFile_Common:=configini.ReadString('打印模板','通用模板文件','');
-  TempFile_Group:=configini.ReadString('打印模板','分组模板文件','');
-  
   WorkGroup_T1:=configini.ReadString('打印模板','特殊模板1工作组','');
   TempFile_T1:=configini.ReadString('打印模板','特殊模板1文件','');
   WorkGroup_T2:=configini.ReadString('打印模板','特殊模板2工作组','');
