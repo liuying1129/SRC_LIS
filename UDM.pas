@@ -132,6 +132,7 @@ procedure addOrEditCalcItem(const Aadoconnstr:Pchar;const ComboItemID:Pchar;cons
 procedure addOrEditCalcValu(const Aadoconnstr:Pchar;const checkunid: integer;const AifInterface:boolean;const ATransItemidString:pchar);stdcall;external 'CalcItemPro.dll';
 function LastPos(const ASubStr,ASourStr:Pchar):integer;stdcall;external 'LYFunction.dll';
 procedure WriteLog(const ALogStr: Pchar);stdcall;external 'LYFunction.dll';
+procedure RequestForm2Lis(const AAdoconnstr,ARequestJSON,CurrentWorkGroup:PChar);stdcall;external 'Request2Lis.dll';
 //****************************************************************************//
 
 procedure SendKeyToControl(const VK:byte;control:Twincontrol);
@@ -156,6 +157,7 @@ function ExecSQLCmd(AConnectionString:string;ASQL:string):integer;
 function ScalarSQLCmd(AConnectionString:string;ASQL:string):string;
 procedure combinchecklistbox(CheckListBox:TCheckListBox);//将组合项目号及名称导入CheckListBox中
 function StopTime: integer; //返回没有键盘和鼠标事件的时间
+function UnicodeToChinese(sStr: string): string;
 
 implementation
 
@@ -959,6 +961,29 @@ begin
   LInput.cbSize := SizeOf(TLastInputInfo);
   GetLastInputInfo(LInput);
   Result := (GetTickCount() - LInput.dwTime) div 1000;//微秒换成秒
+end;
+
+function UnicodeToChinese(sStr: string): string;
+var
+  index: Integer;
+  temp, top, last: string;
+begin
+  index := 1;
+  while index >= 0 do
+  begin
+    index := Pos('\u', sStr) - 1;
+    if index < 0 then         //非 unicode编码不转换 ,自动过滤
+    begin
+      last := sStr;
+      Result := Result + last;
+      Exit;
+    end;
+    top := Copy(sStr, 1, index); // 取出 编码字符前的 非 unic 编码的字符，如数字
+    temp := Copy(sStr, index + 1, 6); // 取出编码，包括 \u,如\u4e3f
+    Delete(temp, 1, 2);
+    Delete(sStr, 1, index + 6);
+    Result := Result + top + WideChar(StrToInt('$' + temp));  
+  end;
 end;
 
 end.

@@ -47,7 +47,7 @@ function frmFromExcelLoad: TfrmFromExcelLoad;
 
 implementation
 
-uses UDM, SDIMAIN;
+uses UDM, SDIMAIN, superobject;
 var
   ffrmFromExcelLoad: TfrmFromExcelLoad;
   
@@ -74,12 +74,12 @@ end;
 procedure TfrmFromExcelLoad.BitBtn1Click(Sender: TObject);
 var
   excelv,sheetv:variant;
-  //(1)占位列,(2)流水号,(3)联机号,(4)病历号,(5)检查日期,(6)姓名,
-  LSH,LJH,BLH,JCRQ,XM:string;
-  //(7)性别,(8)年龄,(9)床号,(10)送检科室,(11)送检医生, (12)操作员,
-  XB,LL,CH,SJKS,SJYS,CZY:STRING;
-  //(13)审核者,(14)申请日期,(15)优先级别,(16)工作组别,(17)样本类型,
-  SHZ,SQRQ,YXJB,ZB,YBLX:STRING;
+  //(1)占位列,(2)占位列,(3)联机号,(4)病历号,(5)占位列,(6)姓名,
+  {LSH,}LJH,BLH,{JCRQ,}XM:string;
+  //(7)性别,(8)年龄,(9)床号,(10)送检科室,(11)送检医生, (12)占位列,
+  XB,LL,CH,SJKS,SJYS{,CZY}:STRING;
+  //(13)占位列,(14)申请日期,(15)优先级别,(16)工作组别,(17)样本类型,
+  {SHZ,}SQRQ,YXJB,ZB,YBLX:STRING;
   //(18)样本情况,(19)临床诊断,(20)备注,(21)细菌,(22)所属公司,
   YBQK,LCZD,BZ,{XJ,}SSGS:STRING;
   //(23)所属部门,(24)工种，(25)工号,(26)婚否,(27)籍贯,(28)住址,
@@ -93,21 +93,30 @@ var
   //(43)X光，(44)B超，(45)心电图，(46)检验，(47)结论，(48)建议
   XG,BC,XDT,JY,JL,YSJY:STRING;}
   //(49)项目名称,(50)项目英文名,(51)检验结果,(52)单位
-  XMMC,XMYWM,JYJG,DW:STRING;
+  //XMMC,XMYWM,JYJG,DW:STRING;
   //(53)最小值,(54)最大值,(55)组合项目号,(56)打印编号,(57)项目代码
-  ZXZ,ZDZ,ZHXMH,DYBH,XMDM:STRING;
+  {ZXZ,ZDZ,}ZHXMH{,DYBH,XMDM}:STRING;
 
-  i,RecNum,ValetudinarianInfoId:integer;
-  adotemp11,adotemp22,adotemp33:tadoquery;
+  i,j:integer;
   Save_Cursor:TCursor;
+
+  ls:TStrings;
+  
+  ObjectYZMZ:ISuperObject;//医嘱明细对象
+  ArrayYZMX:ISuperObject;//医嘱明细数组
+
+  ObjectJYYZ:ISuperObject;//检验医嘱对象
+  ArrayJYYZ:ISuperObject;//检验医嘱数组
+
+  BigObjectJYYZ:ISuperObject;//检验医嘱大对象
 begin
   if trim(sdiappform.cbxConnChar.Text)='' then
   begin
-    showmessage('组别不能为空!');
+    showmessage('请选择要导入的工作组!');
     exit;
   end;
 
-  {IF TRIM(ZB)='' THEN //}ZB:=sdiappform.cbxConnChar.Text;//如无组别,则导入当前组别
+  ZB:=sdiappform.cbxConnChar.Text;
 
   try
     excelv:=CreateOleObject('excel.application');
@@ -132,9 +141,9 @@ begin
 
     i:=2;
     //基本信息
-    {TJH:=sheetv.cells[i,1];}LSH:=sheetv.cells[i,2];LJH:=sheetv.cells[i,3];BLH:=sheetv.cells[i,4];JCRQ:=sheetv.cells[i,5];XM:=sheetv.cells[i,6];
-    XB:=sheetv.cells[i,7];LL:=sheetv.cells[i,8];CH:=sheetv.cells[i,9];SJKS:=sheetv.cells[i,10];SJYS:=sheetv.cells[i,11];CZY:=sheetv.cells[i,12];
-    SHZ:=sheetv.cells[i,13];SQRQ:=sheetv.cells[i,14];YXJB:=sheetv.cells[i,15];{ZB:=sheetv.cells[i,16];}YBLX:=sheetv.cells[i,17];
+    {TJH:=sheetv.cells[i,1];LSH:=sheetv.cells[i,2];}LJH:=sheetv.cells[i,3];BLH:=sheetv.cells[i,4];{JCRQ:=sheetv.cells[i,5];}XM:=sheetv.cells[i,6];
+    XB:=sheetv.cells[i,7];LL:=sheetv.cells[i,8];CH:=sheetv.cells[i,9];SJKS:=sheetv.cells[i,10];SJYS:=sheetv.cells[i,11];{CZY:=sheetv.cells[i,12];}
+    {SHZ:=sheetv.cells[i,13];}SQRQ:=sheetv.cells[i,14];YXJB:=sheetv.cells[i,15];{ZB:=sheetv.cells[i,16];}YBLX:=sheetv.cells[i,17];
     YBQK:=sheetv.cells[i,18];LCZD:=sheetv.cells[i,19];BZ:=sheetv.cells[i,20];{XJ:=sheetv.cells[i,21];}SSGS:=sheetv.cells[i,22];
     SSBM:=sheetv.cells[i,23];GZ:=sheetv.cells[i,24];GH:=sheetv.cells[i,25];HF:=sheetv.cells[i,26];JG:=sheetv.cells[i,27];ZZ:=sheetv.cells[i,28];
     DH:=sheetv.cells[i,29];{SZY:=sheetv.cells[i,30];SSY:=sheetv.cells[i,31];ZYSL:=sheetv.cells[i,32];
@@ -142,101 +151,65 @@ begin
     NK:=sheetv.cells[i,38];WK:=sheetv.cells[i,39];WGK:=sheetv.cells[i,40];FK:=sheetv.cells[i,41];LQG:=sheetv.cells[i,42];
     XG:=sheetv.cells[i,43];BC:=sheetv.cells[i,44];XDT:=sheetv.cells[i,45];JY:=sheetv.cells[i,46];JL:=sheetv.cells[i,47];YSJY:=sheetv.cells[i,48];}
     //检验结果
-    XMMC:=sheetv.cells[i,49];XMYWM:=sheetv.cells[i,50];JYJG:=sheetv.cells[i,51];DW:=sheetv.cells[i,52];
-    ZXZ:=sheetv.cells[i,53];ZDZ:=sheetv.cells[i,54];ZHXMH:=sheetv.cells[i,55];DYBH:=sheetv.cells[i,56];XMDM:=sheetv.cells[i,57];
+    //XMMC:=sheetv.cells[i,49];XMYWM:=sheetv.cells[i,50];JYJG:=sheetv.cells[i,51];DW:=sheetv.cells[i,52];
+    {ZXZ:=sheetv.cells[i,53];ZDZ:=sheetv.cells[i,54];}ZHXMH:=sheetv.cells[i,55];{DYBH:=sheetv.cells[i,56];XMDM:=sheetv.cells[i,57];}
 
-    while (XM<>'') do //AND (TJH<>'')
+    while (XM<>'') do 
     begin
-      adotemp22:=tadoquery.create(nil);
-      adotemp22.Connection:=dm.ADOConnection1;
-      adotemp22.Close;
-      adotemp22.SQL.Clear;
-      adotemp22.SQL.Text:='select unid from chk_con where patientname='''+XM+''' AND sex='''+XB+''' AND age='''+LL+''' AND combin_id='''+ZB+'''';// dnh='+TJH;
-      adotemp22.Open;
-      RecNum:=adotemp22.RecordCount;
-      IF RecNum>=1 then ValetudinarianInfoId:=adotemp22.FIELDBYNAME('UNID').AsInteger else ValetudinarianInfoId:=-1;
-      adotemp22.Free;
-      IF RecNum>=1 then//该病人已存在
-      begin
-        if (trim(XMMC)<>'') or (trim(XMDM)<>'') then//插入检验项目//项目名称、项目代码至少一个有值
-        begin
-          IF '1'<>ScalarSQLCmd(LisConn,'select TOP 1 1 from chk_valu where PkUnid='+inttostr(ValetudinarianInfoId)+' and (name='''+XMMC+''' or itemid='''+XMDM+''') ') THEN//该病人没有该检验项目(通过每个病人的项目中文名或项目代码来判断)
-          BEGIN
-            adotemp33:=tadoquery.create(nil);
-            adotemp33.Connection:=dm.ADOConnection1;
-            adotemp33.Close;
-            adotemp33.SQL.Clear;
-            adotemp33.SQL.Add('insert into chk_valu ([pkunid],[pkcombin_id],[itemid],[name],[english_name],[itemvalue],[Unit],'+
-           '[Min_value],[Max_value],[printorder],[issure]) values ('+
-                inttostr(ValetudinarianInfoId)+','''+ZHXMH+''','''+XMDM+''','''+XMMC+''','''+XMYWM+''','''+JYJG+''','''+DW+''','''+
-                ZXZ+''','''+ZDZ+''','+inttostr(strtointdef(DYBH,0))+',''1'')');
-            adotemp33.ExecSQL;
-            adotemp33.Free;
-          END;
-        end;
+      ArrayYZMX:=SA([]);
 
-        inc(i);
-        //基本信息
-        {TJH:=sheetv.cells[i,1];}LSH:=sheetv.cells[i,2];LJH:=sheetv.cells[i,3];BLH:=sheetv.cells[i,4];JCRQ:=sheetv.cells[i,5];XM:=sheetv.cells[i,6];
-        XB:=sheetv.cells[i,7];LL:=sheetv.cells[i,8];CH:=sheetv.cells[i,9];SJKS:=sheetv.cells[i,10];SJYS:=sheetv.cells[i,11];CZY:=sheetv.cells[i,12];
-        SHZ:=sheetv.cells[i,13];SQRQ:=sheetv.cells[i,14];YXJB:=sheetv.cells[i,15];{ZB:=sheetv.cells[i,16];}YBLX:=sheetv.cells[i,17];
-        YBQK:=sheetv.cells[i,18];LCZD:=sheetv.cells[i,19];BZ:=sheetv.cells[i,20];{XJ:=sheetv.cells[i,21];}SSGS:=sheetv.cells[i,22];
-        SSBM:=sheetv.cells[i,23];GZ:=sheetv.cells[i,24];GH:=sheetv.cells[i,25];HF:=sheetv.cells[i,26];JG:=sheetv.cells[i,27];ZZ:=sheetv.cells[i,28];
-        DH:=sheetv.cells[i,29];{SZY:=sheetv.cells[i,30];SSY:=sheetv.cells[i,31];ZYSL:=sheetv.cells[i,32];
-        YYSL:=sheetv.cells[i,33];SG:=sheetv.cells[i,34];TZ:=sheetv.cells[i,35];JWS:=sheetv.cells[i,36];JZS:=sheetv.cells[i,37];
-        NK:=sheetv.cells[i,38];WK:=sheetv.cells[i,39];WGK:=sheetv.cells[i,40];FK:=sheetv.cells[i,41];LQG:=sheetv.cells[i,42];
-        XG:=sheetv.cells[i,43];BC:=sheetv.cells[i,44];XDT:=sheetv.cells[i,45];JY:=sheetv.cells[i,46];JL:=sheetv.cells[i,47];YSJY:=sheetv.cells[i,48];}
-        //检验结果
-        XMMC:=sheetv.cells[i,49];XMYWM:=sheetv.cells[i,50];JYJG:=sheetv.cells[i,51];DW:=sheetv.cells[i,52];
-        ZXZ:=sheetv.cells[i,53];ZDZ:=sheetv.cells[i,54];ZHXMH:=sheetv.cells[i,55];DYBH:=sheetv.cells[i,56];XMDM:=sheetv.cells[i,57];
-        continue;
-      end;
-
-      IF TRIM(YXJB)='' THEN YXJB:=CGYXJB;//如无优先级别,则导入'常规'
-      adotemp11:=tadoquery.create(nil);
-      adotemp11.Connection:=dm.ADOConnection1;
-      adotemp11.Close;
-      adotemp11.SQL.Clear;
-      adotemp11.SQL.Add('insert into chk_con ([checkid],[patientname],[sex],[age],[Caseno],[bedno],[deptname],[check_date],[check_doctor],'+
-     '[report_date],[report_doctor],[operator],[Diagnosetype],[flagetype],[diagnose],[typeflagcase],'+
-     '[issure],[combin_id],[LSH],[WorkDepartment],[WorkCategory],[WorkID],[ifMarry],'+//[GermName],
-     '[OldAddress],[Address],[Telephone],[WorkCompany]'+//[TjDescription],[PushPress],[PullPress],
-     //'[LeftEyesight],[RightEyesight],[Stature],[Weight],[TjJiWangShi],[TjJiaZuShi],[TjNeiKe],'+
-     //'[TjWaiKe],[TjWuGuanKe],[TjFuKe],[TjLengQiangGuang],[TjXGuang],[TjBChao],'+
-     ') values ('''+//,[DNH] [TjXinDianTu],[TJAdvice],[TjJianYan]
-          LJH+''','''+XM+''','''+XB+''','''+LL+''','''+BLH+''','''+CH+''','''+SJKS+''','''+JCRQ+''','''+SJYS+''','''+
-          SQRQ+''','''+SHZ+''','''+CZY+''','''+YXJB+''','''+YBLX+''','''+LCZD+''','''+YBQK+''','''+
-          BZ+''','''+ZB+''','''+LSH+''','''+SSBM+''','''+GZ+''','''+GH+''','''+HF+''','''+//+''','''+XJ
-          JG+''','''+ZZ+''','''+DH+''','''+SSGS+//''','''+//SZY+''','''+SSY+''','''+//+''','''+JL
-          //ZYSL+''','''+YYSL+''','''+SG+''','''+TZ+''','''+JWS+''','''+JZS+''','''+NK+''','''+
-          //WK+''','''+WGK+''','''+FK+''','''+LQG+''','''+XG+''','''+BC+''','''+
-          ''')');//''','''+TJH+ XDT+''','''+YSJY+''','''+JY+
-      adotemp11.SQL.Add(' SELECT SCOPE_IDENTITY() AS Insert_Identity ');
-      adotemp11.Open;
-      ValetudinarianInfoId:=adotemp11.fieldbyname('Insert_Identity').AsInteger;
-      adotemp11.Free;
-      if (trim(XMMC)<>'') or (trim(XMDM)<>'') then//插入检验项目//项目名称、项目代码至少一个有值
+      if trim(ZHXMH)='' then ZHXMH:='不存在的组合项目代码';//保证至少有一条医嘱明细
+      ZHXMH:=StringReplace(ZHXMH,'，',',',[rfReplaceAll]);
+      ls:=TStringList.Create;
+      ExtractStrings([','],[],Pchar(ZHXMH),ls);
+      for j:=0 to ls.Count-1 do
       begin
-        IF '1'<>ScalarSQLCmd(LisConn,'select TOP 1 1 from chk_valu where PkUnid='+inttostr(ValetudinarianInfoId)+' and (name='''+XMMC+''' or itemid='''+XMDM+''') ') THEN//该病人没有该检验项目(通过每个病人的项目中文名或项目代码来判断)
-        BEGIN
-          adotemp33:=tadoquery.create(nil);
-          adotemp33.Connection:=dm.ADOConnection1;
-          adotemp33.Close;
-          adotemp33.SQL.Clear;
-          adotemp33.SQL.Add('insert into chk_valu ([pkunid],[pkcombin_id],[itemid],[name],[english_name],[itemvalue],[Unit],'+
-         '[Min_value],[Max_value],[printorder],[issure]) values ('+
-              inttostr(ValetudinarianInfoId)+','''+ZHXMH+''','''+XMDM+''','''+XMMC+''','''+XMYWM+''','''+JYJG+''','''+DW+''','''+
-              ZXZ+''','''+ZDZ+''','+inttostr(strtointdef(DYBH,0))+',''1'')');
-          adotemp33.ExecSQL;
-          adotemp33.Free;
-        END;
+        ObjectYZMZ:=SO;
+        ObjectYZMZ.S['联机号'] := LJH;
+        ObjectYZMZ.S['LIS组合项目代码'] := ls[j];
+        ObjectYZMZ.S['优先级别'] := YXJB;
+        ObjectYZMZ.S['样本类型'] := YBLX;
+        ObjectYZMZ.S['样本状态'] := YBQK;
+
+        ArrayYZMX.AsArray.Add(ObjectYZMZ);
       end;
+      ls.Free;      
+
+      ObjectJYYZ:=SO;
+      ObjectJYYZ.S['病历号']:=BLH;
+      ObjectJYYZ.S['患者姓名']:=XM;
+      ObjectJYYZ.S['患者性别']:=XB;
+      ObjectJYYZ.S['患者年龄']:=LL;
+      ObjectJYYZ.S['申请日期']:=SQRQ;
+      ObjectJYYZ.S['申请科室']:=SJKS;
+      ObjectJYYZ.S['申请医生']:=SJYS;
+      ObjectJYYZ.S['床号']:=CH;
+      ObjectJYYZ.S['临床诊断']:=LCZD;
+      ObjectJYYZ.S['备注']:=BZ;
+      ObjectJYYZ.S['所属公司']:=SSGS;
+      ObjectJYYZ.S['所属部门']:=SSBM;
+      ObjectJYYZ.S['工种']:=GZ;
+      ObjectJYYZ.S['工号']:=GH;
+      ObjectJYYZ.S['婚否']:=HF;
+      ObjectJYYZ.S['籍贯']:=JG;
+      ObjectJYYZ.S['住址']:=ZZ;
+      ObjectJYYZ.S['电话']:=DH;
+      ObjectJYYZ.O['医嘱明细']:=ArrayYZMX;
+
+      ArrayJYYZ:=SA([]);
+      ArrayJYYZ.AsArray.Add(ObjectJYYZ);
+
+      BigObjectJYYZ:=SO;
+      BigObjectJYYZ.S['JSON数据源']:='Excel';
+      BigObjectJYYZ.O['检验医嘱']:=ArrayJYYZ;
+
+      RequestForm2Lis(PChar(LisConn),PChar(UnicodeToChinese(BigObjectJYYZ.AsJson)),PChar(ZB));
 
       inc(i);
       //基本信息
-      {TJH:=sheetv.cells[i,1];}LSH:=sheetv.cells[i,2];LJH:=sheetv.cells[i,3];BLH:=sheetv.cells[i,4];JCRQ:=sheetv.cells[i,5];XM:=sheetv.cells[i,6];
-      XB:=sheetv.cells[i,7];LL:=sheetv.cells[i,8];CH:=sheetv.cells[i,9];SJKS:=sheetv.cells[i,10];SJYS:=sheetv.cells[i,11];CZY:=sheetv.cells[i,12];
-      SHZ:=sheetv.cells[i,13];SQRQ:=sheetv.cells[i,14];YXJB:=sheetv.cells[i,15];{ZB:=sheetv.cells[i,16];}YBLX:=sheetv.cells[i,17];
+      {TJH:=sheetv.cells[i,1];LSH:=sheetv.cells[i,2];}LJH:=sheetv.cells[i,3];BLH:=sheetv.cells[i,4];{JCRQ:=sheetv.cells[i,5];}XM:=sheetv.cells[i,6];
+      XB:=sheetv.cells[i,7];LL:=sheetv.cells[i,8];CH:=sheetv.cells[i,9];SJKS:=sheetv.cells[i,10];SJYS:=sheetv.cells[i,11];{CZY:=sheetv.cells[i,12];}
+      {SHZ:=sheetv.cells[i,13];}SQRQ:=sheetv.cells[i,14];YXJB:=sheetv.cells[i,15];{ZB:=sheetv.cells[i,16];}YBLX:=sheetv.cells[i,17];
       YBQK:=sheetv.cells[i,18];LCZD:=sheetv.cells[i,19];BZ:=sheetv.cells[i,20];{XJ:=sheetv.cells[i,21];}SSGS:=sheetv.cells[i,22];
       SSBM:=sheetv.cells[i,23];GZ:=sheetv.cells[i,24];GH:=sheetv.cells[i,25];HF:=sheetv.cells[i,26];JG:=sheetv.cells[i,27];ZZ:=sheetv.cells[i,28];
       DH:=sheetv.cells[i,29];{SZY:=sheetv.cells[i,30];SSY:=sheetv.cells[i,31];ZYSL:=sheetv.cells[i,32];
@@ -244,8 +217,8 @@ begin
       NK:=sheetv.cells[i,38];WK:=sheetv.cells[i,39];WGK:=sheetv.cells[i,40];FK:=sheetv.cells[i,41];LQG:=sheetv.cells[i,42];
       XG:=sheetv.cells[i,43];BC:=sheetv.cells[i,44];XDT:=sheetv.cells[i,45];JY:=sheetv.cells[i,46];JL:=sheetv.cells[i,47];YSJY:=sheetv.cells[i,48];}
       //检验结果
-      XMMC:=sheetv.cells[i,49];XMYWM:=sheetv.cells[i,50];JYJG:=sheetv.cells[i,51];DW:=sheetv.cells[i,52];
-      ZXZ:=sheetv.cells[i,53];ZDZ:=sheetv.cells[i,54];ZHXMH:=sheetv.cells[i,55];DYBH:=sheetv.cells[i,56];XMDM:=sheetv.cells[i,57];
+      //XMMC:=sheetv.cells[i,49];XMYWM:=sheetv.cells[i,50];JYJG:=sheetv.cells[i,51];DW:=sheetv.cells[i,52];
+      {ZXZ:=sheetv.cells[i,53];ZDZ:=sheetv.cells[i,54];}ZHXMH:=sheetv.cells[i,55];{DYBH:=sheetv.cells[i,56];XMDM:=sheetv.cells[i,57];}
     end;
 
     //======清除内存
