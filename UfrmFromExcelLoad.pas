@@ -31,6 +31,7 @@ type
     Label16: TLabel;
     Label17: TLabel;
     Label18: TLabel;
+    Label19: TLabel;
     procedure SpeedButton1Click(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure BitBtn1Click(Sender: TObject);
@@ -158,6 +159,7 @@ begin
     begin
       ArrayYZMX:=SA([]);
 
+      //如果无组合项目,也希望仅导入病人基本信息,按照Request2Lis.dll的约定,需要保证【医嘱明细】至少有一条记录,哪怕是一条无效数据的记录
       if trim(ZHXMH)='' then ZHXMH:='不存在的组合项目代码';//保证至少有一条医嘱明细
       ZHXMH:=StringReplace(ZHXMH,'，',',',[rfReplaceAll]);
       ls:=TStringList.Create;

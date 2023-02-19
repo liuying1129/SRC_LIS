@@ -4,7 +4,7 @@ object frmFromExcelLoad: TfrmFromExcelLoad
   BorderIcons = [biSystemMenu, biMinimize]
   BorderStyle = bsSingle
   Caption = #20174'Excel'#23548#20837#30149#20154#20449#24687
-  ClientHeight = 373
+  ClientHeight = 411
   ClientWidth = 432
   Color = clBtnFace
   Font.Charset = ANSI_CHARSET
@@ -261,9 +261,22 @@ object frmFromExcelLoad: TfrmFromExcelLoad
     ParentFont = False
     OnClick = Label18Click
   end
+  object Label19: TLabel
+    Left = 36
+    Top = 346
+    Width = 184
+    Height = 13
+    Caption = '5'#12289#12304#30003#35831#26085#26399#12305#26684#24335':'#24180'-'#26376'-'#26085
+    Font.Charset = ANSI_CHARSET
+    Font.Color = clRed
+    Font.Height = -13
+    Font.Name = #23435#20307
+    Font.Style = []
+    ParentFont = False
+  end
   object BitBtn1: TBitBtn
     Left = 96
-    Top = 345
+    Top = 372
     Width = 75
     Height = 25
     Caption = #30830#23450
@@ -272,7 +285,7 @@ object frmFromExcelLoad: TfrmFromExcelLoad
   end
   object BitBtn2: TBitBtn
     Left = 216
-    Top = 345
+    Top = 372
     Width = 75
     Height = 25
     Caption = #21462#28040
