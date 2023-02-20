@@ -157,6 +157,8 @@ begin
 
     while (XM<>'') do 
     begin
+      //superobject组装JSON:https://www.shuzhiduo.com/A/mo5kbZrQJw/
+      
       ArrayYZMX:=SA([]);
 
       //如果无组合项目,也希望仅导入病人基本信息,按照Request2Lis.dll的约定,需要保证【医嘱明细】至少有一条记录,哪怕是一条无效数据的记录
