@@ -3119,12 +3119,14 @@ select	cv.valueid as RESULT_ID,
 	case dbo.uf_ValueAlarm(cv.itemid,cv.Min_value,cv.Max_value,cv.itemvalue) when 1 then 'L' WHEN 2 THEN 'H' ELSE 'N' END as TEXT_NOTE,
 	cc.Audit_Date as REPORT_DATE,
 	cc.report_doctor as REPORT_USER,
-	CV.COMBIN_NAME as FLAG_YQ
+	CV.COMBIN_NAME as FLAG_YQ,
+	cc.His_Unid
 from chk_con cc,chk_valu cv
 where cc.unid=cv.pkunid
 AND ISNULL(cc.report_doctor,'')<>''
 and cv.issure='1'
 and isnull(cv.itemvalue,'')<>''
+and isnull(cc.His_Unid,'')<>''
 
 union all
 
@@ -3138,11 +3140,13 @@ select	cv.valueid as RESULT_ID,
 	case dbo.uf_ValueAlarm(cv.itemid,cv.Min_value,cv.Max_value,cv.itemvalue) when 1 then 'L' WHEN 2 THEN 'H' ELSE 'N' END as TEXT_NOTE,
 	cc.Audit_Date as REPORT_DATE,
 	cc.report_doctor as REPORT_USER,
-	CV.COMBIN_NAME as FLAG_YQ
-from chk_con_bak cc,chk_valu_bak cv
+	CV.COMBIN_NAME as FLAG_YQ,
+	cc.His_Unid
+from chk_con_bak cc WITH(NOLOCK),chk_valu_bak cv WITH(NOLOCK)
 where cc.unid=cv.pkunid
 and isnull(cv.itemvalue,'')<>''
 and cc.check_date>getdate()-180
+and isnull(cc.His_Unid,'')<>''
 
 GO
 SET QUOTED_IDENTIFIER OFF 
