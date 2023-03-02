@@ -3114,7 +3114,7 @@ select
 	1 as REPORT_SEQNO,--报告单序号,一张报告单有多份
 	cc.lsh as SPEC_ID,--标本ID
 	cc.TjJianYan as BARCODE,--条码号
-	cc.His_Unid as REQUEST_NO,--申请单编号
+	cc.DNH as REQUEST_NO,--申请单编号
 	(select top 1 HisItem from HisCombItem hci,combinitem ci where ci.unid=hci.CombUnid and ci.id=cv.pkcombin_id) as ORDER_ID,--医嘱ID
 	CV.COMBIN_NAME as ITEM_NAME,--项目名称
 	cv.unit as RESULT_UNIT,--结果单位
@@ -3123,7 +3123,7 @@ select
 	isnull(dbo.uf_Reference_Value_B1(cv.min_value,cv.max_value),'')+isnull(dbo.uf_Reference_Value_B2(cv.min_value,cv.max_value),'') as REF_RANGE,--参考范围
 	cc.Audit_Date as FINISH_TIME,--完成时间
 	cc.report_doctor as FINISH_EMPID,--检查医生
-	cc.DNH as REG_ID,--体检号
+	cc.His_Unid as REG_ID,--体检号
 	cv.Name as TEST_ITEM_ID,--项目代码或者抗生素名
 	'K0' as BRANCH_CODE--医疗机构
 from chk_con cc,chk_valu cv
@@ -3131,7 +3131,7 @@ where cc.unid=cv.pkunid
 AND ISNULL(cc.report_doctor,'')<>''
 and cv.issure='1'
 and isnull(cv.itemvalue,'')<>''
-and isnull(cc.His_Unid,'')<>''
+and isnull(cc.TjJianYan,'')<>''
 
 union all
 
@@ -3140,7 +3140,7 @@ select
 	1 as REPORT_SEQNO,--报告单序号,一张报告单有多份
 	cc.lsh as SPEC_ID,--标本ID
 	cc.TjJianYan as BARCODE,--条码号
-	cc.His_Unid as REQUEST_NO,--申请单编号
+	cc.DNH as REQUEST_NO,--申请单编号
 	(select top 1 HisItem from HisCombItem hci,combinitem ci where ci.unid=hci.CombUnid and ci.id=cv.pkcombin_id) as ORDER_ID,--医嘱ID
 	CV.COMBIN_NAME as ITEM_NAME,--项目名称
 	cv.unit as RESULT_UNIT,--结果单位
@@ -3149,14 +3149,14 @@ select
 	isnull(dbo.uf_Reference_Value_B1(cv.min_value,cv.max_value),'')+isnull(dbo.uf_Reference_Value_B2(cv.min_value,cv.max_value),'') as REF_RANGE,--参考范围
 	cc.Audit_Date as FINISH_TIME,--完成时间
 	cc.report_doctor as FINISH_EMPID,--检查医生
-	cc.DNH as REG_ID,--体检号
+	cc.His_Unid as REG_ID,--体检号
 	cv.Name as TEST_ITEM_ID,--项目代码或者抗生素名
 	'K0' as BRANCH_CODE--医疗机构
 from chk_con_bak cc WITH(NOLOCK),chk_valu_bak cv WITH(NOLOCK)
 where cc.unid=cv.pkunid
 and isnull(cv.itemvalue,'')<>''
 and cc.check_date>getdate()-180
-and isnull(cc.His_Unid,'')<>''
+and isnull(cc.TjJianYan,'')<>''
 
 GO
 SET QUOTED_IDENTIFIER OFF 
