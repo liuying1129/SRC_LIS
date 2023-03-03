@@ -3164,6 +3164,48 @@ GO
 SET ANSI_NULLS ON 
 GO
 
+CREATE VIEW view_UT_LIS_RESULT_Header
+AS
+--LIS提供给标软PEIS的结果视图
+select	
+	cc.His_Unid as REG_ID,--体检号
+	cc.DNH as REQUEST_NO,--申请单编号
+	cc.unid as REPORT_NO,--报告单编号
+	1 as IS_VALID,--撤销后为失效
+	cc.Audit_Date as FINISH_TIME,--完成时间
+	cc.report_doctor as FINISH_EMPID,--检查医生
+	(select top 1 HisItem from HisCombItem hci,combinitem ci where ci.unid=hci.CombUnid and ci.id=cv.pkcombin_id) as ORDER_ID,--医嘱ID
+	cc.Audit_Date as HANDLE_TIME,--操作时间
+	cv.Name as TEST_ITEM_ID,--项目代码或者抗生素名
+	'K0' as BRANCH_CODE--医疗机构
+from chk_con cc,chk_valu cv
+where cc.unid=cv.pkunid
+AND ISNULL(cc.report_doctor,'')<>''
+and cv.issure='1'
+and isnull(cv.itemvalue,'')<>''
+and isnull(cc.TjJianYan,'')<>''
+
+union all
+
+select	
+	cc.His_Unid as REG_ID,--体检号
+	cc.DNH as REQUEST_NO,--申请单编号
+	cc.unid as REPORT_NO,--报告单编号
+	1 as IS_VALID,--撤销后为失效
+	cc.Audit_Date as FINISH_TIME,--完成时间
+	cc.report_doctor as FINISH_EMPID,--检查医生
+	(select top 1 HisItem from HisCombItem hci,combinitem ci where ci.unid=hci.CombUnid and ci.id=cv.pkcombin_id) as ORDER_ID,--医嘱ID
+	cc.Audit_Date as HANDLE_TIME,--操作时间
+	cv.Name as TEST_ITEM_ID,--项目代码或者抗生素名
+	'K0' as BRANCH_CODE--医疗机构
+from chk_con_bak cc WITH(NOLOCK),chk_valu_bak cv WITH(NOLOCK)
+where cc.unid=cv.pkunid
+and isnull(cv.itemvalue,'')<>''
+and cc.check_date>getdate()-180
+and isnull(cc.TjJianYan,'')<>''
+
+GO
+
 if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[view_Show_chk_Con_His]') and OBJECTPROPERTY(id, N'IsView') = 1)
 drop view [dbo].[view_Show_chk_Con_His]
 GO
