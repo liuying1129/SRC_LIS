@@ -3193,6 +3193,7 @@ AND ISNULL(cc.report_doctor,'')<>''
 and cv.issure='1'
 and isnull(cv.itemvalue,'')<>''
 and isnull(cc.TjJianYan,'')<>''
+group by cc.His_Unid,cc.DNH,cc.unid,cc.Audit_Date,cc.report_doctor,cv.combin_Name,cv.pkcombin_id
 
 union all
 
@@ -3212,6 +3213,7 @@ where cc.unid=cv.pkunid
 and isnull(cv.itemvalue,'')<>''
 and cc.check_date>getdate()-180
 and isnull(cc.TjJianYan,'')<>''
+group by cc.His_Unid,cc.DNH,cc.unid,cc.Audit_Date,cc.report_doctor,cv.combin_Name,cv.pkcombin_id
 
 GO
 
