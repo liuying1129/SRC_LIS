@@ -3116,7 +3116,7 @@ select
 	cc.TjJianYan as BARCODE,--条码号
 	cc.DNH as REQUEST_NO,--申请单编号
 	(select top 1 HisItem from HisCombItem hci,combinitem ci where ci.unid=hci.CombUnid and ci.id=cv.pkcombin_id) as ORDER_ID,--医嘱ID
-	CV.COMBIN_NAME as ITEM_NAME,--项目名称
+	CV.Name as ITEM_NAME,--项目名称
 	cv.unit as RESULT_UNIT,--结果单位
 	cv.itemvalue as RESULT_DATA,--结果数据
 	case dbo.uf_ValueAlarm(cv.itemid,cv.Min_value,cv.Max_value,cv.itemvalue) when 1 then 'L' WHEN 2 THEN 'H' ELSE 'N' END as RESULT_STATE_DESC,--异常结果状态显示
@@ -3124,7 +3124,7 @@ select
 	cc.Audit_Date as FINISH_TIME,--完成时间
 	cc.report_doctor as FINISH_EMPID,--检查医生
 	cc.His_Unid as REG_ID,--体检号
-	cv.Name as TEST_ITEM_ID,--项目代码或者抗生素名
+	cv.itemid as TEST_ITEM_ID,--项目代码或者抗生素名
 	'K0' as BRANCH_CODE--医疗机构
 from chk_con cc,chk_valu cv
 where cc.unid=cv.pkunid
@@ -3142,7 +3142,7 @@ select
 	cc.TjJianYan as BARCODE,--条码号
 	cc.DNH as REQUEST_NO,--申请单编号
 	(select top 1 HisItem from HisCombItem hci,combinitem ci where ci.unid=hci.CombUnid and ci.id=cv.pkcombin_id) as ORDER_ID,--医嘱ID
-	CV.COMBIN_NAME as ITEM_NAME,--项目名称
+	CV.Name as ITEM_NAME,--项目名称
 	cv.unit as RESULT_UNIT,--结果单位
 	cv.itemvalue as RESULT_DATA,--结果数据
 	case dbo.uf_ValueAlarm(cv.itemid,cv.Min_value,cv.Max_value,cv.itemvalue) when 1 then 'L' WHEN 2 THEN 'H' ELSE 'N' END as RESULT_STATE_DESC,--异常结果状态显示
@@ -3150,7 +3150,7 @@ select
 	cc.Audit_Date as FINISH_TIME,--完成时间
 	cc.report_doctor as FINISH_EMPID,--检查医生
 	cc.His_Unid as REG_ID,--体检号
-	cv.Name as TEST_ITEM_ID,--项目代码或者抗生素名
+	cv.itemid as TEST_ITEM_ID,--项目代码或者抗生素名
 	'K0' as BRANCH_CODE--医疗机构
 from chk_con_bak cc WITH(NOLOCK),chk_valu_bak cv WITH(NOLOCK)
 where cc.unid=cv.pkunid
@@ -3160,6 +3160,15 @@ and isnull(cc.TjJianYan,'')<>''
 
 GO
 SET QUOTED_IDENTIFIER OFF 
+GO
+SET ANSI_NULLS ON 
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[view_UT_LIS_RESULT_Header]') and OBJECTPROPERTY(id, N'IsView') = 1)
+drop view [dbo].[view_UT_LIS_RESULT_Header]
+GO
+
+SET QUOTED_IDENTIFIER ON 
 GO
 SET ANSI_NULLS ON 
 GO
@@ -3176,7 +3185,7 @@ select
 	cc.report_doctor as FINISH_EMPID,--检查医生
 	(select top 1 HisItem from HisCombItem hci,combinitem ci where ci.unid=hci.CombUnid and ci.id=cv.pkcombin_id) as ORDER_ID,--医嘱ID
 	cc.Audit_Date as HANDLE_TIME,--操作时间
-	cv.Name as TEST_ITEM_ID,--项目代码或者抗生素名
+	cv.combin_Name as TEST_ITEM_ID,--项目代码或者抗生素名
 	'K0' as BRANCH_CODE--医疗机构
 from chk_con cc,chk_valu cv
 where cc.unid=cv.pkunid
@@ -3196,7 +3205,7 @@ select
 	cc.report_doctor as FINISH_EMPID,--检查医生
 	(select top 1 HisItem from HisCombItem hci,combinitem ci where ci.unid=hci.CombUnid and ci.id=cv.pkcombin_id) as ORDER_ID,--医嘱ID
 	cc.Audit_Date as HANDLE_TIME,--操作时间
-	cv.Name as TEST_ITEM_ID,--项目代码或者抗生素名
+	cv.combin_Name as TEST_ITEM_ID,--项目代码或者抗生素名
 	'K0' as BRANCH_CODE--医疗机构
 from chk_con_bak cc WITH(NOLOCK),chk_valu_bak cv WITH(NOLOCK)
 where cc.unid=cv.pkunid
