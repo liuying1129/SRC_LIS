@@ -3122,7 +3122,7 @@ select
 	case dbo.uf_ValueAlarm(cv.itemid,cv.Min_value,cv.Max_value,cv.itemvalue) when 1 then 'L' WHEN 2 THEN 'H' ELSE 'N' END as RESULT_STATE_DESC,--异常结果状态显示
 	isnull(dbo.uf_Reference_Value_B1(cv.min_value,cv.max_value),'')+isnull(dbo.uf_Reference_Value_B2(cv.min_value,cv.max_value),'') as REF_RANGE,--参考范围
 	cc.Audit_Date as FINISH_TIME,--完成时间
-	cc.report_doctor as FINISH_EMPID,--检查医生
+	(select top 1 w.id from worker w where w.name=cc.report_doctor) as FINISH_EMPID,--检查医生
 	cc.His_Unid as REG_ID,--体检号
 	cv.itemid as TEST_ITEM_ID,--项目代码或者抗生素名
 	'K0' as BRANCH_CODE--医疗机构
@@ -3148,7 +3148,7 @@ select
 	case dbo.uf_ValueAlarm(cv.itemid,cv.Min_value,cv.Max_value,cv.itemvalue) when 1 then 'L' WHEN 2 THEN 'H' ELSE 'N' END as RESULT_STATE_DESC,--异常结果状态显示
 	isnull(dbo.uf_Reference_Value_B1(cv.min_value,cv.max_value),'')+isnull(dbo.uf_Reference_Value_B2(cv.min_value,cv.max_value),'') as REF_RANGE,--参考范围
 	cc.Audit_Date as FINISH_TIME,--完成时间
-	cc.report_doctor as FINISH_EMPID,--检查医生
+	(select top 1 w.id from worker w where w.name=cc.report_doctor) as FINISH_EMPID,--检查医生
 	cc.His_Unid as REG_ID,--体检号
 	cv.itemid as TEST_ITEM_ID,--项目代码或者抗生素名
 	'K0' as BRANCH_CODE--医疗机构
@@ -3182,7 +3182,7 @@ select
 	cc.unid as REPORT_NO,--报告单编号
 	1 as IS_VALID,--撤销后为失效
 	cc.Audit_Date as FINISH_TIME,--完成时间
-	cc.report_doctor as FINISH_EMPID,--检查医生
+	(select top 1 w.id from worker w where w.name=cc.report_doctor) as FINISH_EMPID,--检查医生
 	(select top 1 HisItem from HisCombItem hci,combinitem ci where ci.unid=hci.CombUnid and ci.id=cv.pkcombin_id) as ORDER_ID,--医嘱ID
 	cc.Audit_Date as HANDLE_TIME,--操作时间
 	cv.combin_Name as TEST_ITEM_ID,--项目代码或者抗生素名
@@ -3203,7 +3203,7 @@ select
 	cc.unid as REPORT_NO,--报告单编号
 	1 as IS_VALID,--撤销后为失效
 	cc.Audit_Date as FINISH_TIME,--完成时间
-	cc.report_doctor as FINISH_EMPID,--检查医生
+	(select top 1 w.id from worker w where w.name=cc.report_doctor) as FINISH_EMPID,--检查医生
 	(select top 1 HisItem from HisCombItem hci,combinitem ci where ci.unid=hci.CombUnid and ci.id=cv.pkcombin_id) as ORDER_ID,--医嘱ID
 	cc.Audit_Date as HANDLE_TIME,--操作时间
 	cv.combin_Name as TEST_ITEM_ID,--项目代码或者抗生素名
@@ -3214,6 +3214,17 @@ and isnull(cv.itemvalue,'')<>''
 and cc.check_date>getdate()-180
 and isnull(cc.TjJianYan,'')<>''
 group by cc.His_Unid,cc.DNH,cc.unid,cc.Audit_Date,cc.report_doctor,cv.combin_Name,cv.pkcombin_id
+
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[view_LIS_Worker]') and OBJECTPROPERTY(id, N'IsView') = 1)
+drop view [dbo].[view_LIS_Worker]
+GO
+
+CREATE VIEW view_LIS_Worker
+AS
+--LIS提供给标软PEIS的视图
+SELECT id,name FROM worker
 
 GO
 
@@ -4615,9 +4626,13 @@ sp_refreshview  'dbo.view_HBV_Value'
 GO
 sp_refreshview  'dbo.view_UT_LIS_RESULT'
 GO
+sp_refreshview  'dbo.view_UT_LIS_RESULT_Header'
+GO
 sp_refreshview  'dbo.view_Chk_Con_All'
 GO
 sp_refreshview  'dbo.view_Show_chk_Con_His'
 GO
 sp_refreshview  'dbo.view_LeakItem_Warning'
+GO
+sp_refreshview  'dbo.view_LIS_Worker'
 GO
