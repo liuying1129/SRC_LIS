@@ -3114,7 +3114,7 @@ select
 	1 as REPORT_SEQNO,--报告单序号,一张报告单有多份
 	cc.lsh as SPEC_ID,--标本ID
 	cc.TjJianYan as BARCODE,--条码号
-	cc.DNH as REQUEST_NO,--申请单编号
+	cv.Surem1 as REQUEST_NO,--申请单编号
 	(select top 1 HisItem from HisCombItem hci,combinitem ci where ci.unid=hci.CombUnid and ci.id=cv.pkcombin_id) as ORDER_ID,--医嘱ID
 	CV.Name as ITEM_NAME,--项目名称
 	cv.unit as RESULT_UNIT,--结果单位
@@ -3140,7 +3140,7 @@ select
 	1 as REPORT_SEQNO,--报告单序号,一张报告单有多份
 	cc.lsh as SPEC_ID,--标本ID
 	cc.TjJianYan as BARCODE,--条码号
-	cc.DNH as REQUEST_NO,--申请单编号
+	cv.Surem1 as REQUEST_NO,--申请单编号
 	(select top 1 HisItem from HisCombItem hci,combinitem ci where ci.unid=hci.CombUnid and ci.id=cv.pkcombin_id) as ORDER_ID,--医嘱ID
 	CV.Name as ITEM_NAME,--项目名称
 	cv.unit as RESULT_UNIT,--结果单位
@@ -3178,7 +3178,7 @@ AS
 --LIS提供给标软PEIS的结果视图
 select	
 	cc.His_Unid as REG_ID,--体检号
-	cc.DNH as REQUEST_NO,--申请单编号
+	cv.Surem1 as REQUEST_NO,--申请单编号
 	cc.unid as REPORT_NO,--报告单编号
 	1 as IS_VALID,--撤销后为失效
 	cc.Audit_Date as FINISH_TIME,--完成时间
@@ -3193,13 +3193,13 @@ AND ISNULL(cc.report_doctor,'')<>''
 and cv.issure='1'
 and isnull(cv.itemvalue,'')<>''
 and isnull(cc.TjJianYan,'')<>''
-group by cc.His_Unid,cc.DNH,cc.unid,cc.Audit_Date,cc.report_doctor,cv.combin_Name,cv.pkcombin_id
+group by cc.His_Unid,cv.Surem1,cc.unid,cc.Audit_Date,cc.report_doctor,cv.combin_Name,cv.pkcombin_id
 
 union all
 
 select	
 	cc.His_Unid as REG_ID,--体检号
-	cc.DNH as REQUEST_NO,--申请单编号
+	cv.Surem1 as REQUEST_NO,--申请单编号
 	cc.unid as REPORT_NO,--报告单编号
 	1 as IS_VALID,--撤销后为失效
 	cc.Audit_Date as FINISH_TIME,--完成时间
@@ -3213,7 +3213,7 @@ where cc.unid=cv.pkunid
 and isnull(cv.itemvalue,'')<>''
 and cc.check_date>getdate()-180
 and isnull(cc.TjJianYan,'')<>''
-group by cc.His_Unid,cc.DNH,cc.unid,cc.Audit_Date,cc.report_doctor,cv.combin_Name,cv.pkcombin_id
+group by cc.His_Unid,cv.Surem1,cc.unid,cc.Audit_Date,cc.report_doctor,cv.combin_Name,cv.pkcombin_id
 
 GO
 
