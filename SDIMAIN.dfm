@@ -156,58 +156,16 @@ object SDIAppForm: TSDIAppForm
         Caption = #20998#32452#25171#21360'F9'
         OnClick = suiButton1Click
       end
-      object ToolButton3: TToolButton
-        Left = 561
-        Top = 2
-        Width = 3
-        Caption = 'ToolButton3'
-        ImageIndex = 4
-        Style = tbsSeparator
-      end
-      object SpeedButton2: TSpeedButton
-        Left = 564
-        Top = 2
-        Width = 95
-        Height = 22
-        Caption = #36873#21462#30003#35831#21333'F12'
-        OnClick = SpeedButton2Click
-      end
       object ToolButton5: TToolButton
-        Left = 659
+        Left = 561
         Top = 2
         Width = 8
         Caption = 'ToolButton5'
         ImageIndex = 5
         Style = tbsSeparator
       end
-      object LYLed1: TLYLed
-        Left = 667
-        Top = 2
-        Width = 19
-        Height = 22
-        Cursor = crDefault
-        Hint = #26465#30721#25195#25551#28431#39033#39044#35686
-        Value = False
-        OnColor = clRed
-        OffColor = clBtnFace
-        Interval = 500
-        Blink = True
-        BorderColor = clMaroon
-        hasSound = False
-        SoundString = '.\Wave\Driveby.wav'
-        SoundInValue = True
-        OnDblClick = LYLed1DblClick
-      end
-      object ToolButton7: TToolButton
-        Left = 686
-        Top = 2
-        Width = 8
-        Caption = 'ToolButton7'
-        ImageIndex = 6
-        Style = tbsSeparator
-      end
       object LYLed2: TLYLed
-        Left = 694
+        Left = 569
         Top = 2
         Width = 19
         Height = 22
@@ -1243,7 +1201,6 @@ object SDIAppForm: TSDIAppForm
     object Action8: TAction
       Caption = 'Action8'
       ShortCut = 123
-      OnExecute = SpeedButton2Click
     end
   end
   object ImageList1: TImageList
@@ -2426,12 +2383,6 @@ object SDIAppForm: TSDIAppForm
       Caption = #31227#38500
       OnClick = N17Click
     end
-  end
-  object TimerLeakItemWarning: TTimer
-    Interval = 60000
-    OnTimer = TimerLeakItemWarningTimer
-    Left = 677
-    Top = 377
   end
   object TimerMakeTjDescription: TTimer
     Interval = 30000

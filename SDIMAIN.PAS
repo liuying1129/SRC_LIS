@@ -173,8 +173,6 @@ type
     TabSheet2: TTabSheet;
     N73: TMenuItem;
     N74: TMenuItem;
-    ToolButton3: TToolButton;
-    SpeedButton2: TSpeedButton;
     Action8: TAction;
     ScrollBoxPicture: TScrollBox;
     N66: TMenuItem;
@@ -216,10 +214,7 @@ type
     N17: TMenuItem;
     N60: TMenuItem;
     N75: TMenuItem;
-    LYLed1: TLYLed;
     ToolButton5: TToolButton;
-    TimerLeakItemWarning: TTimer;
-    ToolButton7: TToolButton;
     LYLed2: TLYLed;
     TimerMakeTjDescription: TTimer;
     N85: TMenuItem;
@@ -357,7 +352,6 @@ type
     procedure N23Click(Sender: TObject);
     procedure N48Click(Sender: TObject);
     procedure N74Click(Sender: TObject);
-    procedure SpeedButton2Click(Sender: TObject);
     procedure ADO_dtlBeforePost(DataSet: TDataSet);
     procedure N71Click(Sender: TObject);
     procedure N29Click(Sender: TObject);
@@ -384,8 +378,6 @@ type
     procedure N17Click(Sender: TObject);
     procedure N75Click(Sender: TObject);
     procedure frReport1PrintReport;
-    procedure LYLed1DblClick(Sender: TObject);
-    procedure TimerLeakItemWarningTimer(Sender: TObject);
     procedure TimerMakeTjDescriptionTimer(Sender: TObject);
     procedure N85Click(Sender: TObject);
     procedure FormActivate(Sender: TObject);
@@ -458,7 +450,7 @@ uses  Unit_dialog_pllr,
   UfrmExcelQuery, UfrmStaticCombItem,
   UDM, UfrmFromExcelLoad,
   UfrmXDepictType, UfrmXDepict, UfrmCommCode, UfrmPlxg, UfrmCopyInfo,
-  UfrmPhoto, UfrmShowChkConHis, uQRCode, UfrmLeakItemWarning,
+  UfrmPhoto, uQRCode,
   UfrmModifyPwd, UfrmEquipManage, UfrmSJ_JBXX, softMeter_globalVar,
   UfrmHorizontalExport;
 
@@ -3667,11 +3659,6 @@ begin
   frmPhoto(iValueId).ShowModal;
 end;
 
-procedure TSDIAppForm.SpeedButton2Click(Sender: TObject);
-begin
-  frmShowChkConHis('').ShowModal;
-end;
-
 procedure TSDIAppForm.ADO_dtlBeforePost(DataSet: TDataSet);
 var
   s1:string;
@@ -4242,16 +4229,6 @@ begin
 
   if sHistorySeries<>sCurSeries then//有历史结果则显示出来,但不一定有曲线（非数字结果无曲线）
     frmHistoryResult(sHistorySeries).ShowModal;
-end;
-
-procedure TSDIAppForm.LYLed1DblClick(Sender: TObject);
-begin
-  if (Sender as TLYLed).Value then frmLeakItemWarning.Show;
-end;
-
-procedure TSDIAppForm.TimerLeakItemWarningTimer(Sender: TObject);
-begin
-  if '1'=ScalarSQLCmd(LisConn,'select TOP 1 1 from view_LeakItem_Warning ') then LYLed1.Value:=true else LYLed1.Value:=false;
 end;
 
 procedure TSDIAppForm.TimerMakeTjDescriptionTimer(Sender: TObject);
