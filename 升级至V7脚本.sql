@@ -3115,7 +3115,7 @@ select
 	cc.lsh as SPEC_ID,--标本ID
 	cc.TjJianYan as BARCODE,--条码号
 	cv.Surem1 as REQUEST_NO,--申请单编号
-	(select top 1 HisItem from HisCombItem hci,combinitem ci where ci.unid=hci.CombUnid and ci.id=cv.pkcombin_id) as ORDER_ID,--医嘱ID
+	0 as ORDER_ID,--医嘱ID (select top 1 HisItem from HisCombItem hci,combinitem ci where ci.unid=hci.CombUnid and ci.id=cv.pkcombin_id)
 	CV.Name as ITEM_NAME,--项目名称
 	cv.unit as RESULT_UNIT,--结果单位
 	cv.itemvalue as RESULT_DATA,--结果数据
@@ -3141,7 +3141,7 @@ select
 	cc.lsh as SPEC_ID,--标本ID
 	cc.TjJianYan as BARCODE,--条码号
 	cv.Surem1 as REQUEST_NO,--申请单编号
-	(select top 1 HisItem from HisCombItem hci,combinitem ci where ci.unid=hci.CombUnid and ci.id=cv.pkcombin_id) as ORDER_ID,--医嘱ID
+	0 as ORDER_ID,--医嘱ID (select top 1 HisItem from HisCombItem hci,combinitem ci where ci.unid=hci.CombUnid and ci.id=cv.pkcombin_id)
 	CV.Name as ITEM_NAME,--项目名称
 	cv.unit as RESULT_UNIT,--结果单位
 	cv.itemvalue as RESULT_DATA,--结果数据
@@ -3183,7 +3183,7 @@ select
 	1 as IS_VALID,--撤销后为失效
 	cc.Audit_Date as FINISH_TIME,--完成时间
 	(select top 1 w.id from worker w where w.name=cc.report_doctor) as FINISH_EMPID,--检查医生
-	(select top 1 HisItem from HisCombItem hci,combinitem ci where ci.unid=hci.CombUnid and ci.id=cv.pkcombin_id) as ORDER_ID,--医嘱ID
+	0 as ORDER_ID,--医嘱ID (select top 1 HisItem from HisCombItem hci,combinitem ci where ci.unid=hci.CombUnid and ci.id=cv.pkcombin_id)
 	cc.Audit_Date as HANDLE_TIME,--操作时间
 	cv.combin_Name as TEST_ITEM_ID,--项目代码或者抗生素名
 	'K0' as BRANCH_CODE--医疗机构
@@ -3193,7 +3193,7 @@ AND ISNULL(cc.report_doctor,'')<>''
 and cv.issure='1'
 and isnull(cv.itemvalue,'')<>''
 and isnull(cc.TjJianYan,'')<>''
-group by cc.His_Unid,cv.Surem1,cc.unid,cc.Audit_Date,cc.report_doctor,cv.combin_Name,cv.pkcombin_id
+group by cc.His_Unid,cv.Surem1,cc.unid,cc.Audit_Date,cc.report_doctor,cv.combin_Name --,cv.pkcombin_id
 
 union all
 
@@ -3204,7 +3204,7 @@ select
 	1 as IS_VALID,--撤销后为失效
 	cc.Audit_Date as FINISH_TIME,--完成时间
 	(select top 1 w.id from worker w where w.name=cc.report_doctor) as FINISH_EMPID,--检查医生
-	(select top 1 HisItem from HisCombItem hci,combinitem ci where ci.unid=hci.CombUnid and ci.id=cv.pkcombin_id) as ORDER_ID,--医嘱ID
+	0 as ORDER_ID,--医嘱ID (select top 1 HisItem from HisCombItem hci,combinitem ci where ci.unid=hci.CombUnid and ci.id=cv.pkcombin_id)
 	cc.Audit_Date as HANDLE_TIME,--操作时间
 	cv.combin_Name as TEST_ITEM_ID,--项目代码或者抗生素名
 	'K0' as BRANCH_CODE--医疗机构
@@ -3213,7 +3213,7 @@ where cc.unid=cv.pkunid
 and isnull(cv.itemvalue,'')<>''
 and cc.check_date>getdate()-180
 and isnull(cc.TjJianYan,'')<>''
-group by cc.His_Unid,cv.Surem1,cc.unid,cc.Audit_Date,cc.report_doctor,cv.combin_Name,cv.pkcombin_id
+group by cc.His_Unid,cv.Surem1,cc.unid,cc.Audit_Date,cc.report_doctor,cv.combin_Name --,cv.pkcombin_id
 
 GO
 
