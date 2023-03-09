@@ -638,11 +638,6 @@ begin
 end;
 
 procedure TSDIAppForm.ToolButton1Click(Sender: TObject);
-var
-  sUnid{,sHis_Unid}:string;
-  {SS,}Surem2:STRING;
-  adotemp2:tadoquery;
-  iSurem2:integer;
 begin
   if not ifhaspower(sender,powerstr_js_main) then exit;
 
@@ -655,31 +650,7 @@ begin
   end;
   if (MessageDlg('是否真要删除当前记录？', mtConfirmation, [mbYes, mbNo], 0) <> mrYes) then exit;
 
-  //add by liuying 20110805 start
-  //必须在DBGrid1.DataSource.DataSet.Delete前处理,否则select pkcombin_id from chk_valu where pkunid=xxx查不到记录
-  sUnid:=DBGrid1.DataSource.DataSet.fieldbyname('唯一编号').AsString;
-
-  adotemp2:=tadoquery.Create(nil);
-  adotemp2.Connection:=DM.ADOConnection1;
-  ADOtemp2.Close;
-  ADOtemp2.SQL.Clear;
-  ADOtemp2.SQL.Text:='select Surem2 from chk_valu where pkunid='+sUnid+' group by Surem2';
-  ADOtemp2.Open;
-
   DBGrid1.DataSource.DataSet.Delete;
-
-  while not ADOtemp2.Eof do
-  begin
-    Surem2:=ADOtemp2.fieldbyname('Surem2').AsString;
-    if Surem2='' then begin ADOtemp2.Next;continue; end;
-    if not trystrtoint(Surem2,iSurem2)then begin ADOtemp2.Next;continue; end;
-    if iSurem2<=0 then begin ADOtemp2.Next;continue; end;
-    if '1'<>ScalarSQLCmd(LisConn,'select TOP 1 1 from chk_valu where Surem2='''+Surem2+''' and issure=''1'' ') then
-      ExecSQLCmd(LisConn,'update chk_valu_his set itemvalue=null where cast(valueid as varchar)='''+Surem2+''' and isnull(itemvalue,'''')=''1'' ');
-    ADOtemp2.Next;
-  end;
-  ADOtemp2.Free;  
-  //add by liuying 20110805 stop}
 end;
 
 procedure TSDIAppForm.N3Click(Sender: TObject);
@@ -2260,10 +2231,9 @@ begin
       //增加单个小项目start
       if sAA.IndexOf(itemid)<0 then
       begin
-        strsql := 'insert into chk_valu(pkunid,issure,pkcombin_id,itemid,Surem2) ' +
+        strsql := 'insert into chk_valu(pkunid,issure,pkcombin_id,itemid) ' +
           ' values( ' +
-          inttostr(checkunid)+',1,''' +s2+''','''+itemid+''','''+inttostr(AChk_Valu_His_ValueId)+''''+
-          ' ) ';
+          inttostr(checkunid)+',1,''' +s2+''','''+itemid+''')';
         ExecSQLCmd(LisConn,strsql);
         sAA.Add(itemid);
       end;

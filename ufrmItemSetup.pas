@@ -146,7 +146,7 @@ const
           ' price as 价格,defaultvalue as 默认值,unit as 单位,'+
           ' caculexpress as 计算公式,'+
           ' pym as 拼音简码,wbm as 五笔简码, '+
-          ' SysName as 系统名称,unid '+//Dosage1,Dosage2,Surem1,Surem2,Urine1,Urine2,
+          ' SysName as 系统名称,unid '+
           ' from clinicchkitem '+
           ' order by itemid ';
 var
@@ -227,12 +227,6 @@ begin
             LabeledEdit2.Text:=trim(adoquery1.fieldbyname('联机标识符').AsString);
             LabeledEdit9.Text:=trim(adoquery1.fieldbyname('联机字母').AsString);
             LabeledEdit1.Text:=trim(adoquery1.fieldbyname('顺序').AsString);
-            //LabeledEdit5.Text:=adoquery1.fieldbyname('Dosage1').AsString;
-            //LabeledEdit7.Text:=trim(adoquery1.fieldbyname('Dosage2').AsString);
-            //LabeledEdit10.Text:=trim(adoquery1.fieldbyname('Surem1').AsString);
-            //LabeledEdit11.Text:=trim(adoquery1.fieldbyname('Surem2').AsString);
-            //LabeledEdit12.Text:=trim(adoquery1.fieldbyname('Urine1').AsString);
-            //LabeledEdit13.Text:=trim(adoquery1.fieldbyname('Urine2').AsString);
           end else
           begin
             ClearItemEdit;
@@ -252,10 +246,10 @@ begin
     ifNewAddItem:=false;
     sqlstr:='insert into clinicchkitem (itemid,name,english_name,'+
       ' printorder,unit,price,caculexpress,'+
-      ' dlttype,commword,SysName)values( '+//Dosage1,Dosage2,Surem1,Surem2,Urine1,Urine2,
+      ' dlttype,commword,SysName)values( '+
       ' :itemid,:name,:english_name,'+
       ' :printorder,:unit,:price,:caculexpress,'+
-      ' :dlttype,:commword,:SysName) ';//:Dosage1,:Dosage2,:Surem1,:Surem2,:Urine1,:Urine2,
+      ' :dlttype,:commword,:SysName) ';
     adotemp11.Close;
     adotemp11.SQL.Clear;
     adotemp11.SQL.Add(sqlstr);
@@ -269,12 +263,6 @@ begin
     adotemp11.Parameters.ParamByName('unit').Value:=trim(LabeledEdit4chkitem.text);
     adotemp11.Parameters.ParamByName('commword').Value:=uppercase(trim(LabeledEdit9.text));
     adotemp11.Parameters.ParamByName('printorder').Value:=strtointdef(LabeledEdit1.text,0);
-    //adotemp11.Parameters.ParamByName('Dosage1').Value:=LabeledEdit5.text;
-    //adotemp11.Parameters.ParamByName('Dosage2').Value:=trim(LabeledEdit7.text);
-    //adotemp11.Parameters.ParamByName('Surem1').Value:=trim(LabeledEdit10.text);
-    //adotemp11.Parameters.ParamByName('Surem2').Value:=trim(LabeledEdit11.text);
-    //adotemp11.Parameters.ParamByName('Urine1').Value:=trim(LabeledEdit12.text);
-    //adotemp11.Parameters.ParamByName('Urine2').Value:=trim(LabeledEdit13.text);
     adotemp11.Parameters.ParamByName('SysName').Value:=SYSNAME;
     adotemp11.Open;
     ADOQuery1.Requery([]);
@@ -303,7 +291,7 @@ begin
       ' printorder=:printorder,unit=:unit,'+
       ' price=:price,caculexpress=:caculexpress,'+
       ' dlttype=:dlttype,commword=:commword,'+//Dosage1=:Dosage1,
-      ' SysName=:SysName  '+//Dosage2=:Dosage2,Surem1=:Surem1,Surem2=:Surem2,Urine1=:Urine1,Urine2=:Urine2,
+      ' SysName=:SysName  '+
       ' Where    Unid=:Unid      ';
     adotemp11.Parameters.ParamByName('itemid').Value:=trim(LabeledEdit1chkitem.Text);
     adotemp11.Parameters.ParamByName('name').Value:=trim(LabeledEdit2chkitem.Text);
@@ -314,12 +302,6 @@ begin
     adotemp11.Parameters.ParamByName('unit').Value:=trim(LabeledEdit4chkitem.text);
     adotemp11.Parameters.ParamByName('commword').Value:=uppercase(trim(LabeledEdit9.text));
     adotemp11.Parameters.ParamByName('printorder').Value:=strtointdef(LabeledEdit1.text,0);
-    //adotemp11.Parameters.ParamByName('Dosage1').Value:=LabeledEdit5.text;
-    //adotemp11.Parameters.ParamByName('Dosage2').Value:=trim(LabeledEdit7.text);
-    //adotemp11.Parameters.ParamByName('Surem1').Value:=trim(LabeledEdit10.text);
-    //adotemp11.Parameters.ParamByName('Surem2').Value:=trim(LabeledEdit11.text);
-    //adotemp11.Parameters.ParamByName('Urine1').Value:=trim(LabeledEdit12.text);
-    //adotemp11.Parameters.ParamByName('Urine2').Value:=trim(LabeledEdit13.text);
     adotemp11.Parameters.ParamByName('Unid').Value:=Insert_Identity;
     adotemp11.Parameters.ParamByName('SysName').Value:=SYSNAME;
     adotemp11.ExecSQL;

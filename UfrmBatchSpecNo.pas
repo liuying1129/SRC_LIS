@@ -68,16 +68,13 @@ procedure TfrmBatchSpecNo.BitBtn1Click(Sender: TObject);
 var
   ssql:string;
   k:integer;
-  adotemp2,adotemp4,adotemp5:tadoquery;
+  adotemp2,adotemp4:tadoquery;
   xx:integer;
   s0,s1,ss:string;
   sTemp,LshRange:string;
   pLshRange:Pchar;
   ini:tinifile;
   Save_Cursor:TCursor;
-
-  Surem2:STRING;
-  iSurem2:integer;
 begin
   Save_Cursor := Screen.Cursor;
   Screen.Cursor := crHourGlass;    { Show hourglass cursor }
@@ -148,7 +145,6 @@ begin
     adotemp4.SQL.Text:=s0+s1;
     adotemp4.Open;
     if adotemp4.RecordCount=0 then begin application.messagebox('所选范围内记录条数为零，请重新输入！', '提示信息',MB_OK); adotemp4.Free; exit; end;
-    //adotemp4.First;
     while not adotemp4.Eof do
     begin
         xx:=adotemp4.fieldbyname('unid').AsInteger;
@@ -187,26 +183,7 @@ begin
             OR(TRIM(SDIAppForm.ADObasic.FieldByName('审核者').AsString)='') then
           begin
 
-            adotemp5:=tadoquery.Create(nil);
-            adotemp5.Connection:=DM.ADOConnection1;
-            ADOtemp5.Close;
-            ADOtemp5.SQL.Clear;
-            ADOtemp5.SQL.Text:='select Surem2 from chk_valu where pkunid='+inttostr(xx)+' group by Surem2';
-            ADOtemp5.Open;
-
             adotemp4.Delete;
-
-            while not ADOtemp5.Eof do
-            begin
-              Surem2:=ADOtemp5.fieldbyname('Surem2').AsString;
-              if Surem2='' then begin ADOtemp5.Next;continue; end;
-              if not trystrtoint(Surem2,iSurem2)then begin ADOtemp5.Next;continue; end;
-              if iSurem2<=0 then begin ADOtemp5.Next;continue; end;
-              if '1'<>ScalarSQLCmd(LisConn,'select TOP 1 1 from chk_valu where Surem2='''+Surem2+''' and issure=''1'' ') then
-                ExecSQLCmd(LisConn,'update chk_valu_his set itemvalue=null where cast(valueid as varchar)='''+Surem2+''' and isnull(itemvalue,'''')=''1'' ');
-              ADOtemp5.Next;
-            end;
-            ADOtemp5.Free;
 
             CONTINUE;
           end ;
@@ -215,14 +192,9 @@ begin
     adotemp4.Free;
 
     sdiappform.suiButton8Click(nil);
-
   end;
   
   Screen.Cursor := Save_Cursor;  { Always restore to normal }
-
-  //ini:=TINIFILE.Create(ExtractFilePath(application.ExeName)+'AppProfile.INI');
-  //ini.WriteString('Interface','联机号范围字母',LabeledEdit1.Text);
-  //ini.Free;
 
   close;
 end;
