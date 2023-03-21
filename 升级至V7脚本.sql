@@ -228,7 +228,10 @@ begin
 end
 go
 
-ALTER TABLE clinicchkitem ALTER COLUMN PYM varchar(15)
+alter table clinicchkitem alter column name varchar(50)
+GO
+
+ALTER TABLE clinicchkitem ALTER COLUMN PYM varchar(50)
 ALTER TABLE clinicchkitem ALTER COLUMN WBM varchar(15)
 go  
 
@@ -370,6 +373,10 @@ GO
 --2012-03-08从varchar(30)改为varchar(50),越秀区中医医院的组合项目特长
 alter table chk_valu alter column combin_Name varchar(50) null
 alter table chk_valu_bak alter column combin_Name varchar(50) null
+GO
+
+alter table chk_valu alter column Name varchar(50) Null
+alter table chk_valu_bak alter column Name varchar(50) Null
 GO
 
 IF NOT EXISTS (select 1 from syscolumns where name='Photo' and id=object_id('chk_valu'))
