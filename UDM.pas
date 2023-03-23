@@ -134,6 +134,7 @@ function LastPos(const ASubStr,ASourStr:Pchar):integer;stdcall;external 'LYFunct
 procedure WriteLog(const ALogStr: Pchar);stdcall;external 'LYFunction.dll';
 procedure RequestForm2Lis(const AAdoconnstr,ARequestJSON,CurrentWorkGroup:PChar);stdcall;external 'Request2Lis.dll';
 function UnicodeToChinese(const AUnicodeStr:PChar):PChar;stdcall;external 'LYFunction.dll';
+function GetMaxCheckID(const AWorkGroup,APreDate,APreCheckID:PChar):PChar;stdcall;external 'LYFunction.dll';
 //****************************************************************************//
 
 procedure SendKeyToControl(const VK:byte;control:Twincontrol);
@@ -143,17 +144,13 @@ procedure AddPickList(dbgrid: tdbgrid; const FieldIndex: integer;const JoinStr: 
 //控制指定列的显示与否
 procedure VisibleColumn(dbgrid:tdbgrid;const DisplayName:string;const ifVisible:boolean);
 function ifhaspower(sender: tobject;const powerstr_js:string): boolean;
-//function GetMaxId(const combin_id:string;CurDate:tdate;Diagnosetype:string): string;//取得最大流水号,参数:组别名及日期
 function HasSubInDbf(Node:TTreeNode):Boolean;
 function ifRegister:boolean;
 Procedure ChangeYouFormAllControlIme(YFormName:TWinControl);//需要更改输入法的窗体名称
 function SmoothLine(const strHistogram:string;const SmoothNum:byte;var Strings:TStrings;var AMin:single;var AMax:single):integer;
-function GetNextValue(CurValue: string): string;
-function GetFirstValue(CurValue: string): string;
 function MakeDBConn:boolean;
 procedure LoadGroupName(const comboBox:TcomboBox;const ASel:string);
 procedure MakeDBGridColumnsAutoFixItsWidth(objDBGrid:TDBGrid);
-function GetMaxCheckId(const ACombin_ID:string;const AServerDate:tdate):string;//获取指定工作组、日期的下一个联机号
 function ExecSQLCmd(AConnectionString:string;ASQL:string):integer;
 function ScalarSQLCmd(AConnectionString:string;ASQL:string):string;
 procedure combinchecklistbox(CheckListBox:TCheckListBox);//将组合项目号及名称导入CheckListBox中
@@ -367,49 +364,6 @@ begin
   if not result then
       messagedlg('对不起，您没有该权限！',mtinformation,[mbok],0);
 end;
-
-{function GetMaxId(const combin_id:string;CurDate:tdate;Diagnosetype:string): string;  //取得最大流水号
-var
-  maxid: string;
-  adotemp11:tadoquery;
-  iMaxId:integer;
-begin
-  if(Diagnosetype<>CGYXJB)and(Diagnosetype<>'急诊')and(Diagnosetype<>'加急')then Diagnosetype:=CGYXJB;
-
-  adotemp11:=tadoquery.Create(nil);
-  adotemp11.Connection:=DM.ADOConnection1;
-          ADOtemp11.Close;
-          ADOtemp11.SQL.Clear;
-          //ADOtemp11.SQL.Text:='select max(LSH)+1 as maxid from chk_con '+
-          //                  ' WHERE (CONVERT(CHAR(10),check_date,121)=:p_CHECK_DATE1 ) '+
-          //                  ' and (chk_con.LSH like ''[0-9][0-9][0-9][0-9]'') '+
-          //                  ' AND (chk_con.combin_id='''+combin_id+''')'+
-          //                  ' and (chk_con.Diagnosetype='''+Diagnosetype+''')'+
-          //                  ' order by maxid desc';     //按降序排序
-          ADOtemp11.SQL.Text:='select LSH from chk_con '+
-                            ' WHERE (CONVERT(CHAR(10),check_date,121)=:p_CHECK_DATE1 ) '+
-                            ' AND (chk_con.combin_id='''+combin_id+''')'+
-                            ' and (chk_con.Diagnosetype='''+Diagnosetype+''')'+
-                            ' order by right(''0000''+lsh,4) desc';     //按降序排序
-
-          ADOtemp11.Parameters.ParamByName('p_CHECK_DATE1').Value:=FormatDateTime('YYYY-MM-DD',CurDate);
-          ADOtemp11.open;
-          //ADOtemp11.First;
-      maxid := trim(ADOtemp11.FieldByName('LSH').AsString);
-      ADOtemp11.Free;
-      
-       if not trystrtoint(maxid,iMaxId) then begin result:='0001';exit;end;
-
-      //if Length(maxid) = 0 then
-      //  maxid := '0001';
-      //if Length(maxid) = 1 then
-      //  maxid := '000' + maxid;
-      //if Length(maxid) = 2 then
-      //  maxid := '00' + maxid;
-      //if Length(maxid) = 3 then
-      //  maxid := '0' + maxid; 
-      result := rightstr('0000'+inttostr(iMaxId+1),4);
-end;//}
 
 function HasSubInDbf(Node:TTreeNode):Boolean;
 //检查节点Node有无子节点,有则返回True,反之返回False
@@ -648,70 +602,6 @@ begin
   result:=t;
 end;
 
-function GetNextValue(CurValue: string): string;
-VAR
-  iCurValue,i:INTEGER;
-  rCurValue,sCurValue:STRING;
-begin
-    RESULT:='';
-    for i :=length(CurValue) downto 1 do
-    begin
-      if not(CurValue[i] in ['0'..'9']) then
-      begin
-        if i=length(CurValue) then //最后一个字符为非数字
-        begin
-          exit;
-        end;
-        iCurValue:=strtoint(copy(CurValue,i+1,length(CurValue)-i));
-        inc(iCurValue);
-        rCurValue:=Format('%.'+inttostr(length(CurValue)-i)+'d', [iCurValue]);//iMaxFieldValue
-        sCurValue:=copy(CurValue,1,i);
-        result:=sCurValue + rCurValue;
-        exit;
-      end else
-      begin
-        if i=1 then //全部为数字的情况
-        begin
-          iCurValue:=strtoint(CurValue);
-          inc(iCurValue);
-          rCurValue:=Format('%.'+inttostr(length(CurValue))+'d', [iCurValue]);//iMaxFieldValue
-          result:= rCurValue;
-          exit;
-        end;
-      end;
-    end;
-end;
-
-function GetFirstValue(CurValue: string): string;
-VAR
-  rCurValue,sCurValue:STRING;
-  i:integer;
-begin
-    RESULT:='';
-    for i :=length(CurValue) downto 1 do
-    begin
-      if not(CurValue[i] in ['0'..'9']) then
-      begin
-        if i=length(CurValue) then //最后一个字符为非数字
-        begin
-          exit;
-        end;
-        rCurValue:=Format('%.'+inttostr(length(CurValue)-i)+'d', [1]);//iMaxFieldValue
-        sCurValue:=copy(CurValue,1,i);
-        result:=sCurValue + rCurValue;
-        exit;
-      end else
-      begin
-        if i=1 then //全部为数字的情况
-        begin
-          rCurValue:=Format('%.'+inttostr(length(CurValue))+'d', [1]);//iMaxFieldValue
-          result:= rCurValue;
-          exit;
-        end;
-      end;
-    end;
-end;
-
 function MakeDBConn:boolean;
 var
   newconnstr,ss: string;
@@ -835,44 +725,6 @@ begin
   begin
     objDbGrid.Columns[i].Width:=aDgCLength[i]*8;
   end;
-end;
-
-function GetMaxCheckId(const ACombin_ID:string;const AServerDate:tdate):string;
-var
-  ini:tinifile;
-  CheckDate,CheckId:string;
-  sList:TStrings;
-  i:integer;
-begin
-  result:='';
-  
-  if trim(ACombin_ID)='' then exit;
-
-  ini:=tinifile.Create(ChangeFileExt(Application.ExeName,'.ini'));
-  CheckDate:=ini.ReadString(ACombin_ID,'检查日期','');
-  CheckId:=ini.ReadString(ACombin_ID,'联机号','');
-  ini.Free;
-  CheckId:=StringReplace(CheckId,'，',',',[rfReplaceAll,rfIgnoreCase]);
-  sList:=TStringList.Create;
-  ExtractStrings([','],[],PChar(CheckId),sList);
-  CheckId:='';
-  if datetostr(AServerDate)=CheckDate then
-  begin
-    for i :=0  to sList.Count-1 do
-    begin
-      CheckId:=CheckId+GetNextValue(sList[i])+',';
-    end;
-  end
-  else begin
-    for i :=0  to sList.Count-1 do
-    begin
-      CheckId:=CheckId+GetFirstValue(sList[i])+',';
-    end;
-  end;
-  sList.Free;
-  if(CheckId<>'')and(CheckId[length(CheckId)]=',')then CheckId:=copy(CheckId,1,length(CheckId)-1);
-    
-  result:=CheckId;
 end;
 
 function ExecSQLCmd(AConnectionString:string;ASQL:string):integer;

@@ -546,6 +546,7 @@ procedure TSDIAppForm.ClearAll(CONST Clear_TYPE:integer);
 var
   ServerDate:tdate;
   ini:tinifile;
+  PreDate,PreCheckID:String;
 begin
   ServerDate:=GetServerDate(DM.ADOConnection1);
 
@@ -570,15 +571,17 @@ begin
   lbedtOldAddress.Clear;
   lbedtAddress.Clear;
   lbedtTelephone.Clear;
-  
-  //获取联机号
-  labelededit1.Text:=GetMaxCheckId(cbxConnChar.Text,ServerDate);
-  //==========
 
   //获取优先级别
   ini:=tinifile.Create(ChangeFileExt(Application.ExeName,'.ini'));
   LabeledEdit12.Text:=ini.ReadString('Interface','当前保存的优先级别','');
+  PreDate:=ini.ReadString(cbxConnChar.Text,'检查日期','');
+  PreCheckID:=ini.ReadString(cbxConnChar.Text,'联机号','');
   ini.Free;
+  //==========
+  
+  //获取联机号
+  labelededit1.Text:=GetMaxCheckId(PChar(cbxConnChar.Text),PChar(PreDate),PChar(PreCheckID));
   //==========
 end;
 
@@ -1823,7 +1826,7 @@ begin
   if trim(cbxConnChar.Text)<>'' then
   begin
     ini:=tinifile.Create(ChangeFileExt(Application.ExeName,'.ini'));
-    ini.WriteDate(cbxConnChar.Text,'检查日期',DateTimePicker2.Date);
+    ini.WriteString(cbxConnChar.Text,'检查日期',FormatDateTime('YYYY-MM-DD',DateTimePicker2.Date));
     ini.WriteString(cbxConnChar.Text,'联机号',LabeledEdit1.Text);
     ini.WriteString('Interface','当前保存的优先级别',LabeledEdit12.Text);
     ini.Free;
