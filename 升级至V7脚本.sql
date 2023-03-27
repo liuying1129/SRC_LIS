@@ -917,6 +917,11 @@ IF EXISTS (select 1 from syscolumns where name='ChkMethod' and id=object_id('chk
   Alter table chk_valu_bak drop column ChkMethod
 GO
 
+--2023-03-27从varchar(15)改为varchar(20),使之能容纳万达HIS申请单号
+alter table chk_valu alter column Surem1 varchar(20) null
+alter table chk_valu_bak alter column Surem1 varchar(20) null
+GO
+
 --20191130设备管理
 if not exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[EquipManage]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
 create table EquipManage
