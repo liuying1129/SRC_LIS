@@ -3229,6 +3229,10 @@ group by cc.His_Unid,cv.Surem1,cc.unid,cc.Audit_Date,cc.report_doctor,cv.combin_
 
 GO
 
+GRANT SELECT ON view_UT_LIS_RESULT TO YKPEIS
+GRANT SELECT ON view_UT_LIS_RESULT_Header TO YKPEIS
+GO
+
 if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[view_LIS_Worker]') and OBJECTPROPERTY(id, N'IsView') = 1)
 drop view [dbo].[view_LIS_Worker]
 GO
