@@ -3283,7 +3283,24 @@ and cci.COMMWORD='U'
 
 GO
 
+if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[v_hy_item]') and OBJECTPROPERTY(id, N'IsView') = 1)
+drop view [dbo].[v_hy_item]
+GO
+
+SET QUOTED_IDENTIFIER ON 
+GO
+SET ANSI_NULLS ON 
+GO
+
+CREATE VIEW v_hy_item
+AS
+--LIS提供给华银的项目对照视图
+select unid,itemid,name,english_name,unit,dlttype from clinicchkitem where COMMWORD='H'
+
+GO
+
 GRANT SELECT ON v_cm_sample TO HYLIS
+GRANT SELECT ON v_hy_item TO HYLIS
 GO
 
 if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[view_LIS_Worker]') and OBJECTPROPERTY(id, N'IsView') = 1)
