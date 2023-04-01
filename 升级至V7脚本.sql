@@ -3248,7 +3248,7 @@ AS
 select 
 cc.TjJianYan as hospitalBarcode
 ,'' as hospsamplenumber
-,cc.unid as pno
+,SUBSTRING（isnull(cc.checkid,''),2,100) as pno
 ,cc.His_MzOrZy as ptype
 ,cc.bedno
 ,cc.patientname as pname
@@ -3278,6 +3278,7 @@ from chk_con cc,chk_valu cv,clinicchkitem cci
 where cc.unid=cv.pkunid
 and cv.itemid=cci.itemid
 and ISNULL(cc.report_doctor,'')=''
+and LEFT(cc.checkid,1)='H'
 and isnull(cv.itemvalue,'')=''
 and cci.COMMWORD='H'
 
@@ -3295,7 +3296,9 @@ GO
 CREATE VIEW v_hy_item
 AS
 --LIS提供给华银的项目对照视图
-select unid,itemid,name,english_name,unit,dlttype from clinicchkitem where COMMWORD='H'
+select ci.Id,ci.Name,cci.itemid,cci.name as itemname,cci.english_name,cci.unit,cci.dlttype
+from clinicchkitem cci,CombSChkItem csci,combinitem ci
+where csci.ItemUnid=cci.unid and ci.Unid=csci.CombUnid and COMMWORD='H'
 
 GO
 
