@@ -3279,7 +3279,7 @@ where cc.unid=cv.pkunid
 and cv.itemid=cci.itemid
 and ISNULL(cc.report_doctor,'')=''
 and isnull(cv.itemvalue,'')=''
-and cci.COMMWORD='U'
+and cci.COMMWORD='H'
 
 GO
 
