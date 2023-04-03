@@ -3248,7 +3248,7 @@ AS
 select 
 cc.unid as hospitalBarcode
 ,'' as hospsamplenumber
-,SUBSTRING（isnull(cc.checkid,''),2,100) as pno
+,SUBSTRING(isnull(cc.checkid,''),2,100) as pno
 ,cc.His_MzOrZy as ptype
 ,cc.bedno
 ,cc.patientname as pname
