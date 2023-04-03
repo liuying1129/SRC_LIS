@@ -3246,7 +3246,7 @@ CREATE VIEW v_cm_sample
 AS
 --LIS提供给华银的视图
 select 
-cc.TjJianYan as hospitalBarcode
+cc.unid as hospitalBarcode
 ,'' as hospsamplenumber
 ,SUBSTRING（isnull(cc.checkid,''),2,100) as pno
 ,cc.His_MzOrZy as ptype
