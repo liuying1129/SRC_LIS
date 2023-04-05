@@ -3284,26 +3284,7 @@ and cci.COMMWORD='H'
 
 GO
 
-if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[v_hy_item]') and OBJECTPROPERTY(id, N'IsView') = 1)
-drop view [dbo].[v_hy_item]
-GO
-
-SET QUOTED_IDENTIFIER ON 
-GO
-SET ANSI_NULLS ON 
-GO
-
-CREATE VIEW v_hy_item
-AS
---LIS提供给华银的项目对照视图
-select ci.Id,ci.Name,cci.itemid,cci.name as itemname,cci.english_name,cci.unit,cci.dlttype
-from clinicchkitem cci,CombSChkItem csci,combinitem ci
-where csci.ItemUnid=cci.unid and ci.Unid=csci.CombUnid and COMMWORD='H'
-
-GO
-
 GRANT SELECT ON v_cm_sample TO HYLIS
-GRANT SELECT ON v_hy_item TO HYLIS
 GO
 
 if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[view_LIS_Worker]') and OBJECTPROPERTY(id, N'IsView') = 1)
