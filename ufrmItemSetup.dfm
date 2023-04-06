@@ -233,9 +233,9 @@ object frmItemSetup: TfrmItemSetup
         OnClick = BitBtn11Click
       end
       object BitBtn12: TBitBtn
-        Left = 93
-        Top = 176
-        Width = 80
+        Left = 238
+        Top = 216
+        Width = 75
         Height = 25
         Caption = #23548#20986#21442#32771#20540
         ParentShowHint = False
@@ -262,13 +262,22 @@ object frmItemSetup: TfrmItemSetup
         OnClick = BitBtn15Click
       end
       object BitBtn16: TBitBtn
-        Left = 173
+        Left = 93
         Top = 176
         Width = 140
         Height = 25
         Caption = #38750#25968#20540#32467#26524#36229#38480#20540#31649#29702
         TabOrder = 17
         OnClick = BitBtn16Click
+      end
+      object BitBtn17: TBitBtn
+        Left = 233
+        Top = 176
+        Width = 80
+        Height = 25
+        Caption = #21361#24613#20540#31649#29702
+        TabOrder = 18
+        OnClick = BitBtn17Click
       end
     end
     object DBGrid1: TDBGrid

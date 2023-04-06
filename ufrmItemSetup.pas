@@ -90,6 +90,7 @@ type
     Panel9: TPanel;
     Label23: TLabel;
     Label24: TLabel;
+    BitBtn17: TBitBtn;
     procedure FormCreate(Sender: TObject);
     procedure BitBtn1Click(Sender: TObject);
     procedure BitBtn2Click(Sender: TObject);
@@ -119,6 +120,7 @@ type
     procedure BitBtn14Click(Sender: TObject);
     procedure BitBtn15Click(Sender: TObject);
     procedure BitBtn16Click(Sender: TObject);
+    procedure BitBtn17Click(Sender: TObject);
   private
     { Private declarations }
     procedure updateedit;
@@ -137,7 +139,7 @@ function  frmItemSetup: TfrmItemSetup;
 implementation
 
 uses ufrm_referencevalue, UDM, SDIMAIN, UfrmCommValue, UfrmHisCombItem,UfrmExtItemSetup,
-  UfrmExceptionValue;
+  UfrmExceptionValue, UfrmCriticalManage;
 
 
 const
@@ -798,6 +800,14 @@ begin
   if ADOQuery1.RecordCount<=0 then exit;
 
   frmExceptionValue(adoquery1.fieldbyname('unid').asinteger).ShowModal;
+end;
+
+procedure TfrmItemSetup.BitBtn17Click(Sender: TObject);
+begin
+  if not ADOQuery1.Active then exit;
+  if ADOQuery1.RecordCount<=0 then exit;
+
+  frmCriticalManage(adoquery1.fieldbyname('unid').asinteger).ShowModal;
 end;
 
 initialization

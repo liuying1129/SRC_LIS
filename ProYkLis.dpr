@@ -41,7 +41,8 @@ uses
   UfrmSJ_JBXX in 'UfrmSJ_JBXX.pas' {frmSJ_JBXX},
   softMeter_globalVar in 'softMeter_globalVar.pas',
   UfrmHorizontalExport in 'UfrmHorizontalExport.pas' {frmHorizontalExport},
-  superobject in 'superobject.pas';
+  superobject in 'superobject.pas',
+  UfrmCriticalManage in 'UfrmCriticalManage.pas' {frmCriticalManage};
 
 {$R *.RES}
 
