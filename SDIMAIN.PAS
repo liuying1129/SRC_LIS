@@ -575,8 +575,12 @@ begin
   //获取优先级别
   ini:=tinifile.Create(ChangeFileExt(Application.ExeName,'.ini'));
   LabeledEdit12.Text:=ini.ReadString('Interface','当前保存的优先级别','');
-  PreDate:=ini.ReadString(cbxConnChar.Text,'检查日期','');
-  PreCheckID:=ini.ReadString(cbxConnChar.Text,'联机号','');
+  if trim(cbxConnChar.Text)<>'' then
+  begin
+    //如trim(cbxConnChar.Text)='',ReadString报错ntdll.dll
+    PreDate:=ini.ReadString(cbxConnChar.Text,'检查日期','');
+    PreCheckID:=ini.ReadString(cbxConnChar.Text,'联机号','');
+  end;
   ini.Free;
   //==========
   
