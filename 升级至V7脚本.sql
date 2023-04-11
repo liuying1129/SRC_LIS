@@ -1394,7 +1394,7 @@ BEGIN
    
   if isnull(@Min_value,'')='' or isnull(@Max_value,'')='' return isnull(@Min_value,'')+isnull(@Max_value,'')
 
-  if isnull(@Min_value,'')<>isnull(@Max_value,'') return '--'+@Max_value
+  if isnull(@Min_value,'')<>isnull(@Max_value,'') return '~'+@Max_value
 
   return ''
 END
