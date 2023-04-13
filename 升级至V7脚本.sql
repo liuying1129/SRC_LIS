@@ -124,8 +124,8 @@ GO
 IF not EXISTS (select 1 from syscolumns where name='itemtype' and id=object_id('combinitem'))
   Alter table combinitem add itemtype varchar(50) null
 
-IF EXISTS (select 1 from syscolumns where name='price' and id=object_id('combinitem'))
-  Alter table combinitem drop column price
+--IF EXISTS (select 1 from syscolumns where name='price' and id=object_id('combinitem'))
+--  Alter table combinitem drop column price
 
 IF not EXISTS (select 1 from syscolumns where name='dept_DfValue' and id=object_id('combinitem'))
   Alter table combinitem add dept_DfValue varchar(30) null
@@ -162,6 +162,11 @@ GO
 --combinitem 20140411
 IF not EXISTS (select 1 from syscolumns where name='SysName' and id=object_id('combinitem'))
   Alter table combinitem add SysName varchar(10) null
+GO
+
+--combinitem 20230413
+IF not EXISTS (select 1 from syscolumns where name='price' and id=object_id('combinitem'))
+  Alter table combinitem add price money null
 GO
 
 --CombSChkItem
@@ -2145,6 +2150,34 @@ begin
 
 
 select d_TypeName as 送检科室,d_Reserve1 as 送检医生,d_Combin_Name as 组合项目名称,
+  d_getmoney as 金额,
+  d_sum as 数量 
+  from #temp02
+
+end else
+
+if @in_StaticType='按工作组+送检科室'--add by liuying 20230413.使用组合项目价格
+begin
+
+      INSERT INTO #temp02(d_Reserve1,d_TypeName,d_Combin_Name,d_Getmoney,d_sum)
+		select combin_id,deptname,combin_Name,SUM(price),COUNT(*) 
+		from(
+			select cc.unid, combin_id,deptname,combin_Name,ci.price 
+			from chk_con_bak cc,chk_valu_bak cv,combinitem ci 
+			where cc.unid=cv.pkunid and cv.pkcombin_id=ci.Id
+			and CAST(CONVERT(CHAR(10),cc.check_date,121) as datetime) between @in_StartDate and @in_StopDate
+					and cv.Combin_Name is not null
+					and cv.Combin_Name<>''
+					and cv.itemvalue<>''
+					and cv.itemvalue is not null
+			group by cc.unid, combin_id,deptname,combin_Name,ci.price 
+		) TempTA
+		group by combin_id,deptname,combin_Name
+
+      select @hj_Getmoney=sum(d_Getmoney),@hj_sum=sum(d_sum) from #temp02
+      INSERT INTO #temp02(d_TypeName,d_Combin_Name,d_Getmoney,d_sum,d_Reserve1) values (null,null,@hj_getmoney,@hj_sum,'合计')
+
+select d_Reserve1 as 工作组,d_TypeName as 送检科室,d_Combin_Name as 组合项目名称,
   d_getmoney as 金额,
   d_sum as 数量 
   from #temp02

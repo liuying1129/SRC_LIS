@@ -91,6 +91,7 @@ type
     Label23: TLabel;
     Label24: TLabel;
     BitBtn17: TBitBtn;
+    LabeledEdit4: TLabeledEdit;
     procedure FormCreate(Sender: TObject);
     procedure BitBtn1Click(Sender: TObject);
     procedure BitBtn2Click(Sender: TObject);
@@ -182,7 +183,7 @@ begin
   updateadoquery1;
 
   adoquery2.Connection:=DM.ADOConnection1;
-  sqlstr:='select id as 项目代码,name as 名称,specimentype_DfValue as 默认样本类型,dept_DfValue as 默认工作组,itemtype as 样本分隔符,remark as 说明,Department as 所属部门,SysName as 系统名称,Unid'+
+  sqlstr:='select id as 项目代码,name as 名称,specimentype_DfValue as 默认样本类型,dept_DfValue as 默认工作组,itemtype as 样本分隔符,remark as 说明,Department as 所属部门,SysName as 系统名称,price as 价格,Unid'+
           ' from combinitem order by id ';
   adoquery2.Close;
   adoquery2.SQL.Clear;
@@ -360,6 +361,7 @@ begin
     LabeledEdit15.Text:=trim(adoquery2.fieldbyname('样本分隔符').AsString);
 
     ComboBox1.Text:=trim(adoquery2.fieldbyname('所属部门').AsString);
+    LabeledEdit4.Text:=adoquery2.fieldbyname('价格').AsString;
   end else
   begin
     ClearCombEdit;
@@ -402,8 +404,8 @@ begin
     ifNewAddComb:=false;
 
     sqlstr:='Insert into combinitem ('+
-                        ' ID,name,Remark,specimentype_DfValue,dept_DfValue,itemtype,Department,SysName) values ('+
-                        ' :ID,:name,:Remark,:specimentype_DfValue,:dept_DfValue,:itemtype,:Department,:SysName) ';
+                        ' ID,name,Remark,specimentype_DfValue,dept_DfValue,itemtype,Department,SysName,price) values ('+
+                        ' :ID,:name,:Remark,:specimentype_DfValue,:dept_DfValue,:itemtype,:Department,:SysName,:price) ';
     adotemp11.Close;
     adotemp11.SQL.Clear;
     adotemp11.SQL.Add(sqlstr);
@@ -418,6 +420,7 @@ begin
 
     adotemp11.Parameters.ParamByName('Department').Value:=ComboBox1.Text;
     adotemp11.Parameters.ParamByName('SysName').Value:=SYSNAME;
+    adotemp11.Parameters.ParamByName('price').Value:=strtofloatdef(LabeledEdit4.Text,0);
 
     adotemp11.Open;
     ADOQuery2.Requery([]);
@@ -442,7 +445,7 @@ begin
     adotemp11.Close;
     adotemp11.SQL.Clear;
     adotemp11.SQL.Text:=' Update combinitem  '+
-    '  set ID=:ID,name=:name,Remark=:Remark,specimentype_DfValue=:specimentype_DfValue,dept_DfValue=:dept_DfValue,itemtype=:itemtype,Department=:Department,SysName=:SysName '+
+    '  set ID=:ID,name=:name,Remark=:Remark,specimentype_DfValue=:specimentype_DfValue,dept_DfValue=:dept_DfValue,itemtype=:itemtype,Department=:Department,SysName=:SysName,price=:price '+
     '  Where    Unid=:Unid      ';
     adotemp11.Parameters.ParamByName('ID').Value:=trim(LabeledEdit1combin.Text);
     adotemp11.Parameters.ParamByName('name').Value:=trim(LabeledEdit2combin.Text);
@@ -455,6 +458,7 @@ begin
 
     adotemp11.Parameters.ParamByName('Department').Value:=ComboBox1.Text;
     adotemp11.Parameters.ParamByName('SysName').Value:=SYSNAME;
+    adotemp11.Parameters.ParamByName('price').Value:=strtofloatdef(LabeledEdit4.Text,0);
     
     adotemp11.ExecSQL;
     AdoQuery2.Refresh;
@@ -762,6 +766,7 @@ begin
             LabeledEdit14.Text:='';
             LabeledEdit15.Clear;
             ComboBox1.Text:='';
+            LabeledEdit4.Text:='';
 end;
 
 procedure TfrmItemSetup.ADOQuery4AfterScroll(DataSet: TDataSet);

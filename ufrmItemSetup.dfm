@@ -129,6 +129,7 @@ object frmItemSetup: TfrmItemSetup
         LabelPosition = lpLeft
         ParentCtl3D = False
         TabOrder = 5
+        Visible = False
       end
       object LabeledEdit13chkitem: TLabeledEdit
         Left = 73
@@ -663,7 +664,7 @@ object frmItemSetup: TfrmItemSetup
           Caption = #40664#35748#24037#20316#32452
         end
         object Label21: TLabel
-          Left = 132
+          Left = 241
           Top = 118
           Width = 52
           Height = 13
@@ -759,6 +760,7 @@ object frmItemSetup: TfrmItemSetup
           Enabled = False
           ParentCtl3D = False
           TabOrder = 8
+          Visible = False
         end
         object LabeledEdit15: TLabeledEdit
           Left = 132
@@ -800,13 +802,27 @@ object frmItemSetup: TfrmItemSetup
           OnClick = BitBtn14Click
         end
         object ComboBox1: TComboBox
-          Left = 132
+          Left = 241
           Top = 133
           Width = 100
           Height = 21
           DropDownCount = 20
           ItemHeight = 13
           TabOrder = 12
+        end
+        object LabeledEdit4: TLabeledEdit
+          Left = 132
+          Top = 134
+          Width = 100
+          Height = 19
+          Ctl3D = False
+          EditLabel.Width = 26
+          EditLabel.Height = 13
+          EditLabel.Caption = #20215#26684
+          EditLabel.Transparent = True
+          ImeMode = imOpen
+          ParentCtl3D = False
+          TabOrder = 13
         end
       end
       object DBGrid2: TDBGrid
