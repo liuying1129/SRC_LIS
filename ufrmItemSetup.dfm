@@ -129,7 +129,6 @@ object frmItemSetup: TfrmItemSetup
         LabelPosition = lpLeft
         ParentCtl3D = False
         TabOrder = 5
-        Visible = False
       end
       object LabeledEdit13chkitem: TLabeledEdit
         Left = 73
@@ -664,7 +663,7 @@ object frmItemSetup: TfrmItemSetup
           Caption = #40664#35748#24037#20316#32452
         end
         object Label21: TLabel
-          Left = 241
+          Left = 132
           Top = 118
           Width = 52
           Height = 13
@@ -747,9 +746,9 @@ object frmItemSetup: TfrmItemSetup
           OnClick = BitBtn4Click
         end
         object LabeledEdit8combin: TLabeledEdit
-          Left = 10
+          Left = 242
           Top = 134
-          Width = 100
+          Width = 55
           Height = 19
           Color = clBtnFace
           Ctl3D = False
@@ -760,7 +759,6 @@ object frmItemSetup: TfrmItemSetup
           Enabled = False
           ParentCtl3D = False
           TabOrder = 8
-          Visible = False
         end
         object LabeledEdit15: TLabeledEdit
           Left = 132
@@ -802,7 +800,7 @@ object frmItemSetup: TfrmItemSetup
           OnClick = BitBtn14Click
         end
         object ComboBox1: TComboBox
-          Left = 241
+          Left = 132
           Top = 133
           Width = 100
           Height = 21
@@ -811,7 +809,7 @@ object frmItemSetup: TfrmItemSetup
           TabOrder = 12
         end
         object LabeledEdit4: TLabeledEdit
-          Left = 132
+          Left = 10
           Top = 134
           Width = 100
           Height = 19
