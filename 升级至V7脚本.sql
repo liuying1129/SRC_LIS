@@ -2163,13 +2163,10 @@ begin
 		select combin_id,deptname,combin_Name,SUM(price),COUNT(*) 
 		from(
 			select cc.unid, combin_id,deptname,combin_Name,ci.price 
-			from chk_con_bak cc,chk_valu_bak cv,combinitem ci 
-			where cc.unid=cv.pkunid and cv.pkcombin_id=ci.Id
+			from chk_con_bak cc
+			inner join chk_valu_bak cv on cc.unid=cv.pkunid and cv.itemvalue<>'' and cv.itemvalue is not null
 			and CAST(CONVERT(CHAR(10),cc.check_date,121) as datetime) between @in_StartDate and @in_StopDate
-					and cv.Combin_Name is not null
-					and cv.Combin_Name<>''
-					and cv.itemvalue<>''
-					and cv.itemvalue is not null
+			left join combinitem ci on cv.pkcombin_id=ci.Id					
 			group by cc.unid, combin_id,deptname,combin_Name,ci.price 
 		) TempTA
 		group by combin_id,deptname,combin_Name
