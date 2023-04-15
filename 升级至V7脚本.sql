@@ -580,6 +580,15 @@ alter table chk_con alter column patientname varchar(40) null
 alter table chk_con_bak alter column patientname varchar(40) null
 GO
 
+--20230415增加危急值报告人、危急值报告时间
+--TjXinDianTu（原心电图）用作 危急值报告人
+--TjBChao（原B超）用作 危急值报告时间
+--如果TjBChao字段已有值，先清空后才能执行转换
+alter table chk_con alter column TjBChao datetime Null
+GO
+alter table chk_con_bak alter column TjBChao datetime Null
+GO
+
 --20140906质控修改
 if EXISTS (select 1 from information_schema.columns where table_name = 'QCGHEAD' and column_name='qc_month' and data_type='varchar')
 begin

@@ -72,7 +72,7 @@ const
     'Z.Address as 住址,Z.Telephone as 电话,Z.PushPress as 样本送交人,Z.PullPress as 样本接收人,'+
     'Z.LeftEyesight as 左眼视力,Z.RightEyesight as 右眼视力,Z.Stature as 样本接收时间,Z.Weight as 单据状态,'+
     'Z.TjJiWangShi as 既往史,Z.TjJiaZuShi as 家族史,Z.TjNeiKe as 内科,Z.TjWaiKe as 外科,Z.TjWuGuanKe as 五官科,'+
-    'Z.TjFuKe as 妇科,Z.TjLengQiangGuang as 冷强光,Z.TjXGuang as X光,Z.TjBChao as B超,Z.TjXinDianTu as 心电图,TjJianYan as 条码号,'+
+    'Z.TjFuKe as 妇科,Z.TjLengQiangGuang as 冷强光,Z.TjXGuang as X光,Z.TjBChao as 危急值报告时间,Z.TjXinDianTu as 危急值报告人,TjJianYan as 条码号,'+
     'Z.TjDescription as 结论,Z.TJAdvice as 建议, '+
     ' C.name as 项目名称,C.english_name as 项目英文名,C.itemvalue as 检验结果,C.unit as 单位,'+
     ' C.min_value as 最小值,C.max_value as 最大值,C.pkcombin_id as 组合项目号,C.printorder as 打印编号,C.itemid AS 项目代码,Z.Audit_Date as 审核时间,c.combin_name as 组合项目名称 '+

@@ -392,6 +392,7 @@ type
     procedure SpeedButton7Click(Sender: TObject);
     procedure N33Click(Sender: TObject);
     procedure TimerCriticalValueTimer(Sender: TObject);
+    procedure LYLed1DblClick(Sender: TObject);
   private
     procedure CheckTheListBox;//根据当前病人的结果在checklistbox1中打钩
     procedure WriteProfile;
@@ -456,7 +457,7 @@ uses  Unit_dialog_pllr,
   UfrmXDepictType, UfrmXDepict, UfrmCommCode, UfrmPlxg, UfrmCopyInfo,
   UfrmPhoto, uQRCode,
   UfrmModifyPwd, UfrmEquipManage, UfrmSJ_JBXX, softMeter_globalVar,
-  UfrmHorizontalExport;
+  UfrmHorizontalExport, UfrmCriticalValueDetail;
 
 var
     copyName,copySex,copyage,copyCaseno,copyBedno,copydeptname,copycheck_doctor:string;//复制的病人基本信息，仅粘贴时有用
@@ -679,7 +680,8 @@ begin
         ' His_Unid as His唯一编号,His_MzOrZy as His门诊或住院, '+
         ' WorkDepartment as 所属部门,WorkCategory as 工种,WorkID as 工号,ifMarry as 婚否,OldAddress as 籍贯,Address as 住址,Telephone as 电话,WorkCompany as 所属公司, '+
         ' PushPress as 样本送交人,PullPress as 样本接收人,LeftEyesight as 左眼视力,RightEyesight as 右眼视力,Stature as 样本接收时间,Weight as 单据状态, '+
-        ' TjJiWangShi as 既往史,TjJiaZuShi as 家族史,TjNeiKe as 内科,TjWaiKe as 外科,TjWuGuanKe as 五官科,TjFuKe as 妇科,TjLengQiangGuang as 冷强光,TjXGuang as X光,TjBChao as B超,TjXinDianTu as 心电图,TjJianYan as 条码号,TjDescription as 结论,TJAdvice as 建议, '+
+        ' TjJiWangShi as 既往史,TjJiaZuShi as 家族史,TjNeiKe as 内科,TjWaiKe as 外科,TjWuGuanKe as 五官科,TjFuKe as 妇科,TjLengQiangGuang as 冷强光,TjXGuang as X光,TjBChao as 危急值报告时间,TjXinDianTu as 危急值报告人,TjJianYan as 条码号,'+
+        ' TjDescription as 结论,TJAdvice as 建议, '+
         ' Audit_Date as 审核时间 '+
         ' from chk_con where ';
   if trim(cbxConnChar.Text)='' then   //所有检验单
@@ -4244,7 +4246,7 @@ end;
 
 procedure TSDIAppForm.TimerMakeTjDescriptionTimer(Sender: TObject);
 begin
-  if '1'=ScalarSQLCmd(LisConn,'select TOP 1 1 from chk_con WITH(NOLOCK) where Weight=''待生成'' ') then LYLed2.Value:=true else LYLed2.Value:=false;
+  LYLed2.Value:='1'=ScalarSQLCmd(LisConn,'select TOP 1 1 from chk_con WITH(NOLOCK) where Weight=''待生成'' ');
 end;
 
 procedure TSDIAppForm.N85Click(Sender: TObject);
@@ -4308,7 +4310,12 @@ end;
 
 procedure TSDIAppForm.TimerCriticalValueTimer(Sender: TObject);
 begin
-  if '1'=ScalarSQLCmd(LisConn,'select TOP 1 1 from view_Chk_Con_All cc WITH(NOLOCK),view_chk_valu_All cv WITH(NOLOCK) where cc.unid=cv.pkunid and dbo.uf_CriticalValueAlarm(cv.itemid,cc.sex,cc.age,cv.itemvalue)=1') then LYLed1.Value:=true else LYLed1.Value:=false;
+  LYLed1.Value:='1'=ScalarSQLCmd(LisConn,'select TOP 1 1 from view_Chk_Con_All cc WITH(NOLOCK),view_chk_valu_All cv WITH(NOLOCK) where cc.unid=cv.pkunid and check_date>getdate()-7 and isnull(cc.TjXinDianTu,'''')='''' and dbo.uf_CriticalValueAlarm(cv.itemid,cc.sex,cc.age,cv.itemvalue)=1');
+end;
+
+procedure TSDIAppForm.LYLed1DblClick(Sender: TObject);
+begin
+  frmCriticalValueDetail.ShowModal;
 end;
 
 end.

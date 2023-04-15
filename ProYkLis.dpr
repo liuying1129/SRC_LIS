@@ -42,7 +42,8 @@ uses
   softMeter_globalVar in 'softMeter_globalVar.pas',
   UfrmHorizontalExport in 'UfrmHorizontalExport.pas' {frmHorizontalExport},
   superobject in 'superobject.pas',
-  UfrmCriticalManage in 'UfrmCriticalManage.pas' {frmCriticalManage};
+  UfrmCriticalManage in 'UfrmCriticalManage.pas' {frmCriticalManage},
+  UfrmCriticalValueDetail in 'UfrmCriticalValueDetail.pas' {frmCriticalValueDetail};
 
 {$R *.RES}
 

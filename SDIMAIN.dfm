@@ -195,7 +195,7 @@ object SDIAppForm: TSDIAppForm
         Width = 19
         Height = 22
         Cursor = crDefault
-        Hint = #21361#24613#20540#21578#35686
+        Hint = #21361#24613#20540#21578#35686'('#21452#20987#26597#30475#35814#24773')'
         Value = False
         OnColor = clRed
         OffColor = clBtnFace
@@ -205,6 +205,7 @@ object SDIAppForm: TSDIAppForm
         hasSound = True
         SoundString = '.\Wave\Driveby.wav'
         SoundInValue = True
+        OnDblClick = LYLed1DblClick
       end
     end
   end
