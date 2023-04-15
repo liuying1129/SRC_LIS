@@ -26,6 +26,8 @@ type
     Label1: TLabel;
     Label2: TLabel;
     BitBtn1: TBitBtn;
+    Panel2: TPanel;
+    Label3: TLabel;
     procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure N1Click(Sender: TObject);

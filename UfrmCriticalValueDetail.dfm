@@ -23,7 +23,7 @@ object frmCriticalValueDetail: TfrmCriticalValueDetail
     Top = 0
     Width = 729
     Height = 323
-    ActivePage = TabSheet2
+    ActivePage = TabSheet1
     Align = alClient
     TabOrder = 0
     object TabSheet1: TTabSheet
@@ -32,7 +32,7 @@ object frmCriticalValueDetail: TfrmCriticalValueDetail
         Left = 0
         Top = 0
         Width = 721
-        Height = 295
+        Height = 254
         Align = alClient
         DataSource = DataSource1
         PopupMenu = PopupMenu1
@@ -44,6 +44,27 @@ object frmCriticalValueDetail: TfrmCriticalValueDetail
         TitleFont.Name = #23435#20307
         TitleFont.Style = []
       end
+      object Panel2: TPanel
+        Left = 0
+        Top = 254
+        Width = 721
+        Height = 41
+        Align = alBottom
+        TabOrder = 1
+        object Label3: TLabel
+          Left = 16
+          Top = 16
+          Width = 171
+          Height = 13
+          Caption = #27880':'#21491#38190'->'#24050#25253#21578','#21487#28040#38500#21578#35686
+          Font.Charset = ANSI_CHARSET
+          Font.Color = clBlue
+          Font.Height = -13
+          Font.Name = #23435#20307
+          Font.Style = []
+          ParentFont = False
+        end
+      end
     end
     object TabSheet2: TTabSheet
       Caption = #24050#25253#21578#21361#24613#20540'-'#26597#35810
@@ -52,7 +73,7 @@ object frmCriticalValueDetail: TfrmCriticalValueDetail
         Left = 0
         Top = 0
         Width = 721
-        Height = 65
+        Height = 52
         Align = alTop
         TabOrder = 0
         object Label1: TLabel
@@ -99,9 +120,9 @@ object frmCriticalValueDetail: TfrmCriticalValueDetail
       end
       object DBGrid2: TDBGrid
         Left = 0
-        Top = 65
+        Top = 52
         Width = 721
-        Height = 230
+        Height = 243
         Align = alClient
         DataSource = DataSource2
         ReadOnly = True
