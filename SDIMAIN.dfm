@@ -181,6 +181,31 @@ object SDIAppForm: TSDIAppForm
         SoundString = '.\Wave\Driveby.wav'
         SoundInValue = True
       end
+      object ToolButton3: TToolButton
+        Left = 588
+        Top = 2
+        Width = 8
+        Caption = 'ToolButton3'
+        ImageIndex = 6
+        Style = tbsSeparator
+      end
+      object LYLed1: TLYLed
+        Left = 596
+        Top = 2
+        Width = 19
+        Height = 22
+        Cursor = crDefault
+        Hint = #21361#24613#20540#21578#35686
+        Value = False
+        OnColor = clRed
+        OffColor = clBtnFace
+        Interval = 500
+        Blink = True
+        BorderColor = clMaroon
+        hasSound = True
+        SoundString = '.\Wave\Driveby.wav'
+        SoundInValue = True
+      end
     end
   end
   object Panel1: TPanel
@@ -2388,6 +2413,12 @@ object SDIAppForm: TSDIAppForm
     Interval = 30000
     OnTimer = TimerMakeTjDescriptionTimer
     Left = 717
+    Top = 377
+  end
+  object TimerCriticalValue: TTimer
+    Interval = 30000
+    OnTimer = TimerCriticalValueTimer
+    Left = 749
     Top = 377
   end
 end

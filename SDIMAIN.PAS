@@ -238,6 +238,9 @@ type
     SpeedButton6: TSpeedButton;
     SpeedButton7: TSpeedButton;
     N33: TMenuItem;
+    ToolButton3: TToolButton;
+    LYLed1: TLYLed;
+    TimerCriticalValue: TTimer;
     procedure FileExit1Execute(Sender: TObject);
     procedure HelpAbout1Execute(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -388,6 +391,7 @@ type
     procedure SpeedButton6Click(Sender: TObject);
     procedure SpeedButton7Click(Sender: TObject);
     procedure N33Click(Sender: TObject);
+    procedure TimerCriticalValueTimer(Sender: TObject);
   private
     procedure CheckTheListBox;//根据当前病人的结果在checklistbox1中打钩
     procedure WriteProfile;
@@ -4300,6 +4304,11 @@ end;
 procedure TSDIAppForm.SpeedButton7Click(Sender: TObject);
 begin
   LoadGroupName(LabeledEdit9,'select name from CommCode WITH(NOLOCK) where TypeName=''样本状态'' ');
+end;
+
+procedure TSDIAppForm.TimerCriticalValueTimer(Sender: TObject);
+begin
+  if '1'=ScalarSQLCmd(LisConn,'select TOP 1 1 from view_Chk_Con_All cc WITH(NOLOCK),view_chk_valu_All cv WITH(NOLOCK) where cc.unid=cv.pkunid and dbo.uf_CriticalValueAlarm(cv.itemid,cc.sex,cc.age,cv.itemvalue)=1') then LYLed1.Value:=true else LYLed1.Value:=false;
 end;
 
 end.

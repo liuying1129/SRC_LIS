@@ -1043,6 +1043,22 @@ GO
 alter table SJ_CK_Fu alter column CKRQ datetime not null
 GO
 
+--2023-4-15危急值管理表
+if not exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[ItemCriticalValue]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
+CREATE TABLE [dbo].[ItemCriticalValue](
+	[Unid] int identity primary key,
+	[ItemUnid] [int] NOT NULL,
+	[sex] [varchar](20) NULL,
+	[age_low] [float] NULL,
+	[age_high] [float] NULL,
+	[MatchMode] [varchar](20) NOT NULL,
+	[CriticalValue] [varchar](100) NOT NULL,
+	[age_low_display] [varchar](20) NULL,
+	[age_high_display] [varchar](20) NULL,
+    Create_Date_Time datetime NULL DEFAULT (getdate())
+)
+GO
+
 --删除表ChkStatus
 if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[ChkStatus]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
   drop table [dbo].[ChkStatus]
@@ -1787,6 +1803,69 @@ GO
 SET QUOTED_IDENTIFIER OFF 
 GO
 SET ANSI_NULLS ON 
+GO
+
+--2023-4-15指定的子项目结果是否危急值告警
+if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[uf_CriticalValueAlarm]') and xtype in (N'FN', N'IF', N'TF'))
+drop function [dbo].[uf_CriticalValueAlarm]
+GO
+
+CREATE FUNCTION [dbo].[uf_CriticalValueAlarm]
+(
+  @ItemID varchar(10),
+  @sex varchar(20),
+  @age varchar(20),
+  @cur_value varchar(50)
+)  
+RETURNS bit AS  
+BEGIN 
+  declare @ItemUnid int
+
+  select @ItemUnid=Unid from clinicchkitem where itemid=@ItemID
+  if @ItemUnid is null return 0
+
+  --指定的项目没有维护危急值记录,返回0
+  if not exists(select 1 from ItemCriticalValue where ItemUnid=@ItemUnid) return 0
+
+  if exists(select 1 from ItemCriticalValue where ItemUnid=@ItemUnid and ISNULL(sex,'')='' and dbo.uf_GetAgeReal(@age)>=age_low and dbo.uf_GetAgeReal(@age)<=age_high and MatchMode='模糊匹配' and @cur_value like '%'+CriticalValue+'%') return 1
+  if exists(select 1 from ItemCriticalValue where ItemUnid=@ItemUnid and ISNULL(sex,'')<>'' and sex=@sex and dbo.uf_GetAgeReal(@age)>=age_low and dbo.uf_GetAgeReal(@age)<=age_high and MatchMode='模糊匹配' and @cur_value like '%'+CriticalValue+'%') return 1
+
+  if exists(select 1 from ItemCriticalValue where ItemUnid=@ItemUnid and ISNULL(sex,'')='' and dbo.uf_GetAgeReal(@age)>=age_low and dbo.uf_GetAgeReal(@age)<=age_high and MatchMode='左匹配' and @cur_value like CriticalValue+'%') return 1
+  if exists(select 1 from ItemCriticalValue where ItemUnid=@ItemUnid and ISNULL(sex,'')<>'' and sex=@sex and dbo.uf_GetAgeReal(@age)>=age_low and dbo.uf_GetAgeReal(@age)<=age_high and MatchMode='左匹配' and @cur_value like CriticalValue+'%') return 1
+
+  if exists(select 1 from ItemCriticalValue where ItemUnid=@ItemUnid and ISNULL(sex,'')='' and dbo.uf_GetAgeReal(@age)>=age_low and dbo.uf_GetAgeReal(@age)<=age_high and MatchMode='右匹配' and @cur_value like '%'+CriticalValue) return 1
+  if exists(select 1 from ItemCriticalValue where ItemUnid=@ItemUnid and ISNULL(sex,'')<>'' and sex=@sex and dbo.uf_GetAgeReal(@age)>=age_low and dbo.uf_GetAgeReal(@age)<=age_high and MatchMode='右匹配' and @cur_value like '%'+CriticalValue) return 1
+
+  if exists(select 1 from ItemCriticalValue where ItemUnid=@ItemUnid and ISNULL(sex,'')='' and dbo.uf_GetAgeReal(@age)>=age_low and dbo.uf_GetAgeReal(@age)<=age_high and MatchMode='全匹配' and @cur_value=CriticalValue) return 1
+  if exists(select 1 from ItemCriticalValue where ItemUnid=@ItemUnid and ISNULL(sex,'')<>'' and sex=@sex and dbo.uf_GetAgeReal(@age)>=age_low and dbo.uf_GetAgeReal(@age)<=age_high and MatchMode='全匹配' and @cur_value=CriticalValue) return 1
+
+  if ISNUMERIC(@cur_value)=0 return 0
+  --类似ISNUMERIC('-   0')返回1,但下面的CONVERT转换报错。这样的情况也应返回0
+  if CHARINDEX(' ',ltrim(rtrim(@cur_value)))<>0 return 0
+  
+  --ISNUMERIC('-'),ISNUMERIC('+')均返回1,但下面的CONVERT转换报错。这样的情况也应返回0
+  if (ltrim(rtrim(@cur_value))='+')or(ltrim(rtrim(@cur_value))='-')or(ltrim(rtrim(@cur_value))='.')or(ltrim(rtrim(@cur_value))='+.')or(ltrim(rtrim(@cur_value))='-.') return 0
+
+  declare @cur_value_float float
+  SELECT @cur_value_float=CONVERT(float, @cur_value)
+
+  if exists(select 1 from ItemCriticalValue where ItemUnid=@ItemUnid and ISNULL(sex,'')='' and dbo.uf_GetAgeReal(@age)>=age_low and dbo.uf_GetAgeReal(@age)<=age_high and MatchMode='≤' and @cur_value_float<=CONVERT(float, CriticalValue)) return 1
+  if exists(select 1 from ItemCriticalValue where ItemUnid=@ItemUnid and ISNULL(sex,'')<>'' and sex=@sex and dbo.uf_GetAgeReal(@age)>=age_low and dbo.uf_GetAgeReal(@age)<=age_high and MatchMode='≤' and @cur_value_float<=CONVERT(float, CriticalValue)) return 1
+
+  if exists(select 1 from ItemCriticalValue where ItemUnid=@ItemUnid and ISNULL(sex,'')='' and dbo.uf_GetAgeReal(@age)>=age_low and dbo.uf_GetAgeReal(@age)<=age_high and MatchMode='＜' and @cur_value_float<CONVERT(float, CriticalValue)) return 1
+  if exists(select 1 from ItemCriticalValue where ItemUnid=@ItemUnid and ISNULL(sex,'')<>'' and sex=@sex and dbo.uf_GetAgeReal(@age)>=age_low and dbo.uf_GetAgeReal(@age)<=age_high and MatchMode='＜' and @cur_value_float<CONVERT(float, CriticalValue)) return 1
+
+  if exists(select 1 from ItemCriticalValue where ItemUnid=@ItemUnid and ISNULL(sex,'')='' and dbo.uf_GetAgeReal(@age)>=age_low and dbo.uf_GetAgeReal(@age)<=age_high and MatchMode='≥' and @cur_value_float>=CONVERT(float, CriticalValue)) return 1
+  if exists(select 1 from ItemCriticalValue where ItemUnid=@ItemUnid and ISNULL(sex,'')<>'' and sex=@sex and dbo.uf_GetAgeReal(@age)>=age_low and dbo.uf_GetAgeReal(@age)<=age_high and MatchMode='≥' and @cur_value_float>=CONVERT(float, CriticalValue)) return 1
+
+  if exists(select 1 from ItemCriticalValue where ItemUnid=@ItemUnid and ISNULL(sex,'')='' and dbo.uf_GetAgeReal(@age)>=age_low and dbo.uf_GetAgeReal(@age)<=age_high and MatchMode='＞' and @cur_value_float>CONVERT(float, CriticalValue)) return 1
+  if exists(select 1 from ItemCriticalValue where ItemUnid=@ItemUnid and ISNULL(sex,'')<>'' and sex=@sex and dbo.uf_GetAgeReal(@age)>=age_low and dbo.uf_GetAgeReal(@age)<=age_high and MatchMode='＞' and @cur_value_float>CONVERT(float, CriticalValue)) return 1
+
+  if exists(select 1 from ItemCriticalValue where ItemUnid=@ItemUnid and ISNULL(sex,'')='' and dbo.uf_GetAgeReal(@age)>=age_low and dbo.uf_GetAgeReal(@age)<=age_high and MatchMode='=' and @cur_value_float=CONVERT(float, CriticalValue)) return 1
+  if exists(select 1 from ItemCriticalValue where ItemUnid=@ItemUnid and ISNULL(sex,'')<>'' and sex=@sex and dbo.uf_GetAgeReal(@age)>=age_low and dbo.uf_GetAgeReal(@age)<=age_high and MatchMode='=' and @cur_value_float=CONVERT(float, CriticalValue)) return 1
+
+  return 0
+END
 GO
 
 --删除函数uf_GetNextXxNo
