@@ -555,7 +555,7 @@ begin
   labelededit3.Clear;
   labelededit5.Clear;
   labelededit7.Clear;
-  if Clear_TYPE=2 then labelededit8.Clear; //样本类型 注：换组后样本类型一般不会相同，故清空
+  if Clear_TYPE=2 then labelededit8.Text:=''; //样本类型 注：换组后样本类型一般不会相同，故清空
   labelededit14.Clear;
   if Clear_TYPE=2 then labelededit15.Clear; //备注 注：小林要求换组后清空备注20080423
   DateTimePicker1.DateTime := ServerDate;//申请日期

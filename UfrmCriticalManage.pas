@@ -4,7 +4,8 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, ExtCtrls, Grids, DBGrids, Buttons, DB, ADODB;
+  Dialogs, StdCtrls, ExtCtrls, Grids, DBGrids, Buttons, DB, ADODB, StrUtils,
+  DosMove;
 
 type
   TfrmCriticalManage = class(TForm)
@@ -22,6 +23,10 @@ type
     DataSource1: TDataSource;
     ADOQuery1: TADOQuery;
     Label2: TLabel;
+    Label3: TLabel;
+    Label4: TLabel;
+    Label5: TLabel;
+    DosMove1: TDosMove;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure ADOQuery1AfterOpen(DataSet: TDataSet);
@@ -77,7 +82,12 @@ end;
 procedure TfrmCriticalManage.ADOQuery1AfterOpen(DataSet: TDataSet);
 begin
   if not DataSet.Active then exit;
-  dbgrid1.Columns.Items[1].Width:=190;
+  
+  dbgrid1.Columns.Items[0].Width:=30;
+  dbgrid1.Columns.Items[1].Width:=60;
+  dbgrid1.Columns.Items[2].Width:=60;
+  dbgrid1.Columns.Items[3].Width:=75;
+  dbgrid1.Columns.Items[4].Width:=200;
 end;
 
 procedure TfrmCriticalManage.BitBtn3Click(Sender: TObject);
@@ -99,7 +109,7 @@ end;
 
 procedure TfrmCriticalManage.ClearEdit;
 begin
-  ComboBox1.ItemIndex:=-1;
+  ComboBox1.Text:='';
   LabeledEdit1.Clear;
   LabeledEdit2.Clear;
   ComboBox2.ItemIndex:=-1;
@@ -117,10 +127,9 @@ procedure TfrmCriticalManage.UpdateAdoquery1;
 begin
   adoquery1.Close;
   adoquery1.SQL.Clear;
-  adoquery1.SQL.Text:='select (case MatchMode when 0 then ''模糊匹配'' when 1 then ''左匹配'' when 2 then ''右匹配'' when 3 then ''全匹配'' end) as 匹配方式,'+
-                      'ItemValue as 结果值,'+
-                      '(case HighOrLowFlag when 1 then ''偏低'' when 2 then ''偏高'' end) as 超限标识,'+
-                      'Unid,MatchMode as 匹配方式代码,HighOrLowFlag as 超限标识代码 '+
+  adoquery1.SQL.Text:='select sex as 性别,age_low_display as 年龄下限,age_high_display as 年龄上限,'+
+                      'MatchMode as 匹配方式,CriticalValue as 危急值,'+
+                      'age_low,age_high,Unid '+
                       'from ItemCriticalValue where ItemUnid=:ItemUnid ';
   adoquery1.Parameters.ParamByName('ItemUnid').Value:=pItemUnid;
   adoquery1.Open;
@@ -137,11 +146,11 @@ procedure TfrmCriticalManage.updateEdit;
 begin
   if adoquery1.RecordCount>0 then
   begin
-    ComboBox1.ItemIndex:=adoquery1.fieldbyname('匹配方式代码').AsInteger;
-    LabeledEdit1.Text:=trim(adoquery1.fieldbyname('结果值').AsString);
-    LabeledEdit2.Text:=trim(adoquery1.fieldbyname('结果值').AsString);
-    ComboBox2.ItemIndex:=adoquery1.fieldbyname('超限标识代码').AsInteger;
-    LabeledEdit3.Text:=trim(adoquery1.fieldbyname('结果值').AsString);
+    ComboBox2.ItemIndex:=ComboBox2.Items.IndexOf(adoquery1.fieldbyname('匹配方式').AsString);
+    LabeledEdit1.Text:=adoquery1.fieldbyname('年龄下限').AsString;
+    LabeledEdit2.Text:=adoquery1.fieldbyname('年龄上限').AsString;
+    ComboBox1.Text:=adoquery1.fieldbyname('性别').AsString;
+    LabeledEdit3.Text:=adoquery1.fieldbyname('危急值').AsString;
   end else
   begin
     ClearEdit;
@@ -150,27 +159,36 @@ end;
 
 procedure TfrmCriticalManage.BitBtn2Click(Sender: TObject);
 var
-  adotemp11:tadoquery;
+  adotemp11,adotemp22:tadoquery;
   sqlstr:string;
   Insert_Identity:integer;
+  age_low,age_high:single;
 begin
-  if (ComboBox1.ItemIndex<>0) and (ComboBox1.ItemIndex<>1) and (ComboBox1.ItemIndex<>2) and (ComboBox1.ItemIndex<>3) then
+  if ComboBox2.Text='' then
   begin
     MESSAGEDLG('请选择正确的匹配方式!',mtError,[MBOK],0);
     exit;
   end;
 
-  if trim(LabeledEdit1.Text)='' then
+  if trim(LabeledEdit3.Text)='' then
   begin
-    MESSAGEDLG('结果值不能为空!',mtError,[MBOK],0);
+    MESSAGEDLG('危急值不能为空!',mtError,[MBOK],0);
     exit;
   end;
 
-  if (ComboBox2.ItemIndex<>1) and (ComboBox2.ItemIndex<>2) then
-  begin
-    MESSAGEDLG('请选择正确的超限标识!',mtError,[MBOK],0);
-    exit;
-  end;
+  adotemp22:=tadoquery.Create(nil);
+  adotemp22.Connection:=dm.ADOConnection1;
+  adotemp22.Close;
+  adotemp22.SQL.Clear;
+  adotemp22.SQL.text:='select dbo.uf_GetAgeReal('''+ifThen(trim(LabeledEdit1.Text)<>'',trim(LabeledEdit1.Text))+''') as age_low';
+  adotemp22.Open;
+  age_low:=adotemp22.fieldbyname('age_low').AsFloat;
+  adotemp22.Close;
+  adotemp22.SQL.Clear;
+  adotemp22.SQL.text:='select dbo.uf_GetAgeReal('''+ifThen(trim(LabeledEdit2.Text)<>'',trim(LabeledEdit2.Text),'200')+''') as age_high';
+  adotemp22.Open;
+  age_high:=adotemp22.fieldbyname('age_high').AsFloat;
+  adotemp22.Free;
 
   adotemp11:=tadoquery.Create(nil);
   adotemp11.Connection:=DM.ADOConnection1;
@@ -178,17 +196,21 @@ begin
   begin
     ifNewAdd:=false;
 
-    sqlstr:='Insert into ItemExceptionValue ('+
-                        ' ItemUnid,MatchMode,ItemValue,HighOrLowFlag) values ('+
-                        ' :ItemUnid,:MatchMode,:ItemValue,:HighOrLowFlag) ';
+    sqlstr:='Insert into ItemCriticalValue ('+
+                        ' ItemUnid, sex, age_low, age_high, age_low_display, age_high_display, MatchMode, CriticalValue) values ('+
+                        ':ItemUnid,:sex,:age_low,:age_high,:age_low_display,:age_high_display,:MatchMode,:CriticalValue) ';
     adotemp11.Close;
     adotemp11.SQL.Clear;
     adotemp11.SQL.Add(sqlstr);
     adotemp11.SQL.Add(' SELECT SCOPE_IDENTITY() AS Insert_Identity ');
     adotemp11.Parameters.ParamByName('ItemUnid').Value:=pItemUnid;
-    adotemp11.Parameters.ParamByName('MatchMode').Value:=ComboBox1.ItemIndex;
-    adotemp11.Parameters.ParamByName('ItemValue').Value:=LabeledEdit1.Text;
-    adotemp11.Parameters.ParamByName('HighOrLowFlag').Value:=ComboBox2.ItemIndex;
+    adotemp11.Parameters.ParamByName('sex').Value:=ComboBox1.Text;
+    adotemp11.Parameters.ParamByName('age_low').Value:=age_low;
+    adotemp11.Parameters.ParamByName('age_high').Value:=age_high;
+    adotemp11.Parameters.ParamByName('age_low_display').Value:=LabeledEdit1.Text;
+    adotemp11.Parameters.ParamByName('age_high_display').Value:=LabeledEdit2.Text;
+    adotemp11.Parameters.ParamByName('MatchMode').Value:=ComboBox2.Text;
+    adotemp11.Parameters.ParamByName('CriticalValue').Value:=LabeledEdit3.Text;
     adotemp11.Open;
     ADOQuery1.Requery([]);
     Insert_Identity:=adotemp11.fieldbyname('Insert_Identity').AsInteger;
@@ -203,12 +225,16 @@ begin
     Insert_Identity:=ADOQuery1.fieldbyname('Unid').AsInteger;
     adotemp11.Close;
     adotemp11.SQL.Clear;
-    adotemp11.SQL.Text:=' Update ItemExceptionValue  '+
-    '  set MatchMode=:MatchMode,ItemValue=:ItemValue,HighOrLowFlag=:HighOrLowFlag '+
+    adotemp11.SQL.Text:=' Update ItemCriticalValue  '+
+    '  set MatchMode=:MatchMode,CriticalValue=:CriticalValue,sex=:sex,age_low=:age_low,age_high=:age_high,age_low_display=:age_low_display,age_high_display=:age_high_display '+
     '  Where    Unid=:Unid      ';
-    adotemp11.Parameters.ParamByName('MatchMode').Value:=ComboBox1.ItemIndex;
-    adotemp11.Parameters.ParamByName('ItemValue').Value:=trim(LabeledEdit1.Text);
-    adotemp11.Parameters.ParamByName('HighOrLowFlag').Value:=ComboBox2.ItemIndex;
+    adotemp11.Parameters.ParamByName('sex').Value:=ComboBox1.Text;
+    adotemp11.Parameters.ParamByName('age_low').Value:=age_low;
+    adotemp11.Parameters.ParamByName('age_high').Value:=age_high;
+    adotemp11.Parameters.ParamByName('age_low_display').Value:=LabeledEdit1.Text;
+    adotemp11.Parameters.ParamByName('age_high_display').Value:=LabeledEdit2.Text;
+    adotemp11.Parameters.ParamByName('MatchMode').Value:=ComboBox2.Text;
+    adotemp11.Parameters.ParamByName('CriticalValue').Value:=LabeledEdit3.Text;
     adotemp11.Parameters.ParamByName('Unid').Value:=Insert_Identity;
     adotemp11.ExecSQL;
     AdoQuery1.Refresh;
