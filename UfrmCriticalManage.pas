@@ -162,11 +162,11 @@ var
   adotemp11,adotemp22:tadoquery;
   sqlstr:string;
   Insert_Identity:integer;
-  age_low,age_high:single;
+  age_low,age_high,ff:single;
 begin
   if ComboBox2.Text='' then
   begin
-    MESSAGEDLG('请选择正确的匹配方式!',mtError,[MBOK],0);
+    MESSAGEDLG('匹配方式不能为空!',mtError,[MBOK],0);
     exit;
   end;
 
@@ -174,6 +174,15 @@ begin
   begin
     MESSAGEDLG('危急值不能为空!',mtError,[MBOK],0);
     exit;
+  end;
+
+  if(ComboBox2.Text='≤')or(ComboBox2.Text='＜')or(ComboBox2.Text='≥')or(ComboBox2.Text='＞')or(ComboBox2.Text='=')then
+  begin
+    if not TryStrToFloat(LabeledEdit3.Text,ff) then
+    begin
+      MESSAGEDLG('匹配方式为≤、＜、≥、＞、=时,危急值必须为数值!',mtError,[MBOK],0);
+      exit;
+    end;
   end;
 
   adotemp22:=tadoquery.Create(nil);
