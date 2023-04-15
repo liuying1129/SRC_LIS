@@ -130,11 +130,12 @@ object frmCriticalManage: TfrmCriticalManage
         #27169#31946#21305#37197
         #24038#21305#37197
         #21491#21305#37197
-        #31561#20110
+        #20840#21305#37197
         #8804
         #65308
         #8805
-        #65310)
+        #65310
+        '=')
     end
     object BitBtn1: TBitBtn
       Left = 5
