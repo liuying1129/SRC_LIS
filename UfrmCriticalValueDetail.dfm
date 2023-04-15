@@ -1,8 +1,8 @@
 object frmCriticalValueDetail: TfrmCriticalValueDetail
   Left = 192
   Top = 123
-  Width = 745
-  Height = 362
+  Width = 730
+  Height = 500
   BorderIcons = [biSystemMenu, biMinimize]
   Caption = #21361#24613#20540#21578#35686#35814#24773
   Color = clBtnFace
@@ -21,18 +21,18 @@ object frmCriticalValueDetail: TfrmCriticalValueDetail
   object PageControl1: TPageControl
     Left = 0
     Top = 0
-    Width = 729
-    Height = 323
+    Width = 714
+    Height = 461
     ActivePage = TabSheet1
     Align = alClient
     TabOrder = 0
     object TabSheet1: TTabSheet
-      Caption = #24403#21069#21578#35686
+      Caption = #21578#35686'-'#26410#25253#21578#21361#24613#20540
       object DBGrid1: TDBGrid
         Left = 0
         Top = 0
-        Width = 721
-        Height = 254
+        Width = 706
+        Height = 392
         Align = alClient
         DataSource = DataSource1
         PopupMenu = PopupMenu1
@@ -46,8 +46,8 @@ object frmCriticalValueDetail: TfrmCriticalValueDetail
       end
       object Panel2: TPanel
         Left = 0
-        Top = 254
-        Width = 721
+        Top = 392
+        Width = 706
         Height = 41
         Align = alBottom
         TabOrder = 1
@@ -72,7 +72,7 @@ object frmCriticalValueDetail: TfrmCriticalValueDetail
       object Panel1: TPanel
         Left = 0
         Top = 0
-        Width = 721
+        Width = 706
         Height = 52
         Align = alTop
         TabOrder = 0
@@ -121,8 +121,8 @@ object frmCriticalValueDetail: TfrmCriticalValueDetail
       object DBGrid2: TDBGrid
         Left = 0
         Top = 52
-        Width = 721
-        Height = 243
+        Width = 706
+        Height = 381
         Align = alClient
         DataSource = DataSource2
         ReadOnly = True

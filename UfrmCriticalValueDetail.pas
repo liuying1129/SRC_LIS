@@ -47,7 +47,7 @@ function  frmCriticalValueDetail: TfrmCriticalValueDetail;
 
 implementation
 
-uses UDM;
+uses UDM, SDIMAIN;
 
 var
   ffrmCriticalValueDetail: TfrmCriticalValueDetail;
@@ -81,7 +81,7 @@ begin
   if not ADOQuery1.Active then exit;
   if ADOQuery1.RecordCount<=0 then exit;
 
-  ExecSQLCmd(LisConn,'update '+ifThen(ADOQuery1.FieldByName('ifCompleted').AsInteger=1,'chk_con_bak','chk_con')+' set TjXinDianTu='''+operator_name+''',TjBChao=getdate() where unid='+ADOQuery1.fieldbyname('unid').AsString);
+  ExecSQLCmd(LisConn,'update chk_con set TjXinDianTu='''+operator_name+''',TjBChao=getdate() where unid='+ADOQuery1.fieldbyname('unid').AsString);
 
   UpdateADOQuery1;
 end;
@@ -90,10 +90,12 @@ procedure TfrmCriticalValueDetail.UpdateADOQuery1;
 begin
   ADOQuery1.Close;
   ADOQuery1.SQL.Clear;
-  ADOQuery1.SQL.Text:='select cc.patientname as 姓名,cc.sex as 性别,cc.age as 年龄,cv.itemid as 项目代码,cv.name as 项目名称,cv.itemvalue as 项目结果,cv.unit as 项目单位,cc.deptname as 送检科室,cc.check_doctor as 送检医生,cc.unid,cc.ifCompleted '+
-                      'from view_Chk_Con_All cc WITH(NOLOCK),view_chk_valu_All cv WITH(NOLOCK) '+
-                      'where cc.unid=cv.pkunid and check_date>getdate()-7 and isnull(cc.TjXinDianTu,'''')='''' and dbo.uf_CriticalValueAlarm(cv.itemid,cc.sex,cc.age,cv.itemvalue)=1';
+  ADOQuery1.SQL.Text:='select cc.patientname as 姓名,cc.sex as 性别,cc.age as 年龄,cv.itemid as 项目代码,cv.name as 项目名称,cv.itemvalue as 项目结果,cv.unit as 项目单位,cc.deptname as 送检科室,cc.check_doctor as 送检医生,cc.unid '+
+                      'from Chk_Con cc WITH(NOLOCK),chk_valu cv WITH(NOLOCK) '+
+                      'where cc.unid=cv.pkunid and isnull(cc.TjXinDianTu,'''')='''' and dbo.uf_CriticalValueAlarm(cv.itemid,cc.sex,cc.age,cv.itemvalue)=1';
   ADOQuery1.Open;
+  
+  SDIAppForm.LYLed1.Value:=ADOQuery1.RecordCount>0;
 end;
 
 procedure TfrmCriticalValueDetail.FormShow(Sender: TObject);
@@ -127,7 +129,7 @@ begin
                       'from view_Chk_Con_All cc WITH(NOLOCK),view_chk_valu_All cv WITH(NOLOCK) '+
                       'where cc.unid=cv.pkunid and isnull(cc.TjXinDianTu,'''')<>'''' '+
                       'and dbo.uf_CriticalValueAlarm(cv.itemid,cc.sex,cc.age,cv.itemvalue)=1 '+
-                      'and cc.check_date between :P_DateTimePicker1 and :P_DateTimePicker2';
+                      'and cc.TjBChao between :P_DateTimePicker1 and :P_DateTimePicker2';
   ADOQuery2.Parameters.ParamByName('P_DateTimePicker1').Value :=DateTimePicker1.DateTime;//设计期Time设置为00:00:00.放心,下拉选择日期时不会改变Time值
   ADOQuery2.Parameters.ParamByName('P_DateTimePicker2').Value :=DateTimePicker2.DateTime;//设计期Time设置为23:59:59.放心,下拉选择日期时不会改变Time值
   ADOQuery2.Open;

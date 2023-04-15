@@ -2417,7 +2417,7 @@ object SDIAppForm: TSDIAppForm
     Top = 377
   end
   object TimerCriticalValue: TTimer
-    Interval = 30000
+    Interval = 60000
     OnTimer = TimerCriticalValueTimer
     Left = 749
     Top = 377

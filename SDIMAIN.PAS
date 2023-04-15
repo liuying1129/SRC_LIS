@@ -888,6 +888,13 @@ procedure TSDIAppForm.N4Click(Sender: TObject);
 begin
   if not ifhaspower(sender,powerstr_js_main) then exit;
 
+  if '1'=ScalarSQLCmd(LisConn,'select TOP 1 1 from Chk_Con cc WITH(NOLOCK),chk_valu cv WITH(NOLOCK) where cc.unid=cv.pkunid and cc.combin_id='''+cbxConnChar.Text+''' and isnull(cc.TjXinDianTu,'''')='''' and dbo.uf_CriticalValueAlarm(cv.itemid,cc.sex,cc.age,cv.itemvalue)=1') then
+  begin
+    LYLed1.Value:=true;
+    MESSAGEDLG('存在未报告的危急值,不允许结束操作!',mtWarning,[MBOK],0);
+    exit;
+  end;
+
   if (MessageDlg('是否结束目前所作的工作，这将把当前的全部工作作为历史记录保存?', mtConfirmation, [mbYes, mbNo], 0) <> mrYes) then exit;
 
   CompletionJob;
@@ -4310,7 +4317,9 @@ end;
 
 procedure TSDIAppForm.TimerCriticalValueTimer(Sender: TObject);
 begin
-  LYLed1.Value:='1'=ScalarSQLCmd(LisConn,'select TOP 1 1 from view_Chk_Con_All cc WITH(NOLOCK),view_chk_valu_All cv WITH(NOLOCK) where cc.unid=cv.pkunid and check_date>getdate()-7 and isnull(cc.TjXinDianTu,'''')='''' and dbo.uf_CriticalValueAlarm(cv.itemid,cc.sex,cc.age,cv.itemvalue)=1');
+  if LYLed1.Value then exit;
+  
+  LYLed1.Value:='1'=ScalarSQLCmd(LisConn,'select TOP 1 1 from Chk_Con cc WITH(NOLOCK),chk_valu cv WITH(NOLOCK) where cc.unid=cv.pkunid and cc.check_date>getdate()-7 and isnull(cc.TjXinDianTu,'''')='''' and dbo.uf_CriticalValueAlarm(cv.itemid,cc.sex,cc.age,cv.itemvalue)=1');
 end;
 
 procedure TSDIAppForm.LYLed1DblClick(Sender: TObject);
