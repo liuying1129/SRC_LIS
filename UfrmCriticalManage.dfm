@@ -124,6 +124,7 @@ object frmCriticalManage: TfrmCriticalManage
       Width = 75
       Height = 21
       Style = csDropDownList
+      DropDownCount = 10
       ItemHeight = 13
       TabOrder = 3
       Items.Strings = (
