@@ -38,7 +38,6 @@ type
     LabeledEdit1: TLabeledEdit;
     BitBtn11: TBitBtn;
     BitBtn12: TBitBtn;
-    Label4: TLabel;
     DBGrid1: TDBGrid;
     LabeledEdit1combin: TLabeledEdit;
     LabeledEdit2combin: TLabeledEdit;
@@ -62,7 +61,6 @@ type
     Label10: TLabel;
     Label11: TLabel;
     Label12: TLabel;
-    Label13: TLabel;
     GroupBox1: TGroupBox;
     Label14: TLabel;
     Label15: TLabel;

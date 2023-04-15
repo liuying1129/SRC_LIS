@@ -30,35 +30,9 @@ object frmItemSetup: TfrmItemSetup
       Left = 2
       Top = 15
       Width = 324
-      Height = 242
+      Height = 234
       Align = alTop
       TabOrder = 0
-      object Label4: TLabel
-        Left = 12
-        Top = 203
-        Width = 302
-        Height = 13
-        Caption = #27880':1'#12289#20202#22120#39033#30446#21017'"'#20202#22120#23383#27597'"'#19982'"'#32852#26426#26631#35782'"'#20026#24517#22635#39033
-        Font.Charset = ANSI_CHARSET
-        Font.Color = clBlue
-        Font.Height = -13
-        Font.Name = #23435#20307
-        Font.Style = []
-        ParentFont = False
-      end
-      object Label13: TLabel
-        Left = 32
-        Top = 220
-        Width = 203
-        Height = 13
-        Caption = '2'#12289#35745#31639#39033#30446#21017'"'#35745#31639#20844#24335'"'#20026#24517#22635#39033
-        Font.Charset = ANSI_CHARSET
-        Font.Color = clBlue
-        Font.Height = -13
-        Font.Name = #23435#20307
-        Font.Style = []
-        ParentFont = False
-      end
       object LabeledEdit1chkitem: TLabeledEdit
         Left = 73
         Top = 8
@@ -233,9 +207,9 @@ object frmItemSetup: TfrmItemSetup
         OnClick = BitBtn11Click
       end
       object BitBtn12: TBitBtn
-        Left = 238
-        Top = 216
-        Width = 75
+        Left = 13
+        Top = 200
+        Width = 80
         Height = 25
         Caption = #23548#20986#21442#32771#20540
         ParentShowHint = False
@@ -282,9 +256,9 @@ object frmItemSetup: TfrmItemSetup
     end
     object DBGrid1: TDBGrid
       Left = 2
-      Top = 257
+      Top = 249
       Width = 324
-      Height = 272
+      Height = 280
       Align = alClient
       DataSource = DataSource1
       ReadOnly = True
