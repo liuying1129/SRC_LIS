@@ -69,10 +69,10 @@ const
     'Z.flagetype as 样本类型,Z.typeflagcase as 样本情况,Z.diagnose as 临床诊断,'+
     'Z.issure as 备注1z2y3xTABLENAME1T2S3RZ,Z.germname as 细菌, '+
     'Z.WorkCompany as 所属公司,Z.WorkDepartment as 所属部门,Z.WorkCategory as 工种,Z.WorkID as 工号,Z.ifMarry as 婚否,Z.OldAddress as 籍贯,'+
-    'Z.Address as 住址,Z.Telephone as 电话,Z.PushPress as 舒张压,Z.PullPress as 收缩压,'+
-    'Z.LeftEyesight as 左眼视力,Z.RightEyesight as 右眼视力,Z.Stature as 身高,Z.Weight as 体重,'+
+    'Z.Address as 住址,Z.Telephone as 电话,Z.PushPress as 样本送交人,Z.PullPress as 样本接收人,'+
+    'Z.LeftEyesight as 左眼视力,Z.RightEyesight as 右眼视力,Z.Stature as 样本接收时间,Z.Weight as 单据状态,'+
     'Z.TjJiWangShi as 既往史,Z.TjJiaZuShi as 家族史,Z.TjNeiKe as 内科,Z.TjWaiKe as 外科,Z.TjWuGuanKe as 五官科,'+
-    'Z.TjFuKe as 妇科,Z.TjLengQiangGuang as 冷强光,Z.TjXGuang as X光,Z.TjBChao as B超,Z.TjXinDianTu as 心电图,TjJianYan as 检验,'+
+    'Z.TjFuKe as 妇科,Z.TjLengQiangGuang as 冷强光,Z.TjXGuang as X光,Z.TjBChao as B超,Z.TjXinDianTu as 心电图,TjJianYan as 条码号,'+
     'Z.TjDescription as 结论,Z.TJAdvice as 建议, '+
     ' C.name as 项目名称,C.english_name as 项目英文名,C.itemvalue as 检验结果,C.unit as 单位,'+
     ' C.min_value as 最小值,C.max_value as 最大值,C.pkcombin_id as 组合项目号,C.printorder as 打印编号,C.itemid AS 项目代码,Z.Audit_Date as 审核时间,c.combin_name as 组合项目名称 '+
