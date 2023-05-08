@@ -41,8 +41,6 @@ alter table CommCode alter column Name varchar(200) null
 GO
 alter table CommCode alter column PYM varchar(200) null
 GO
-alter table CommCode alter column WBM varchar(200) null
-GO
 --20100315 stop
 
 --CommCode 20110414
@@ -123,9 +121,6 @@ GO
 --combinitem
 IF not EXISTS (select 1 from syscolumns where name='itemtype' and id=object_id('combinitem'))
   Alter table combinitem add itemtype varchar(50) null
-
---IF EXISTS (select 1 from syscolumns where name='price' and id=object_id('combinitem'))
---  Alter table combinitem drop column price
 
 IF not EXISTS (select 1 from syscolumns where name='dept_DfValue' and id=object_id('combinitem'))
   Alter table combinitem add dept_DfValue varchar(30) null
@@ -237,14 +232,7 @@ alter table clinicchkitem alter column name varchar(50)
 GO
 
 ALTER TABLE clinicchkitem ALTER COLUMN PYM varchar(50)
-ALTER TABLE clinicchkitem ALTER COLUMN WBM varchar(15)
-go  
-
---修改表clinicchkitem--20081027
-IF NOT EXISTS (select 1 from syscolumns where name='ChkMethod' and id=object_id('clinicchkitem'))
-begin
-  Alter table clinicchkitem add ChkMethod varchar(30) null--检验方法
-end
+go
 
 --修改表clinicchkitem--20140312
 IF NOT EXISTS (select 1 from syscolumns where name='Reserve1' and id=object_id('clinicchkitem'))
@@ -257,15 +245,8 @@ begin
   Alter table clinicchkitem add Reserve2 varchar(200) null--保留字段2
 end
 
-IF NOT EXISTS (select 1 from syscolumns where name='Reserve3' and id=object_id('clinicchkitem'))
-begin
-  Alter table clinicchkitem add Reserve3 varchar(200) null--保留字段3
-end
-
-IF NOT EXISTS (select 1 from syscolumns where name='Reserve4' and id=object_id('clinicchkitem'))
-begin
-  Alter table clinicchkitem add Reserve4 varchar(200) null--保留字段4
-end
+--保留字段3为Dosage1
+--保留字段4为Dosage2
 
 IF NOT EXISTS (select 1 from syscolumns where name='Reserve5' and id=object_id('clinicchkitem'))
 begin
@@ -405,18 +386,6 @@ IF NOT EXISTS (select 1 from syscolumns where name='IsEdited' and id=object_id('
 IF NOT EXISTS (select 1 from syscolumns where name='IsEdited' and id=object_id('chk_valu_bak'))
   Alter table chk_valu_bak add IsEdited int null
 GO
-
---修改表chk_valu--20081027
-IF NOT EXISTS (select 1 from syscolumns where name='ChkMethod' and id=object_id('chk_valu'))
-begin
-  Alter table chk_valu add ChkMethod varchar(30) null--检验方法
-end
-
---修改表chk_valu_bak--20081027
-IF NOT EXISTS (select 1 from syscolumns where name='ChkMethod' and id=object_id('chk_valu_bak'))
-begin
-  Alter table chk_valu_bak add ChkMethod varchar(30) null--检验方法
-end
 
 --20141123
 IF NOT EXISTS (select 1 from syscolumns where name='Reserve1' and id=object_id('chk_valu'))
@@ -909,20 +878,14 @@ IF EXISTS (select 1 from syscolumns where name='Urine2' and id=object_id('clinic
   Alter table clinicchkitem drop column Urine2
 IF EXISTS (select 1 from syscolumns where name='ChkMethod' and id=object_id('clinicchkitem'))
   Alter table clinicchkitem drop column ChkMethod
---IF EXISTS (select 1 from syscolumns where name='Surem1' and id=object_id('chk_valu'))
---  Alter table chk_valu drop column Surem1
---IF EXISTS (select 1 from syscolumns where name='Surem2' and id=object_id('chk_valu'))
---  Alter table chk_valu drop column Surem2
+
 IF EXISTS (select 1 from syscolumns where name='Urine1' and id=object_id('chk_valu'))
   Alter table chk_valu drop column Urine1
 IF EXISTS (select 1 from syscolumns where name='Urine2' and id=object_id('chk_valu'))
   Alter table chk_valu drop column Urine2
 IF EXISTS (select 1 from syscolumns where name='ChkMethod' and id=object_id('chk_valu'))
   Alter table chk_valu drop column ChkMethod
---IF EXISTS (select 1 from syscolumns where name='Surem1' and id=object_id('chk_valu_bak'))
---  Alter table chk_valu_bak drop column Surem1
---IF EXISTS (select 1 from syscolumns where name='Surem2' and id=object_id('chk_valu_bak'))
---  Alter table chk_valu_bak drop column Surem2
+
 IF EXISTS (select 1 from syscolumns where name='Urine1' and id=object_id('chk_valu_bak'))
   Alter table chk_valu_bak drop column Urine1
 IF EXISTS (select 1 from syscolumns where name='Urine2' and id=object_id('chk_valu_bak'))
@@ -1637,77 +1600,6 @@ GO
 SET ANSI_NULLS ON 
 GO
 
---20150729
-if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[uf_Peis_Br_Barcode]') and xtype in (N'FN', N'IF', N'TF'))
-drop function [dbo].[uf_Peis_Br_Barcode]
-GO
-
-SET QUOTED_IDENTIFIER ON 
-GO
-SET ANSI_NULLS ON 
-GO
-
-CREATE FUNCTION uf_Peis_Br_Barcode
---得到标软公司体检系统的条码
-(
-  @chk_con_his_unid int
-)  
-RETURNS varchar(500) AS  
-BEGIN 
-  declare @ret varchar(500)
-  set @ret=''
-  select @ret=@ret+','+isnull(Urine1,'')+isnull(Urine2,'') from chk_valu_his cvh WHERE cvh.pkunid=@chk_con_his_unid group by Urine1,Urine2
-  set @ret=stuff(@ret,1,1,'')
-
-  return @ret
-END
-
-GO
-SET QUOTED_IDENTIFIER OFF 
-GO
-SET ANSI_NULLS ON 
-GO
-
-if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[uf_GetExtBarcode]') and xtype in (N'FN', N'IF', N'TF'))
-drop function [dbo].[uf_GetExtBarcode]
-GO
-
-SET QUOTED_IDENTIFIER ON 
-GO
-SET ANSI_NULLS ON 
-GO
-
-CREATE FUNCTION uf_GetExtBarcode
---获取条码号
-(
-  @chk_con_his_unid int
-)  
-RETURNS varchar(500) AS  
-BEGIN 
-  declare @ret varchar(500),@tempS1 varchar(500)
-
-  /*20180112条码已通过WAR-Schedule回写到chk_con_his.TjJianYan
-  select @tempS1=dbo.uf_Peis_Br_Barcode(@chk_con_his_unid)
-
-  if isnull(@tempS1,'')='' 
-    set @ret=@chk_con_his_unid
-  else set @ret=@tempS1
-
-  select @ret=','+@ret+','
-  */
-
-  --20180112
-  select @ret=TjJianYan from chk_con_his where Unid=@chk_con_his_unid
-  
-  return @ret
-END
-
-GO
-SET QUOTED_IDENTIFIER OFF 
-GO
-SET ANSI_NULLS ON 
-GO
-
 --20150728
 if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[uf_GetHisStationCombName]') and xtype in (N'FN', N'IF', N'TF'))
 drop function [dbo].[uf_GetHisStationCombName]
@@ -1882,32 +1774,23 @@ if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[uf_GetNext
 drop function [dbo].[uf_GetNextXxNo]
 GO
 
---20170106越秀区中医医院还有很多旧客户端程序引用了该函数，故暂时保留，待所有客户端均更新后再删除
 --20221005删除函数uf_Reference_Ranges.用函数uf_Reference_Value_B1与uf_Reference_Value_B2代替
 --生成参考范围函数 20140412
 if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[uf_Reference_Ranges]') and xtype in (N'FN', N'IF', N'TF'))
   drop function [dbo].[uf_Reference_Ranges]
 GO
 
---CREATE  FUNCTION uf_Reference_Ranges
---(
---  @Min_value varchar(250),
---  @Max_value varchar(250)
---)  
---RETURNS varchar(510) AS  
---BEGIN 
---  if isnull(@Min_value,'')=isnull(@Max_value,'') return @Min_value
-   
---  if isnull(@Min_value,'')<>''and isnull(@Max_value,'')='' return @Min_value
+--20230508删除函数uf_Peis_Br_Barcode
+--20150729
+--得到标软公司体检系统的条码
+if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[uf_Peis_Br_Barcode]') and xtype in (N'FN', N'IF', N'TF'))
+drop function [dbo].[uf_Peis_Br_Barcode]
+GO
 
---  if isnull(@Min_value,'')=''and isnull(@Max_value,'')<>'' return @Max_value
-
---  if isnull(@Min_value,'')<>isnull(@Max_value,'') return @Min_value+'--'+@Max_value
-
---  return null
---END
-
---GO
+--20230508删除函数uf_GetExtBarcode
+if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[uf_GetExtBarcode]') and xtype in (N'FN', N'IF', N'TF'))
+drop function [dbo].[uf_GetExtBarcode]
+GO
 
 ---------------存储过程相关操作---------------
 
@@ -3556,7 +3439,6 @@ FOR insert
 AS
 --向chk_valu中插入项目代码时自动插入项目名称、检验结果(默认值、已检值)等附加信息
 --有此触发器，则向chk_valu中插入记录时，可不插入项目名称、检验结果等附加信息。当然，插入也无妨!
---20081027,增加检验方法字段ChkMethod
   declare @valueid int,@pkunid int,@itemid varchar(50),@Name varchar(50),@english_name varchar(50),@Unit varchar(50),@printorder int,@getmoney money,@Reserve1 varchar(400),@Reserve2 varchar(400),@Dosage1 varchar(100),@Dosage2 varchar(200),@Reserve5 int,@Reserve6 int,@Reserve7 float,@Reserve8 float,@Reserve9 datetime,@Reserve10 datetime,@itemvalue varchar(500),@histogram varchar(4000)
   SELECT @valueid=valueid,@pkunid=pkunid,@itemid=itemid,@Name=Name,@english_name=english_name,@itemvalue=itemvalue,@histogram=histogram FROM Inserted
   if @valueid is null return --表示没找到刚刚Inserted的记录
@@ -4622,15 +4504,7 @@ sp_refreshview  'dbo.view_chk_valu_All'
 GO
 sp_refreshview  'dbo.view_HBV_Value'
 GO
---sp_refreshview  'dbo.view_UT_LIS_RESULT'
---GO
---sp_refreshview  'dbo.view_UT_LIS_RESULT_Header'
---GO
 sp_refreshview  'dbo.view_Chk_Con_All'
 GO
 sp_refreshview  'dbo.view_Show_chk_Con_His'
 GO
---sp_refreshview  'dbo.view_LeakItem_Warning'
---GO
---sp_refreshview  'dbo.view_LIS_Worker'
---GO
