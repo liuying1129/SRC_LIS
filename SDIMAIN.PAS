@@ -670,11 +670,11 @@ var
 begin
   if bRegister then strsql22:='select ' else strsql22:='select top 2 ';//未注册版本只能显示前两条记录
   strsql:=' lsh as 流水号,checkid as 联机号,patientname as 姓名,report_doctor as 审核者,'+
-        ' caseno as 病历号,sex as 性别,'+
+        ' printtimes as 打印,caseno as 病历号,sex as 性别,'+
         ' age as 年龄,bedno as 床号,deptname as 送检科室,'+
         ' check_date as 检查日期,check_doctor as 送检医生,'+
         ' report_date as 申请日期,'+
-        ' operator as 操作者,printtimes as 打印次数,diagnosetype as 优先级别,'+
+        ' operator as 操作者,diagnosetype as 优先级别,'+
         ' flagetype as 样本类型,diagnose as 临床诊断,typeflagcase as 样本情况,'+
         ' issure as 备注,unid as 唯一编号,combin_id as 组别,germname as 细菌, '+
         ' His_Unid as His唯一编号,His_MzOrZy as His门诊或住院, '+
@@ -995,7 +995,7 @@ begin
   n47.Checked:=configini.ReadBool('Interface','ifShowMaxValue',true);{记录是否显示项目最大值}
   n49.Checked:=configini.ReadBool('Interface','ifShowUnit',true);{记录是否显示项目单位}
   PageControl2.Height:=configini.ReadInteger('Interface','clbCombItemHeight',150);{记录组合项目选择框高度}
-  Panel7.Width:=configini.ReadInteger('Interface','gridBaseInfoWidth',460);{记录基本信息框宽度}
+  Panel7.Width:=configini.ReadInteger('Interface','gridBaseInfoWidth',490);{记录基本信息框宽度}
   CheckBox1.Checked:=configini.ReadBool('Interface','ifContinuousEdit',false);{记录是否连续录入基本信息}
   PageControl1.ActivePageIndex:=configini.ReadInteger('Interface','ValueActivePageIndex',0);{记录结果框PageControl1的活动Page}
 
@@ -1194,18 +1194,19 @@ end;
 procedure TSDIAppForm.updatedbgrid1;
 begin
   if not dbgrid1.DataSource.DataSet.Active then exit;
-  dbgrid1.Columns[0].Width:=40;
-  dbgrid1.Columns[1].Width:=40;
+  dbgrid1.Columns[0].Width:=40;//流水号
+  dbgrid1.Columns[1].Width:=40;//联机号
   dbgrid1.Columns[2].Width:=42;//姓名
   dbgrid1.Columns[3].Width:=42;//审核者
-  dbgrid1.Columns[4].Width:=65;
-  dbgrid1.Columns[5].Width:=30;
-  dbgrid1.Columns[6].Width:=30;
-  dbgrid1.Columns[7].Width:=30;
-  dbgrid1.Columns[8].Width:=60;//送检科室
-  dbgrid1.Columns[9].Width:=72;//检查日期
-  dbgrid1.Columns[10].Width:=55;//送检医生
-  dbgrid1.Columns[11].Width:=72;//申请日期
+  dbgrid1.Columns[4].Width:=30;//打印次数
+  dbgrid1.Columns[5].Width:=65;//病历号
+  dbgrid1.Columns[6].Width:=30;//性别
+  dbgrid1.Columns[7].Width:=30;//年龄
+  dbgrid1.Columns[8].Width:=30;//床号
+  dbgrid1.Columns[9].Width:=60;//送检科室
+  dbgrid1.Columns[10].Width:=72;//检查日期
+  dbgrid1.Columns[11].Width:=55;//送检医生
+  dbgrid1.Columns[12].Width:=72;//申请日期
 
   VisibleColumn(dbgrid1,'流水号',OrderType<>'联机号');//按流水号排序时显示流水号,否则(联机号)不显示流水号
 end;
@@ -1454,22 +1455,8 @@ procedure TSDIAppForm.DBGrid1DrawColumnCell(Sender: TObject;
   const Rect: TRect; DataCol: Integer; Column: TColumn;
   State: TGridDrawState);
 var
-  PrintTimes:integer;
-  strPrintTimes,Diagnosetype:string;
+  Diagnosetype:string;
 begin
-   //======================打印过的流水号变化颜色======================//
-    if datacol=2 then //姓名列,因为流水号列有可能隐藏
-    begin
-      strPrintTimes:=tdbgrid(sender).DataSource.DataSet.fieldbyname('打印次数').AsString;
-      PrintTimes:=strtointdef(strPrintTimes,0);
-      IF PrintTimes<>0 then
-      begin
-        tdbgrid(sender).Canvas.Font.Color:=clred;
-        tdbgrid(sender).DefaultDrawColumnCell(rect,datacol,column,state);
-      end;
-    end;
-   //==========================================================================//
-
    //=====================常规与急诊用颜色区分=======================//
     if datacol=1 then //联机号列
     begin
@@ -3451,7 +3438,7 @@ begin
   if not ADObasic.RecordCount=0 then exit;
 
   unid:=ADObasic.fieldbyname('唯一编号').AsInteger;
-  printtimes:=ADObasic.fieldbyname('打印次数').AsInteger;
+  printtimes:=ADObasic.fieldbyname('打印').AsInteger;
 
   if printtimes=0 then//修改打印次数
   begin
