@@ -538,6 +538,7 @@ GO
 --PushPress（原舒张压）用作 发送人
 --PullPress（原收缩压）用作 接收人
 --Stature（原身高）用作 接收时间
+--20230510,特殊的,北京景像的报告单需打印接收时间,故手工设置该字段默认值为getdate().执行以下脚本不会影响该字段默认值
 alter table chk_con alter column Stature datetime Null
 GO
 
