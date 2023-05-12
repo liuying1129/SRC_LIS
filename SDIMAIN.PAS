@@ -670,7 +670,7 @@ var
 begin
   if bRegister then strsql22:='select ' else strsql22:='select top 2 ';//未注册版本只能显示前两条记录
   strsql:=' lsh as 流水号,checkid as 联机号,patientname as 姓名,report_doctor as 审核者,'+
-        ' printtimes as 打印,caseno as 病历号,sex as 性别,'+
+        ' printtimes as 打印次数,caseno as 病历号,sex as 性别,'+
         ' age as 年龄,bedno as 床号,deptname as 送检科室,'+
         ' check_date as 检查日期,check_doctor as 送检医生,'+
         ' report_date as 申请日期,'+
@@ -3438,7 +3438,7 @@ begin
   if not ADObasic.RecordCount=0 then exit;
 
   unid:=ADObasic.fieldbyname('唯一编号').AsInteger;
-  printtimes:=ADObasic.fieldbyname('打印').AsInteger;
+  printtimes:=ADObasic.fieldbyname('打印次数').AsInteger;
 
   if printtimes=0 then//修改打印次数
   begin
