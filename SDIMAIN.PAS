@@ -140,7 +140,6 @@ type
     DosMove1: TDosMove;
     N42: TMenuItem;
     N24: TMenuItem;
-    N25: TMenuItem;
     N26: TMenuItem;
     N34: TMenuItem;
     N35: TMenuItem;
@@ -336,7 +335,6 @@ type
     procedure N42Click(Sender: TObject);
     procedure ADO_dtlBeforeClose(DataSet: TDataSet);
     procedure pmChangeGroupPopup(Sender: TObject);
-    procedure N25Click(Sender: TObject);
     procedure N26Click(Sender: TObject);
     procedure N36Click(Sender: TObject);
     procedure N47Click(Sender: TObject);
@@ -987,7 +985,6 @@ begin
   end;
 
   n41.Checked:=configini.ReadBool('Interface','ifRTTransData',true);
-  N25.Checked:=configini.ReadBool('Interface','ifPagination',false);{记录是否按组分页}
   N64.Checked:=configini.ReadBool('Interface','ifCaseNoMerger',false);{记录是否按姓别性别年龄合并打印}
   cbxConnChar.Text:=trim(CONFIGINI.ReadString('Interface','ShowReportType',cbxConnChar.Items[0]));
   n50.Checked:=configini.ReadBool('Interface','ifShowEnglish',true);
@@ -1034,7 +1031,6 @@ begin
   ConfigIni:=tinifile.Create(ChangeFileExt(Application.ExeName,'.ini'));
 
   configini.WriteBool('Interface','ifPreview',n9.Checked);{记录是否打印预览模式}
-  configini.WriteBool('Interface','ifPagination',N25.Checked);{记录是否按组分页}
   configini.WriteBool('Interface','ifCaseNoMerger',N64.Checked);{记录是否按姓别性别年龄合并打印}
   ConfigIni.WriteBool('Interface','ifRTTransData',n41.Checked); {记录是否实时显示传输数据}
   ConfigIni.WriteString('Interface','ShowReportType',trim(cbxConnChar.Text)); {记录主界面中要显示的检验单类型}
@@ -1959,7 +1955,6 @@ end;
 procedure TSDIAppForm.suiButton1Click(Sender: TObject);
 var
   strsqlPrint:string;
-  frGH: TfrBandView;//分组头
 
   sUnid,sReport_Doctor,sCombin_Id:string;
 
@@ -2013,18 +2008,6 @@ begin
     showmessage('加载默认分组打印模板report_Cur_group.frf失败，请设置:系统设置->选项->打印模板');
     exit;
   end;
-
-  frGH := TfrBandView(frReport1.FindObject('GroupHeader1'));
-  if(frGH=nil)then
-  begin
-    showmessage('报表模板中没有发现GroupHeader1');
-    exit;
-  end;
-
-  if N25.Checked then//按组分页
-    frGH.Prop['formnewpage'] := True
-  else
-    frGH.Prop['formnewpage'] := false;
 
   //动态创建图片标题begin
   //待处理问题:是否需要释放mvPictureTitle?何时释放?
@@ -3118,13 +3101,6 @@ begin
       adotemp3.Next;
      end;
      adotemp3.Free;
-end;
-
-procedure TSDIAppForm.N25Click(Sender: TObject);
-begin
-  if not ifhaspower(sender,powerstr_js_main) then exit;
-
-    tmenuitem(sender).Checked:= not tmenuitem(sender).Checked;
 end;
 
 procedure TSDIAppForm.N26Click(Sender: TObject);

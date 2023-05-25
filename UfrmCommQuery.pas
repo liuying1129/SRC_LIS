@@ -355,7 +355,6 @@ end;
 procedure TfrmCommQuery.BitBtn3Click(Sender: TObject);
 var
   strsqlPrint:string;
-  frGH: TfrBandView;//分组头
 
   sUnid:string;
 
@@ -394,18 +393,6 @@ begin
     showmessage('加载默认分组打印模板report_Cur_group.frf失败，请设置:系统设置->选项->打印模板');
     exit;
   end;
-
-  frGH := TfrBandView(frReport1.FindObject('GroupHeader1'));
-  if(frGH=nil)then
-  begin
-    showmessage('报表模板中没有发现GroupHeader1');
-    exit;
-  end;
-
-  if SDIAppForm.N25.Checked then//按组分页
-    frGH.Prop['formnewpage'] := True
-  else
-    frGH.Prop['formnewpage'] := false;
 
   //动态创建图片标题begin
   //待处理问题:是否需要释放mvPictureTitle?何时释放?
