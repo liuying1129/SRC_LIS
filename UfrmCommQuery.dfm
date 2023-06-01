@@ -57,9 +57,9 @@ object frmCommQuery: TfrmCommQuery
       OnClick = BitBtnCommQryClick
     end
     object BitBtnCommQryClose: TBitBtn
-      Left = 261
+      Left = 401
       Top = 5
-      Width = 70
+      Width = 50
       Height = 25
       Cancel = True
       Caption = #20851#38381'(&R)'
@@ -85,7 +85,7 @@ object frmCommQuery: TfrmCommQuery
       OnClick = BitBtn3Click
     end
     object BitBtn5: TBitBtn
-      Left = 432
+      Left = 450
       Top = 5
       Width = 70
       Height = 25
@@ -94,7 +94,7 @@ object frmCommQuery: TfrmCommQuery
       OnClick = BitBtn5Click
     end
     object RadioGroup1: TRadioGroup
-      Left = 503
+      Left = 521
       Top = 1
       Width = 210
       Height = 30
@@ -105,6 +105,24 @@ object frmCommQuery: TfrmCommQuery
         #25171#21360
         #20998#32452#25171#21360)
       TabOrder = 5
+    end
+    object BitBtn6: TBitBtn
+      Left = 261
+      Top = 5
+      Width = 70
+      Height = 25
+      Caption = #25171#21360'V3'
+      TabOrder = 6
+      OnClick = BitBtn6Click
+    end
+    object BitBtn7: TBitBtn
+      Left = 331
+      Top = 5
+      Width = 70
+      Height = 25
+      Caption = #20998#32452#25171#21360'V3'
+      TabOrder = 7
+      OnClick = BitBtn7Click
     end
   end
   object DBGridResult: TDBGrid
@@ -254,5 +272,45 @@ object frmCommQuery: TfrmCommQuery
   object LYDataToExcel1: TLYDataToExcel
     Left = 360
     Top = 80
+  end
+  object frxReport1: TfrxReport
+    Version = '5.4.6'
+    DotMatrixReport = False
+    IniFile = '\Software\Fast Reports'
+    PreviewOptions.Buttons = [pbPrint, pbLoad, pbSave, pbExport, pbZoom, pbFind, pbOutline, pbPageSetup, pbTools, pbEdit, pbNavigator, pbExportQuick]
+    PreviewOptions.Zoom = 1.000000000000000000
+    PrintOptions.Printer = 'Default'
+    PrintOptions.PrintOnSheet = 0
+    ReportOptions.CreateDate = 45078.658721921300000000
+    ReportOptions.LastChange = 45078.658721921300000000
+    ScriptLanguage = 'PascalScript'
+    ScriptText.Strings = (
+      'begin'
+      ''
+      'end.')
+    OnBeforePrint = frxReport1BeforePrint
+    OnGetValue = frxReport1GetValue
+    OnPrintReport = frxReport1PrintReport
+    Left = 168
+    Top = 200
+    Datasets = <>
+    Variables = <>
+    Style = <>
+  end
+  object frxDBDataset1: TfrxDBDataset
+    UserName = 'ADObasic'
+    CloseDataSource = False
+    DataSet = ADObasic
+    BCDToCurrency = False
+    Left = 200
+    Top = 200
+  end
+  object frxDBDataset2: TfrxDBDataset
+    UserName = 'ADO_print'
+    CloseDataSource = False
+    DataSet = ADO_print
+    BCDToCurrency = False
+    Left = 232
+    Top = 200
   end
 end

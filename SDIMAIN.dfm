@@ -159,13 +159,37 @@ object SDIAppForm: TSDIAppForm
       object ToolButton5: TToolButton
         Left = 561
         Top = 2
-        Width = 8
+        Width = 3
         Caption = 'ToolButton5'
         ImageIndex = 5
         Style = tbsSeparator
       end
+      object SpeedButton2: TSpeedButton
+        Left = 564
+        Top = 2
+        Width = 47
+        Height = 22
+        Caption = #25171#21360'V3'
+        OnClick = SpeedButton2Click
+      end
+      object SpeedButton8: TSpeedButton
+        Left = 611
+        Top = 2
+        Width = 75
+        Height = 22
+        Caption = #20998#32452#25171#21360'V3'
+        OnClick = SpeedButton8Click
+      end
+      object ToolButton3: TToolButton
+        Left = 686
+        Top = 2
+        Width = 8
+        Caption = 'ToolButton3'
+        ImageIndex = 6
+        Style = tbsSeparator
+      end
       object LYLed2: TLYLed
-        Left = 569
+        Left = 694
         Top = 2
         Width = 19
         Height = 22
@@ -181,16 +205,16 @@ object SDIAppForm: TSDIAppForm
         SoundString = '.\Wave\Driveby.wav'
         SoundInValue = True
       end
-      object ToolButton3: TToolButton
-        Left = 588
+      object ToolButton7: TToolButton
+        Left = 713
         Top = 2
         Width = 8
-        Caption = 'ToolButton3'
-        ImageIndex = 6
+        Caption = 'ToolButton7'
+        ImageIndex = 7
         Style = tbsSeparator
       end
       object LYLed1: TLYLed
-        Left = 596
+        Left = 721
         Top = 2
         Width = 19
         Height = 22
@@ -2417,5 +2441,45 @@ object SDIAppForm: TSDIAppForm
     OnTimer = TimerCriticalValueTimer
     Left = 749
     Top = 377
+  end
+  object frxReport1: TfrxReport
+    Version = '5.4.6'
+    DotMatrixReport = False
+    IniFile = '\Software\Fast Reports'
+    PreviewOptions.Buttons = [pbPrint, pbLoad, pbSave, pbExport, pbZoom, pbFind, pbOutline, pbPageSetup, pbTools, pbEdit, pbNavigator, pbExportQuick]
+    PreviewOptions.Zoom = 1.000000000000000000
+    PrintOptions.Printer = 'Default'
+    PrintOptions.PrintOnSheet = 0
+    ReportOptions.CreateDate = 45076.394464965280000000
+    ReportOptions.LastChange = 45076.394464965280000000
+    ScriptLanguage = 'PascalScript'
+    ScriptText.Strings = (
+      'begin'
+      ''
+      'end.')
+    OnBeforePrint = frxReport1BeforePrint
+    OnGetValue = frxReport1GetValue
+    OnPrintReport = frxReport1PrintReport
+    Left = 485
+    Top = 465
+    Datasets = <>
+    Variables = <>
+    Style = <>
+  end
+  object frxDBDataset1: TfrxDBDataset
+    UserName = 'ADObasic'
+    CloseDataSource = False
+    DataSet = ADObasic
+    BCDToCurrency = False
+    Left = 517
+    Top = 465
+  end
+  object frxDBDataset2: TfrxDBDataset
+    UserName = 'ADO_print'
+    CloseDataSource = False
+    DataSet = ADO_print
+    BCDToCurrency = False
+    Left = 549
+    Top = 465
   end
 end
