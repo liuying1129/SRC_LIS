@@ -37,8 +37,6 @@ type
     Label2: TLabel;
     PopupMenu1: TPopupMenu;
     Label3: TLabel;
-    BitBtn5: TBitBtn;
-    RadioGroup1: TRadioGroup;
     LYDataToExcel1: TLYDataToExcel;
     N4: TMenuItem;
     Excel1: TMenuItem;
@@ -63,7 +61,6 @@ type
     procedure DBGrid1DrawColumnCell(Sender: TObject; const Rect: TRect;
       DataCol: Integer; Column: TColumn; State: TGridDrawState);
     procedure frReport1BeforePrint(Memo: TStringList; View: TfrView);
-    procedure BitBtn5Click(Sender: TObject);
     procedure Excel1Click(Sender: TObject);
     procedure frReport1PrintReport;
     procedure BitBtn6Click(Sender: TObject);
@@ -781,18 +778,6 @@ begin
     ExecSQLCmd(LisConn,'update chk_con_bak set printtimes='+inttostr(printtimes+1)+' where unid='+inttostr(unid));
   
   ExecSQLCmd(LisConn,'insert into pix_tran (pkunid,Reserve1,Reserve2,OpType) values ('+inttostr(unid)+','''+operator_name+''',''Class_Print'',''Lab'')');
-end;
-
-procedure TfrmCommQuery.BitBtn5Click(Sender: TObject);
-begin
-  ADObasic.First;
-  while not ADObasic.Eof do
-  begin
-    if RadioGroup1.ItemIndex=0 then BitBtn1Click(nil);
-    if RadioGroup1.ItemIndex=1 then BitBtn3Click(nil);
-
-    ADObasic.Next;
-  end;
 end;
 
 procedure TfrmCommQuery.Excel1Click(Sender: TObject);

@@ -17,7 +17,6 @@ uses
   UfrmLogin in 'UfrmLogin.pas' {frmLogin},
   UfrmBatchSpecNo in 'UfrmBatchSpecNo.pas' {frmBatchSpecNo},
   ufrm_referencevalue in 'ufrm_referencevalue.pas' {frm_referencevalue},
-  UfrmCheckDate in 'UfrmCheckDate.pas' {frmCheckDate},
   UfrmItemSetup in 'ufrmItemSetup.pas' {frmItemSetup},
   Ufrmdocset in 'Ufrmdocset.pas' {frmdocset},
   UfrmHistoryResult in 'UfrmHistoryResult.pas' {frmHistoryResult},

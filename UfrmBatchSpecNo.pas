@@ -34,6 +34,7 @@ type
     procedure RadioGroup2Click(Sender: TObject);
   private
     { Private declarations }
+    //20230602删除批量打印功能.转到集中打印
     pPLLX:integer; //0:批审核 1:批打印 2:批量删除
   public
     { Public declarations }

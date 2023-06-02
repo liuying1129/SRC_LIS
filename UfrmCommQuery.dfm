@@ -59,7 +59,7 @@ object frmCommQuery: TfrmCommQuery
     object BitBtnCommQryClose: TBitBtn
       Left = 401
       Top = 5
-      Width = 50
+      Width = 70
       Height = 25
       Cancel = True
       Caption = #20851#38381'(&R)'
@@ -84,35 +84,13 @@ object frmCommQuery: TfrmCommQuery
       TabOrder = 3
       OnClick = BitBtn3Click
     end
-    object BitBtn5: TBitBtn
-      Left = 450
-      Top = 5
-      Width = 70
-      Height = 25
-      Caption = #25209#37327#25171#21360
-      TabOrder = 4
-      OnClick = BitBtn5Click
-    end
-    object RadioGroup1: TRadioGroup
-      Left = 521
-      Top = 1
-      Width = 210
-      Height = 30
-      Caption = #25209#25171#36873#39033'('#34920#31034#26597#35810#20869#23481#20840#37096#25171#21360')'
-      Columns = 2
-      ItemIndex = 0
-      Items.Strings = (
-        #25171#21360
-        #20998#32452#25171#21360)
-      TabOrder = 5
-    end
     object BitBtn6: TBitBtn
       Left = 261
       Top = 5
       Width = 70
       Height = 25
       Caption = #25171#21360'V3'
-      TabOrder = 6
+      TabOrder = 4
       OnClick = BitBtn6Click
     end
     object BitBtn7: TBitBtn
@@ -121,7 +99,7 @@ object frmCommQuery: TfrmCommQuery
       Width = 70
       Height = 25
       Caption = #20998#32452#25171#21360'V3'
-      TabOrder = 7
+      TabOrder = 5
       OnClick = BitBtn7Click
     end
   end

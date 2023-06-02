@@ -40,7 +40,6 @@ type
     N13: TMenuItem;
     N15: TMenuItem;
     N5: TMenuItem;
-    N6: TMenuItem;
     N7: TMenuItem;
     N8: TMenuItem;
     N9: TMenuItem;
@@ -63,7 +62,6 @@ type
     N30: TMenuItem;
     N12: TMenuItem;
     N41: TMenuItem;
-    N44: TMenuItem;
     N46: TMenuItem;
     N50: TMenuItem;
     O1: TMenuItem;
@@ -139,7 +137,6 @@ type
     N37: TMenuItem;
     DosMove1: TDosMove;
     N42: TMenuItem;
-    N24: TMenuItem;
     N26: TMenuItem;
     N34: TMenuItem;
     N35: TMenuItem;
@@ -262,7 +259,6 @@ type
     procedure FileNewItemClick(Sender: TObject);
     procedure suiButton3Click(Sender: TObject);
     procedure suiButton4Click(Sender: TObject);
-    procedure N6Click(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure frReport1GetValue(const ParName: String;
       var ParValue: Variant);
@@ -292,7 +288,6 @@ type
     procedure N39Click(Sender: TObject);
     procedure suiButton8Click(Sender: TObject);
     procedure N41Click(Sender: TObject);
-    procedure N44Click(Sender: TObject);
     procedure cbxConnCharChange(Sender: TObject);
     procedure ADO_dtlAfterPost(DataSet: TDataSet);
     procedure N46Click(Sender: TObject);
@@ -460,7 +455,7 @@ uses  Unit_dialog_pllr,
    UfrmLogin, 
    UfrmBatchSpecNo,
   ufrm_referencevalue,ufrmItemSetup,
-  UfrmCheckDate, Ufrmdocset,
+  Ufrmdocset,
   UfrmHistoryResult,
   UfrmExcelQuery, UfrmStaticCombItem,
   UDM, UfrmFromExcelLoad,
@@ -1870,16 +1865,6 @@ begin
   frmBatchSpecNo(0).ShowModal; //≈˙…Û∫À
 end;
 
-procedure TSDIAppForm.N6Click(Sender: TObject);
-begin
-  if not ifhaspower(sender,powerstr_js_main) then exit;
-
-   if not ADObasic.Active then exit;
-   if ADObasic.RecordCount=0 then exit;
-
-  frmBatchSpecNo(1).ShowModal; //≈˙¥Ú”°
-end;
-
 procedure TSDIAppForm.N46Click(Sender: TObject);
 begin
   if not ifhaspower(sender,powerstr_js_main) then exit;
@@ -2359,13 +2344,6 @@ begin
   if not ifhaspower(sender,powerstr_js_main) then exit;
 
     tmenuitem(sender).Checked:= not tmenuitem(sender).Checked;
-end;
-
-procedure TSDIAppForm.N44Click(Sender: TObject);
-begin
-  if not ifhaspower(sender,powerstr_js_main) then exit;
-
-  frmCheckDate.ShowModal;
 end;
 
 procedure TSDIAppForm.cbxConnCharChange(Sender: TObject);

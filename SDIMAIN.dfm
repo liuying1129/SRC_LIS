@@ -2082,18 +2082,6 @@ object SDIAppForm: TSDIAppForm
     end
     object N5: TMenuItem
       Caption = #25171#21360#36873#25321
-      object N6: TMenuItem
-        AutoHotkeys = maManual
-        Caption = #25209#37327#25171#21360
-        OnClick = N6Click
-      end
-      object N44: TMenuItem
-        Caption = #25171#21360#27599#26085#23384#26681
-        OnClick = N44Click
-      end
-      object N24: TMenuItem
-        Caption = '-'
-      end
       object N64: TMenuItem
         Caption = #25353#22995#21517#24615#21035#24180#40836#21512#24182
         OnClick = N64Click
