@@ -8,7 +8,7 @@ uses Windows,Messages, Classes,SysUtils, Graphics, Forms, Controls, Menus,
   DB,inifiles,FR_DBSet, FR_Class, LYAboutBox,Printers,
   StrUtils,  TeEngine, Series, TeeProcs, Chart,fr_chart,shellapi{ShellExecute}, 
   DateUtils, FR_DSet, ADOLYGetcode,Math,Jpeg,Variants, UfrmLocateRecord,
-  ExtDlgs, UADOLYQuery, LYLed, frxClass, frxDBSet;
+  ExtDlgs, UADOLYQuery, LYLed, frxClass, frxDBSet, frxExportPDF;
 
 //==为了通过发送消息更新主窗体状态栏而增加==//
 const
@@ -243,6 +243,7 @@ type
     frxReport1: TfrxReport;
     frxDBDataset1: TfrxDBDataset;
     frxDBDataset2: TfrxDBDataset;
+    frxPDFExport1: TfrxPDFExport;
     procedure FileExit1Execute(Sender: TObject);
     procedure HelpAbout1Execute(Sender: TObject);
     procedure FormShow(Sender: TObject);
