@@ -6,7 +6,7 @@ uses
   WINDOWS,SysUtils, Classes, DB, ADODB,INIFILES,Dialogs{ShowMessageº¯Êý},Controls,
   ComCtrls, Buttons,StdCtrls, ExtCtrls,MENUS,DBGrids,StrUtils, FR_Class,
   FR_DSet, FR_DBSet,Forms{Application±äÁ¿},DBCtrls{DBEdit},Mask{TMaskEdit},Imm{ImmGetIMEFileName},
-  CheckLst{TCheckListBox};
+  CheckLst{TCheckListBox}, frxClass, frxExportPDF;
 
 type
   PDescriptType=^TDescriptType;
@@ -18,6 +18,7 @@ type
 type
   TDM = class(TDataModule)
     ADOConnection1: TADOConnection;
+    frxPDFExport1: TfrxPDFExport;
     procedure DataModuleCreate(Sender: TObject);
   private
     { Private declarations }
