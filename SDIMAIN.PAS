@@ -4291,7 +4291,8 @@ var
   //===============================
 
   i,j:integer;
-  mvPictureTitle:TfrxMemoView;  
+  mvPictureTitle:TfrxMemoView;
+  frxMasterData:TfrxMasterData;  
 begin
   if not ifhaspower(sender,powerstr_js_main) then exit;
 
@@ -4314,6 +4315,10 @@ begin
       exit;
      end;
    end;
+
+  frxReport1.Clear;//清除报表模板
+  frxDBDataSet1.UserName:='ADObasic';//加载模板文件前设置别名.因为一般设计模板文件时已经包含了别名信息
+  frxDBDataSet2.UserName:='ADO_print';//加载模板文件前设置别名.因为一般设计模板文件时已经包含了别名信息
 
   if (sCombin_Id=WorkGroup_T1)
     and frxReport1.LoadFromFile(TempFile_T1) then//加载模板文件是不区分大小写的.空字符串将加载失败
@@ -4393,6 +4398,15 @@ begin
     //frReport1.Pages.Pages[0].pgHeight:=70;
     //frxReport1.Pages[0].ChangePaper($100,2100,PageHeigth,-1,poPortrait);  //1 inch=2.54 cm
 
+  frxDBDataSet1.DataSet:=ADObasic;//关联Fastreport的组件与TDataset数据集
+  frxDBDataSet2.DataSet:=ADO_print;//关联Fastreport的组件与TDataset数据集
+  frxReport1.DataSets.Clear;//清除原来的数据集
+  frxReport1.DataSets.Add(frxDBDataSet1);//加载关联好的TfrxDBDataSet到报表中
+  frxReport1.DataSets.Add(frxDBDataSet2);//加载关联好的TfrxDBDataSet到报表中
+  
+  frxMasterData:=frxReport1.FindObject('MasterData1') as TfrxMasterData;
+  if (frxMasterData<>nil) and (frxMasterData is TfrxMasterData) then frxMasterData.DataSet:=frxDBDataSet2;//动态配置MasterData.DataSet
+      
   if n9.Checked then  //预览模式
   begin
     frxReport1.PrintOptions.ShowDialog:=ifShowPrintDialog;
@@ -4420,6 +4434,7 @@ var
 
   i,j:integer;
   mvPictureTitle:TfrxMemoView;  
+  frxMasterData:TfrxMasterData;  
 begin
   if not ifhaspower(sender,powerstr_js_main) then exit;
 
@@ -4442,6 +4457,10 @@ begin
       exit;
      end;
    end;
+
+  frxReport1.Clear;//清除报表模板
+  frxDBDataSet1.UserName:='ADObasic';//加载模板文件前设置别名.因为一般设计模板文件时已经包含了别名信息
+  frxDBDataSet2.UserName:='ADO_print';//加载模板文件前设置别名.因为一般设计模板文件时已经包含了别名信息
 
   if (sCombin_Id=GP_WorkGroup_T1)
     and frxReport1.LoadFromFile(GP_TempFile_T1) then//加载模板文件是不区分大小写的.空字符串将加载失败
@@ -4549,6 +4568,15 @@ begin
     //frReport1.Pages.Pages[0].pgHeight:=70;
     //frReport1.Pages[0].ChangePaper($100,2100,PageHeigth,-1,poPortrait);  //1 inch=2.54 cm
 
+  frxDBDataSet1.DataSet:=ADObasic;//关联Fastreport的组件与TDataset数据集
+  frxDBDataSet2.DataSet:=ADO_print;//关联Fastreport的组件与TDataset数据集
+  frxReport1.DataSets.Clear;//清除原来的数据集
+  frxReport1.DataSets.Add(frxDBDataSet1);//加载关联好的TfrxDBDataSet到报表中
+  frxReport1.DataSets.Add(frxDBDataSet2);//加载关联好的TfrxDBDataSet到报表中
+  
+  frxMasterData:=frxReport1.FindObject('MasterData1') as TfrxMasterData;
+  if (frxMasterData<>nil) and (frxMasterData is TfrxMasterData) then frxMasterData.DataSet:=frxDBDataSet2;//动态配置MasterData.DataSet
+      
   if n9.Checked then  //预览模式
   begin
     frxReport1.PrintOptions.ShowDialog:=ifShowPrintDialog;
