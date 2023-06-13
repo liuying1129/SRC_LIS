@@ -4330,6 +4330,11 @@ update menuitem set menuname='结果纵向导出' where bm='099' and menuname='E
 update menuitem set menuname='结果横向导出' where bm='002' and menuname='退出系统' and SysName='LIS'
 GO
 
+--20230613
+update menuitem set menuname='打印V3' where bm='042' and menuname='打印每日存根' and SysName='LIS'
+update menuitem set menuname='分组打印V3' where bm='006' and menuname='是否按组分页' and SysName='LIS'
+GO
+
 ---------------表约束、索引相关操作---------------
 
 if not exists(select * from sysindexes where name='IX_combinitem')
