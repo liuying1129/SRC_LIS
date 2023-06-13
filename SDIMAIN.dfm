@@ -2430,44 +2430,4 @@ object SDIAppForm: TSDIAppForm
     Left = 749
     Top = 377
   end
-  object frxReport1: TfrxReport
-    Version = '5.4.6'
-    DotMatrixReport = False
-    IniFile = '\Software\Fast Reports'
-    PreviewOptions.Buttons = [pbPrint, pbLoad, pbSave, pbExport, pbZoom, pbFind, pbOutline, pbPageSetup, pbTools, pbEdit, pbNavigator, pbExportQuick]
-    PreviewOptions.Zoom = 1.000000000000000000
-    PrintOptions.Printer = 'Default'
-    PrintOptions.PrintOnSheet = 0
-    ReportOptions.CreateDate = 45076.394464965280000000
-    ReportOptions.LastChange = 45076.394464965280000000
-    ScriptLanguage = 'PascalScript'
-    ScriptText.Strings = (
-      'begin'
-      ''
-      'end.')
-    OnBeforePrint = frxReport1BeforePrint
-    OnGetValue = frxReport1GetValue
-    OnPrintReport = frxReport1PrintReport
-    Left = 485
-    Top = 465
-    Datasets = <>
-    Variables = <>
-    Style = <>
-  end
-  object frxDBDataset1: TfrxDBDataset
-    UserName = 'ADObasic'
-    CloseDataSource = False
-    DataSet = ADObasic
-    BCDToCurrency = False
-    Left = 517
-    Top = 465
-  end
-  object frxDBDataset2: TfrxDBDataset
-    UserName = 'ADO_print'
-    CloseDataSource = False
-    DataSet = ADO_print
-    BCDToCurrency = False
-    Left = 549
-    Top = 465
-  end
 end

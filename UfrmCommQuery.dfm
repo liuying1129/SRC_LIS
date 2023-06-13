@@ -251,44 +251,4 @@ object frmCommQuery: TfrmCommQuery
     Left = 360
     Top = 80
   end
-  object frxReport1: TfrxReport
-    Version = '5.4.6'
-    DotMatrixReport = False
-    IniFile = '\Software\Fast Reports'
-    PreviewOptions.Buttons = [pbPrint, pbLoad, pbSave, pbExport, pbZoom, pbFind, pbOutline, pbPageSetup, pbTools, pbEdit, pbNavigator, pbExportQuick]
-    PreviewOptions.Zoom = 1.000000000000000000
-    PrintOptions.Printer = 'Default'
-    PrintOptions.PrintOnSheet = 0
-    ReportOptions.CreateDate = 45078.658721921300000000
-    ReportOptions.LastChange = 45078.658721921300000000
-    ScriptLanguage = 'PascalScript'
-    ScriptText.Strings = (
-      'begin'
-      ''
-      'end.')
-    OnBeforePrint = frxReport1BeforePrint
-    OnGetValue = frxReport1GetValue
-    OnPrintReport = frxReport1PrintReport
-    Left = 168
-    Top = 200
-    Datasets = <>
-    Variables = <>
-    Style = <>
-  end
-  object frxDBDataset1: TfrxDBDataset
-    UserName = 'ADObasic'
-    CloseDataSource = False
-    DataSet = ADObasic
-    BCDToCurrency = False
-    Left = 200
-    Top = 200
-  end
-  object frxDBDataset2: TfrxDBDataset
-    UserName = 'ADO_print'
-    CloseDataSource = False
-    DataSet = ADO_print
-    BCDToCurrency = False
-    Left = 232
-    Top = 200
-  end
 end

@@ -7,8 +7,8 @@ uses Windows,Messages, Classes,SysUtils, Graphics, Forms, Controls, Menus,
   ActnList, ToolWin, DosMove,ADODB, Grids, DBGrids,
   DB,inifiles,FR_DBSet, FR_Class, LYAboutBox,Printers,
   StrUtils,  TeEngine, Series, TeeProcs, Chart,fr_chart,shellapi{ShellExecute}, 
-  DateUtils, FR_DSet, ADOLYGetcode,Math,Jpeg,Variants, UfrmLocateRecord,
-  ExtDlgs, UADOLYQuery, LYLed, frxClass, frxDBSet;
+  DateUtils, FR_DSet, ADOLYGetcode,Math, UfrmLocateRecord,
+  UADOLYQuery, LYLed, frxClass, ExtDlgs,Variants,Jpeg;
 
 //==为了通过发送消息更新主窗体状态栏而增加==//
 const
@@ -240,9 +240,6 @@ type
     SpeedButton2: TSpeedButton;
     SpeedButton8: TSpeedButton;
     ToolButton7: TToolButton;
-    frxReport1: TfrxReport;
-    frxDBDataset1: TfrxDBDataset;
-    frxDBDataset2: TfrxDBDataset;
     procedure FileExit1Execute(Sender: TObject);
     procedure HelpAbout1Execute(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -394,10 +391,6 @@ type
     procedure LYLed1DblClick(Sender: TObject);
     procedure SpeedButton2Click(Sender: TObject);
     procedure SpeedButton8Click(Sender: TObject);
-    procedure frxReport1BeforePrint(Sender: TfrxReportComponent);
-    procedure frxReport1GetValue(const VarName: String;
-      var Value: Variant);
-    procedure frxReport1PrintReport(Sender: TObject);
   private
     procedure CheckTheListBox;//根据当前病人的结果在checklistbox1中打钩
     procedure WriteProfile;
@@ -426,9 +419,6 @@ type
     procedure InsertOrDeleteVaue(const ComboItemID:string;const ifAddorDel:boolean;const checkunid:integer;const AChk_Valu_His_ValueId:integer);
     procedure updatedbgrid1;
     procedure update_Ado_dtl;
-    procedure updatechart(ChartHistogram:TChart;const strHistogram:string;const strEnglishName:string;const strXTitle:string);
-    procedure Draw_MVIS2035_Curve(Chart_XLB:TChart;const X1,Y1,X2,Y2,X1_MIN,Y1_MIN,X2_MIN,Y2_MIN,
-                                                   X1_MAX,Y1_MAX,X2_MAX,Y2_MAX:Real);
     procedure WndProc (var Msg: TMessage);override;
     procedure NewAddStatus;
     function AddValetudinarianBasicInfo(const PLSH,pcheckid,Ppatientname,Psex,
@@ -2283,56 +2273,6 @@ begin
   ifnewadd:=false;
 end;
 
-procedure TSDIAppForm.updatechart(ChartHistogram:TChart;const strHistogram:string;const strEnglishName:string;const strXTitle:string);
-var
-    i,k:integer;
-    sList:tstrings;
-    fMin,fMax:single;
-    Series_Val:TFastLineSeries;
-begin
-    ChartHistogram.Width:=194;
-    ChartHistogram.Height:=90;
-    ChartHistogram.View3D:=false;
-    ChartHistogram.Legend.Visible:=false;
-    ChartHistogram.Color:=clWhite;
-    ChartHistogram.BevelOuter:=bvNone;//如不设置该属性,则打印时底部、右边各有一条灰色线
-    ChartHistogram.BackWall.Pen.Visible:=false;//隐藏top、right的框
-    ChartHistogram.BottomAxis.Axis.Width:=1;
-    ChartHistogram.LeftAxis.Axis.Width:=1;
-    ChartHistogram.BottomAxis.Grid.Visible:=false;//隐藏横向的GRID线
-    ChartHistogram.LeftAxis.Grid.Visible:=false;//隐藏纵向的GRID线
-    ChartHistogram.BottomAxis.Labels:=false;//隐藏X轴的刻度
-    ChartHistogram.LeftAxis.Labels:=false;//隐藏Y轴的刻度
-    ChartHistogram.Title.Font.Color:=clBlack;//默认是clBlue
-    ChartHistogram.Title.Text.Clear;
-    for k:=ChartHistogram.SeriesCount-1 downto 0 do ChartHistogram.Series[k].Clear;
-    sList:=TStringList.Create;
-    if SmoothLine(strHistogram,SmoothNum,sList,fMin,fMax)=0 then
-    begin
-      ChartHistogram.AxisVisible:=false;//轴上的Title也随之隐藏
-      sList.Free;
-      exit;
-    end;
-
-    ChartHistogram.Title.Text.Text:=strEnglishName;
-    ChartHistogram.BottomAxis.Title.Caption:=strXTitle;
-    ChartHistogram.LeftAxis.Automatic:=false;
-    ChartHistogram.LeftAxis.Maximum:=MaxInt;//如果不加这句,下句有可能报错(最小值必须=<最大值)
-    ChartHistogram.LeftAxis.Minimum:=fMin-5*(fMax-fMin)/100;//上面和下面分别留5%的空
-    ChartHistogram.LeftAxis.Maximum:=fMax+5*(fMax-fMin)/100;
-
-    Series_Val:=TFastLineSeries.Create(ChartHistogram);
-    Series_Val.ParentChart :=ChartHistogram;
-    Series_Val.SeriesColor:=clBlack;//设置曲线颜色
-    ChartHistogram.AddSeries(Series_Val);
-
-    for i:=0 to sList.Count-1 do
-    begin
-      Series_Val.Add(strtofloat(sList[i]));
-    end;
-    sList.Free;
-end;
-
 procedure TSDIAppForm.N30Click(Sender: TObject);
 begin
   if not ifhaspower(sender,powerstr_js_main) then exit;
@@ -3156,83 +3096,6 @@ begin
   adotemp11.Free;
   ADObasic.Locate('唯一编号',unid,[]);
 end;
-
-//生成曲线图 start
-procedure TSDIAppForm.Draw_MVIS2035_Curve(Chart_XLB:TChart;const X1,Y1,X2,Y2,X1_MIN,Y1_MIN,X2_MIN,Y2_MIN,
-                                               X1_MAX,Y1_MAX,X2_MAX,Y2_MAX:Real);
-//要利用Chart生成图片,故该函数不能写在DLL中                                    
-VAR
-  Y:Array[1..200] of real;
-  Y_MIN:Array[1..200] of real;
-  Y_MAX:Array[1..200] of real;
-  A,B:real;
-  A_MIN,B_MIN:real;
-  A_MAX,B_MAX:real;
-  i:integer;
-  rMin,rMax:real;
-  Series_Val,Series_Min,Series_Max:TFastLineSeries;
-BEGIN
-  if not CassonEquation(X1,Y1,X2,Y2,A,B) then exit;
-  if not CassonEquation(X1_MIN,Y1_MIN,X2_MIN,Y2_MIN,A_MIN,B_MIN) then exit;
-  if not CassonEquation(X1_MAX,Y1_MAX,X2_MAX,Y2_MAX,A_MAX,B_MAX) then exit;
-
-  Chart_XLB.Width:=600;
-  Chart_XLB.Height:=250;
-  Chart_XLB.View3D:=false;
-  Chart_XLB.Legend.Visible:=false;
-  Chart_XLB.Color:=clWhite;
-  Chart_XLB.BevelOuter:=bvNone;
-  Chart_XLB.BottomAxis.Axis.Width:=1;
-  Chart_XLB.LeftAxis.Axis.Width:=1;
-  Chart_XLB.BackWall.Pen.Visible:=false;//隐藏top、right的框
-  Chart_XLB.BottomAxis.Grid.Visible:=false;//隐藏横向的GRID线
-  Chart_XLB.LeftAxis.Grid.Visible:=false;//隐藏纵向的GRID线
-  Chart_XLB.Title.Font.Color:=clBlack;//默认是clBlue
-  Chart_XLB.Title.Text.Clear;
-  Chart_XLB.Title.Text.Add('血液粘度特性曲线');
-  Chart_XLB.BottomAxis.Title.Caption:='切变率(1/s)';
-  Chart_XLB.LeftAxis.Title.Caption:='粘度(mPa.s)';
-  //for k:=Chart2.SeriesCount-1 downto 0 do Chart2.Series[k].Clear;//动态创建的Chart,肯定没Serie
-
-  Series_Val:=TFastLineSeries.Create(Chart_XLB);
-  Series_Val.ParentChart :=Chart_XLB;
-  Series_Val.SeriesColor:=clBlack;//设置曲线颜色
-  Chart_XLB.AddSeries(Series_Val);
-
-  Series_Min:=TFastLineSeries.Create(Chart_XLB);
-  Series_Min.ParentChart :=Chart_XLB;
-  Series_Min.SeriesColor:=clBtnFace;//设置曲线颜色
-  Series_Min.LinePen.Style:=psDashDotDot;
-  Chart_XLB.AddSeries(Series_Min);
-
-  Series_Max:=TFastLineSeries.Create(Chart_XLB);
-  Series_Max.ParentChart :=Chart_XLB;
-  Series_Max.SeriesColor:=clBtnFace;//设置曲线颜色
-  Series_Max.LinePen.Style:=psDashDotDot;
-  Chart_XLB.AddSeries(Series_Max);
-
-  rMin:=0;rMax:=0;
-  for i :=1 to 200 do
-  begin
-    Y[i]:=POWER(A+B*sqrt(1/I),2);
-    Y_MIN[i]:=POWER(A_MIN+B_MIN*sqrt(1/I),2);
-    Y_MAX[i]:=POWER(A_MAX+B_MAX*sqrt(1/I),2);
-
-    Series_Val.Add(Y[i]);
-    Series_Min.Add(Y_min[i]);
-    Series_Max.Add(Y_max[i]);
-
-    if i=1 then begin rMin:=Y[i];rMax:=Y[i];end;
-    if Y[i]<rMin then rMin:=Y[i];
-    if Y[i]>rMax then rMax:=Y[i];
-  end;
-
-  Chart_XLB.LeftAxis.Automatic:=false;
-  Chart_XLB.LeftAxis.Maximum:=MaxInt;//如果不加这句,下句有可能报错(最小值必须=<最大值)
-  Chart_XLB.LeftAxis.Minimum:=rMin-10*(rMax-rMin)/100;//下面留10%的空
-  Chart_XLB.LeftAxis.Maximum:=rMax-10*(rMax-rMin)/100;//上面减少10%,这样图形才机子打出来的差不多
-END;
-//生成曲线图 stop
 
 procedure TSDIAppForm.frReport1BeforePrint(Memo: TStringList;
   View: TfrView);
@@ -4307,32 +4170,40 @@ begin
   sSex:=adobasic.fieldbyname('性别').AsString;
   sAge:=adobasic.fieldbyname('年龄').AsString;
   
-   if not ifAutoCheck then  //打印前要检查是否已被审核
-   begin
-     if sReport_Doctor='' then
-     begin
+  if not ifAutoCheck then  //打印前要检查是否已被审核
+  begin
+    if sReport_Doctor='' then
+    begin
       MessageBox(Handle, '请先审核！', '系统提示', MB_ICONASTERISK);
       exit;
-     end;
-   end;
+    end;
+  end else
+  begin
+    if sReport_Doctor='' then
+    begin
+      //可能要打印审核者，故只能在打印前处理.(其实在PrintReport中处理更合理)
+      ExecSQLCmd(LisConn,'update chk_con set report_doctor='''+operator_name+''',Audit_Date=getdate() where unid='+sUnid);
+      ADObasic.Refresh;//更新显示审核者
+    end;
+  end;
 
-  frxReport1.Clear;//清除报表模板
-  frxDBDataSet1.UserName:='ADObasic';//加载模板文件前设置别名.因为一般设计模板文件时已经包含了别名信息
-  frxDBDataSet2.UserName:='ADO_print';//加载模板文件前设置别名.因为一般设计模板文件时已经包含了别名信息
+  DM.frxReport1.Clear;//清除报表模板
+  DM.frxDBDataSet1.UserName:='ADObasic';//加载模板文件前设置别名.因为一般设计模板文件时已经包含了别名信息
+  DM.frxDBDataSet2.UserName:='ADO_print';//加载模板文件前设置别名.因为一般设计模板文件时已经包含了别名信息
 
   if (sCombin_Id=WorkGroup_T1)
-    and frxReport1.LoadFromFile(TempFile_T1) then//加载模板文件是不区分大小写的.空字符串将加载失败
+    and DM.frxReport1.LoadFromFile(TempFile_T1) then//加载模板文件是不区分大小写的.空字符串将加载失败
   begin
   end else
   if (sCombin_Id=WorkGroup_T2)
-    and frxReport1.LoadFromFile(TempFile_T2) then
+    and DM.frxReport1.LoadFromFile(TempFile_T2) then
   begin
   end else
   if (sCombin_Id=WorkGroup_T3)
-    and frxReport1.LoadFromFile(TempFile_T3) then
+    and DM.frxReport1.LoadFromFile(TempFile_T3) then
   begin
   end else
-  if not frxReport1.LoadFromFile(ExtractFilePath(application.ExeName)+'report_cur.fr3') then
+  if not DM.frxReport1.LoadFromFile(ExtractFilePath(application.ExeName)+'report_cur.fr3') then
   begin
     showmessage('加载默认通用打印模板report_cur.fr3失败，请设置:系统设置->选项->打印模板');
     exit;
@@ -4340,16 +4211,16 @@ begin
 
   //动态创建图片标题begin
   //待处理问题:是否需要释放mvPictureTitle?何时释放?
-  for j:=0 to frxReport1.PagesCount-1 do
+  for j:=0 to DM.frxReport1.PagesCount-1 do
   begin
-    for i:=0 to frxReport1.Pages[j].Objects.Count-1 do
+    for i:=0 to DM.frxReport1.Pages[j].Objects.Count-1 do
     begin
-      if TObject(frxReport1.Pages[j].Objects.Items[i]) is TfrxPictureView then
+      if TObject(DM.frxReport1.Pages[j].Objects.Items[i]) is TfrxPictureView then
       begin
-        if uppercase(leftstr(TfrxPictureView(frxReport1.Pages[j].Objects.Items[i]).Name,7))='PICTURE' then
+        if uppercase(leftstr(TfrxPictureView(DM.frxReport1.Pages[j].Objects.Items[i]).Name,7))='PICTURE' then
         begin
-          mvPictureTitle:=TfrxMemoView.Create(frxReport1.Pages[j]);
-          mvPictureTitle.Name:='mv'+TfrxPictureView(frxReport1.Pages[j].Objects.Items[i]).Name;
+          mvPictureTitle:=TfrxMemoView.Create(DM.frxReport1.Pages[j]);
+          mvPictureTitle.Name:='mv'+TfrxPictureView(DM.frxReport1.Pages[j].Objects.Items[i]).Name;
           mvPictureTitle.Visible:=false;
         end;
       end;
@@ -4393,28 +4264,26 @@ begin
   ado_print.Open;
   if (ADO_print.RecordCount=0) and (not ifNoResultPrint) then exit;
 
-  //if ifHeightForItemNum and (ADO_print.RecordCount>ItemRecNum) then
-    //frReport1.Pages.Pages[0].pgsize:=255;//.pgHeight:=70;
-    //frReport1.Pages.Pages[0].pgHeight:=70;
-    //frxReport1.Pages[0].ChangePaper($100,2100,PageHeigth,-1,poPortrait);  //1 inch=2.54 cm
+  {if ifHeightForItemNum and (ADO_print.RecordCount>ItemRecNum) then
+    frxReport1.Pages[0].ChangePaper($100,2100,PageHeigth,-1,poPortrait);  //1 inch=2.54 cm}
 
-  frxDBDataSet1.DataSet:=ADObasic;//关联Fastreport的组件与TDataset数据集
-  frxDBDataSet2.DataSet:=ADO_print;//关联Fastreport的组件与TDataset数据集
-  frxReport1.DataSets.Clear;//清除原来的数据集
-  frxReport1.DataSets.Add(frxDBDataSet1);//加载关联好的TfrxDBDataSet到报表中
-  frxReport1.DataSets.Add(frxDBDataSet2);//加载关联好的TfrxDBDataSet到报表中
+  DM.frxDBDataSet1.DataSet:=ADObasic;//关联Fastreport的组件与TDataset数据集
+  DM.frxDBDataSet2.DataSet:=ADO_print;//关联Fastreport的组件与TDataset数据集
+  DM.frxReport1.DataSets.Clear;//清除原来的数据集
+  DM.frxReport1.DataSets.Add(DM.frxDBDataSet1);//加载关联好的TfrxDBDataSet到报表中
+  DM.frxReport1.DataSets.Add(DM.frxDBDataSet2);//加载关联好的TfrxDBDataSet到报表中
   
-  frxMasterData:=frxReport1.FindObject('MasterData1') as TfrxMasterData;
-  if (frxMasterData<>nil) and (frxMasterData is TfrxMasterData) then frxMasterData.DataSet:=frxDBDataSet2;//动态配置MasterData.DataSet
+  frxMasterData:=DM.frxReport1.FindObject('MasterData1') as TfrxMasterData;
+  if (frxMasterData<>nil) and (frxMasterData is TfrxMasterData) then frxMasterData.DataSet:=DM.frxDBDataSet2;//动态配置MasterData.DataSet
       
   if n9.Checked then  //预览模式
   begin
-    frxReport1.PrintOptions.ShowDialog:=ifShowPrintDialog;
-    frxReport1.ShowReport;
+    DM.frxReport1.PrintOptions.ShowDialog:=ifShowPrintDialog;
+    DM.frxReport1.ShowReport;
   end;
   if n8.Checked then  //直接打印模式
   begin
-    if frxReport1.PrepareReport then frxReport1.Print;
+    if DM.frxReport1.PrepareReport then DM.frxReport1.Print;
   end;
 end;
 
@@ -4448,33 +4317,41 @@ begin
   sPatientname:=trim(adobasic.fieldbyname('姓名').AsString);
   sSex:=adobasic.fieldbyname('性别').AsString;
   sAge:=adobasic.fieldbyname('年龄').AsString;
-  
-   if not ifAutoCheck then  //打印前要检查是否已被审核
-   begin
-     if sReport_Doctor='' then
-     begin
+
+  if not ifAutoCheck then  //打印前要检查是否已被审核
+  begin
+    if sReport_Doctor='' then
+    begin
       MessageBox(Handle, '请先审核！', '系统提示', MB_ICONASTERISK);
       exit;
-     end;
-   end;
+    end;
+  end else
+  begin
+    if sReport_Doctor='' then
+    begin
+      //可能要打印审核者，故只能在打印前处理.(其实在PrintReport中处理更合理)
+      ExecSQLCmd(LisConn,'update chk_con set report_doctor='''+operator_name+''',Audit_Date=getdate() where unid='+sUnid);
+      ADObasic.Refresh;//更新显示审核者
+    end;
+  end;
 
-  frxReport1.Clear;//清除报表模板
-  frxDBDataSet1.UserName:='ADObasic';//加载模板文件前设置别名.因为一般设计模板文件时已经包含了别名信息
-  frxDBDataSet2.UserName:='ADO_print';//加载模板文件前设置别名.因为一般设计模板文件时已经包含了别名信息
+  DM.frxReport1.Clear;//清除报表模板
+  DM.frxDBDataSet1.UserName:='ADObasic';//加载模板文件前设置别名.因为一般设计模板文件时已经包含了别名信息
+  DM.frxDBDataSet2.UserName:='ADO_print';//加载模板文件前设置别名.因为一般设计模板文件时已经包含了别名信息
 
   if (sCombin_Id=GP_WorkGroup_T1)
-    and frxReport1.LoadFromFile(GP_TempFile_T1) then//加载模板文件是不区分大小写的.空字符串将加载失败
+    and DM.frxReport1.LoadFromFile(GP_TempFile_T1) then//加载模板文件是不区分大小写的.空字符串将加载失败
   begin
   end else
   if (sCombin_Id=GP_WorkGroup_T2)
-    and frxReport1.LoadFromFile(GP_TempFile_T2) then
+    and DM.frxReport1.LoadFromFile(GP_TempFile_T2) then
   begin
   end else
   if (sCombin_Id=GP_WorkGroup_T3)
-    and frxReport1.LoadFromFile(GP_TempFile_T3) then
+    and DM.frxReport1.LoadFromFile(GP_TempFile_T3) then
   begin
   end else
-  if not frxReport1.LoadFromFile(ExtractFilePath(application.ExeName)+'report_Cur_group.fr3') then
+  if not DM.frxReport1.LoadFromFile(ExtractFilePath(application.ExeName)+'report_Cur_group.fr3') then
   begin
     showmessage('加载默认分组打印模板report_Cur_group.fr3失败，请设置:系统设置->选项->打印模板');
     exit;
@@ -4482,16 +4359,16 @@ begin
 
   //动态创建图片标题begin
   //待处理问题:是否需要释放mvPictureTitle?何时释放?
-  for j:=0 to frxReport1.PagesCount-1 do
+  for j:=0 to DM.frxReport1.PagesCount-1 do
   begin
-    for i:=0 to frxReport1.Pages[j].Objects.Count-1 do
+    for i:=0 to DM.frxReport1.Pages[j].Objects.Count-1 do
     begin
-      if TObject(frxReport1.Pages[j].Objects.Items[i]) is TfrxPictureView then
+      if TObject(DM.frxReport1.Pages[j].Objects.Items[i]) is TfrxPictureView then
       begin
-        if uppercase(leftstr(TfrxPictureView(frxReport1.Pages[j].Objects.Items[i]).Name,7))='PICTURE' then
+        if uppercase(leftstr(TfrxPictureView(DM.frxReport1.Pages[j].Objects.Items[i]).Name,7))='PICTURE' then
         begin
-          mvPictureTitle:=TfrxMemoView.Create(frxReport1.Pages[j]);
-          mvPictureTitle.Name:='mv'+TfrxPictureView(frxReport1.Pages[j].Objects.Items[i]).Name;
+          mvPictureTitle:=TfrxMemoView.Create(DM.frxReport1.Pages[j]);
+          mvPictureTitle.Name:='mv'+TfrxPictureView(DM.frxReport1.Pages[j].Objects.Items[i]).Name;
           mvPictureTitle.Visible:=false;
         end;
       end;
@@ -4563,282 +4440,27 @@ begin
   end;
   //==========================
 
-  //if ifHeightForItemNum and (ADO_print.RecordCount>ItemRecNum) then
-    //frReport1.Pages.Pages[0].pgsize:=255;//.pgHeight:=70;
-    //frReport1.Pages.Pages[0].pgHeight:=70;
-    //frReport1.Pages[0].ChangePaper($100,2100,PageHeigth,-1,poPortrait);  //1 inch=2.54 cm
+  {if ifHeightForItemNum and (ADO_print.RecordCount>ItemRecNum) then
+    frReport1.Pages[0].ChangePaper($100,2100,PageHeigth,-1,poPortrait);  //1 inch=2.54 cm}
 
-  frxDBDataSet1.DataSet:=ADObasic;//关联Fastreport的组件与TDataset数据集
-  frxDBDataSet2.DataSet:=ADO_print;//关联Fastreport的组件与TDataset数据集
-  frxReport1.DataSets.Clear;//清除原来的数据集
-  frxReport1.DataSets.Add(frxDBDataSet1);//加载关联好的TfrxDBDataSet到报表中
-  frxReport1.DataSets.Add(frxDBDataSet2);//加载关联好的TfrxDBDataSet到报表中
+  DM.frxDBDataSet1.DataSet:=ADObasic;//关联Fastreport的组件与TDataset数据集
+  DM.frxDBDataSet2.DataSet:=ADO_print;//关联Fastreport的组件与TDataset数据集
+  DM.frxReport1.DataSets.Clear;//清除原来的数据集
+  DM.frxReport1.DataSets.Add(DM.frxDBDataSet1);//加载关联好的TfrxDBDataSet到报表中
+  DM.frxReport1.DataSets.Add(DM.frxDBDataSet2);//加载关联好的TfrxDBDataSet到报表中
   
-  frxMasterData:=frxReport1.FindObject('MasterData1') as TfrxMasterData;
-  if (frxMasterData<>nil) and (frxMasterData is TfrxMasterData) then frxMasterData.DataSet:=frxDBDataSet2;//动态配置MasterData.DataSet
+  frxMasterData:=DM.frxReport1.FindObject('MasterData1') as TfrxMasterData;
+  if (frxMasterData<>nil) and (frxMasterData is TfrxMasterData) then frxMasterData.DataSet:=DM.frxDBDataSet2;//动态配置MasterData.DataSet
       
   if n9.Checked then  //预览模式
   begin
-    frxReport1.PrintOptions.ShowDialog:=ifShowPrintDialog;
-    frxReport1.ShowReport;
+    DM.frxReport1.PrintOptions.ShowDialog:=ifShowPrintDialog;
+    DM.frxReport1.ShowReport;
   end;
   if n8.Checked then  //直接打印模式
   begin
-    if frxReport1.PrepareReport then frxReport1.Print;
+    if DM.frxReport1.PrepareReport then DM.frxReport1.Print;
   end;
-end;
-
-procedure TSDIAppForm.frxReport1BeforePrint(Sender: TfrxReportComponent);
-var
-  adotemp11:tadoquery;
-  unid:integer;
-  report_doctor:string;
-  
-  strsqlPrint,strEnglishName,strHistogram,strXTitle:string;
-  MS:tmemorystream;
-  tempjpeg:TJPEGImage;
-  Chart_ZFT:TChart;
-
-  //血流变变量start
-  Reserve8_1,Reserve8_2:single;//切变率
-  mPa_1,mPa_2:string;//粘度
-  mPa_min_1,mPa_min_2:string;//粘度
-  mPa_max_1,mPa_max_2:string;//粘度
-  Chart_XLB:TChart;
-  //血流变变量stop
-
-  mvPictureTitle :TfrxMemoView;
-begin
-  if not ADObasic.Active then exit;
-  if not ADObasic.RecordCount=0 then exit;
-
-  unid:=ADObasic.fieldbyname('唯一编号').AsInteger;
-  report_doctor:=trim(ADObasic.fieldbyname('审核者').AsString);
-
-  //加载血流变曲线、直方图、散点图 start
-  if(Sender is TfrxPictureView)and(pos('CURVE',uppercase(Sender.Name))>0)then
-  begin
-    Sender.Visible:=false;
-    strsqlPrint:='select Reserve8,itemValue,Min_Value,Max_Value '+
-       ' from chk_valu WITH(NOLOCK) '+
-       ' where pkunid=:pkunid '+
-       ' and Reserve8 is not null '+
-       ' and issure=1 ';
-    adotemp11:=tadoquery.Create(nil);
-    adotemp11.Connection:=DM.ADOConnection1;
-    adotemp11.Close;
-    adotemp11.SQL.Clear;
-    adotemp11.SQL.Text:=strsqlPrint;
-    adotemp11.Parameters.ParamByName('pkunid').Value:=unid;
-    adotemp11.Open;
-    if adotemp11.RecordCount=2 then
-    begin
-      Sender.Visible:=true;
-
-      Chart_XLB:=TChart.Create(nil);
-      Chart_XLB.Visible:=false;
-      
-      Reserve8_1:=adotemp11.fieldbyname('Reserve8').AsFloat;//切变率
-      mPa_1:=adotemp11.fieldbyname('itemValue').AsString;//粘度
-      mPa_min_1:=adotemp11.fieldbyname('Min_Value').AsString;//粘度
-      mPa_max_1:=adotemp11.fieldbyname('Max_Value').AsString;//粘度
-      adotemp11.Next;
-      Reserve8_2:=adotemp11.fieldbyname('Reserve8').AsFloat;//切变率
-      mPa_2:=adotemp11.fieldbyname('itemValue').AsString;//粘度
-      mPa_min_2:=adotemp11.fieldbyname('Min_Value').AsString;//粘度
-      mPa_max_2:=adotemp11.fieldbyname('Max_Value').AsString;//粘度
-      Draw_MVIS2035_Curve(Chart_XLB,Reserve8_1,strtofloatdef(mPa_1,-1),Reserve8_2,strtofloatdef(mPa_2,-1),
-                          Reserve8_1,strtofloatdef(mPa_min_1,-1),Reserve8_2,strtofloatdef(mPa_min_2,-1),
-                          Reserve8_1,strtofloatdef(mPa_max_1,-1),Reserve8_2,strtofloatdef(mPa_max_2,-1));
-      TfrxPictureView(Sender).Picture.Assign(Chart_XLB.TeeCreateMetafile(False,Rect(0,0,Round(Sender.Width),Round(Sender.Height))));//指定统计图給FastReport
-
-      Chart_XLB.Free;
-    end;
-    adotemp11.Free;
-  end;
-    
-  if(Sender is TfrxPictureView)and(pos('CHART',uppercase(Sender.Name))>0)then
-  begin
-    Sender.Visible:=false;
-    strEnglishName:=(Sender as TfrxPictureView).Name;
-    strEnglishName:=stringreplace(strEnglishName,'Chart','',[rfIgnoreCase]);
-    strsqlPrint:='select top 1 histogram,Dosage1 '+
-       ' from chk_valu WITH(NOLOCK) '+
-       ' where pkunid=:pkunid '+
-       ' and english_name=:english_name '+
-       ' and isnull(histogram,'''')<>'''' '+
-       ' and issure=1 ';
-    adotemp11:=tadoquery.Create(nil);
-    adotemp11.Connection:=DM.ADOConnection1;
-    adotemp11.Close;
-    adotemp11.SQL.Clear;
-    adotemp11.SQL.Text:=strsqlPrint;
-    adotemp11.Parameters.ParamByName('pkunid').Value:=unid;
-    adotemp11.Parameters.ParamByName('english_name').Value:=strEnglishName;
-    adotemp11.Open;
-    strHistogram:=trim(adotemp11.fieldbyname('histogram').AsString);
-    strXTitle:=adotemp11.fieldbyname('Dosage1').AsString;
-    adotemp11.Free;
-    if strHistogram<>'' then
-    begin
-      Sender.Visible:=true;
-
-      Chart_ZFT:=TChart.Create(nil);
-      Chart_ZFT.Visible:=false;
-
-      updatechart(Chart_ZFT,strHistogram,strEnglishName,strXTitle);
-      TfrxPictureView(Sender).Picture.Assign(Chart_ZFT.TeeCreateMetafile(False,Rect(0,0,Round(Sender.Width),Round(Sender.Height))));//指定统计图給FastReport
-
-      Chart_ZFT.Free;
-    end;
-  end;
-
-  if(Sender is TfrxPictureView)and(pos('PICTURE',uppercase(Sender.Name))>0)then
-  begin
-    Sender.Visible:=false;
-    strEnglishName:=(Sender as TfrxPictureView).Name;
-    strEnglishName:=stringreplace(strEnglishName,'Picture','',[rfIgnoreCase]);
-    strsqlPrint:='select top 1 Photo,english_name '+
-       ' from chk_valu WITH(NOLOCK) '+
-       ' where pkunid=:pkunid '+
-       //' and english_name=:english_name '+
-       ' and itemid=:itemid '+//edit by liuying 20110414
-       ' and Photo is not null '+
-       ' and issure=1 ';
-    adotemp11:=tadoquery.Create(nil);
-    adotemp11.Connection:=DM.ADOConnection1;
-    adotemp11.Close;
-    adotemp11.SQL.Clear;
-    adotemp11.SQL.Text:=strsqlPrint;
-    adotemp11.Parameters.ParamByName('pkunid').Value:=unid;
-    //adotemp11.Parameters.ParamByName('english_name').Value:=strEnglishName;
-    adotemp11.Parameters.ParamByName('itemid').Value:=strEnglishName;//edit by liuying 20110414
-    adotemp11.Open;
-    if not adotemp11.fieldbyname('photo').IsNull then
-    begin
-      Sender.Visible:=true;
-      MS:=TMemoryStream.Create;
-      TBlobField(adotemp11.fieldbyname('photo')).SaveToStream(MS);
-      MS.Position:=0;
-      tempjpeg:=TJPEGImage.Create;
-      tempjpeg.LoadFromStream(MS);
-      MS.Free;
-      TfrxPictureView(Sender).Picture.assign(tempjpeg);
-      tempjpeg.Free;
-      
-      //显示图片标题begin
-      mvPictureTitle:=TfrxMemoView(frxReport1.FindObject('mv'+Sender.Name));
-      if (mvPictureTitle<>nil) and (mvPictureTitle is TfrxMemoView) then
-      begin
-        mvPictureTitle.AutoWidth:=True;
-        mvPictureTitle.Font.Name:='宋体';
-        mvPictureTitle.SetBounds((Sender as TfrxPictureView).Left, (Sender as TfrxPictureView).Top-20, 50, 20);
-        mvPictureTitle.Text:=adotemp11.fieldbyname('english_name').AsString;
-        mvPictureTitle.Visible:=true;
-      end;
-      //显示图片标题end
-    end;
-    adotemp11.Free;
-  end;
-  //加载血流变曲线、直方图、散点图 stop
-
-  //可能要打印审核者，故只能在BeforePrint事件中处理.(其实在PrintReport中处理更合理)
-  if(ifAutoCheck)and(report_doctor='') then//修改审核者
-  begin
-    ExecSQLCmd(LisConn,'update chk_con set report_doctor='''+operator_name+''',Audit_Date=getdate() where unid='+inttostr(unid));
-    adobasic.Refresh;//更新显示审核者
-  end;
-end;
-
-procedure TSDIAppForm.frxReport1GetValue(const VarName: String;
-  var Value: Variant);
-var
-  ItemChnName:string;
-  cur_value:string;
-  min_value:string;
-  max_value:string;
-  i:integer;
-  adotemp22:Tadoquery;
-begin
-    if VarName='SCSYDW' then Value:=SCSYDW;
-
-    if VarName='CXZF' then
-    BEGIN
-      ItemChnName:=trim(ADO_print.fieldbyname('项目代码').AsString);
-      cur_value:=trim(ADO_print.fieldbyname('检验结果').AsString);
-      min_value:=trim(ADO_print.fieldbyname('最小值').AsString);
-      max_value:=trim(ADO_print.fieldbyname('最大值').AsString);
-
-      adotemp22:=Tadoquery.Create(nil);
-      adotemp22.Connection:=dm.ADOConnection1;
-      adotemp22.Close;
-      adotemp22.SQL.Clear;
-      adotemp22.SQL.Text:='select dbo.uf_ValueAlarm('''+ItemChnName+''','''+min_value+''','''+max_value+''','''+cur_value+''') as ifValueAlarm';
-      try//uf_ValueAlarm中的convert函数可能抛出异常
-        adotemp22.Open;
-        i:=adotemp22.fieldbyname('ifValueAlarm').AsInteger;
-      except
-        i:=0;
-      end;
-      adotemp22.Free;
-      if i=1 then
-        Value := TRIM(COPY(CXZF,3,2))
-      else if i=2 then
-        Value := TRIM(COPY(CXZF,1,2))
-      else Value:='';
-    END;
-
-    if VarName='打印者' then Value:=operator_name;
-    if VarName='所属公司' then Value:=trim(ADObasic.fieldbyname('所属公司').AsString);
-    if VarName='姓名' then Value:=trim(ADObasic.fieldbyname('姓名').AsString);
-    if VarName='性别' then Value:=trim(ADObasic.fieldbyname('性别').AsString);
-    if VarName='体检日期' then Value:=ADObasic.fieldbyname('检查日期').AsDateTime;
-    if VarName='年龄' then Value:=trim(ADObasic.fieldbyname('年龄').AsString);
-    if VarName='婚否' then Value:=trim(ADObasic.fieldbyname('婚否').AsString);
-    if VarName='工种' then Value:=trim(ADObasic.fieldbyname('工种').AsString);
-    if VarName='籍贯' then Value:=trim(ADObasic.fieldbyname('籍贯').AsString);
-    if VarName='住址' then Value:=trim(ADObasic.fieldbyname('住址').AsString);
-    if VarName='电话' then Value:=trim(ADObasic.fieldbyname('电话').AsString);
-    {if parname='舒张压' then ParValue:=trim(ADObasic.fieldbyname('舒张压').AsString);
-    if parname='收缩压' then ParValue:=trim(ADObasic.fieldbyname('收缩压').AsString);
-    if parname='左眼视力' then ParValue:=trim(ADObasic.fieldbyname('左眼视力').AsString);
-    if parname='右眼视力' then ParValue:=trim(ADObasic.fieldbyname('右眼视力').AsString);
-    if parname='身高' then ParValue:=trim(ADObasic.fieldbyname('身高').AsString);
-    if parname='体重' then ParValue:=trim(ADObasic.fieldbyname('体重').AsString);
-    if parname='既往史' then ParValue:=ADObasic.fieldbyname('既往史').AsString;
-    if parname='家族史' then ParValue:=ADObasic.fieldbyname('家族史').AsString;
-    if parname='内科' then ParValue:=ADObasic.fieldbyname('内科').AsString;
-    if parname='外科' then ParValue:=ADObasic.fieldbyname('外科').AsString;
-    if parname='五官科' then ParValue:=ADObasic.fieldbyname('五官科').AsString;
-    if parname='妇科' then ParValue:=ADObasic.fieldbyname('妇科').AsString;
-    if parname='冷强光' then ParValue:=ADObasic.fieldbyname('冷强光').AsString;
-    if parname='X光' then ParValue:=ADObasic.fieldbyname('X光').AsString;
-    if parname='B超' then ParValue:=ADObasic.fieldbyname('B超').AsString;
-    if parname='心电图' then ParValue:=ADObasic.fieldbyname('心电图').AsString;
-    if parname='检验' then ParValue:=ADObasic.fieldbyname('检验').AsString;
-    if parname='结论' then ParValue:=ADObasic.fieldbyname('结论').AsString;
-    if parname='建议' then ParValue:=ADObasic.fieldbyname('建议').AsString;//}
-    
-    if VarName='检验设备' then Value:=ScalarSQLCmd(LisConn,'select dbo.uf_GetEquipFromChkUnid(0,'+ADObasic.fieldbyname('唯一编号').AsString+')');
-end;
-
-procedure TSDIAppForm.frxReport1PrintReport(Sender: TObject);
-var
-  unid,printtimes:integer;
-begin
-  if not ADObasic.Active then exit;
-  if not ADObasic.RecordCount=0 then exit;
-
-  unid:=ADObasic.fieldbyname('唯一编号').AsInteger;
-  printtimes:=ADObasic.fieldbyname('打印次数').AsInteger;
-
-  if printtimes=0 then//修改打印次数
-  begin
-    ExecSQLCmd(LisConn,'update chk_con set printtimes='+inttostr(printtimes+1)+' where unid='+inttostr(unid));
-    adobasic.Refresh;//打印后要显示红色
-  end;
-  
-  ExecSQLCmd(LisConn,'insert into pix_tran (pkunid,Reserve1,Reserve2,OpType) values ('+inttostr(unid)+','''+operator_name+''',''Class_Print'',''Lab'')');
 end;
 
 end.
