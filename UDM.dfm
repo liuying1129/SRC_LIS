@@ -51,6 +51,7 @@ object DM: TDM
       ''
       'end.')
     OnBeforePrint = frxReport1BeforePrint
+    OnBeginDoc = frxReport1BeginDoc
     OnGetValue = frxReport1GetValue
     OnPrintReport = frxReport1PrintReport
     Left = 12

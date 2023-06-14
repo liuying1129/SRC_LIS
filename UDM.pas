@@ -28,6 +28,7 @@ type
     procedure frxReport1PrintReport(Sender: TObject);
     procedure frxReport1GetValue(const VarName: String;
       var Value: Variant);
+    procedure frxReport1BeginDoc(Sender: TObject);
   private
     { Private declarations }
   public
@@ -1051,7 +1052,6 @@ begin
     strsqlPrint:='select top 1 Photo,english_name '+
        ' from chk_valu WITH(NOLOCK) '+
        ' where pkunid=:pkunid '+
-       //' and english_name=:english_name '+
        ' and itemid=:itemid '+//edit by liuying 20110414
        ' and Photo is not null '+
        ' and issure=1 ';
@@ -1061,7 +1061,6 @@ begin
     adotemp11.SQL.Clear;
     adotemp11.SQL.Text:=strsqlPrint;
     adotemp11.Parameters.ParamByName('pkunid').Value:=unid;
-    //adotemp11.Parameters.ParamByName('english_name').Value:=strEnglishName;
     adotemp11.Parameters.ParamByName('itemid').Value:=strEnglishName;//edit by liuying 20110414
     adotemp11.Open;
     if not adotemp11.fieldbyname('photo').IsNull then
@@ -1091,6 +1090,31 @@ begin
     adotemp11.Free;
   end;
   //加载血流变曲线、直方图、散点图 stop
+end;
+
+procedure TDM.frxReport1BeginDoc(Sender: TObject);
+var
+  j,k:integer;
+  mvPictureTitle:TfrxMemoView;
+begin
+  //动态创建图片标题begin
+  //待处理问题:是否需要释放mvPictureTitle?何时释放?
+  for j:=0 to (Sender as TfrxReport).PagesCount-1 do
+  begin
+    for k:=0 to (Sender as TfrxReport).Pages[j].Objects.Count-1 do
+    begin
+      if TObject((Sender as TfrxReport).Pages[j].Objects.Items[k]) is TfrxPictureView then
+      begin
+        if uppercase(leftstr(TfrxPictureView((Sender as TfrxReport).Pages[j].Objects.Items[k]).Name,7))='PICTURE' then
+        begin
+          mvPictureTitle:=TfrxMemoView.Create((Sender as TfrxReport).Pages[j]);
+          mvPictureTitle.Name:='mv'+TfrxPictureView((Sender as TfrxReport).Pages[j].Objects.Items[k]).Name;
+          mvPictureTitle.Visible:=false;
+        end;
+      end;
+    end;
+  end;
+  //动态创建图片标题end
 end;
 
 procedure TDM.frxReport1GetValue(const VarName: String;

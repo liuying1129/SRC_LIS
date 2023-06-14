@@ -4153,8 +4153,6 @@ var
   sPatientname,sSex,sAge:string;
   //===============================
 
-  i,j:integer;
-  mvPictureTitle:TfrxMemoView;
   frxMasterData:TfrxMasterData;  
 begin
   if not ifhaspower(sender,powerstr_js_main) then exit;
@@ -4208,25 +4206,6 @@ begin
     showmessage('加载默认通用打印模板report_cur.fr3失败，请设置:系统设置->选项->打印模板');
     exit;
   end;
-
-  //动态创建图片标题begin
-  //待处理问题:是否需要释放mvPictureTitle?何时释放?
-  for j:=0 to DM.frxReport1.PagesCount-1 do
-  begin
-    for i:=0 to DM.frxReport1.Pages[j].Objects.Count-1 do
-    begin
-      if TObject(DM.frxReport1.Pages[j].Objects.Items[i]) is TfrxPictureView then
-      begin
-        if uppercase(leftstr(TfrxPictureView(DM.frxReport1.Pages[j].Objects.Items[i]).Name,7))='PICTURE' then
-        begin
-          mvPictureTitle:=TfrxMemoView.Create(DM.frxReport1.Pages[j]);
-          mvPictureTitle.Name:='mv'+TfrxPictureView(DM.frxReport1.Pages[j].Objects.Items[i]).Name;
-          mvPictureTitle.Visible:=false;
-        end;
-      end;
-    end;
-  end;
-  //动态创建图片标题end
 
   if (N64.Checked)and(sPatientname<>'') then//按姓别性别年龄合并打印//只有存在姓名时才合并
     strsqlPrint:='select cv.itemid as 项目代码,cv.name as 名称,cv.english_name as 英文名,'+
@@ -4301,8 +4280,6 @@ var
   sPatientname,sSex,sAge,sMergePrintWorkGroupRange:string;
   //===============================  
 
-  i,j:integer;
-  mvPictureTitle:TfrxMemoView;  
   frxMasterData:TfrxMasterData;  
 begin
   if not ifhaspower(sender,powerstr_js_main) then exit;
@@ -4357,25 +4334,6 @@ begin
     exit;
   end;
 
-  //动态创建图片标题begin
-  //待处理问题:是否需要释放mvPictureTitle?何时释放?
-  for j:=0 to DM.frxReport1.PagesCount-1 do
-  begin
-    for i:=0 to DM.frxReport1.Pages[j].Objects.Count-1 do
-    begin
-      if TObject(DM.frxReport1.Pages[j].Objects.Items[i]) is TfrxPictureView then
-      begin
-        if uppercase(leftstr(TfrxPictureView(DM.frxReport1.Pages[j].Objects.Items[i]).Name,7))='PICTURE' then
-        begin
-          mvPictureTitle:=TfrxMemoView.Create(DM.frxReport1.Pages[j]);
-          mvPictureTitle.Name:='mv'+TfrxPictureView(DM.frxReport1.Pages[j].Objects.Items[i]).Name;
-          mvPictureTitle.Visible:=false;
-        end;
-      end;
-    end;
-  end;
-  //动态创建图片标题end
-  
   if MergePrintWorkGroupRange<>'' then
     sMergePrintWorkGroupRange:=' and cc.combin_id in ('+MergePrintWorkGroupRange+') ';
   if (N64.Checked)and(sPatientname<>'') then//按姓别性别年龄合并打印//只有存在姓名时才合并
