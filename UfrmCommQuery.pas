@@ -301,9 +301,9 @@ begin
       end;
       adotemp22.Free;
       if i=1 then
-        ParValue := TRIM(COPY(CXZF,3,2))
+        ParValue := '¡ý'
       else if i=2 then
-        ParValue := TRIM(COPY(CXZF,1,2))
+        ParValue := '¡ü'
       else ParValue:='';
     END;
 

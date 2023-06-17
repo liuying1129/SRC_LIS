@@ -1107,9 +1107,9 @@ begin
       end;
       adotemp22.Free;
       if i=1 then
-        ParValue := TRIM(COPY(CXZF,3,2))
+        ParValue := '↓'
       else if i=2 then
-        ParValue := TRIM(COPY(CXZF,1,2))
+        ParValue := '↑'
       else ParValue:='';
     END;
 
@@ -2337,7 +2337,6 @@ begin
   sWorkGroup:=trim(sWorkGroup);
 
   ss:='直方图光滑次数'+#2+'Edit'+#2+#2+'0'+#2+'注:次数越多曲线越光滑,但曲线偏离越多'+#2+#3+
-      '检验结果超限字符'+#2+'Combobox'+#2+'↑↓'+#13+'H L'+#2+'0'+#2+'注:第1、2位为超上限字符，第3、4位为超下限字符'+#2+#3+
       '允许无检验结果打印'+#2+'CheckListBox'+#2+#2+'0'+#2+#2+#3+
       '"按姓名性别年龄合并"的工作组范围'+#2+'Edit'+#2+#2+'0'+#2+'如仅希望临检组与生化组合并,则填"临检组,生化组".空表示无限制'+#2+#3+
       '打印对话框'+#2+'CheckListBox'+#2+#2+'0'+#2+'打印预览模式的高级选项(打印机、页码、份数等)'+#2+#3+
@@ -2880,8 +2879,6 @@ begin
   CONFIGINI:=TINIFILE.Create(ChangeFileExt(Application.ExeName,'.ini'));
 
   SmoothNum:=configini.ReadInteger('报表','直方图光滑次数',0);
-  CXZF:=configini.ReadString('报表','检验结果超限字符','↑↓');
-  if trim(CXZF)='' then CXZF:='↑↓';
   ifNoResultPrint:=configini.ReadBool('报表','允许无检验结果打印',false);
   MergePrintWorkGroupRange:=trim(configini.ReadString('报表','"按姓名性别年龄合并"的工作组范围',''));
   MergePrintWorkGroupRange:=StringReplace(MergePrintWorkGroupRange,'，',',',[rfReplaceAll]);

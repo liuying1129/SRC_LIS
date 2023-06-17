@@ -7,7 +7,7 @@ uses
   ComCtrls, Buttons,StdCtrls, ExtCtrls,MENUS,StrUtils,DBGrids, 
   Forms{Application变量},DBCtrls{DBEdit},Mask{TMaskEdit},Imm{ImmGetIMEFileName},
   CheckLst{TCheckListBox}, frxClass, frxExportPDF, frxDBSet,Jpeg,Chart,
-  Series, Graphics,Math;
+  Series, Graphics,Math,Variants;
 
 type
   PDescriptType=^TDescriptType;
@@ -63,7 +63,6 @@ var
   ifEnterGetCode:boolean;//记录是否 填写病人基本信息时,直接回车弹出取码框
   deptname_match:string;//记录送检科室的取码匹配方式
   check_doctor_match:string;////记录送检医生的取码匹配方式
-  CXZF:STRING;//检验结果超限字符
   ifNoResultPrint:boolean;//是否允许无检验结果打印
   MergePrintWorkGroupRange:string;//"按姓名性别年龄合并"的工作组范围
   ifShowPrintDialog:boolean;//打印对话框
@@ -1149,10 +1148,14 @@ begin
       end;
       adotemp22.Free;
       if i=1 then
-        Value := TRIM(COPY(CXZF,3,2))
-      else if i=2 then
-        Value := TRIM(COPY(CXZF,1,2))
-      else Value:='';
+      begin
+        if VarIsNull(frxReport1.Variables['SymbolLow']) then Value:='↓'//报表模板中未定义变量SymbolLow或变量未赋值
+        else Value := frxReport1.Variables['SymbolLow'];
+      end else if i=2 then
+      begin
+        if VarIsNull(frxReport1.Variables['SymbolHigh']) then Value:='↑'//报表模板中未定义变量SymbolHigh或变量未赋值
+        else Value := frxReport1.Variables['SymbolHigh'];
+      end else Value:='';
     END;
 
     if VarName='打印者' then Value:=operator_name;
