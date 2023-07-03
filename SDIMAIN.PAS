@@ -502,6 +502,8 @@ begin
 end;
 
 procedure TSDIAppForm.FormShow(Sender: TObject);
+var
+  ini:tinifile;
 begin
   if ifRegister then bRegister:=true else bRegister:=false;
   
@@ -538,6 +540,10 @@ begin
 
   //用户在登录界面【退出】,该语句也会执行(出乎我的意料),此时operator_id为空
   dllSoftMeter.sendPageview(PChar(ChangeFileExt(ExtractFileName(Application.ExeName),'')+'/'+UTF8Encode(SCSYDW)+'/'+UTF8Encode(operator_id)),'frmMain Show Event');
+
+  ini:=TINIFILE.Create(ChangeFileExt(Application.ExeName,'.ini'));
+  Caption:=ini.ReadString('Interface','companycaption','誉凯检验信息管理系统V7.0');
+  ini.Free;
 end;
 
 procedure TSDIAppForm.ClearAll(CONST Clear_TYPE:integer);
