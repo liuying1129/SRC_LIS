@@ -1602,7 +1602,7 @@ begin
   adotemp2.SQL.text:=stringTemp ;
   adotemp2.Parameters.ParamByName('P_checkid').Value:=Pcheckid;
   adotemp2.Parameters.ParamByName('P_lsh').Value:=plsh ;
-  adotemp2.Parameters.ParamByName('P_patientname').Value:=Copy(Ppatientname,1,14) ;
+  adotemp2.Parameters.ParamByName('P_patientname').Value:=Copy(Ppatientname,1,40) ;
   adotemp2.Parameters.ParamByName('P_sex').Value:=Copy(Psex,1,8) ;
   adotemp2.Parameters.ParamByName('P_age').Value:=Copy(Page,1,14) ;
   adotemp2.Parameters.ParamByName('P_Caseno').Value:=Copy(PCaseno,1,20) ;
