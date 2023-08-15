@@ -240,6 +240,9 @@ type
     SpeedButton2: TSpeedButton;
     SpeedButton8: TSpeedButton;
     ToolButton7: TToolButton;
+    View1: TMenuItem;
+    N6: TMenuItem;
+    N24: TMenuItem;
     procedure FileExit1Execute(Sender: TObject);
     procedure HelpAbout1Execute(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -391,6 +394,8 @@ type
     procedure LYLed1DblClick(Sender: TObject);
     procedure SpeedButton2Click(Sender: TObject);
     procedure SpeedButton8Click(Sender: TObject);
+    procedure N6Click(Sender: TObject);
+    procedure N24Click(Sender: TObject);
   private
     procedure CheckTheListBox;//根据当前病人的结果在checklistbox1中打钩
     procedure WriteProfile;
@@ -689,7 +694,7 @@ begin
     strsql44:=''
   else strsql44:=' combin_id='''+trim(cbxConnChar.Text)+''' and ';
   STRSQL47:=' 1=1 ';
-  STRSQL45:=' order by CONVERT(CHAR(10),check_date,121),优先级别,'+OrderType;
+  STRSQL45:=' order by CONVERT(CHAR(10),check_date,121),优先级别,'+ifThen(N6.Checked,'right(''0000''+lsh,4)','联机号');
   ADObasic.Close;
   ADObasic.SQL.Clear;
   ADObasic.SQL.Add(strsql22);
@@ -999,6 +1004,16 @@ begin
   CheckBox1.Checked:=configini.ReadBool('Interface','ifContinuousEdit',false);{记录是否连续录入基本信息}
   PageControl1.ActivePageIndex:=configini.ReadInteger('Interface','ValueActivePageIndex',0);{记录结果框PageControl1的活动Page}
 
+  IF CONFIGINI.ReadBool('Interface','ifLSHOrder',TRUE) THEN
+  begin
+    n6.Checked:=TRUE;   //流水号排序
+    n24.Checked:=false;  //联机号排序
+  end ELSE
+  begin
+    n6.Checked:=false;
+    n24.Checked:=TRUE;
+  end;
+
   LabeledEdit16.Enabled:=configini.ReadBool('EditEnabled','LSH',true);
   LabeledEdit2.Enabled:=configini.ReadBool('EditEnabled','Caseno',true);
   LabeledEdit6.Enabled:=configini.ReadBool('EditEnabled','deptname',true);
@@ -1046,6 +1061,7 @@ begin
   configini.WriteInteger('Interface','gridBaseInfoWidth',Panel7.Width);{记录基本信息框宽度}
   configini.WriteBool('Interface','ifContinuousEdit',CheckBox1.Checked);{记录是否连续录入基本信息}
   configini.WriteInteger('Interface','ValueActivePageIndex',PageControl1.ActivePageIndex);{记录结果框PageControl1的活动Page}
+  configini.WriteBool('Interface','ifLSHOrder',n6.Checked);{记录是否流水号排序}
 
   configini.WriteBool('EditEnabled','LSH',LabeledEdit16.Enabled);
   configini.WriteBool('EditEnabled','Caseno',LabeledEdit2.Enabled);
@@ -1207,7 +1223,7 @@ begin
   dbgrid1.Columns[11].Width:=55;//送检医生
   dbgrid1.Columns[12].Width:=72;//申请日期
 
-  VisibleColumn(dbgrid1,'流水号',OrderType<>'联机号');//按流水号排序时显示流水号,否则(联机号)不显示流水号
+  VisibleColumn(dbgrid1,'流水号',N6.Checked);//按流水号排序时显示流水号,否则(联机号)不显示流水号
 end;
 
 procedure TSDIAppForm.clbCommUsedClickCheck(Sender: TObject);
@@ -2351,7 +2367,6 @@ begin
       '填写病人基本信息时,直接回车弹出取码框'+#2+'CheckListBox'+#2+#2+'1'+#2+#2+#3+
       '送检科室取码的匹配方式'+#2+'Combobox'+#2+'模糊匹配'+#13+'左匹配'+#13+'右匹配'+#13+'全匹配'+#2+'1'+#2+#2+#3+
       '送检医生取码的匹配方式'+#2+'Combobox'+#2+'模糊匹配'+#13+'左匹配'+#13+'右匹配'+#13+'全匹配'+#2+'1'+#2+#2+#3+
-      '病人基本信息排序方式'+#2+'Combobox'+#2+'流水号'+#13+'联机号'+#2+'1'+#2+#2+#3+
       '弹出登录窗口的时间'+#2+'Edit'+#2+#2+'1'+#2+'注:表示多长时间内无操作,则自动弹出登录窗口(单位:秒)'+#2+#3+
       '查找历史结果'+#2+'CheckListBox'+#2+#2+'1'+#2+'注:启用该选项将降低系统性能,慎用!'+#2+#3+
       '特殊模板1工作组'+#2+'Combobox'+#2+sWorkGroup+#2+'2'+#2+#2+#3+
@@ -2899,9 +2914,6 @@ begin
   deptname_match:=configini.ReadString('选项','送检科室取码的匹配方式','');
   check_doctor_match:=configini.ReadString('选项','送检医生取码的匹配方式','');
   ifGetMemoFromCaseNo:=configini.ReadBool('选项','根据"门诊/住院号"提取备注',false);
-  OrderType:=configini.ReadString('选项','病人基本信息排序方式','');
-  //if OrderType<>'联机号' then OrderType:='流水号';
-  OrderType:=ifThen(OrderType<>'联机号','right(''0000''+lsh,4)','联机号');
   LoginTime:=configini.ReadInteger('选项','弹出登录窗口的时间',30);
   ifSearchHistValue:=configini.ReadBool('选项','查找历史结果',false);
 
@@ -4422,6 +4434,16 @@ begin
   begin
     if DM.frxReport1.PrepareReport then DM.frxReport1.Print;
   end;
+end;
+
+procedure TSDIAppForm.N6Click(Sender: TObject);
+begin
+  (Sender as TMenuItem).Checked := true;
+end;
+
+procedure TSDIAppForm.N24Click(Sender: TObject);
+begin
+  (Sender as TMenuItem).Checked := true;
 end;
 
 end.

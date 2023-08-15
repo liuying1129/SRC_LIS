@@ -2142,9 +2142,20 @@ object SDIAppForm: TSDIAppForm
         Caption = #36873#39033
         OnClick = O1Click
       end
-      object N12: TMenuItem
+      object N62: TMenuItem
         Caption = '-'
       end
+      object N63: TMenuItem
+        Caption = #20307#26816#27169#26495#31867#22411#35774#32622
+        OnClick = N63Click
+      end
+      object M1: TMenuItem
+        Caption = #20307#26816#27169#26495#35774#32622
+        OnClick = M1Click
+      end
+    end
+    object View1: TMenuItem
+      Caption = 'View'
       object N50: TMenuItem
         Caption = #26174#31034#39033#30446#33521#25991#21517
         OnClick = N50Click
@@ -2161,16 +2172,19 @@ object SDIAppForm: TSDIAppForm
         Caption = #26174#31034#39033#30446#21333#20301
         OnClick = N49Click
       end
-      object N62: TMenuItem
+      object N12: TMenuItem
         Caption = '-'
       end
-      object N63: TMenuItem
-        Caption = #20307#26816#27169#26495#31867#22411#35774#32622
-        OnClick = N63Click
+      object N6: TMenuItem
+        Caption = #27969#27700#21495#25490#24207
+        Checked = True
+        RadioItem = True
+        OnClick = N6Click
       end
-      object M1: TMenuItem
-        Caption = #20307#26816#27169#26495#35774#32622
-        OnClick = M1Click
+      object N24: TMenuItem
+        Caption = #32852#26426#21495#25490#24207
+        RadioItem = True
+        OnClick = N24Click
       end
     end
     object N65: TMenuItem
