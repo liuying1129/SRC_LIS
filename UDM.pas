@@ -1088,6 +1088,14 @@ begin
     adotemp11.Free;
   end;
   //加载血流变曲线、直方图、散点图 stop
+
+  //可能要打印审核者，故只能在BeforePrint事件中处理.(其实在PrintReport中处理更合理)
+  if(ifAutoCheck)and(report_doctor='') then//修改审核者
+  begin
+    //chk_con_bak均为已审核记录,故无需处理
+    ExecSQLCmd(LisConn,'update chk_con set report_doctor='''+operator_name+''',Audit_Date=getdate() where unid='+inttostr(unid));
+    frxDBDataset1.GetDataSet.Refresh;//更新显示审核者.此处frxDBDataset1.GetDataSet即SDIAppForm.adobasic
+  end;
 end;
 
 procedure TDM.frxReport1BeginDoc(Sender: TObject);

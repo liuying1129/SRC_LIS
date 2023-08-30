@@ -4190,16 +4190,8 @@ begin
       MessageBox(Handle, '请先审核！', '系统提示', MB_ICONASTERISK);
       exit;
     end;
-  end else
-  begin
-    if sReport_Doctor='' then
-    begin
-      //可能要打印审核者，故只能在打印前处理.(其实在PrintReport中处理更合理)
-      ExecSQLCmd(LisConn,'update chk_con set report_doctor='''+operator_name+''',Audit_Date=getdate() where unid='+sUnid);
-      ADObasic.Refresh;//更新显示审核者
-    end;
   end;
-
+  
   DM.frxReport1.Clear;//清除报表模板
   DM.frxDBDataSet1.UserName:='ADObasic';//加载模板文件前设置别名.因为一般设计模板文件时已经包含了别名信息
   DM.frxDBDataSet2.UserName:='ADO_print';//加载模板文件前设置别名.因为一般设计模板文件时已经包含了别名信息
@@ -4316,14 +4308,6 @@ begin
     begin
       MessageBox(Handle, '请先审核！', '系统提示', MB_ICONASTERISK);
       exit;
-    end;
-  end else
-  begin
-    if sReport_Doctor='' then
-    begin
-      //可能要打印审核者，故只能在打印前处理.(其实在PrintReport中处理更合理)
-      ExecSQLCmd(LisConn,'update chk_con set report_doctor='''+operator_name+''',Audit_Date=getdate() where unid='+sUnid);
-      ADObasic.Refresh;//更新显示审核者
     end;
   end;
 
