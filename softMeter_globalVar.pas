@@ -52,9 +52,6 @@ TYPE
   TDLL_GetVersionLY=function(const AFileName:Pchar):Pchar;stdcall;
 
 const
-  //Google Analytics property ID
-  GooglePropertyID = 'G-9EXL8X8N5M';//'UA-207373569-1';
-  
   ApiSecret = 'J_bc0WaGShOHUpUCxwweCA';
 
   //GA的Source值:应用名称+AppVersion+AppEdition                    
@@ -80,7 +77,16 @@ var
   H_LYFunction_LIB:THANDLE;
   DLL_GetVersionLY:TDLL_GetVersionLY;
 
+  osVerInfo:TOSVersionInfo;
+  GooglePropertyID:PChar;//Google Analytics property ID
+
 initialization
+  //softMeter 2.0支持GA4,但不支持WinXP
+  //softMeter 1.4.3及1.4.4支持WinXP,但不支持GA4
+  //所以,如操作系统为XP,手动替换为softMeter V1.4.3或V1.4.4,至少可在GA中查看埋点数据
+  GooglePropertyID:='G-9EXL8X8N5M';
+  osVerInfo.dwOSVersionInfoSize:=SizeOf(TOSVersionInfo);
+  if GetVersionEx(osVerInfo) and(osVerInfo.dwMajorVersion=5) then GooglePropertyID:='UA-207373569-1';
 
   //动态加载LYFunction.dll,并执行函数GetVersionLY begin
   H_LYFunction_LIB:=LOADLIBRARY('LYFunction.dll');
