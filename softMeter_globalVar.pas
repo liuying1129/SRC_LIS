@@ -113,10 +113,10 @@ initialization
 
   // set your SoftMeter PRO subscription here, before calling start()
   // dllSoftMeter.setOptions(PChar(PROsubscription));
+  dllSoftMeter.setOptions('ApiSecret='+ApiSecret);
 
   startResult:=false;  
   try
-    dllSoftMeter.setOptions('ApiSecret='+ApiSecret);
     startResult := dllSoftMeter.start(PChar(ChangeFileExt(ExtractFileName(Application.ExeName),'')), AppVersion, AppLicense, AppEdition, GooglePropertyID, true );
   Except
     MessageDlg('Exception while calling dllSoftMeter.start',mtError,[mbOK],0);
