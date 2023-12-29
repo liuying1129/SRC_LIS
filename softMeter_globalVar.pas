@@ -9,6 +9,9 @@
 ///     Copyright, StarMessage software
 ///     https://www.starmessagesoftware.com/libSoftMeter
 ///
+///     如何创建和配置GA4属性以将其与SoftMeter一起使用:
+///     https://www.starmessagesoftware.com/blog/create-configure-ga4-google-analytics-property-softmeter
+///
 //////////////////////////////////////////////////////////////
 
 //////////////////////////////////////////////////////////////
