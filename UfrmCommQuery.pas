@@ -883,7 +883,7 @@ begin
   end;
   if sdiappform.n8.Checked then  //直接打印模式
   begin
-    if DM.frxReport1.PrepareReport then DM.frxReport1.Print
+    if DM.frxReport1.PrepareReport then begin DM.frxReport1.PrintOptions.ShowDialog:=false;DM.frxReport1.Print;end;
   end;
 end;
 
@@ -986,7 +986,7 @@ begin
   end;
   if sdiappform.n8.Checked then  //直接打印模式
   begin
-    if DM.frxReport1.PrepareReport then DM.frxReport1.Print
+    if DM.frxReport1.PrepareReport then begin DM.frxReport1.PrintOptions.ShowDialog:=false;DM.frxReport1.Print;end;
   end;
 end;
 
