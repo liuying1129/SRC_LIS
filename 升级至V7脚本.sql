@@ -4335,6 +4335,12 @@ update menuitem set menuname='打印V3' where bm='042' and menuname='打印每�
 update menuitem set menuname='分组打印V3' where bm='006' and menuname='是否按组分页' and SysName='LIS'
 GO
 
+--20240423
+update menuitem set SysName='CentralPrint' where bm='270' --选项
+update menuitem set menuname='打印V3',SysName='CentralPrint' where bm='271'
+update menuitem set menuname='分组打印V3',SysName='CentralPrint' where bm='272'
+GO
+
 ---------------表约束、索引相关操作---------------
 
 if not exists(select * from sysindexes where name='IX_combinitem')
