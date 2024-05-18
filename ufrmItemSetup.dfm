@@ -753,6 +753,7 @@ object frmItemSetup: TfrmItemSetup
           Top = 58
           Width = 100
           Height = 21
+          DropDownCount = 20
           ItemHeight = 13
           TabOrder = 9
         end
@@ -761,6 +762,7 @@ object frmItemSetup: TfrmItemSetup
           Top = 96
           Width = 100
           Height = 21
+          DropDownCount = 20
           ItemHeight = 13
           TabOrder = 10
         end

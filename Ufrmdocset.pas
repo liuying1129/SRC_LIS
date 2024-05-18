@@ -157,8 +157,6 @@ Begin
         adotemp11.Free;
         ADOdoclist.Refresh;
    end;
-
-   LoadGroupName(sdiappform.LabeledEdit10,'select name from worker WITH(NOLOCK)');
 end;
 
 procedure Tfrmdocset.docrefresh;

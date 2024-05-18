@@ -229,10 +229,6 @@ type
     LabeledEdit8: TComboBox;
     Label14: TLabel;
     LabeledEdit9: TComboBox;
-    SpeedButton3: TSpeedButton;
-    SpeedButton4: TSpeedButton;
-    SpeedButton6: TSpeedButton;
-    SpeedButton7: TSpeedButton;
     N33: TMenuItem;
     ToolButton3: TToolButton;
     LYLed1: TLYLed;
@@ -385,10 +381,6 @@ type
     procedure FormActivate(Sender: TObject);
     procedure N19Click(Sender: TObject);
     procedure N32Click(Sender: TObject);
-    procedure SpeedButton3Click(Sender: TObject);
-    procedure SpeedButton4Click(Sender: TObject);
-    procedure SpeedButton6Click(Sender: TObject);
-    procedure SpeedButton7Click(Sender: TObject);
     procedure N33Click(Sender: TObject);
     procedure TimerCriticalValueTimer(Sender: TObject);
     procedure LYLed1DblClick(Sender: TObject);
@@ -396,6 +388,13 @@ type
     procedure SpeedButton8Click(Sender: TObject);
     procedure N6Click(Sender: TObject);
     procedure N24Click(Sender: TObject);
+    procedure LabeledEdit12DropDown(Sender: TObject);
+    procedure LabeledEdit4DropDown(Sender: TObject);
+    procedure LabeledEdit6DropDown(Sender: TObject);
+    procedure LabeledEdit10DropDown(Sender: TObject);
+    procedure LabeledEdit8DropDown(Sender: TObject);
+    procedure LabeledEdit9DropDown(Sender: TObject);
+    procedure cbxConnCharDropDown(Sender: TObject);
   private
     procedure CheckTheListBox;//根据当前病人的结果在checklistbox1中打钩
     procedure WriteProfile;
@@ -535,13 +534,6 @@ begin
   LoadToolMenu(N65,'select name from CommCode where TypeName=''工具菜单'' order by ID');
 
   TimerIdleTracker.Enabled:=true;//TimerIdleTrackerTimer事件中需用到配置文件变量LoginTime
-  
-  LoadGroupName(LabeledEdit12,'select name from CommCode where TypeName=''优先级别'' ');
-  LoadGroupName(LabeledEdit4,'select name from CommCode where TypeName=''性别'' ');
-  LoadGroupName(LabeledEdit6,'select name from CommCode WITH(NOLOCK) where TypeName=''部门'' ');
-  LoadGroupName(LabeledEdit10,'select name from worker WITH(NOLOCK)');
-  LoadGroupName(LabeledEdit8,'select name from CommCode WITH(NOLOCK) where TypeName=''样本类型'' ');
-  LoadGroupName(LabeledEdit9,'select name from CommCode WITH(NOLOCK) where TypeName=''样本状态'' ');
 
   //用户在登录界面【退出】,该语句也会执行(出乎我的意料),此时operator_id为空
   dllSoftMeter.sendPageview(PChar(ChangeFileExt(ExtractFileName(Application.ExeName),'')+'/'+UTF8Encode(SCSYDW)+'/'+UTF8Encode(operator_id)),'frmMain Show Event');
@@ -4127,26 +4119,6 @@ begin
   frmSJ_JBXX.ShowModal;
 end;
 
-procedure TSDIAppForm.SpeedButton3Click(Sender: TObject);
-begin
-  LoadGroupName(LabeledEdit6,'select name from CommCode WITH(NOLOCK) where TypeName=''部门'' ');
-end;
-
-procedure TSDIAppForm.SpeedButton4Click(Sender: TObject);
-begin
-  LoadGroupName(LabeledEdit10,'select name from worker WITH(NOLOCK)');
-end;
-
-procedure TSDIAppForm.SpeedButton6Click(Sender: TObject);
-begin
-  LoadGroupName(LabeledEdit8,'select name from CommCode WITH(NOLOCK) where TypeName=''样本类型'' ');
-end;
-
-procedure TSDIAppForm.SpeedButton7Click(Sender: TObject);
-begin
-  LoadGroupName(LabeledEdit9,'select name from CommCode WITH(NOLOCK) where TypeName=''样本状态'' ');
-end;
-
 procedure TSDIAppForm.TimerCriticalValueTimer(Sender: TObject);
 begin
   if LYLed1.Value then exit;
@@ -4428,6 +4400,41 @@ end;
 procedure TSDIAppForm.N24Click(Sender: TObject);
 begin
   (Sender as TMenuItem).Checked := true;
+end;
+
+procedure TSDIAppForm.LabeledEdit12DropDown(Sender: TObject);
+begin
+  LoadGroupName(TComboBox(Sender),'select name from CommCode WITH(NOLOCK) where TypeName=''优先级别'' ');
+end;
+
+procedure TSDIAppForm.LabeledEdit4DropDown(Sender: TObject);
+begin
+  LoadGroupName(TComboBox(Sender),'select name from CommCode WITH(NOLOCK) where TypeName=''性别'' ');
+end;
+
+procedure TSDIAppForm.LabeledEdit6DropDown(Sender: TObject);
+begin
+  LoadGroupName(TComboBox(Sender),'select name from CommCode WITH(NOLOCK) where TypeName=''部门'' ');
+end;
+
+procedure TSDIAppForm.LabeledEdit10DropDown(Sender: TObject);
+begin
+  LoadGroupName(TComboBox(Sender),'select name from worker WITH(NOLOCK)');
+end;
+
+procedure TSDIAppForm.LabeledEdit8DropDown(Sender: TObject);
+begin
+  LoadGroupName(TComboBox(Sender),'select name from CommCode WITH(NOLOCK) where TypeName=''样本类型'' ');
+end;
+
+procedure TSDIAppForm.LabeledEdit9DropDown(Sender: TObject);
+begin
+  LoadGroupName(TComboBox(Sender),'select name from CommCode WITH(NOLOCK) where TypeName=''样本状态'' ');
+end;
+
+procedure TSDIAppForm.cbxConnCharDropDown(Sender: TObject);
+begin
+  LoadGroupName(TComboBox(Sender),'select name from CommCode where TypeName=''检验组别'' AND SysName='''+SYSNAME+''' group by name');
 end;
 
 end.
