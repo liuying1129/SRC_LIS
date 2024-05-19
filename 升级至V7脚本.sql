@@ -3617,201 +3617,6 @@ GO
 SET ANSI_NULLS ON 
 GO
 
-
-SET QUOTED_IDENTIFIER ON 
-GO
-SET ANSI_NULLS ON 
-GO
-
-if exists (select name from sysobjects where name='TRIGGER_chk_valu_Insert_His_Mark' and type='TR')
-  drop TRIGGER TRIGGER_chk_valu_Insert_His_Mark
-go
-
-CREATE TRIGGER TRIGGER_chk_valu_Insert_His_Mark ON chk_valu
-FOR INSERT
-AS
-  declare @Surem2 varchar(15)
-  SELECT @Surem2=Surem2 FROM Inserted
-
-  if (@Surem2 is null) return
-  if (@Surem2='') return
-  if (cast(@Surem2 AS int)<=0) return
-
-  if exists(select 1 from chk_valu where Surem2=@Surem2 and issure='1')
-    update chk_valu_his set itemvalue=1 where cast(valueid as varchar)=@Surem2 and isnull(itemvalue,'')<>'1'
-
-GO
-SET QUOTED_IDENTIFIER OFF 
-GO
-SET ANSI_NULLS ON 
-GO
-
-
-SET QUOTED_IDENTIFIER ON 
-GO
-SET ANSI_NULLS ON 
-GO
-
-if exists (select name from sysobjects where name='TRIGGER_chk_valu_Update_His_Mark' and type='TR')
-  drop TRIGGER TRIGGER_chk_valu_Update_His_Mark
-go
-
-CREATE TRIGGER TRIGGER_chk_valu_Update_His_Mark ON chk_valu
-FOR Update
-AS
-  declare @issure varchar(10),@issure_Old varchar(10),@Surem2 varchar(15),@Surem2_Old varchar(15),@valueid int
-
-  --SELECT @issure_Old=issure,@Surem2_Old=Surem2 FROM Deleted
-
-  DECLARE Cur1 Cursor For 
-    SELECT issure,Surem2,valueid FROM Inserted
-  Open Cur1
-  FETCH NEXT FROM Cur1 INTO @issure,@Surem2,@valueid
-  WHILE @@FETCH_STATUS=0
-  BEGIN
-    if isnull(@Surem2,'')=''
-    begin
-      FETCH NEXT FROM Cur1 INTO @issure,@Surem2,@valueid
-      continue
-    end
-
-    if cast(@Surem2 AS int)<=0
-    begin
-      FETCH NEXT FROM Cur1 INTO @issure,@Surem2,@valueid
-      continue
-    end
-
-    SELECT @issure_Old=issure,@Surem2_Old=Surem2 FROM Deleted where valueid=@valueid
-
-    if (isnull(@issure_Old,'')=isnull(@issure,''))and(isnull(@Surem2_Old,'')=isnull(@Surem2,'')) 
-    --如果可见标志、Chk_Valu_His.ValueId均没更改，则不处理
-    begin
-      FETCH NEXT FROM Cur1 INTO @issure,@Surem2,@valueid
-      continue
-    end
-
-    if exists(select 1 from chk_valu where Surem2=@Surem2 and issure='1')
-    begin
-      update chk_valu_his set itemvalue=1 where cast(valueid as varchar)=@Surem2 and isnull(itemvalue,'')<>'1'
-    end else 
-      update chk_valu_his set itemvalue=null where cast(valueid as varchar)=@Surem2 and isnull(itemvalue,'')='1'
-
-    FETCH NEXT FROM Cur1 INTO @issure,@Surem2,@valueid
-  END
-  CLOSE Cur1
-  DEALLOCATE Cur1
-
-GO
-SET QUOTED_IDENTIFIER OFF 
-GO
-SET ANSI_NULLS ON 
-GO
-
-if exists (select name from sysobjects where name='TRIGGER_chk_con_HisValue_Delete' and type='TR')
-  drop TRIGGER TRIGGER_chk_con_HisValue_Delete
-go
-
-CREATE TRIGGER TRIGGER_chk_con_HisValue_Delete ON chk_con
-FOR DELETE 
-AS
---更新PIX_TRAN
-  declare @unid int,@report_doctor varchar(50),@his_mzorzy varchar(50)
-  SELECT @unid=unid,@report_doctor=report_doctor,@his_mzorzy=his_mzorzy FROM Deleted
-  if (isnull(@unid,'')='') return 
-  if (isnull(@report_doctor,'')='') return 
-  if (isnull(@his_mzorzy,'')='') return--his_mzorzy:HIS的申请单号 
-
-  insert into pix_tran (pkunid,Reserve1,Reserve2,OpType) values (@unid,@his_mzorzy,'Class_Result','Del')
-
-GO
-SET QUOTED_IDENTIFIER OFF 
-GO
-SET ANSI_NULLS ON 
-GO
-
-
-SET QUOTED_IDENTIFIER ON 
-GO
-SET ANSI_NULLS ON 
-GO
-
-if exists (select name from sysobjects where name='TRIGGER_chk_con_HisValue_Update' and type='TR')
-  drop TRIGGER TRIGGER_chk_con_HisValue_Update
-go
-
-CREATE TRIGGER TRIGGER_chk_con_HisValue_Update ON chk_con
-FOR UPDATE
-AS
---更新PIX_TRAN
-  declare @unid int,@report_doctor varchar(50),@report_doctor_Old varchar(50),@his_mzorzy_Old varchar(50)
-  SELECT @unid=unid,@report_doctor=report_doctor FROM Inserted
-  if (isnull(@unid,'')='') return 
-  SELECT @report_doctor_Old=report_doctor,@his_mzorzy_Old=his_mzorzy FROM Deleted
-  if (isnull(@his_mzorzy_Old,'')='') return--his_mzorzy:HIS的申请单号 
-
-  if isnull(@report_doctor,'')<>isnull(@report_doctor_Old,'')
-  begin
-    if isnull(@report_doctor,'')<>''
-      insert into pix_tran (pkunid,Reserve1,Reserve2,OpType) values (@unid,@his_mzorzy_Old,'Class_Result','Add')
-
-    if isnull(@report_doctor,'')=''
-      insert into pix_tran (pkunid,Reserve1,Reserve2,OpType) values (@unid,@his_mzorzy_Old,'Class_Result','Del')
-  end
-
-  if isnull(@report_doctor,'')=isnull(@report_doctor_Old,'')
-  begin
-    if isnull(@report_doctor,'')<>''
-      insert into pix_tran (pkunid,Reserve1,Reserve2,OpType) values (@unid,@his_mzorzy_Old,'Class_Result','Add')
-  end
-
-GO
-SET QUOTED_IDENTIFIER OFF 
-GO
-SET ANSI_NULLS ON 
-GO
-
-
-SET QUOTED_IDENTIFIER ON 
-GO
-SET ANSI_NULLS ON 
-GO
-
-if exists (select name from sysobjects where name='TRIGGER_chk_valu_HisValue_Update' and type='TR')
-  drop TRIGGER TRIGGER_chk_valu_HisValue_Update
-go
-
-CREATE TRIGGER TRIGGER_chk_valu_HisValue_Update ON chk_valu
-FOR update
-AS
---更新PIX_TRAN
-  declare @pkunid int,@report_doctor varchar(50),@issure varchar(50),@itemvalue varchar(50),@issure_Old varchar(50),@itemvalue_Old varchar(50),@his_mzorzy varchar(50)
-    
-  SELECT @pkunid=pkunid,@issure=issure,@itemvalue=itemvalue FROM Inserted
-  if (isnull(@pkunid,'')='') return 
-  SELECT @report_doctor=report_doctor,@his_mzorzy=his_mzorzy FROM chk_con where unid=@pkunid
-  if (isnull(@report_doctor,'')='') return
-  if (isnull(@his_mzorzy,'')='') return--his_mzorzy:HIS的申请单号 
-  SELECT @issure_Old=issure,@itemvalue_Old=itemvalue FROM Deleted
-  if isnull(@issure,'')=isnull(@issure_Old,'') and isnull(@itemvalue,'')=isnull(@itemvalue_Old,'') return--结果与检验单标志都没改
-
-  if (isnull(@issure_Old,'')<>'1' or isnull(@itemvalue_Old,'')='') and (isnull(@issure,'')<>'1' or isnull(@itemvalue,'')='') return--表示修改前与修改后都是无效结果
-
-  if exists (select 1 from chk_valu where pkunid=@pkunid and issure='1' and isnull(itemvalue,'')<>'')
-  --该select选出的记录包含修改之后issure='1' and isnull(itemvalue,'')<>''的情况
-    insert into pix_tran (pkunid,Reserve1,Reserve2,OpType) values (@pkunid,@his_mzorzy,'Class_Result','Add')
-  else insert into pix_tran (pkunid,Reserve1,Reserve2,OpType) values (@pkunid,@his_mzorzy,'Class_Result','Del')
-
-GO
-SET QUOTED_IDENTIFIER OFF 
-GO
-SET ANSI_NULLS ON 
-GO
-
-SET QUOTED_IDENTIFIER ON 
-GO
-SET ANSI_NULLS ON 
-GO
-
 if exists (select name from sysobjects where name='TRIGGER_chk_con_HIS_Audit_Update' and type='TR')
   drop TRIGGER TRIGGER_chk_con_HIS_Audit_Update
 go
@@ -4022,65 +3827,6 @@ GO
 SET ANSI_NULLS ON 
 GO
 
---触发器TRIGGER_chk_con_PatientInfo_From_HisUnid创建脚本
-if exists (select name from sysobjects where name='TRIGGER_chk_con_PatientInfo_From_HisUnid' and type='TR')
-  drop TRIGGER TRIGGER_chk_con_PatientInfo_From_HisUnid
-go
-
-CREATE TRIGGER TRIGGER_chk_con_PatientInfo_From_HisUnid ON chk_con
-FOR Insert,Update
-AS
---根据His_Unid从chk_con_his取病人信息
-  declare @ChkCon_unid int,@ChkCon_His_Unid varchar(50)
-  SELECT @ChkCon_unid=unid,@ChkCon_His_Unid=His_Unid FROM Inserted
-  
-  if @ChkCon_unid is null return
-  if @ChkCon_unid<=0 return
-  if @ChkCon_His_Unid is null return
-  if @ChkCon_His_Unid='' return
-
-  if not exists(select 1 from chk_con_his where cast(unid as varchar)=@ChkCon_His_Unid) return
-
-  declare @patientname varchar(50),@sex varchar(50),@age varchar(50),@Caseno varchar(50),
-          @bedno varchar(50),@deptname varchar(50),@check_doctor varchar(50),
-          @report_date datetime,@Diagnosetype varchar(50),@flagetype varchar(100),
-          @diagnose varchar(200),@typeflagcase varchar(50),@issure varchar(50),
-          @WorkCompany varchar(50),@WorkDepartment varchar(50),@ifMarry varchar(50)
-
-  select @patientname=patientname,@sex=sex,@age=age,@Caseno=Caseno,
-         @bedno=bedno,@deptname=deptname,@check_doctor=check_doctor,
-         @report_date=report_date,@Diagnosetype=Diagnosetype,@flagetype=flagetype,
-         @diagnose=diagnose,@typeflagcase=typeflagcase,@issure=issure,
-         @WorkCompany=WorkCompany,@WorkDepartment=WorkDepartment,@ifMarry=ifMarry 
-  from chk_con_his 
-  where cast(unid as varchar)=@ChkCon_His_Unid
-
-  if exists(select 1 from Deleted)--表示修改
-  begin
-    update chk_con set 
-         patientname=@patientname,sex=@sex,age=@age,Caseno=@Caseno,
-         bedno=@bedno,deptname=@deptname,check_doctor=@check_doctor,
-         report_date=@report_date,Diagnosetype=@Diagnosetype,flagetype=@flagetype,
-         diagnose=@diagnose,/*typeflagcase=@typeflagcase,issure=@issure,*/
-         WorkCompany=@WorkCompany,WorkDepartment=@WorkDepartment,ifMarry=@ifMarry 
-    where unid=@ChkCon_unid  
-  end else--表示插入
-  begin
-    update chk_con set 
-         patientname=@patientname,sex=@sex,age=@age,Caseno=@Caseno,
-         bedno=@bedno,deptname=@deptname,check_doctor=@check_doctor,
-         report_date=@report_date,Diagnosetype=@Diagnosetype,flagetype=@flagetype,
-         diagnose=@diagnose,typeflagcase=@typeflagcase,issure=@issure,
-         WorkCompany=@WorkCompany,WorkDepartment=@WorkDepartment,ifMarry=@ifMarry 
-    where unid=@ChkCon_unid  
-  end
-
-GO
-SET QUOTED_IDENTIFIER OFF 
-GO
-SET ANSI_NULLS ON 
-GO
-
 --20191201触发器TRIGGER_chk_valu_EquipInfo_insert创建脚本
 SET QUOTED_IDENTIFIER ON 
 GO
@@ -4158,6 +3904,26 @@ AS
 
 GO
 
+--20240519触发器TRIGGER_chk_con_Operator创建脚本
+if exists (select name from sysobjects where name='TRIGGER_chk_con_Operator' and type='TR')
+  drop TRIGGER TRIGGER_chk_con_Operator
+go
+
+CREATE TRIGGER TRIGGER_chk_con_Operator ON chk_con
+FOR UPDATE
+AS
+--扫描或双向导入时,存在操作者为空的情况.审核时补充操作者
+  declare @unid int,@report_doctor varchar(50),@report_doctor_old varchar(50)
+  SELECT @unid=unid,@report_doctor=report_doctor FROM Inserted
+  SELECT @report_doctor_old=report_doctor FROM deleted
+  if (@unid is null) return --表示没找到刚刚update的记录
+  if isnull(@report_doctor,'')<>isnull(@report_doctor_old,'')--表示修改过审核者
+  begin
+    update chk_con set Operator=@report_doctor where unid=@unid and ISNULL(Operator,'')=''
+  end
+
+GO
+
 --删除触发器TRIGGER_chk_con_SCJG_Update
 if exists (select name from sysobjects where name='TRIGGER_chk_con_SCJG_Update' and type='TR')
   drop TRIGGER TRIGGER_chk_con_SCJG_Update
@@ -4207,6 +3973,35 @@ if exists (select name from sysobjects where name='TRIGGER_chk_con_PatientInfo_F
   drop TRIGGER TRIGGER_chk_con_PatientInfo_From_HisUnid_Update
 go
 
+--20240519删除触发器TRIGGER_chk_con_PatientInfo_From_HisUnid
+if exists (select name from sysobjects where name='TRIGGER_chk_con_PatientInfo_From_HisUnid' and type='TR')
+  drop TRIGGER TRIGGER_chk_con_PatientInfo_From_HisUnid
+go
+
+--20240519删除触发器TRIGGER_chk_con_HisValue_Delete
+if exists (select name from sysobjects where name='TRIGGER_chk_con_HisValue_Delete' and type='TR')
+  drop TRIGGER TRIGGER_chk_con_HisValue_Delete
+go
+
+--20240519删除触发器TRIGGER_chk_con_HisValue_Update
+if exists (select name from sysobjects where name='TRIGGER_chk_con_HisValue_Update' and type='TR')
+  drop TRIGGER TRIGGER_chk_con_HisValue_Update
+go
+
+--20240519删除触发器TRIGGER_chk_valu_HisValue_Update
+if exists (select name from sysobjects where name='TRIGGER_chk_valu_HisValue_Update' and type='TR')
+  drop TRIGGER TRIGGER_chk_valu_HisValue_Update
+go
+
+--20240519删除触发器TRIGGER_chk_valu_Insert_His_Mark
+if exists (select name from sysobjects where name='TRIGGER_chk_valu_Insert_His_Mark' and type='TR')
+  drop TRIGGER TRIGGER_chk_valu_Insert_His_Mark
+go
+
+--20240519删除触发器TRIGGER_chk_valu_Update_His_Mark
+if exists (select name from sysobjects where name='TRIGGER_chk_valu_Update_His_Mark' and type='TR')
+  drop TRIGGER TRIGGER_chk_valu_Update_His_Mark
+go
 
 ---------------数据相关操作---------------
 
