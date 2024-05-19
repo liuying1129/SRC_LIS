@@ -520,8 +520,6 @@ begin
   PageControl2.ActivePageIndex:=0;
   MakeCombinChecklistbox;
 
-  LoadGroupName(cbxConnChar,'select name from CommCode where TypeName=''检验组别'' AND SysName='''+SYSNAME+''' group by name');//ReadConfig要用到工作组框中的值,故放在ReadConfig前
-
   ReadConfig;
   UpdateStatusBar(#$2+'6:'+SCSYDW);
   UpdateStatusBar(#$2+'0:'+SYSNAME);
@@ -986,7 +984,7 @@ begin
 
   n41.Checked:=configini.ReadBool('Interface','ifRTTransData',true);
   N64.Checked:=configini.ReadBool('Interface','ifCaseNoMerger',false);{记录是否按姓别性别年龄合并打印}
-  cbxConnChar.Text:=trim(CONFIGINI.ReadString('Interface','ShowReportType',cbxConnChar.Items[0]));
+  cbxConnChar.Text:=trim(CONFIGINI.ReadString('Interface','ShowReportType',ScalarSQLCmd(LisConn,'select TOP 1 name from CommCode WITH(NOLOCK) where TypeName=''检验组别'' AND SysName='''+SYSNAME+'''')));
   n50.Checked:=configini.ReadBool('Interface','ifShowEnglish',true);
   n36.Checked:=configini.ReadBool('Interface','ifShowMinValue',true);{记录是否显示项目最小值}
   n47.Checked:=configini.ReadBool('Interface','ifShowMaxValue',true);{记录是否显示项目最大值}
@@ -4434,7 +4432,7 @@ end;
 
 procedure TSDIAppForm.cbxConnCharDropDown(Sender: TObject);
 begin
-  LoadGroupName(TComboBox(Sender),'select name from CommCode where TypeName=''检验组别'' AND SysName='''+SYSNAME+''' group by name');
+  LoadGroupName(TComboBox(Sender),'select name from CommCode WITH(NOLOCK) where TypeName=''检验组别'' AND SysName='''+SYSNAME+''' group by name');
 end;
 
 end.
