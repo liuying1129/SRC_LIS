@@ -288,7 +288,7 @@ begin
 
       ADOtemp11.Close;
       ADOtemp11.SQL.Clear;
-      ADOtemp11.SQL.Add('insert into chk_valu_bak select * from chk_VALU where issure=1 and (isnull(itemvalue,'''')<>'''' or Photo is not null) and pkunid in ('+s2+')');
+      ADOtemp11.SQL.Add('insert into chk_valu_bak select * from chk_VALU where issure=1 and pkunid in ('+s2+')');
       ADOtemp11.ExecSQL;
 
       ADOtemp11.Close;
