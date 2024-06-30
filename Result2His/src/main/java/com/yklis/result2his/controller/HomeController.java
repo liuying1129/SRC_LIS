@@ -91,7 +91,7 @@ public class HomeController {
             Map<String, Object> map11 = new HashMap<>();
             map11.put("success", false);
             map11.put("errorCode", -1);
-            map11.put("errorMsg", "必需提供参数.注:参数unid为LIS报告单号,参数his_unid为HIS本次就诊号,参数barcode为条码号,参数reqItemNo为HIS申请项目号(如'0012','0013')");
+            map11.put("errorMsg", "必需提供参数.注:参数unid为LIS报告单号(整数类型,否则报400),参数his_unid为HIS本次就诊号,参数barcode为条码号,参数reqItemNo为HIS申请项目号(如'0012','0013')");
 
             return JSON.toJSONStringWithDateFormat(map11, "yyyy-MM-dd HH:mm:ss");
         }
