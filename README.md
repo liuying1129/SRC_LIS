@@ -8,8 +8,9 @@ softMeter_globalVar.pas:外部unit，用于发送埋点数据到GA。该单元�
 凌晨2点自动结束当批检验工作
 
 # 项目Result2His 
-向HIS等外部系统提供检验结果的HTTP接口
-依赖JDK17
+向HIS等外部系统提供检验结果的HTTP接口 
+http://localhost:8090/queryResult?his_unid=22
+依赖JDK17 
 
 运行JDBC操作时报错:
 javax.net.ssl.SSLHandshakeException: No appropriate protocol (protocol is disabled or cipher suites are inappropriate)
