@@ -7,7 +7,7 @@ softMeter_globalVar.pas:外部unit，用于发送埋点数据到GA。该单元�
 # 项目AutoCompleteJob 
 凌晨2点自动结束当批检验工作
 
-# Result2His 
+# 项目Result2His 
 向HIS等外部系统提供检验结果的HTTP接口
 依赖JDK17
 
