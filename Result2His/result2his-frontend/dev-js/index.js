@@ -74,17 +74,15 @@ $(document).ready(function() {
                             const td = document.createElement('td');
                             td.textContent = resultDetail[header_field_name];
 
-                            // 根据 ifValueAlarm 的值设置 itemvalue 单元格的颜色
+                            //超限结果标颜色 begin
                             if (header_field_name === 'itemvalue') {
-                                const ifValueAlarm = resultDetail['ifValueAlarm'];
-
-                                if (ifValueAlarm === 1) {
+                                if (resultDetail.ifValueAlarm === 1) {
                                     td.style.color = 'blue';
-                                } else if (ifValueAlarm === 2) {
+                                } else if (resultDetail.ifValueAlarm === 2) {
                                     td.style.color = 'red';
                                 }
                             }
-                            //============================================
+                            //超限结果标颜色 end
 
                             row.appendChild(td);
                         });

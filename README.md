@@ -22,4 +22,6 @@ SpringBoot，前后端分离。JDK17
 运行JDBC操作时报错:
 javax.net.ssl.SSLHandshakeException: No appropriate protocol (protocol is disabled or cipher suites are inappropriate)
 处理方式:
-jdk-17\conf\security\java.security,找到【TLSv1, TLSv1.1,】,删除并保存
+jdk-17\conf\security\java.security,找到【TLSv1, TLSv1.1,】,删除并保存 
+
+注:井陉LIS为SQL SERVER 2019，不存在此问题
