@@ -1,0 +1,28 @@
+/*
+body{
+    background-image: url(../images/b.jpg);
+}*/
+
+.result-div {
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    padding: 10px;
+}
+
+.result-detail-div {
+    margin-left: 20px;
+    margin-bottom: 20px;
+}
+
+table, th, td {
+  border: 1px solid black;
+}
+
+th {
+    background-color: yellow;
+    text-align: center;
+}
+
+img {
+    margin: 10px;
+}

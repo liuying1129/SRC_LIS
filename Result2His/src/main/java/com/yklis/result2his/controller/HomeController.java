@@ -1,5 +1,6 @@
 package com.yklis.result2his.controller;
 
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -15,6 +16,8 @@ import jakarta.servlet.http.HttpServletRequest;
 
 @RestController
 @RequestMapping("/")
+//允许所有来源的跨域请求
+@CrossOrigin(origins = "*")
 public class HomeController {
 
     @Autowired
@@ -26,13 +29,13 @@ public class HomeController {
     "success":true,
     "errorCode":-123,
     "errorMsg":"",
-    "Result":[
+    "results":[
       {
         "unid":1,
         "patientname":"A",
         "sex":"男",
         "age":"45",
-        "ResultDetail":[
+        "resultDetails":[
           {
             "pkcombin_id":"036",
             "combin_Name":"乙肝两对半",
@@ -56,7 +59,7 @@ public class HomeController {
         "patientname":"A",
         "sex":"男",
         "age":"45",
-        "ResultDetail":[
+        "resultDetails":[
           {
             "pkcombin_id":"046",
             "combin_Name":"风湿三项",
@@ -86,7 +89,7 @@ public class HomeController {
                               @RequestParam(value = "barcode",required = false) String TjJianYan,
                               @RequestParam(value = "reqItemNo",required = false) String Surem1) {
 
-        if (unid==null && (his_unid==null || his_unid.equals("")) && (TjJianYan==null || TjJianYan.equals("")) && (Surem1==null || Surem1.equals(""))){
+        if (unid==null && (his_unid==null || "".equals(his_unid)) && (TjJianYan==null || "".equals(TjJianYan)) && (Surem1==null || "".equals(Surem1))){
 
             Map<String, Object> map11 = new HashMap<>();
             map11.put("success", false);
@@ -100,27 +103,47 @@ public class HomeController {
         if(unid!=null) sUnid=" and unid="+unid.toString();
 
         String sHis_Unid="";
-        if(his_unid!=null && !his_unid.equals("")) sHis_Unid=" and His_Unid='"+his_unid+"'";
+        if(his_unid!=null && !"".equals(his_unid)) sHis_Unid=" and His_Unid='"+his_unid+"'";
 
         String sTjJianYan="";
-        if(TjJianYan!=null && !TjJianYan.equals("")) sTjJianYan=" and TjJianYan='"+TjJianYan+"'";
+        if(TjJianYan!=null && !"".equals(TjJianYan)) sTjJianYan=" and TjJianYan='"+TjJianYan+"'";
 
         String sSurem1="";
-        if(Surem1!=null && !Surem1.equals("")) sSurem1=" and unid in (select pkunid from view_chk_valu_All where Surem1 in ("+Surem1+"))";
+        if(Surem1!=null && !"".equals(Surem1)) sSurem1=" and unid in (select pkunid from view_chk_valu_All where Surem1 in ("+Surem1+"))";
 
-        List<Map<String, Object>> list = jdbcTemplate.queryForList("select * from view_Chk_Con_All where isnull(report_doctor,'')<>''"+sUnid+sHis_Unid+sTjJianYan+sSurem1);
+        List<Map<String, Object>> list;
+        try{
+            list = jdbcTemplate.queryForList("select * from view_Chk_Con_All where isnull(report_doctor,'')<>''"+sUnid+sHis_Unid+sTjJianYan+sSurem1);
+        }catch(Exception e){
+            Map<String, Object> map44 = new HashMap<>();
+            map44.put("success", false);
+            map44.put("errorCode", -1);
+            map44.put("errorMsg", "sql执行出错:"+e.toString());
+
+            return JSON.toJSONStringWithDateFormat(map44, "yyyy-MM-dd HH:mm:ss");
+        }
+
+        if (list.size() <= 0){
+
+            Map<String, Object> map22 = new HashMap<>();
+            map22.put("success", false);
+            map22.put("errorCode", -1);
+            map22.put("errorMsg", "未查询到数据");
+
+            return JSON.toJSONStringWithDateFormat(map22, "yyyy-MM-dd HH:mm:ss");
+        }
 
         for (Map<String, Object> map33 : list) {
 
             String sPkunid=" and pkunid="+map33.get("unid");
-            List<Map<String, Object>> listDetail = jdbcTemplate.queryForList("select * from "+ (map33.get("ifCompleted")=="1" ? "chk_valu_bak" : "chk_valu") +" where issure=1 "+sPkunid);
+            List<Map<String, Object>> listDetail = jdbcTemplate.queryForList("select *,dbo.uf_ValueAlarm(itemid,Min_value,Max_value,itemvalue) as ifValueAlarm from "+ ("1".equals(map33.get("ifCompleted")) ? "chk_valu_bak" : "chk_valu") +" where issure=1 "+sPkunid);
 
-            map33.put("ResultDetail",listDetail);
+            map33.put("resultDetails",listDetail);
         }
 
         Map<String, Object> map = new HashMap<>();
         map.put("success", true);
-        map.put("result", list);
+        map.put("results", list);
 
         return JSON.toJSONStringWithDateFormat(map, "yyyy-MM-dd HH:mm:ss");
     }
