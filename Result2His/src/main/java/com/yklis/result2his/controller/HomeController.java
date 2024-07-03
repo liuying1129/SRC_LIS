@@ -136,7 +136,7 @@ public class HomeController {
         for (Map<String, Object> map33 : list) {
 
             String sPkunid=" and pkunid="+map33.get("unid");
-            List<Map<String, Object>> listDetail = jdbcTemplate.queryForList("select *,dbo.uf_ValueAlarm(itemid,Min_value,Max_value,itemvalue) as ifValueAlarm from "+ ("1".equals(map33.get("ifCompleted").toString()) ? "chk_valu_bak" : "chk_valu") +" where issure=1 "+sPkunid);
+            List<Map<String, Object>> listDetail = jdbcTemplate.queryForList("select *,dbo.uf_ValueAlarm(itemid,Min_value,Max_value,itemvalue) as ifValueAlarm from "+ ("1".equals(map33.get("ifCompleted").toString()) ? "chk_valu_bak" : "chk_valu") +" where issure=1 "+sPkunid+" order by pkcombin_id,printorder");
 
             map33.put("resultDetails",listDetail);
         }
