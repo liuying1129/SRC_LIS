@@ -7,7 +7,7 @@
 
 $(document).ready(function() {
 
-    let urls="http://localhost:8090/queryResult?";
+    let urls="queryResult?";
     const params = new URLSearchParams(window.location.search);
     for (const [key, value] of params) {
         urls = urls+key+"="+value+"&";
