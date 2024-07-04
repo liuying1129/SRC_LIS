@@ -90,8 +90,8 @@ MaxStackSize=1048576
 ImageBase=4194304
 ExeDescription=
 [Directories]
-OutputDir=..\yklis-release
-UnitOutputDir=..\lib
+OutputDir=..\..\yklis-release
+UnitOutputDir=..\..\lib
 PackageDLLOutputDir=
 PackageDCPOutputDir=
 SearchPath=
@@ -134,13 +134,18 @@ OriginalFilename=
 ProductName=
 ProductVersion=1.0.0.0
 Comments=
+[Excluded Packages]
+C:\Program Files (x86)\Indy 10 for Delphi 7\LibD7\dclIndyCore70.bpl=Indy 10 Core Design Time
+C:\Program Files (x86)\Indy 10 for Delphi 7\LibD7\dclIndyProtocols70.bpl=Indy 10 Protocols Design Time
 [HistoryLists\hlUnitAliases]
 Count=1
 Item0=WinTypes=Windows;WinProcs=Windows;DbiTypes=BDE;DbiProcs=BDE;DbiErrs=BDE;
 [HistoryLists\hlUnitOutputDirectory]
-Count=1
-Item0=..\lib
-[HistoryLists\hlOutputDirectorry]
 Count=2
-Item0=..\yklis-release
-Item1=..\检验信息管理系统
+Item0=..\..\lib
+Item1=..\lib
+[HistoryLists\hlOutputDirectorry]
+Count=3
+Item0=..\..\yklis-release
+Item1=..\yklis-release
+Item2=..\检验信息管理系统

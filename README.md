@@ -25,3 +25,6 @@ javax.net.ssl.SSLHandshakeException: No appropriate protocol (protocol is disabl
 jdk-17\conf\security\java.security,找到【TLSv1, TLSv1.1,】,删除并保存 
 
 注:井陉LIS为SQL SERVER 2019，不存在此问题
+
+# 项目SRC_CentralPrint
+集中打印程序
