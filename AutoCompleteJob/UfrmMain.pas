@@ -5,7 +5,7 @@ interface
 uses
   Windows, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, ComCtrls, ExtCtrls, StdCtrls, CheckLst, Buttons, IniFiles, DB,
-  ADODB, DateUtils, CoolTrayIcon, Menus;
+  ADODB, DateUtils, CoolTrayIcon, Menus, ShlObj, ActiveX, ComObj;
 
 type
   TfrmMain = class(TForm)
@@ -21,6 +21,7 @@ type
     N1: TMenuItem;
     N2: TMenuItem;
     Memo1: TMemo;
+    CheckBox1: TCheckBox;
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure CheckListBox1ClickCheck(Sender: TObject);
@@ -56,6 +57,54 @@ var
 function DeCryptStr(aStr: Pchar; aKey: Pchar): Pchar;stdcall;external 'LYFunction.dll';//解密
 function ShowOptionForm(const pCaption,pTabSheetCaption,pItemInfo,pInifile:Pchar):boolean;stdcall;external 'OptionSetForm.dll';
 procedure WriteLog(const ALogStr: Pchar);stdcall;external 'LYFunction.dll';
+
+procedure OperateLinkFile(ExePathAndName:string; LinkFileName: widestring;
+  LinkFilePos:integer;AddorDelete: boolean);
+VAR
+  tmpobject:IUnknown;
+  tmpSLink:IShellLink;
+  tmpPFile:IPersistFile;
+  PIDL:PItemIDList;
+  LinkFilePath:array[0..MAX_PATH]of char;
+  StartupFilename:string;
+begin
+  case LinkFilePos of
+    1:SHGetSpecialFolderLocation(0,CSIDL_BITBUCKET,pidl);
+    2:SHGetSpecialFolderLocation(0,CSIDL_CONTROLS,pidl);
+    3:SHGetSpecialFolderLocation(0,CSIDL_DESKTOP,pidl);
+    4:SHGetSpecialFolderLocation(0,CSIDL_DESKTOPDIRECTORY,pidl);
+    5:SHGetSpecialFolderLocation(0,CSIDL_DRIVES,pidl);
+    6:SHGetSpecialFolderLocation(0,CSIDL_FONTS,pidl);
+    7:SHGetSpecialFolderLocation(0,CSIDL_NETHOOD,pidl);
+    8:SHGetSpecialFolderLocation(0,CSIDL_NETWORK,pidl);
+    9:SHGetSpecialFolderLocation(0,CSIDL_PERSONAL,pidl);
+    10:SHGetSpecialFolderLocation(0,CSIDL_PRINTERS,pidl);
+    11:SHGetSpecialFolderLocation(0,CSIDL_PROGRAMS,pidl);
+    12:SHGetSpecialFolderLocation(0,CSIDL_RECENT,pidl);
+    13:SHGetSpecialFolderLocation(0,CSIDL_SENDTO,pidl);
+    14:SHGetSpecialFolderLocation(0,CSIDL_STARTMENU,pidl);
+    15:SHGetSpecialFolderLocation(0,CSIDL_STARTUP,pidl);
+    16:SHGetSpecialFolderLocation(0,CSIDL_TEMPLATES,pidl);
+  end;
+  shgetpathfromidlist(pidl,LinkFilePath);
+  linkfilename:=LinkFilePath+LinkFileName;
+  if AddorDelete then
+  begin
+    if not fileexists(linkfilename) then
+    begin
+      startupfilename:=ExePathAndName;
+      tmpobject:=createcomobject(CLSID_ShellLink);
+      tmpSLink:=tmpobject as ishelllink;
+      tmpPfile:=tmpobject as IPersistFile;
+      tmpslink.SetPath(pchar(startupfilename));
+      tmpslink.SetWorkingDirectory(pchar(extractfilepath(startupfilename)));
+      tmppfile.save(pwchar(linkfilename),false);
+    end;
+  end else
+  begin
+    if fileexists(linkfilename) then deletefile(linkfilename);
+  end;
+end;
 
 function ScalarSQLCmd(AConnectionString:string;ASQL:string):string;
 var
@@ -190,9 +239,17 @@ begin
 end;
 
 procedure TfrmMain.FormShow(Sender: TObject);
+var
+  ConfigIni:tinifile;
 begin
   MakeWorkGroupChecklistbox;
   CheckTheListBox;
+
+  ConfigIni:=tinifile.Create(ChangeFileExt(Application.ExeName,'.ini'));
+  CheckBox1.Checked:=configini.ReadBool('Interface','开机自动运行',false);
+  configini.Free;
+
+  OperateLinkFile(application.ExeName,'\'+ChangeFileExt(ExtractFileName(Application.ExeName),'.lnk'),15,CheckBox1.Checked);
 end;
 
 procedure TfrmMain.CheckTheListBox;
@@ -311,9 +368,15 @@ begin
 end;
 
 procedure TfrmMain.FormClose(Sender: TObject; var Action: TCloseAction);
+var
+  ConfigIni:tinifile;
 begin
   action:=caNone;
   LYTray1.HideMainForm;
+  
+  ConfigIni:=tinifile.Create(ChangeFileExt(Application.ExeName,'.ini'));
+  configini.WriteBool('Interface','开机自动运行',CheckBox1.Checked);
+  configini.Free;
 end;
 
 procedure TfrmMain.N2Click(Sender: TObject);
