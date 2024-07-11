@@ -58,13 +58,13 @@ object frmMain: TfrmMain
       Font.Style = []
       ParentFont = False
     end
-    object CheckBox1: TCheckBox
-      Left = 359
-      Top = 15
-      Width = 101
-      Height = 17
-      Caption = #24320#26426#33258#21160#36816#34892
-      TabOrder = 0
+    object SpeedButton2: TSpeedButton
+      Left = 406
+      Top = 11
+      Width = 50
+      Height = 22
+      Caption = #36873#39033
+      OnClick = SpeedButton2Click
     end
   end
   object StatusBar1: TStatusBar

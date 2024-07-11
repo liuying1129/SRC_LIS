@@ -21,7 +21,7 @@ type
     N1: TMenuItem;
     N2: TMenuItem;
     Memo1: TMemo;
-    CheckBox1: TCheckBox;
+    SpeedButton2: TSpeedButton;
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure CheckListBox1ClickCheck(Sender: TObject);
@@ -30,11 +30,13 @@ type
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure N2Click(Sender: TObject);
     procedure N1Click(Sender: TObject);
+    procedure SpeedButton2Click(Sender: TObject);
   private
     { Private declarations }
     function MakeDBConn:boolean;
     procedure MakeWorkGroupChecklistbox;//将工作组导入CheckListBox中
     procedure CheckTheListBox;//根据当前病人的结果在checklistbox1中打钩
+    procedure UpdateConfig;
   public
     { Public declarations }
   end;
@@ -49,6 +51,7 @@ implementation
 const
   sCryptSeed='lc';//加解密种子
   SYSNAME='LIS';
+  IniSection='Setup';
 
 var
   LisConn:String;
@@ -208,6 +211,8 @@ end;
 
 procedure TfrmMain.FormCreate(Sender: TObject);
 begin
+  UpdateConfig;
+
   MakeDBConn;
 
   lytray1.Hint:='自动结束当批检验工作 - 服务';
@@ -239,17 +244,9 @@ begin
 end;
 
 procedure TfrmMain.FormShow(Sender: TObject);
-var
-  ConfigIni:tinifile;
 begin
   MakeWorkGroupChecklistbox;
   CheckTheListBox;
-
-  ConfigIni:=tinifile.Create(ChangeFileExt(Application.ExeName,'.ini'));
-  CheckBox1.Checked:=configini.ReadBool('Interface','开机自动运行',false);
-  configini.Free;
-
-  OperateLinkFile(application.ExeName,'\'+ChangeFileExt(ExtractFileName(Application.ExeName),'.lnk'),15,CheckBox1.Checked);
 end;
 
 procedure TfrmMain.CheckTheListBox;
@@ -368,15 +365,9 @@ begin
 end;
 
 procedure TfrmMain.FormClose(Sender: TObject; var Action: TCloseAction);
-var
-  ConfigIni:tinifile;
 begin
   action:=caNone;
   LYTray1.HideMainForm;
-  
-  ConfigIni:=tinifile.Create(ChangeFileExt(Application.ExeName,'.ini'));
-  configini.WriteBool('Interface','开机自动运行',CheckBox1.Checked);
-  configini.Free;
 end;
 
 procedure TfrmMain.N2Click(Sender: TObject);
@@ -389,6 +380,30 @@ end;
 procedure TfrmMain.N1Click(Sender: TObject);
 begin
   LYTray1.ShowMainForm;
+end;
+
+procedure TfrmMain.SpeedButton2Click(Sender: TObject);
+var
+  ss:string;
+begin
+  ss:='开机自动运行'+#2+'CheckListBox'+#2+#2+'1'+#2+#2+#3;
+
+  if ShowOptionForm('',PChar(IniSection),Pchar(ss),Pchar(ChangeFileExt(Application.ExeName,'.ini'))) then
+	  UpdateConfig;
+end;
+
+procedure TfrmMain.UpdateConfig;
+var
+  INI:tinifile;
+  autorun:boolean;
+begin
+  ini:=TINIFILE.Create(ChangeFileExt(Application.ExeName,'.ini'));
+
+  autorun:=ini.readBool(PChar(IniSection),'开机自动运行',false);
+
+  ini.Free;
+
+  OperateLinkFile(application.ExeName,'\'+ChangeFileExt(ExtractFileName(Application.ExeName),'.lnk'),15,autorun);
 end;
 
 initialization
