@@ -4075,7 +4075,7 @@ end;
 
 procedure TSDIAppForm.TimerMakeTjDescriptionTimer(Sender: TObject);
 begin
-  LYLed2.Value:='1'=ScalarSQLCmd(LisConn,'select TOP 1 1 from chk_con WITH(NOLOCK) where Weight=''待生成'' ');
+  LYLed2.Value:='1'=ScalarSQLCmd(LisConn,'select TOP 1 1 from chk_con WITH(NOLOCK) where Weight=''待生成'' ',False);
 end;
 
 procedure TSDIAppForm.N85Click(Sender: TObject);
@@ -4121,7 +4121,7 @@ procedure TSDIAppForm.TimerCriticalValueTimer(Sender: TObject);
 begin
   if LYLed1.Value then exit;
   
-  LYLed1.Value:='1'=ScalarSQLCmd(LisConn,'select TOP 1 1 from Chk_Con cc WITH(NOLOCK),chk_valu cv WITH(NOLOCK) where cc.unid=cv.pkunid and cc.check_date>getdate()-7 and isnull(cc.TjXinDianTu,'''')='''' and dbo.uf_CriticalValueAlarm(cv.itemid,cc.sex,cc.age,cv.itemvalue)=1');
+  LYLed1.Value:='1'=ScalarSQLCmd(LisConn,'select TOP 1 1 from Chk_Con cc WITH(NOLOCK),chk_valu cv WITH(NOLOCK) where cc.unid=cv.pkunid and cc.check_date>getdate()-7 and isnull(cc.TjXinDianTu,'''')='''' and dbo.uf_CriticalValueAlarm(cv.itemid,cc.sex,cc.age,cv.itemvalue)=1',False);
 end;
 
 procedure TSDIAppForm.LYLed1DblClick(Sender: TObject);

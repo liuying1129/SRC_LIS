@@ -142,8 +142,8 @@ function SmoothLine(const strHistogram:string;const SmoothNum:byte;var Strings:T
 function MakeDBConn:boolean;
 procedure LoadGroupName(const comboBox:TcomboBox;const ASel:string);
 procedure MakeDBGridColumnsAutoFixItsWidth(objDBGrid:TDBGrid);
-function ExecSQLCmd(AConnectionString:string;ASQL:string):integer;
-function ScalarSQLCmd(AConnectionString:string;ASQL:string):string;
+function ExecSQLCmd(AConnectionString:string;ASQL:string;AErrorDlg:boolean=True):integer;
+function ScalarSQLCmd(AConnectionString:string;ASQL:string;AErrorDlg:boolean=True):string;
 procedure combinchecklistbox(CheckListBox:TCheckListBox);//将组合项目号及名称导入CheckListBox中
 function StopTime: integer; //返回没有键盘和鼠标事件的时间
 procedure Draw_MVIS2035_Curve(Chart_XLB:TChart;const X1,Y1,X2,Y2,X1_MIN,Y1_MIN,X2_MIN,Y2_MIN,
@@ -722,7 +722,7 @@ begin
   end;
 end;
 
-function ExecSQLCmd(AConnectionString:string;ASQL:string):integer;
+function ExecSQLCmd(AConnectionString:string;ASQL:string;AErrorDlg:boolean=True):integer;
 var
   Conn:TADOConnection;
   Qry:TAdoQuery;
@@ -740,8 +740,8 @@ begin
   except
     on E:Exception do
     begin
-      WriteLog(pchar('操作者:'+operator_name+'。函数ExecSQLCmd失败:'+E.Message+'。错误的SQL:'+ASQL));
-      MESSAGEDLG('函数ExecSQLCmd失败:'+E.Message+'。错误的SQL:'+ASQL,mtError,[mbOK],0);
+      if AErrorDlg then MESSAGEDLG('函数ExecSQLCmd失败:'+E.Message+'。错误的SQL:'+ASQL,mtError,[mbOK],0)
+        else WriteLog(pchar('操作者:'+operator_name+'。函数ExecSQLCmd失败:'+E.Message+'。错误的SQL:'+ASQL));
       Result:=-1;
     end;
   end;
@@ -749,7 +749,7 @@ begin
   Conn.Free;
 end;
 
-function ScalarSQLCmd(AConnectionString:string;ASQL:string):string;
+function ScalarSQLCmd(AConnectionString:string;ASQL:string;AErrorDlg:boolean=True):string;
 var
   Conn:TADOConnection;
   Qry:TAdoQuery;
@@ -768,8 +768,8 @@ begin
   except
     on E:Exception do
     begin
-      WriteLog(pchar('操作者:'+operator_name+'。函数ScalarSQLCmd失败:'+E.Message+'。错误的SQL:'+ASQL));
-      MESSAGEDLG('函数ScalarSQLCmd失败:'+E.Message+'。错误的SQL:'+ASQL,mtError,[mbOK],0);
+      if AErrorDlg then MESSAGEDLG('函数ScalarSQLCmd失败:'+E.Message+'。错误的SQL:'+ASQL,mtError,[mbOK],0)
+        else WriteLog(pchar('操作者:'+operator_name+'。函数ScalarSQLCmd失败:'+E.Message+'。错误的SQL:'+ASQL));
       Qry.Free;
       Conn.Free;
       exit;
