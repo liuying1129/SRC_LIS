@@ -1522,7 +1522,7 @@ CREATE FUNCTION dbo.uf_ValueAlarm
   @ItemChnName varchar(50),--项目的中文名.20070128增加,以便特殊项目的报警.如RH血型,中国的实际情况是大多数人为阳性
   @min_value varchar(50),
   @max_value varchar(50),
-  @cur_value varchar(50)
+  @cur_value varchar(500)--20240813长度50改为500
 )  
 RETURNS int AS  
 BEGIN 
