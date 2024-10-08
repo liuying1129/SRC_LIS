@@ -3,9 +3,9 @@ unit ufrm_referencevalue;
 interface
 
 uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Windows, Messages, SysUtils, Classes, Controls, Forms,
   Dialogs, StdCtrls, ExtCtrls, Buttons, Grids, DBGrids, DB, ADODB, DosMove,
-  ActnList, FR_DSet, FR_DBSet, FR_Class,inifiles,StrUtils, ADOLYGetcode;
+  ActnList, inifiles,StrUtils;
 
 type
   Tfrm_referencevalue = class(TForm)
@@ -13,9 +13,7 @@ type
     BitBtn1: TBitBtn;
     BitBtn2: TBitBtn;
     BitBtn3: TBitBtn;
-    LabeledEdit1: TLabeledEdit;
     LabeledEdit2: TLabeledEdit;
-    LabeledEdit3: TLabeledEdit;
     ADOQuery2: TADOQuery;
     DataSource2: TDataSource;
     DosMove1: TDosMove;
@@ -25,33 +23,41 @@ type
     Action3: TAction;
     Action4: TAction;
     BitBtn6: TBitBtn;
-    Panel1: TPanel;
-    DBGrid2: TDBGrid;
-    Panel2: TPanel;
-    Label1: TLabel;
-    Label2: TLabel;
-    Label3: TLabel;
     ComboBox1: TComboBox;
     Label4: TLabel;
-    Label5: TLabel;
     LabeledEdit4: TMemo;
     LabeledEdit5: TMemo;
     Label6: TLabel;
     Label7: TLabel;
+    ComboBox2: TComboBox;
+    Label9: TLabel;
+    Label10: TLabel;
+    LabeledEdit3: TEdit;
+    Label11: TLabel;
+    Label12: TLabel;
+    Label13: TLabel;
+    Label14: TLabel;
+    Label15: TLabel;
+    Label16: TLabel;
+    Label5: TLabel;
+    Label17: TLabel;
+    Label3: TLabel;
     Label8: TLabel;
     Edit2: TEdit;
+    DBGrid2: TDBGrid;
+    Label1: TLabel;
+    Label2: TLabel;
     procedure FormShow(Sender: TObject);
     procedure BitBtn1Click(Sender: TObject);
     procedure LabeledEdit2Exit(Sender: TObject);
-    procedure LabeledEdit3Exit(Sender: TObject);
     procedure BitBtn2Click(Sender: TObject);
     procedure BitBtn3Click(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure ADOQuery2AfterScroll(DataSet: TDataSet);
     procedure BitBtn6Click(Sender: TObject);
-    procedure LabeledEdit1KeyDown(Sender: TObject; var Key: Word;
-      Shift: TShiftState);
-
+    procedure ComboBox1DropDown(Sender: TObject);
+    procedure ComboBox2DropDown(Sender: TObject);
+    procedure LabeledEdit3Exit(Sender: TObject);
   private
     { Private declarations }
     procedure updatedbgrid2;
@@ -87,9 +93,6 @@ end;
 
 procedure Tfrm_referencevalue.FormShow(Sender: TObject);
 begin
-  LoadGroupName(ComboBox1,'select name from CommCode where TypeName=''样本类型'' group by name');//加载样本类型
-
-//        c:=0;
         dbgrid2.ReadOnly:=true;
         adoquery2.Connection:=DM.ADOConnection1;
 
@@ -124,14 +127,12 @@ end;
 
 procedure Tfrm_referencevalue.LabeledEdit2Exit(Sender: TObject);
 begin
-//if (trim(tLabeledEdit(sender).Text)='') then begin tLabeledEdit(sender).Text:='0岁'; exit; end;
-tLabeledEdit(sender).Text:=ageConvertChinese(trim(tLabeledEdit(sender).Text));
+  tLabeledEdit(sender).Text:=ageConvertChinese(trim(tLabeledEdit(sender).Text));
 end;
 
 procedure Tfrm_referencevalue.LabeledEdit3Exit(Sender: TObject);
 begin
-//if (trim(tLabeledEdit(sender).Text)='') then begin tLabeledEdit(sender).Text:='200岁'; exit; end;
-tLabeledEdit(sender).Text:=ageConvertChinese(trim(tLabeledEdit(sender).Text));
+  tLabeledEdit(sender).Text:=ageConvertChinese(trim(tLabeledEdit(sender).Text));
 end;
 
 procedure Tfrm_referencevalue.BitBtn2Click(Sender: TObject);
@@ -142,8 +143,8 @@ var
 begin
   if (trim(LabeledEdit4.Text)='') and (trim(LabeledEdit5.Text)='') then//上、下限都为空了，还要这条记录干嘛呢
   begin
-    showmessage('输入未完成！');
-    LabeledEdit1.SetFocus;
+    MessageDlg('【最小值、最大值】至少填写一个！',mtError,[MBOK],0);
+    LabeledEdit4.SetFocus;
     exit;
   end;
 
@@ -164,7 +165,7 @@ begin
 
     adoquery2.Edit;
     adoquery2.FieldByName('id').AsString:=frmitemsetup.ADOQuery1.fieldbyname('项目代码').Value;
-    adoquery2.FieldByName('性别').AsString:=trim(LabeledEdit1.Text);
+    adoquery2.FieldByName('性别').AsString:=trim(ComboBox2.Text);
     adoquery2.FieldByName('年龄下限').AsString:=trim(LabeledEdit2.Text);
     adoquery2.FieldByName('年龄上限').AsString:=trim(LabeledEdit3.Text);
     adoquery2.FieldByName('最小值').AsString:=trim(LabeledEdit4.Text);
@@ -190,7 +191,7 @@ end;
 
 procedure Tfrm_referencevalue.updateedit;
 begin
-       LabeledEdit1.Text:=trim(adoquery2.fieldbyname('性别').AsString);
+       ComboBox2.Text:=trim(adoquery2.fieldbyname('性别').AsString);
        LabeledEdit2.Text:=trim(adoquery2.fieldbyname('年龄下限').AsString);
        LabeledEdit3.Text:=trim(adoquery2.fieldbyname('年龄上限').AsString);
        LabeledEdit4.Text:=trim(adoquery2.fieldbyname('最小值').AsString);
@@ -226,26 +227,14 @@ begin
   close;
 end;
 
-procedure Tfrm_referencevalue.LabeledEdit1KeyDown(Sender: TObject;
-  var Key: Word; Shift: TShiftState);
-var
-  tmpADOLYGetcode:TADOLYGetcode;
+procedure Tfrm_referencevalue.ComboBox1DropDown(Sender: TObject);
 begin
-  if key<>13 then exit;
-  tmpADOLYGetcode:=TADOLYGetcode.create(nil);
-  tmpADOLYGetcode.Connection:=DM.ADOConnection1;
-  tmpADOLYGetcode.IfNullGetCode:=ifEnterGetCode;
-  tmpADOLYGetcode.OpenStr:='select name as 名称,id as 代码 from CommCode where TypeName=''性别'' ';
-  tmpADOLYGetcode.InField:='id,wbm,pym';
-  tmpADOLYGetcode.InValue:=tLabeledEdit(sender).Text;
-  tmpADOLYGetcode.ShowX:=left+tLabeledEdit(SENDER).Parent.Left+tLabeledEdit(SENDER).Left;
-  tmpADOLYGetcode.ShowY:=top+22{当前窗体标题栏高度}+tLabeledEdit(SENDER).Parent.Top+tLabeledEdit(SENDER).Top+tLabeledEdit(SENDER).Height;
+  LoadGroupName(TComboBox(Sender),'select name from CommCode WITH(NOLOCK) where TypeName=''样本类型'' ');
+end;
 
-  if tmpADOLYGetcode.Execute then
-  begin
-    tLabeledEdit(SENDER).Text:=tmpADOLYGetcode.OutValue[0];
-  end;
-  tmpADOLYGetcode.Free;
+procedure Tfrm_referencevalue.ComboBox2DropDown(Sender: TObject);
+begin
+  LoadGroupName(TComboBox(Sender),'select name from CommCode WITH(NOLOCK) where TypeName=''性别'' ');
 end;
 
 initialization

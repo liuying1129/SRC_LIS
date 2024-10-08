@@ -22,15 +22,15 @@ object frm_referencevalue: Tfrm_referencevalue
     Left = 0
     Top = 0
     Width = 692
-    Height = 177
+    Height = 230
     Align = alTop
     TabOrder = 0
     object Label4: TLabel
-      Left = 8
+      Left = 5
       Top = 40
-      Width = 52
+      Width = 92
       Height = 13
-      Caption = #26679#26412#31867#22411
+      Caption = #26679#26412#31867#22411'('#36873#22635')'
     end
     object Label6: TLabel
       Left = 299
@@ -45,6 +45,176 @@ object frm_referencevalue: Tfrm_referencevalue
       Width = 39
       Height = 13
       Caption = #26368#22823#20540
+    end
+    object Label9: TLabel
+      Left = 106
+      Top = 40
+      Width = 66
+      Height = 13
+      Caption = #24615#21035'('#36873#22635')'
+    end
+    object Label10: TLabel
+      Left = 234
+      Top = 61
+      Width = 7
+      Height = 13
+      Caption = '-'
+    end
+    object Label11: TLabel
+      Left = 7
+      Top = 84
+      Width = 52
+      Height = 13
+      Caption = #19981#22635#34920#31034
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clRed
+      Font.Height = -13
+      Font.Name = #23435#20307
+      Font.Style = []
+      ParentFont = False
+    end
+    object Label12: TLabel
+      Left = 7
+      Top = 100
+      Width = 65
+      Height = 13
+      Caption = #36866#29992#20110#25152#26377
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clRed
+      Font.Height = -13
+      Font.Name = #23435#20307
+      Font.Style = []
+      ParentFont = False
+    end
+    object Label13: TLabel
+      Left = 106
+      Top = 84
+      Width = 52
+      Height = 13
+      Caption = #19981#22635#34920#31034
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clRed
+      Font.Height = -13
+      Font.Name = #23435#20307
+      Font.Style = []
+      ParentFont = False
+    end
+    object Label14: TLabel
+      Left = 106
+      Top = 100
+      Width = 65
+      Height = 13
+      Caption = #36866#29992#20110#25152#26377
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clRed
+      Font.Height = -13
+      Font.Name = #23435#20307
+      Font.Style = []
+      ParentFont = False
+    end
+    object Label15: TLabel
+      Left = 7
+      Top = 117
+      Width = 52
+      Height = 13
+      Caption = #26679#26412#31867#22411
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clRed
+      Font.Height = -13
+      Font.Name = #23435#20307
+      Font.Style = []
+      ParentFont = False
+    end
+    object Label16: TLabel
+      Left = 106
+      Top = 117
+      Width = 26
+      Height = 13
+      Caption = #24615#21035
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clRed
+      Font.Height = -13
+      Font.Name = #23435#20307
+      Font.Style = []
+      ParentFont = False
+    end
+    object Label5: TLabel
+      Left = 183
+      Top = 84
+      Width = 52
+      Height = 13
+      Caption = #19981#22635#34920#31034
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clRed
+      Font.Height = -13
+      Font.Name = #23435#20307
+      Font.Style = []
+      ParentFont = False
+    end
+    object Label17: TLabel
+      Left = 183
+      Top = 100
+      Width = 106
+      Height = 13
+      Caption = #24180#40836#20174'0'#23681#33267'200'#23681
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clRed
+      Font.Height = -13
+      Font.Name = #23435#20307
+      Font.Style = []
+      ParentFont = False
+    end
+    object Label3: TLabel
+      Left = 298
+      Top = 168
+      Width = 189
+      Height = 13
+      Caption = '1'#12289#26368#23567#20540#12289#26368#22823#20540#19981#35201#22635#20889#21333#20301
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clRed
+      Font.Height = -13
+      Font.Name = #23435#20307
+      Font.Style = []
+      ParentFont = False
+    end
+    object Label8: TLabel
+      Left = 298
+      Top = 206
+      Width = 244
+      Height = 13
+      Caption = '3'#12289#26368#23567'/'#22823#20540#26694#65292'Ctrl+'#22238#36710#65292#21487#25442#34892#36755#20837
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clRed
+      Font.Height = -13
+      Font.Name = #23435#20307
+      Font.Style = []
+      ParentFont = False
+    end
+    object Label1: TLabel
+      Left = 6
+      Top = 168
+      Width = 281
+      Height = 16
+      Caption = #27880':'#12304#21442#32771#20540#35774#32622#12305#19981#24433#21709#21382#21490#25253#21578#21333
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clBlue
+      Font.Height = -16
+      Font.Name = #23435#20307
+      Font.Style = [fsBold]
+      ParentFont = False
+    end
+    object Label2: TLabel
+      Left = 36
+      Top = 192
+      Width = 136
+      Height = 16
+      Caption = #20165#23545#26032#25253#21578#21333#29983#25928
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clBlue
+      Font.Height = -16
+      Font.Name = #23435#20307
+      Font.Style = [fsBold]
+      ParentFont = False
     end
     object BitBtn1: TBitBtn
       Left = 19
@@ -91,42 +261,16 @@ object frm_referencevalue: Tfrm_referencevalue
       TabOrder = 8
       OnClick = BitBtn3Click
     end
-    object LabeledEdit1: TLabeledEdit
-      Left = 100
-      Top = 58
-      Width = 45
-      Height = 19
-      Color = clWhite
-      Ctl3D = False
-      EditLabel.Width = 26
-      EditLabel.Height = 13
-      EditLabel.Caption = #24615#21035
-      EditLabel.Font.Charset = DEFAULT_CHARSET
-      EditLabel.Font.Color = clWindowText
-      EditLabel.Font.Height = -13
-      EditLabel.Font.Name = #23435#20307
-      EditLabel.Font.Style = []
-      EditLabel.ParentFont = False
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -13
-      Font.Name = #23435#20307
-      Font.Style = []
-      ParentCtl3D = False
-      ParentFont = False
-      TabOrder = 1
-      OnKeyDown = LabeledEdit1KeyDown
-    end
     object LabeledEdit2: TLabeledEdit
-      Left = 149
+      Left = 182
       Top = 58
-      Width = 70
+      Width = 50
       Height = 19
       Color = clWhite
       Ctl3D = False
-      EditLabel.Width = 52
+      EditLabel.Width = 92
       EditLabel.Height = 13
-      EditLabel.Caption = #24180#40836#19979#38480
+      EditLabel.Caption = #24180#40836#36215#27490'('#36873#22635')'
       EditLabel.Font.Charset = DEFAULT_CHARSET
       EditLabel.Font.Color = clWindowText
       EditLabel.Font.Height = -13
@@ -142,32 +286,6 @@ object frm_referencevalue: Tfrm_referencevalue
       ParentFont = False
       TabOrder = 2
       OnExit = LabeledEdit2Exit
-    end
-    object LabeledEdit3: TLabeledEdit
-      Left = 222
-      Top = 58
-      Width = 70
-      Height = 19
-      Color = clWhite
-      Ctl3D = False
-      EditLabel.Width = 52
-      EditLabel.Height = 13
-      EditLabel.Caption = #24180#40836#19978#38480
-      EditLabel.Font.Charset = DEFAULT_CHARSET
-      EditLabel.Font.Color = clWindowText
-      EditLabel.Font.Height = -13
-      EditLabel.Font.Name = #23435#20307
-      EditLabel.Font.Style = []
-      EditLabel.ParentFont = False
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -13
-      Font.Name = #23435#20307
-      Font.Style = []
-      ParentCtl3D = False
-      ParentFont = False
-      TabOrder = 3
-      OnExit = LabeledEdit3Exit
     end
     object BitBtn6: TBitBtn
       Left = 292
@@ -185,8 +303,11 @@ object frm_referencevalue: Tfrm_referencevalue
       Top = 56
       Width = 89
       Height = 21
+      BevelKind = bkFlat
+      DropDownCount = 20
       ItemHeight = 13
       TabOrder = 0
+      OnDropDown = ComboBox1DropDown
     end
     object LabeledEdit4: TMemo
       Left = 297
@@ -206,121 +327,58 @@ object frm_referencevalue: Tfrm_referencevalue
       TabOrder = 5
       WordWrap = False
     end
-  end
-  object Panel1: TPanel
-    Left = 0
-    Top = 177
-    Width = 692
-    Height = 289
-    Align = alClient
-    Color = clSkyBlue
-    TabOrder = 1
-    object DBGrid2: TDBGrid
-      Left = 1
-      Top = 1
-      Width = 690
-      Height = 217
-      Align = alClient
-      Color = 16767438
-      DataSource = DataSource2
-      TabOrder = 0
-      TitleFont.Charset = DEFAULT_CHARSET
-      TitleFont.Color = clWindowText
-      TitleFont.Height = -13
-      TitleFont.Name = #23435#20307
-      TitleFont.Style = []
-    end
-    object Panel2: TPanel
-      Left = 1
-      Top = 218
-      Width = 690
-      Height = 70
-      Align = alBottom
-      Color = clSkyBlue
+    object ComboBox2: TComboBox
+      Left = 106
+      Top = 56
+      Width = 65
+      Height = 21
+      BevelKind = bkFlat
+      ItemHeight = 13
       TabOrder = 1
-      object Label1: TLabel
-        Left = 28
-        Top = 4
-        Width = 209
-        Height = 13
-        Caption = #27880':1'#12289#24615#21035#20026#31354#34920#31034#36866#29992#20110#25152#26377#24615#21035
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clRed
-        Font.Height = -13
-        Font.Name = #23435#20307
-        Font.Style = []
-        ParentFont = False
-      end
-      object Label2: TLabel
-        Left = 48
-        Top = 20
-        Width = 269
-        Height = 13
-        Caption = '2'#12289#24180#40836#19979#38480#20026#31354#34920#31034'0'#23681#65292#19978#38480#20026#31354#34920#31034'200'#23681
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clRed
-        Font.Height = -13
-        Font.Name = #23435#20307
-        Font.Style = []
-        ParentFont = False
-      end
-      object Label3: TLabel
-        Left = 48
-        Top = 37
-        Width = 189
-        Height = 13
-        Caption = '3'#12289#26368#22823#20540#12289#26368#23567#20540#19981#35201#36755#20837#21333#20301
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clRed
-        Font.Height = -13
-        Font.Name = #23435#20307
-        Font.Style = []
-        ParentFont = False
-      end
-      object Label5: TLabel
-        Left = 48
-        Top = 53
-        Width = 241
-        Height = 13
-        Caption = '4'#12289#26679#26412#31867#22411#20026#31354#34920#31034#36866#29992#20110#25152#26377#26679#26412#31867#22411
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clRed
-        Font.Height = -13
-        Font.Name = #23435#20307
-        Font.Style = []
-        ParentFont = False
-      end
-      object Label8: TLabel
-        Left = 333
-        Top = 4
-        Width = 244
-        Height = 13
-        Caption = '5'#12289#26368#23567'/'#22823#20540#26694#65292'Ctrl+'#22238#36710#65292#21487#25442#34892#36755#20837
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clRed
-        Font.Height = -13
-        Font.Name = #23435#20307
-        Font.Style = []
-        ParentFont = False
-      end
-      object Edit2: TEdit
-        Left = 333
-        Top = 20
-        Width = 352
-        Height = 21
-        BorderStyle = bsNone
-        Color = clSkyBlue
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clRed
-        Font.Height = -13
-        Font.Name = #23435#20307
-        Font.Style = []
-        ParentFont = False
-        ReadOnly = True
-        TabOrder = 0
-        Text = '6'#12289#25903#25345#31526#21495#8804#12289#65308#12289#8805#12289#65310#65292#22914#65306#8804'50'#12289#65308'50'#12289#8805'50'#12289#65310'50'
-      end
+      OnDropDown = ComboBox2DropDown
     end
+    object LabeledEdit3: TEdit
+      Left = 242
+      Top = 58
+      Width = 50
+      Height = 19
+      Ctl3D = False
+      ParentCtl3D = False
+      TabOrder = 3
+      OnExit = LabeledEdit3Exit
+    end
+    object Edit2: TEdit
+      Left = 298
+      Top = 184
+      Width = 352
+      Height = 21
+      BorderStyle = bsNone
+      Color = clSkyBlue
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clRed
+      Font.Height = -13
+      Font.Name = #23435#20307
+      Font.Style = []
+      ParentFont = False
+      ReadOnly = True
+      TabOrder = 10
+      Text = '2'#12289#25903#25345#31526#21495#8804#12289#65308#12289#8805#12289#65310#65292#22914#65306#8804'50'#12289#65308'50'#12289#8805'50'#12289#65310'50'
+    end
+  end
+  object DBGrid2: TDBGrid
+    Left = 0
+    Top = 230
+    Width = 692
+    Height = 236
+    Align = alClient
+    Color = 16767438
+    DataSource = DataSource2
+    TabOrder = 1
+    TitleFont.Charset = DEFAULT_CHARSET
+    TitleFont.Color = clWindowText
+    TitleFont.Height = -13
+    TitleFont.Name = #23435#20307
+    TitleFont.Style = []
   end
   object ADOQuery2: TADOQuery
     CursorType = ctStatic
