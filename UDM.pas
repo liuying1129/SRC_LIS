@@ -62,7 +62,6 @@ var
   ifGetMemoFromCaseNo:boolean;//是否根据"门诊/住院号"提取备注
   ifSaveSuccess:boolean;//记录"保存检验单F3"事件是否成功,批量录入时要用到
   ifAutoCheck:boolean;//记录是否打印时自动审核检验单
-  ifEnterGetCode:boolean;//记录是否 填写病人基本信息时,直接回车弹出取码框
   deptname_match:string;//记录送检科室的取码匹配方式
   check_doctor_match:string;////记录送检医生的取码匹配方式
   ifNoResultPrint:boolean;//是否允许无检验结果打印

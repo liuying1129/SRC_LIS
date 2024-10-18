@@ -2356,7 +2356,6 @@ begin
       '根据"门诊/住院号"提取床号'+#2+'CheckListBox'+#2+#2+'1'+#2+#2+#3+
       '根据"门诊/住院号"提取临床诊断'+#2+'CheckListBox'+#2+#2+'1'+#2+#2+#3+
       '根据"门诊/住院号"提取备注'+#2+'CheckListBox'+#2+#2+'1'+#2+#2+#3+
-      '填写病人基本信息时,直接回车弹出取码框'+#2+'CheckListBox'+#2+#2+'1'+#2+#2+#3+
       '送检科室取码的匹配方式'+#2+'Combobox'+#2+'模糊匹配'+#13+'左匹配'+#13+'右匹配'+#13+'全匹配'+#2+'1'+#2+#2+#3+
       '送检医生取码的匹配方式'+#2+'Combobox'+#2+'模糊匹配'+#13+'左匹配'+#13+'右匹配'+#13+'全匹配'+#2+'1'+#2+#2+#3+
       '弹出登录窗口的时间'+#2+'Edit'+#2+#2+'1'+#2+'注:表示多长时间内无操作,则自动弹出登录窗口(单位:秒)'+#2+#3+
@@ -2450,7 +2449,7 @@ begin
   if key<>13 then exit;
   tmpADOLYGetcode:=TADOLYGetcode.create(nil);
   tmpADOLYGetcode.Connection:=DM.ADOConnection1;
-  tmpADOLYGetcode.IfNullGetCode:=ifEnterGetCode;
+  tmpADOLYGetcode.IfNullGetCode:=false;
   tmpADOLYGetcode.OpenStr:='select name as 名称 from CommCode where TypeName=''优先级别'' ';
   tmpADOLYGetcode.InField:='id,wbm,pym';
   tmpADOLYGetcode.InValue:=tLabeledEdit(sender).Text;
@@ -2476,7 +2475,7 @@ begin
     else if deptname_match='左匹配' then tmpADOLYGetcode.GetCodePos:=gcLeft
       else if deptname_match='右匹配' then tmpADOLYGetcode.GetCodePos:=gcRight
         else tmpADOLYGetcode.GetCodePos:=gcNone;
-  tmpADOLYGetcode.IfNullGetCode:=ifEnterGetCode;
+  tmpADOLYGetcode.IfNullGetCode:=false;
   tmpADOLYGetcode.OpenStr:='select name as 名称 from CommCode where TypeName=''部门'' ';
   tmpADOLYGetcode.InField:='id,wbm,pym';
   tmpADOLYGetcode.InValue:=tLabeledEdit(sender).Text;
@@ -2502,7 +2501,7 @@ begin
     else if check_doctor_match='左匹配' then tmpADOLYGetcode.GetCodePos:=gcLeft
       else if check_doctor_match='右匹配' then tmpADOLYGetcode.GetCodePos:=gcRight
         else tmpADOLYGetcode.GetCodePos:=gcNone;
-  tmpADOLYGetcode.IfNullGetCode:=ifEnterGetCode;
+  tmpADOLYGetcode.IfNullGetCode:=false;
   tmpADOLYGetcode.OpenStr:='select name as 名称 from worker';
   tmpADOLYGetcode.InField:='id,wbm,pinyin';
   tmpADOLYGetcode.InValue:=tLabeledEdit(sender).Text;
@@ -2524,7 +2523,7 @@ begin
   if key<>13 then exit;
   tmpADOLYGetcode:=TADOLYGetcode.create(nil);
   tmpADOLYGetcode.Connection:=DM.ADOConnection1;
-  tmpADOLYGetcode.IfNullGetCode:=ifEnterGetCode;
+  tmpADOLYGetcode.IfNullGetCode:=false;
   tmpADOLYGetcode.OpenStr:='select name as 名称 from CommCode where TypeName=''样本类型'' ';
   tmpADOLYGetcode.InField:='id,wbm,pym';
   tmpADOLYGetcode.InValue:=tLabeledEdit(sender).Text;
@@ -2546,7 +2545,7 @@ begin
   if key<>13 then exit;
   tmpADOLYGetcode:=TADOLYGetcode.create(nil);
   tmpADOLYGetcode.Connection:=DM.ADOConnection1;
-  tmpADOLYGetcode.IfNullGetCode:=ifEnterGetCode;
+  tmpADOLYGetcode.IfNullGetCode:=false;
   tmpADOLYGetcode.OpenStr:='select name as 名称 from CommCode where TypeName=''样本状态'' ';
   tmpADOLYGetcode.InField:='id,wbm,pym';
   tmpADOLYGetcode.InValue:=tLabeledEdit(sender).Text;
@@ -2569,7 +2568,7 @@ begin
   tmpADOLYGetcode:=TADOLYGetcode.create(nil);
   tmpADOLYGetcode.Connection:=DM.ADOConnection1;
   tmpADOLYGetcode.GetCodePos:=gcLeft;
-  tmpADOLYGetcode.IfNullGetCode:=ifEnterGetCode;
+  tmpADOLYGetcode.IfNullGetCode:=false;
   tmpADOLYGetcode.OpenStr:='select name as 名称 from CommCode where TypeName=''临床诊断'' ';
   tmpADOLYGetcode.InField:='id,wbm,pym';
   tmpADOLYGetcode.InValue:=tLabeledEdit(sender).Text;
@@ -2591,7 +2590,7 @@ begin
   if key<>13 then exit;
   tmpADOLYGetcode:=TADOLYGetcode.create(nil);
   tmpADOLYGetcode.Connection:=DM.ADOConnection1;
-  tmpADOLYGetcode.IfNullGetCode:=ifEnterGetCode;
+  tmpADOLYGetcode.IfNullGetCode:=false;
   tmpADOLYGetcode.OpenStr:='select name as 名称 from CommCode where TypeName=''备注'' ';
   tmpADOLYGetcode.InField:='id,wbm,pym';
   tmpADOLYGetcode.InValue:=tLabeledEdit(sender).Text;
@@ -2904,7 +2903,6 @@ begin
   end;
   ifShowPrintDialog:=configini.ReadBool('报表','打印对话框',false);
   ifAutoCheck:=configini.ReadBool('选项','打印时自动审核检验单',false);
-  ifEnterGetCode:=configini.ReadBool('选项','填写病人基本信息时,直接回车弹出取码框',false);
   deptname_match:=configini.ReadString('选项','送检科室取码的匹配方式','');
   check_doctor_match:=configini.ReadString('选项','送检医生取码的匹配方式','');
   ifGetBedNoFromCaseNo:=configini.ReadBool('选项','根据"门诊/住院号"提取床号',false);
@@ -3889,7 +3887,7 @@ begin
   if key<>13 then exit;
   tmpADOLYGetcode:=TADOLYGetcode.create(nil);
   tmpADOLYGetcode.Connection:=DM.ADOConnection1;
-  tmpADOLYGetcode.IfNullGetCode:=ifEnterGetCode;
+  tmpADOLYGetcode.IfNullGetCode:=false;
   tmpADOLYGetcode.OpenStr:='select name as 名称,id as 代码 from CommCode where TypeName=''性别'' ';
   tmpADOLYGetcode.InField:='id,wbm,pym';
   tmpADOLYGetcode.InValue:=tLabeledEdit(sender).Text;

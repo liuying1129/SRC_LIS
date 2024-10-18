@@ -5,7 +5,7 @@ interface
 uses
   Windows, Messages, SysUtils,  Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, Buttons, ExtCtrls, CheckLst, ADODB, DosMove, ActnList,
-  DB, ComCtrls,StrUtils, ADOLYGetcode,inifiles;
+  DB, ComCtrls,StrUtils, inifiles;
 
 type
   TForm_pllr = class(TForm)
@@ -22,10 +22,6 @@ type
     BitBtn4: TBitBtn;
     DateTimePicker1: TDateTimePicker;
     Label2: TLabel;
-    LabeledEdit1: TLabeledEdit;
-    LabeledEdit5: TLabeledEdit;
-    LabeledEdit6: TLabeledEdit;
-    LabeledEdit10: TLabeledEdit;
     LabeledEdit15: TLabeledEdit;
     Label1: TLabel;
     ComboBox1: TComboBox;
@@ -35,25 +31,28 @@ type
     LabeledEdit14: TEdit;
     Edit1: TEdit;
     Label4: TLabel;
+    LabeledEdit6: TComboBox;
+    Label5: TLabel;
+    Label12: TLabel;
+    LabeledEdit10: TComboBox;
+    Label13: TLabel;
+    LabeledEdit1: TComboBox;
+    Label14: TLabel;
+    LabeledEdit5: TComboBox;
     procedure BitBtn2Click(Sender: TObject);
     procedure BitBtn1Click(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure BitBtn3Click(Sender: TObject);
     procedure BitBtn4Click(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
-    procedure LabeledEdit1KeyDown(Sender: TObject; var Key: Word;
-      Shift: TShiftState);
-    procedure LabeledEdit5KeyDown(Sender: TObject; var Key: Word;
-      Shift: TShiftState);
-    procedure LabeledEdit6KeyDown(Sender: TObject; var Key: Word;
-      Shift: TShiftState);
-    procedure LabeledEdit10KeyDown(Sender: TObject; var Key: Word;
-      Shift: TShiftState);
-    procedure LabeledEdit15KeyDown(Sender: TObject; var Key: Word;
-      Shift: TShiftState);
     procedure ComboBox1Change(Sender: TObject);
     procedure DateTimePicker1Change(Sender: TObject);
     procedure RadioGroup2Click(Sender: TObject);
+    procedure LabeledEdit6DropDown(Sender: TObject);
+    procedure LabeledEdit10DropDown(Sender: TObject);
+    procedure LabeledEdit1DropDown(Sender: TObject);
+    procedure LabeledEdit5DropDown(Sender: TObject);
+    procedure ComboBox1DropDown(Sender: TObject);
   private
     { Private declarations }
   public
@@ -208,121 +207,6 @@ begin
   for i:=0 to checklistbox1.Items.Count-1 do checklistbox1.Checked[i]:=not checklistbox1.Checked[i];
 end;
 
-procedure TForm_pllr.LabeledEdit1KeyDown(Sender: TObject; var Key: Word;
-  Shift: TShiftState);
-var
-  tmpADOLYGetcode:TADOLYGetcode;
-begin
-  if key<>13 then exit;
-  tmpADOLYGetcode:=TADOLYGetcode.create(nil);
-  tmpADOLYGetcode.Connection:=DM.ADOConnection1;
-  tmpADOLYGetcode.IfNullGetCode:=ifEnterGetCode;
-  tmpADOLYGetcode.OpenStr:='select name as 名称 from CommCode where TypeName=''样本类型'' ';
-  tmpADOLYGetcode.InField:='id,wbm,pym';
-  tmpADOLYGetcode.InValue:=tLabeledEdit(sender).Text;
-  tmpADOLYGetcode.ShowX:=left+tLabeledEdit(SENDER).Parent.Left+tLabeledEdit(SENDER).Left;
-  tmpADOLYGetcode.ShowY:=top+22{当前窗体标题栏高度}+tLabeledEdit(SENDER).Parent.Top+tLabeledEdit(SENDER).Top+tLabeledEdit(SENDER).Height;
-
-  if tmpADOLYGetcode.Execute then
-  begin
-    tLabeledEdit(SENDER).Text:=tmpADOLYGetcode.OutValue[0];
-  end;
-  tmpADOLYGetcode.Free;
-end;
-
-procedure TForm_pllr.LabeledEdit5KeyDown(Sender: TObject; var Key: Word;
-  Shift: TShiftState);
-var
-  tmpADOLYGetcode:TADOLYGetcode;
-begin
-  if key<>13 then exit;
-  tmpADOLYGetcode:=TADOLYGetcode.create(nil);
-  tmpADOLYGetcode.Connection:=DM.ADOConnection1;
-  tmpADOLYGetcode.IfNullGetCode:=ifEnterGetCode;
-  tmpADOLYGetcode.OpenStr:='select name as 名称 from CommCode where TypeName=''样本状态'' ';
-  tmpADOLYGetcode.InField:='id,wbm,pym';
-  tmpADOLYGetcode.InValue:=tLabeledEdit(sender).Text;
-  tmpADOLYGetcode.ShowX:=left+tLabeledEdit(SENDER).Parent.Left+tLabeledEdit(SENDER).Left;
-  tmpADOLYGetcode.ShowY:=top+22{当前窗体标题栏高度}+tLabeledEdit(SENDER).Parent.Top+tLabeledEdit(SENDER).Top+tLabeledEdit(SENDER).Height;
-
-  if tmpADOLYGetcode.Execute then
-  begin
-    tLabeledEdit(SENDER).Text:=tmpADOLYGetcode.OutValue[0];
-  end;
-  tmpADOLYGetcode.Free;
-end;
-
-procedure TForm_pllr.LabeledEdit6KeyDown(Sender: TObject; var Key: Word;
-  Shift: TShiftState);
-var
-  tmpADOLYGetcode:TADOLYGetcode;
-begin
-  if key<>13 then exit;
-  tmpADOLYGetcode:=TADOLYGetcode.create(nil);
-  tmpADOLYGetcode.Connection:=DM.ADOConnection1;
-  if deptname_match='全匹配' then tmpADOLYGetcode.GetCodePos:=gcAll
-    else if deptname_match='左匹配' then tmpADOLYGetcode.GetCodePos:=gcLeft
-      else if deptname_match='右匹配' then tmpADOLYGetcode.GetCodePos:=gcRight
-        else tmpADOLYGetcode.GetCodePos:=gcNone;
-  tmpADOLYGetcode.IfNullGetCode:=ifEnterGetCode;
-  tmpADOLYGetcode.IfShowDialogZeroRecord:=true;
-  tmpADOLYGetcode.OpenStr:='select name as 名称 from CommCode where TypeName=''部门'' ';
-  tmpADOLYGetcode.InField:='id,wbm,pym';
-  tmpADOLYGetcode.InValue:=tLabeledEdit(sender).Text;
-  tmpADOLYGetcode.ShowX:=left+tLabeledEdit(SENDER).Parent.Left+tLabeledEdit(SENDER).Left;
-  tmpADOLYGetcode.ShowY:=top+22{当前窗体标题栏高度}+tLabeledEdit(SENDER).Parent.Top+tLabeledEdit(SENDER).Top+tLabeledEdit(SENDER).Height;
-
-  if tmpADOLYGetcode.Execute then
-  begin
-    tLabeledEdit(SENDER).Text:=tmpADOLYGetcode.OutValue[0];
-  end;
-  tmpADOLYGetcode.Free;
-end;
-
-procedure TForm_pllr.LabeledEdit10KeyDown(Sender: TObject; var Key: Word;
-  Shift: TShiftState);
-var
-  tmpADOLYGetcode:TADOLYGetcode;
-begin
-  if key<>13 then exit;
-  tmpADOLYGetcode:=TADOLYGetcode.create(nil);
-  tmpADOLYGetcode.Connection:=DM.ADOConnection1;
-  tmpADOLYGetcode.OpenStr:='select name as 名称 from worker';
-  tmpADOLYGetcode.InField:='id,wbm,pinyin';
-  tmpADOLYGetcode.InValue:=tLabeledEdit(sender).Text;
-  tmpADOLYGetcode.ShowX:=left+tLabeledEdit(SENDER).Parent.Left+tLabeledEdit(SENDER).Left;
-  tmpADOLYGetcode.ShowY:=top+22{当前窗体标题栏高度}+tLabeledEdit(SENDER).Parent.Top+tLabeledEdit(SENDER).Top+tLabeledEdit(SENDER).Height;
-
-  if tmpADOLYGetcode.Execute then
-  begin
-    tLabeledEdit(SENDER).Text:=tmpADOLYGetcode.OutValue[0];
-  end;
-  tmpADOLYGetcode.Free;
-end;
-
-procedure TForm_pllr.LabeledEdit15KeyDown(Sender: TObject; var Key: Word;
-  Shift: TShiftState);
-var
-  tmpADOLYGetcode:TADOLYGetcode;
-begin
-  if key<>13 then exit;
-  tmpADOLYGetcode:=TADOLYGetcode.create(nil);
-  tmpADOLYGetcode.Connection:=DM.ADOConnection1;
-  tmpADOLYGetcode.IfNullGetCode:=ifEnterGetCode;
-  tmpADOLYGetcode.IfShowDialogZeroRecord:=true;
-  tmpADOLYGetcode.OpenStr:='select name as 名称 from CommCode where TypeName=''备注'' ';
-  tmpADOLYGetcode.InField:='id,wbm,pym';
-  tmpADOLYGetcode.InValue:=tLabeledEdit(sender).Text;
-  tmpADOLYGetcode.ShowX:=left+tLabeledEdit(SENDER).Parent.Left+tLabeledEdit(SENDER).Left;
-  tmpADOLYGetcode.ShowY:=top+22{当前窗体标题栏高度}+tLabeledEdit(SENDER).Parent.Top+tLabeledEdit(SENDER).Top+tLabeledEdit(SENDER).Height;
-
-  if tmpADOLYGetcode.Execute then
-  begin
-    tLabeledEdit(SENDER).Text:=tmpADOLYGetcode.OutValue[0];
-  end;
-  tmpADOLYGetcode.Free;
-end;
-
 procedure TForm_pllr.ComboBox1Change(Sender: TObject);
 begin
   LabeledEdit3.text:=ScalarSQLCmd(LisConn,' select dbo.uf_GetNextSerialNum('''+trim(SDIAppForm.cbxConnChar.Text)+''','''+FormatDateTime('YYYY-MM-DD',DateTimePicker1.Date)+''','''+trim((SENDER AS TComboBox).Text)+''') ');
@@ -353,6 +237,31 @@ begin
     Edit1.SetFocus;
     LabeledEdit14.Enabled:=true;
   end;
+end;
+
+procedure TForm_pllr.ComboBox1DropDown(Sender: TObject);
+begin
+  LoadGroupName(TComboBox(Sender),'select name from CommCode WITH(NOLOCK) where TypeName=''优先级别'' ');
+end;
+
+procedure TForm_pllr.LabeledEdit6DropDown(Sender: TObject);
+begin
+  LoadGroupName(TComboBox(Sender),'select name from CommCode WITH(NOLOCK) where TypeName=''部门'' ');
+end;
+
+procedure TForm_pllr.LabeledEdit10DropDown(Sender: TObject);
+begin
+  LoadGroupName(TComboBox(Sender),'select name from worker WITH(NOLOCK)');
+end;
+
+procedure TForm_pllr.LabeledEdit1DropDown(Sender: TObject);
+begin
+  LoadGroupName(TComboBox(Sender),'select name from CommCode WITH(NOLOCK) where TypeName=''样本类型'' ');
+end;
+
+procedure TForm_pllr.LabeledEdit5DropDown(Sender: TObject);
+begin
+  LoadGroupName(TComboBox(Sender),'select name from CommCode WITH(NOLOCK) where TypeName=''样本状态'' ');
 end;
 
 initialization
