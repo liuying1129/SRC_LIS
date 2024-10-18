@@ -56,7 +56,9 @@ var
   operator_id:string;
   operator_DeptName:string;//操作员部门名称
   operator_ShowAllTj:string;//操作员是否可操作所有科室的组合项目
-  
+
+  ifGetBedNoFromCaseNo:boolean;//是否根据"门诊/住院号"提取床号
+  ifGetDiagnoseFromCaseNo:boolean;//是否根据"门诊/住院号"提取临床诊断
   ifGetMemoFromCaseNo:boolean;//是否根据"门诊/住院号"提取备注
   ifSaveSuccess:boolean;//记录"保存检验单F3"事件是否成功,批量录入时要用到
   ifAutoCheck:boolean;//记录是否打印时自动审核检验单

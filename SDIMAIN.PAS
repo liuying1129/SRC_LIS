@@ -2353,6 +2353,8 @@ begin
       '"按姓名性别年龄合并"的工作组范围'+#2+'Edit'+#2+#2+'0'+#2+'如仅希望临检组与生化组合并,则填"临检组,生化组".空表示无限制'+#2+#3+
       '打印对话框'+#2+'CheckListBox'+#2+#2+'0'+#2+'打印预览模式的高级选项(打印机、页码、份数等)'+#2+#3+
       '打印时自动审核检验单'+#2+'CheckListBox'+#2+#2+'1'+#2+#2+#3+
+      '根据"门诊/住院号"提取床号'+#2+'CheckListBox'+#2+#2+'1'+#2+#2+#3+
+      '根据"门诊/住院号"提取临床诊断'+#2+'CheckListBox'+#2+#2+'1'+#2+#2+#3+
       '根据"门诊/住院号"提取备注'+#2+'CheckListBox'+#2+#2+'1'+#2+#2+#3+
       '填写病人基本信息时,直接回车弹出取码框'+#2+'CheckListBox'+#2+#2+'1'+#2+#2+#3+
       '送检科室取码的匹配方式'+#2+'Combobox'+#2+'模糊匹配'+#13+'左匹配'+#13+'右匹配'+#13+'全匹配'+#2+'1'+#2+#2+#3+
@@ -2419,7 +2421,7 @@ begin
   tmpADOLYGetcode.Connection:=dm.ADOConnection1;
   tmpADOLYGetcode.GetCodePos:=gcAll;
   tmpADOLYGetcode.IfShowDialogZeroRecord:=false;
-  tmpADOLYGetcode.OpenStr:='select caseno as 病历号,patientname as 姓名,sex as 性别,age as 年龄,deptname as 送检科室,check_doctor as 送检医生,issure as 备注 from view_Chk_Con_All where isnull(caseno,'''')<>'''' order by unid desc';//最近输入的显示在最前(一般希望选择最近的病历) 
+  tmpADOLYGetcode.OpenStr:='select caseno as 病历号,patientname as 姓名,sex as 性别,age as 年龄,deptname as 送检科室,check_doctor as 送检医生,issure as 备注,bedno as 床号,diagnose as 临床诊断 from view_Chk_Con_All where isnull(caseno,'''')<>'''' order by unid desc';//最近输入的显示在最前(一般希望选择最近的病历) 
   tmpADOLYGetcode.InField:='caseno';
   tmpADOLYGetcode.InValue:=tLabeledEdit(sender).Text;
   tmpADOLYGetcode.ShowX:=left+tLabeledEdit(SENDER).Parent.Left+tLabeledEdit(SENDER).Left;
@@ -2434,6 +2436,8 @@ begin
     LabeledEdit6.Text:=tmpADOLYGetcode.OutValue[4];
     LabeledEdit10.Text:=tmpADOLYGetcode.OutValue[5];
     if ifGetMemoFromCaseNo then LabeledEdit15.Text:=tmpADOLYGetcode.OutValue[6];
+    if ifGetBedNoFromCaseNo then LabeledEdit7.Text:=tmpADOLYGetcode.OutValue[7];
+    if ifGetDiagnoseFromCaseNo then LabeledEdit14.Text:=tmpADOLYGetcode.OutValue[8];
   end;
   tmpADOLYGetcode.Free;
 end;
@@ -2903,6 +2907,8 @@ begin
   ifEnterGetCode:=configini.ReadBool('选项','填写病人基本信息时,直接回车弹出取码框',false);
   deptname_match:=configini.ReadString('选项','送检科室取码的匹配方式','');
   check_doctor_match:=configini.ReadString('选项','送检医生取码的匹配方式','');
+  ifGetBedNoFromCaseNo:=configini.ReadBool('选项','根据"门诊/住院号"提取床号',false);
+  ifGetDiagnoseFromCaseNo:=configini.ReadBool('选项','根据"门诊/住院号"提取临床诊断',false);
   ifGetMemoFromCaseNo:=configini.ReadBool('选项','根据"门诊/住院号"提取备注',false);
   LoginTime:=configini.ReadInteger('选项','弹出登录窗口的时间',30);
   ifSearchHistValue:=configini.ReadBool('选项','查找历史结果',false);
