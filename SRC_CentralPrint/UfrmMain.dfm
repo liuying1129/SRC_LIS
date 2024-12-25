@@ -310,7 +310,7 @@ object frmMain: TfrmMain
         Top = 2
         Width = 81
         Height = 22
-        Caption = #25171#21360'V3'
+        Caption = #25171#21360'V3 F10'
         OnClick = SpeedButton3Click
       end
       object SpeedButton9: TSpeedButton
@@ -318,7 +318,7 @@ object frmMain: TfrmMain
         Top = 2
         Width = 112
         Height = 22
-        Caption = #20998#32452#25171#21360'V3'
+        Caption = #20998#32452#25171#21360'V3 F11'
         OnClick = SpeedButton9Click
       end
       object ToolButton1: TToolButton
@@ -592,10 +592,6 @@ object frmMain: TfrmMain
       ShortCut = 114
       OnExecute = BitBtn1Click
     end
-    object Action2: TAction
-      Caption = 'Action2'
-      ShortCut = 116
-    end
     object Action3: TAction
       Caption = 'Action3'
       ShortCut = 118
@@ -605,6 +601,16 @@ object frmMain: TfrmMain
       Caption = 'Action4'
       ShortCut = 120
       OnExecute = SpeedButton6Click
+    end
+    object Action2: TAction
+      Caption = 'Action2'
+      ShortCut = 121
+      OnExecute = SpeedButton3Click
+    end
+    object Action5: TAction
+      Caption = 'Action5'
+      ShortCut = 122
+      OnExecute = SpeedButton9Click
     end
   end
   object frxReport1: TfrxReport

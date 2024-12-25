@@ -167,21 +167,21 @@ object SDIAppForm: TSDIAppForm
       object SpeedButton2: TSpeedButton
         Left = 564
         Top = 2
-        Width = 47
+        Width = 75
         Height = 22
-        Caption = #25171#21360'V3'
+        Caption = #25171#21360'V3 F10'
         OnClick = SpeedButton2Click
       end
       object SpeedButton8: TSpeedButton
-        Left = 611
+        Left = 639
         Top = 2
-        Width = 75
+        Width = 100
         Height = 22
-        Caption = #20998#32452#25171#21360'V3'
+        Caption = #20998#32452#25171#21360'V3 F11'
         OnClick = SpeedButton8Click
       end
       object ToolButton3: TToolButton
-        Left = 686
+        Left = 739
         Top = 2
         Width = 8
         Caption = 'ToolButton3'
@@ -189,7 +189,7 @@ object SDIAppForm: TSDIAppForm
         Style = tbsSeparator
       end
       object LYLed2: TLYLed
-        Left = 694
+        Left = 747
         Top = 2
         Width = 19
         Height = 22
@@ -206,7 +206,7 @@ object SDIAppForm: TSDIAppForm
         SoundInValue = True
       end
       object ToolButton7: TToolButton
-        Left = 713
+        Left = 766
         Top = 2
         Width = 8
         Caption = 'ToolButton7'
@@ -214,7 +214,7 @@ object SDIAppForm: TSDIAppForm
         Style = tbsSeparator
       end
       object LYLed1: TLYLed
-        Left = 721
+        Left = 774
         Top = 2
         Width = 19
         Height = 22
@@ -1105,7 +1105,13 @@ object SDIAppForm: TSDIAppForm
     end
     object Action8: TAction
       Caption = 'Action8'
-      ShortCut = 123
+      ShortCut = 121
+      OnExecute = SpeedButton2Click
+    end
+    object Action9: TAction
+      Caption = 'Action9'
+      ShortCut = 122
+      OnExecute = SpeedButton8Click
     end
   end
   object ImageList1: TImageList

@@ -83,6 +83,7 @@ type
     Label6: TLabel;
     Label7: TLabel;
     Label8: TLabel;
+    Action5: TAction;
     procedure FormShow(Sender: TObject);
     procedure SpeedButton4Click(Sender: TObject);
     procedure FormDestroy(Sender: TObject);

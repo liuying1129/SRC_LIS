@@ -239,6 +239,7 @@ type
     View1: TMenuItem;
     N6: TMenuItem;
     N24: TMenuItem;
+    Action9: TAction;
     procedure FileExit1Execute(Sender: TObject);
     procedure HelpAbout1Execute(Sender: TObject);
     procedure FormShow(Sender: TObject);
