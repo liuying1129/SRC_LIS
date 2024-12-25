@@ -34,7 +34,7 @@ const
   //0 as 选择,默认是未选择的.1--选择,非1--未选
   SHOW_CHK_CON='select top 1000 patientname as 姓名,'+
         ' sex as 性别,'+
-        ' age as 年龄,printtimes as 打印次数,caseno as 病历号,bedno as 床号,deptname as 送检科室,'+
+        ' age as 年龄,(case when printtimes>0 then ''√'' end) as 打印,caseno as 病历号,bedno as 床号,deptname as 送检科室,'+
         ' check_doctor as 送检医生,check_date as 检查日期,'+
         ' report_date as 申请日期,report_doctor as 审核者,'+//dbo.uf_GetPatientCombName(ifCompleted,unid) as 组合项目,'+
         ' combin_id as 工作组,operator as 操作者,diagnosetype as 优先级别,'+
@@ -45,7 +45,7 @@ const
         ' Audit_Date as 审核时间,ifCompleted,checkid as 联机号,lsh as 流水号, '+
         ' PushPress as 样本送交人,PullPress as 样本接收人,LeftEyesight as 左眼视力,RightEyesight as 右眼视力,Stature as 样本接收时间,Weight as 单据状态, '+
         ' TjJiWangShi as 既往史,TjJiaZuShi as 家族史,TjNeiKe as 内科,TjWaiKe as 外科,TjWuGuanKe as 五官科,TjFuKe as 妇科,TjLengQiangGuang as 冷强光,TjXGuang as X光,TjBChao as 危急值报告时间,TjXinDianTu as 危急值报告人,TjJianYan as 条码号,'+
-        ' TjDescription as 结论,TJAdvice as 建议 '+
+        ' TjDescription as 结论,TJAdvice as 建议,printtimes as 打印次数 '+
         ' from view_Chk_Con_All ';
 
 var
