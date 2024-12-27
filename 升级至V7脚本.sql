@@ -4130,10 +4130,20 @@ update menuitem set menuname='打印V3' where bm='042' and menuname='打印每�
 update menuitem set menuname='分组打印V3' where bm='006' and menuname='是否按组分页' and SysName='LIS'
 GO
 
+--20241227
+update menuitem set menuname='打印V3 F10',SysName='LIS' where bm='267' --and menuname='描述类别设置' and SysName='BC'
+update menuitem set menuname='分组打印V3 F11',SysName='LIS' where bm='268' --and menuname='描述设置' and SysName='BC'
+GO
+
 --20240423
 update menuitem set SysName='CentralPrint' where bm='270' --选项
 update menuitem set menuname='打印V3',SysName='CentralPrint' where bm='271'
 update menuitem set menuname='分组打印V3',SysName='CentralPrint' where bm='272'
+GO
+
+--20241227
+update menuitem set menuname='打印V3 F10',SysName='CentralPrint' where bm='269' --and menuname='检查部位设置' and SysName='BC'
+update menuitem set menuname='分组打印V3 F11',SysName='CentralPrint' where bm='273' --and menuname='菜单维护' and SysName='BC'
 GO
 
 ---------------表约束、索引相关操作---------------
