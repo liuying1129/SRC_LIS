@@ -84,6 +84,8 @@ type
     Label7: TLabel;
     Label8: TLabel;
     Action5: TAction;
+    SpeedButton7: TSpeedButton;
+    ToolButton6: TToolButton;
     procedure FormShow(Sender: TObject);
     procedure SpeedButton4Click(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
@@ -118,6 +120,7 @@ type
       var Value: Variant);
     procedure frxReport1BeforePrint(Sender: TfrxReportComponent);
     procedure frxReport1BeginDoc(Sender: TObject);
+    procedure SpeedButton7Click(Sender: TObject);
   private
     procedure WriteProfile;
     procedure ReadConfig;
@@ -1991,6 +1994,160 @@ begin
     ExecSQLCmd(LisConn,'update '+ifThen(iIfCompleted=1,'chk_con_bak','chk_con')+' set printtimes='+inttostr(printtimes+1)+' where unid='+inttostr(unid));
   
   ExecSQLCmd(LisConn,'insert into pix_tran (pkunid,Reserve1,Reserve2,OpType) values ('+inttostr(unid)+','''+operator_name+''',''Class_Print'',''Nurse'')');
+end;
+
+procedure TfrmMain.SpeedButton7Click(Sender: TObject);
+var
+  strsqlPrint:string;
+
+  sUnid,sCombin_Id:string;
+  sAllUnid:String;
+
+  i:integer;
+
+  sPatientname,sSex,sAge,sCheck_Date:string;
+  sBasePatientname,sBaseSex:String;
+
+  OldCurrent:TBookmark;
+  PDFExportPath:String;
+
+  frxMasterData:TfrxMasterData;  
+begin
+  if not ifhaspower(sender,powerstr_js_main) then exit;
+
+  if not ADObasic.Active then exit;
+  if ADObasic.RecordCount=0 then exit;
+
+  if DBGrid1.SelectedRows.Count<=0 then exit;
+
+  if DBGrid1.SelectedRows.Count=1 then
+  begin
+    //实际上,【结果合并打印】功能兼容1条记录的情况.不建议用户如此使用
+    MessageDlg('仅勾选1条记录,无需使用【结果合并打印】功能！',mtWarning,[mbok],0);
+    exit;
+  end;
+
+  if RadioGroup2.ItemIndex=2 then
+    if not SelectDirectory('请选择PDF导出目录','',PDFExportPath) then exit;
+
+  //Grid勾选记录判断方式二 begin
+  //该方式无需循环全部数据集,只需循环所选记录
+  OldCurrent:=DBGrid1.DataSource.DataSet.GetBookmark;
+  DBGrid1.DataSource.DataSet.DisableControls;
+  for i:=0 to DBGrid1.SelectedRows.Count-1 do
+  begin
+    DBGrid1.DataSource.DataSet.Bookmark:=DBGrid1.SelectedRows[i];
+
+    if i=0 then
+    begin
+      OldCurrent:=DBGrid1.DataSource.DataSet.GetBookmark;//将游标指向勾选的其中一条，保证报告单的病人基本信息正确
+      sBasePatientname:=trim(DBGrid1.DataSource.DataSet.fieldbyname('姓名').AsString);
+      sBaseSex:=DBGrid1.DataSource.DataSet.fieldbyname('性别').AsString;
+    end;
+
+    sUnid:=DBGrid1.DataSource.DataSet.fieldbyname('唯一编号').AsString;
+    sCombin_Id:=DBGrid1.DataSource.DataSet.FieldByName('工作组').AsString;
+    sPatientname:=trim(DBGrid1.DataSource.DataSet.fieldbyname('姓名').AsString);
+    sSex:=DBGrid1.DataSource.DataSet.fieldbyname('性别').AsString;
+    sAge:=DBGrid1.DataSource.DataSet.fieldbyname('年龄').AsString;
+    sCheck_Date:=FormatDateTime('yyyymmdd',DBGrid1.DataSource.DataSet.fieldbyname('检查日期').AsDateTime);
+
+    sAllUnid:=sAllUnid+','+sUnid;
+
+    if(sPatientname<>sBasePatientname)or(sSex<>sBaseSex) then//防呆
+    begin
+      DBGrid1.DataSource.DataSet.GotoBookmark(OldCurrent);//复位
+      DBGrid1.DataSource.DataSet.EnableControls;//复位
+      
+      MessageDlg('存在姓名或性别不同的记录,不能合并打印！',mtError,[mbok],0);
+      exit;
+    end;
+
+    //判断该就诊人员是否存在未审核结果START
+    if strtoint(ScalarSQLCmd(LisConn,'select count(*) from chk_con where Patientname='''+sPatientname+''' and isnull(sex,'''')='''+sSex+''' and dbo.uf_GetAgeReal(age)=dbo.uf_GetAgeReal('''+sAge+''') and isnull(report_doctor,'''')='''' '))>0 then
+    begin
+      if length(memo1.Lines.Text)>=60000 then memo1.Lines.Clear;//memo只能接受64K个字符
+      memo1.Lines.Add(FormatDatetime('YYYY-MM-DD HH:NN:SS', Now) + ':就诊人员['+sPatientname+']存在未审核报告!');
+      WriteLog(pchar('就诊人员['+sPatientname+']存在未审核报告!'));
+    end;
+    //================================STOP
+  end;
+  DBGrid1.DataSource.DataSet.GotoBookmark(OldCurrent);
+  DBGrid1.DataSource.DataSet.EnableControls;
+  //Grid勾选记录判断方式二 end}
+
+  delete(sAllUnid,1,1);
+
+  frxReport1.Clear;//清除报表模板
+  frxDBDataSet1.UserName:='ADObasic';//加载模板文件前设置别名.因为一般设计模板文件时已经包含了别名信息
+  frxDBDataSet2.UserName:='ADO_print';//加载模板文件前设置别名.因为一般设计模板文件时已经包含了别名信息
+
+  if (sCombin_Id=GP_WorkGroup_T1)
+    and frxReport1.LoadFromFile(GP_TempFile_T1) then//加载模板文件是不区分大小写的.空字符串将加载失败
+  begin
+  end else
+  if (sCombin_Id=GP_WorkGroup_T2)
+    and frxReport1.LoadFromFile(GP_TempFile_T2) then
+  begin
+  end else
+  if (sCombin_Id=GP_WorkGroup_T3)
+    and frxReport1.LoadFromFile(GP_TempFile_T3) then
+  begin
+  end else
+  if not frxReport1.LoadFromFile(ExtractFilePath(application.ExeName)+'report_Cur_group.fr3') then
+  begin
+    if length(memo1.Lines.Text)>=60000 then memo1.Lines.Clear;//memo只能接受64K个字符
+    memo1.Lines.Add(FormatDatetime('YYYY-MM-DD HH:NN:SS', Now) + ':['+sPatientname+']加载默认分组打印模板report_Cur_group.frf失败，请设置:选项->打印模板');
+    WriteLog(pchar('['+sPatientname+']加载默认分组打印模板report_Cur_group.fr3失败，请设置:选项->打印模板'));
+
+    exit;
+  end;
+
+  strsqlPrint:='select cv.combin_name as name,cv.name as 名称,cv.english_name as 英文名,cv.itemvalue as 检验结果,'+
+    'cv.unit as 单位,cv.min_value as 最小值,cv.max_value as 最大值,'+
+    ' dbo.uf_Reference_Value_B1(cv.min_value,cv.max_value) as 前段参考范围,dbo.uf_Reference_Value_B2(cv.min_value,cv.max_value) as 后段参考范围,'+
+    ' cv.Reserve1,cv.Reserve2,cv.Dosage1,cv.Dosage2,cv.Reserve5,cv.Reserve6,cv.Reserve7,cv.Reserve8,cv.Reserve9,cv.Reserve10, '+
+    ' cv.itemid as 项目代码 '+
+    ' from view_chk_valu_All cv WITH(NOLOCK) '+
+    ' where cv.pkunid in ('+sAllUnid+')'+
+    ' and cv.issure=1 and ltrim(rtrim(isnull(itemvalue,'''')))<>'''' '+
+    ' order by cv.pkcombin_id,cv.printorder ';//组合项目号,打印编号 '
+  ADO_print.Close;
+  ADO_print.SQL.Clear;
+  ADO_print.SQL.Text:=strsqlPrint;
+  ADO_print.Open;
+  if ADO_print.RecordCount=0 then
+  begin
+    if length(memo1.Lines.Text)>=60000 then memo1.Lines.Clear;//memo只能接受64K个字符
+    memo1.Lines.Add(FormatDatetime('YYYY-MM-DD HH:NN:SS', Now) + ':['+sPatientname+']无效结果!');
+    WriteLog(pchar('['+sPatientname+']无效结果!'));
+      
+    exit;
+  end;
+
+  frxDBDataSet1.DataSet:=ADObasic;//关联Fastreport的组件与TDataset数据集
+  frxDBDataSet2.DataSet:=ADO_print;//关联Fastreport的组件与TDataset数据集
+  frxReport1.DataSets.Clear;//清除原来的数据集
+  frxReport1.DataSets.Add(frxDBDataSet1);//加载关联好的TfrxDBDataSet到报表中
+  frxReport1.DataSets.Add(frxDBDataSet2);//加载关联好的TfrxDBDataSet到报表中
+
+  frxMasterData:=frxReport1.FindObject('MasterData1') as TfrxMasterData;
+  if (frxMasterData<>nil) and (frxMasterData is TfrxMasterData) then frxMasterData.DataSet:=frxDBDataSet2;//动态配置MasterData.DataSet
+
+  if RadioGroup2.ItemIndex=2 then//导出PDF
+  begin
+    frxReport1.PrepareReport;
+    frxPDFExport1.ShowDialog:=False;
+    frxPDFExport1.DefaultPath:=PDFExportPath;
+    frxPDFExport1.FileName:=sPatientname+'&'+sCheck_Date+'-'+sUnid+'.pdf';
+    frxReport1.Export(frxPDFExport1);
+  end else
+  if RadioGroup2.ItemIndex=0 then  //预览模式
+    begin frxReport1.PrintOptions.ShowDialog:=ifShowPrintDialog;frxReport1.ShowReport; end
+  else  //直接打印模式
+  begin
+    if frxReport1.PrepareReport then begin frxReport1.PrintOptions.ShowDialog:=false;frxReport1.Print;end;
+  end;
 end;
 
 end.

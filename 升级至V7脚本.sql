@@ -4146,6 +4146,10 @@ update menuitem set menuname='打印V3 F10',SysName='CentralPrint' where bm='269
 update menuitem set menuname='分组打印V3 F11',SysName='CentralPrint' where bm='273' --and menuname='菜单维护' and SysName='BC'
 GO
 
+--20250101
+update menuitem set menuname='结果合并打印',SysName='CentralPrint' where bm='274' --and menuname='权限设置' and SysName='BC'
+GO
+
 ---------------表约束、索引相关操作---------------
 
 if not exists(select * from sysindexes where name='IX_combinitem')
