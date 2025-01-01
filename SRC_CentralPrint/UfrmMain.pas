@@ -244,7 +244,9 @@ begin
   GP_WorkGroup_T2:=configini.ReadString('打印模板','分组模板2工作组','');
   GP_TempFile_T2:=configini.ReadString('打印模板','分组模板2文件','');
   GP_WorkGroup_T3:=configini.ReadString('打印模板','分组模板3工作组','');
-  GP_TempFile_T3:=configini.ReadString('打印模板','分组模板3文件','');  
+  GP_TempFile_T3:=configini.ReadString('打印模板','分组模板3文件','');
+
+  Merge_TempFile:=configini.ReadString('打印模板','合并打印模板文件','');
 
   configini.Free;
 end;
@@ -311,7 +313,8 @@ begin
       '分组模板2工作组'+#2+'Combobox'+#2+sWorkGroup+#2+'2'+#2+#2+#3+
       '分组模板2文件'+#2+'File'+#2+#2+'2'+#2+#2+#3+
       '分组模板3工作组'+#2+'Combobox'+#2+sWorkGroup+#2+'2'+#2+#2+#3+
-      '分组模板3文件'+#2+'File'+#2+#2+'2'+#2+#2+#3;
+      '分组模板3文件'+#2+'File'+#2+#2+'2'+#2+#2+#3+
+      '合并打印模板文件'+#2+'File'+#2+#2+'2'+#2+#2+#3;
   if ShowOptionForm('选项','报表'+#2+'选项'+#2+'打印模板',Pchar(ss),Pchar(ChangeFileExt(Application.ExeName,'.ini'))) then
 	  ReadIni;
 end;
@@ -2000,7 +2003,7 @@ procedure TfrmMain.SpeedButton7Click(Sender: TObject);
 var
   strsqlPrint:string;
 
-  sUnid,sCombin_Id:string;
+  sUnid:string;
   sAllUnid:String;
 
   i:integer;
@@ -2046,7 +2049,6 @@ begin
     end;
 
     sUnid:=DBGrid1.DataSource.DataSet.fieldbyname('唯一编号').AsString;
-    sCombin_Id:=DBGrid1.DataSource.DataSet.FieldByName('工作组').AsString;
     sPatientname:=trim(DBGrid1.DataSource.DataSet.fieldbyname('姓名').AsString);
     sSex:=DBGrid1.DataSource.DataSet.fieldbyname('性别').AsString;
     sAge:=DBGrid1.DataSource.DataSet.fieldbyname('年龄').AsString;
@@ -2082,24 +2084,12 @@ begin
   frxDBDataSet1.UserName:='ADObasic';//加载模板文件前设置别名.因为一般设计模板文件时已经包含了别名信息
   frxDBDataSet2.UserName:='ADO_print';//加载模板文件前设置别名.因为一般设计模板文件时已经包含了别名信息
 
-  if (sCombin_Id=GP_WorkGroup_T1)
-    and frxReport1.LoadFromFile(GP_TempFile_T1) then//加载模板文件是不区分大小写的.空字符串将加载失败
-  begin
-  end else
-  if (sCombin_Id=GP_WorkGroup_T2)
-    and frxReport1.LoadFromFile(GP_TempFile_T2) then
-  begin
-  end else
-  if (sCombin_Id=GP_WorkGroup_T3)
-    and frxReport1.LoadFromFile(GP_TempFile_T3) then
+  if frxReport1.LoadFromFile(Merge_TempFile) then//加载模板文件是不区分大小写的.空字符串将加载失败
   begin
   end else
   if not frxReport1.LoadFromFile(ExtractFilePath(application.ExeName)+'report_Cur_group.fr3') then
   begin
-    if length(memo1.Lines.Text)>=60000 then memo1.Lines.Clear;//memo只能接受64K个字符
-    memo1.Lines.Add(FormatDatetime('YYYY-MM-DD HH:NN:SS', Now) + ':['+sPatientname+']加载默认分组打印模板report_Cur_group.frf失败，请设置:选项->打印模板');
-    WriteLog(pchar('['+sPatientname+']加载默认分组打印模板report_Cur_group.fr3失败，请设置:选项->打印模板'));
-
+    MessageDlg('['+sPatientname+']加载默认合并打印模板report_Cur_group.fr3失败，请设置:选项->打印模板',mtError,[mbok],0);
     exit;
   end;
 
@@ -2118,10 +2108,7 @@ begin
   ADO_print.Open;
   if ADO_print.RecordCount=0 then
   begin
-    if length(memo1.Lines.Text)>=60000 then memo1.Lines.Clear;//memo只能接受64K个字符
-    memo1.Lines.Add(FormatDatetime('YYYY-MM-DD HH:NN:SS', Now) + ':['+sPatientname+']无效结果!');
-    WriteLog(pchar('['+sPatientname+']无效结果!'));
-      
+    MessageDlg('['+sPatientname+']无效结果!',mtError,[mbok],0);
     exit;
   end;
 

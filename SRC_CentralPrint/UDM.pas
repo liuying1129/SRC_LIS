@@ -103,6 +103,7 @@ var
   GP_TempFile_T2:string;//分组模板2文件
   GP_WorkGroup_T3:string;//分组模板3工作组
   GP_TempFile_T3:string;//分组模板3文件
+  Merge_TempFile:string;//合并打印模板文件
 
 //**********************Dll接口函数部分***************************************//
 //该函数计算pSourStr中有多少个pSS
