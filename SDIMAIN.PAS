@@ -40,7 +40,6 @@ type
     N13: TMenuItem;
     N15: TMenuItem;
     N5: TMenuItem;
-    N7: TMenuItem;
     N8: TMenuItem;
     N9: TMenuItem;
     Edit1: TMenuItem;
@@ -149,7 +148,6 @@ type
     SpeedButton5: TSpeedButton;
     CheckBox1: TCheckBox;
     Action3: TAction;
-    N64: TMenuItem;
     N65: TMenuItem;
     N16: TMenuItem;
     N67: TMenuItem;
@@ -344,7 +342,6 @@ type
     procedure LabeledEdit3Change(Sender: TObject);
     procedure TimerIdleTrackerTimer(Sender: TObject);
     procedure SpeedButton5Click(Sender: TObject);
-    procedure N64Click(Sender: TObject);
     procedure N16Click(Sender: TObject);
     procedure N69Click(Sender: TObject);
     procedure N70Click(Sender: TObject);
@@ -780,24 +777,6 @@ begin
   end;
   //动态创建图片标题end
   
-  if (N64.Checked)and(sPatientname<>'') then//按姓别性别年龄合并打印//只有存在姓名时才合并
-    strsqlPrint:='select cv.itemid as 项目代码,cv.name as 名称,cv.english_name as 英文名,'+
-          ' cv.itemvalue as 检验结果,'+
-          ' cv.min_value as 最小值,cv.max_value as 最大值,'+
-          ' dbo.uf_Reference_Value_B1(cv.min_value,cv.max_value) as 前段参考范围,dbo.uf_Reference_Value_B2(cv.min_value,cv.max_value) as 后段参考范围,'+
-          ' cv.unit as 单位,min(cv.printorder) as 打印编号,'+
-          ' min(cv.pkcombin_id) as 组合项目号, '+
-          ' cv.Reserve1,cv.Reserve2,cv.Dosage1,cv.Dosage2,cv.Reserve5,cv.Reserve6,cv.Reserve7,cv.Reserve8,cv.Reserve9,cv.Reserve10 '+
-          ' from chk_valu cv WITH(NOLOCK) '+
-          ' inner join chk_con cc on cv.pkunid=cc.unid '+
-          ' left join clinicchkitem cci on cci.itemid=cv.itemid '+
-          ' where Patientname='''+sPatientname+''' and isnull(sex,'''')='''+sSex+''' and dbo.uf_GetAgeReal(age)=dbo.uf_GetAgeReal('''+sAge+
-          ''') and cv.issure=1 and ltrim(rtrim(isnull(itemvalue,'''')))<>'''' '+
-          ' and cci.sysname='''+SYSNAME+''' '+
-          ' group by cv.itemid,cv.name,cv.english_name,cv.itemvalue,cv.min_value,cv.max_value,cv.unit, '+
-          ' cv.Reserve1,cv.Reserve2,cv.Dosage1,cv.Dosage2,cv.Reserve5,cv.Reserve6,cv.Reserve7,cv.Reserve8,cv.Reserve9,cv.Reserve10 '+
-          ' order by 组合项目号,打印编号 '
-  else
     strsqlPrint:='select itemid as 项目代码,name as 名称,english_name as 英文名,'+
           ' itemvalue as 检验结果,'+
           ' min_value as 最小值,max_value as 最大值,'+
@@ -984,7 +963,6 @@ begin
   end;
 
   n41.Checked:=configini.ReadBool('Interface','ifRTTransData',true);
-  N64.Checked:=configini.ReadBool('Interface','ifCaseNoMerger',false);{记录是否按姓别性别年龄合并打印}
   cbxConnChar.Text:=trim(CONFIGINI.ReadString('Interface','ShowReportType',ScalarSQLCmd(LisConn,'select TOP 1 name from CommCode WITH(NOLOCK) where TypeName=''检验组别'' AND SysName='''+SYSNAME+'''')));
   n50.Checked:=configini.ReadBool('Interface','ifShowEnglish',true);
   n36.Checked:=configini.ReadBool('Interface','ifShowMinValue',true);{记录是否显示项目最小值}
@@ -1040,7 +1018,6 @@ begin
   ConfigIni:=tinifile.Create(ChangeFileExt(Application.ExeName,'.ini'));
 
   configini.WriteBool('Interface','ifPreview',n9.Checked);{记录是否打印预览模式}
-  configini.WriteBool('Interface','ifCaseNoMerger',N64.Checked);{记录是否按姓别性别年龄合并打印}
   ConfigIni.WriteBool('Interface','ifRTTransData',n41.Checked); {记录是否实时显示传输数据}
   ConfigIni.WriteString('Interface','ShowReportType',trim(cbxConnChar.Text)); {记录主界面中要显示的检验单类型}
   configini.WriteBool('Interface','ifShowEnglish',n50.Checked);{记录是否显示项目英文名}
@@ -1958,13 +1935,7 @@ var
 
   sUnid,sReport_Doctor,sCombin_Id:string;
 
-  //对姓别性别年龄的合并项做打印标记 变量
-  adotemp22:tadoquery;
-  SelSql:string;
-  unid,printtimes:integer;
-  report_doctor,sql,ss,sPrinttimes,sReport_doctor2:string;
-  sPatientname,sSex,sAge,sMergePrintWorkGroupRange:string;
-  //===============================  
+  sPatientname,sSex,sAge:string;
 
   i,j:integer;
   mvPictureTitle:TfrMemoView;  
@@ -2029,23 +2000,6 @@ begin
   end;
   //动态创建图片标题end
   
-  if MergePrintWorkGroupRange<>'' then
-    sMergePrintWorkGroupRange:=' and cc.combin_id in ('+MergePrintWorkGroupRange+') ';
-  if (N64.Checked)and(sPatientname<>'') then//按姓别性别年龄合并打印//只有存在姓名时才合并
-    strsqlPrint:='select cv.combin_name as name,cv.name as 名称,cv.english_name as 英文名,cv.itemvalue as 检验结果,'+//combinitem.name
-    'cv.unit as 单位,cv.min_value as 最小值,cv.max_value as 最大值,'+
-    ' dbo.uf_Reference_Value_B1(cv.min_value,cv.max_value) as 前段参考范围,dbo.uf_Reference_Value_B2(cv.min_value,cv.max_value) as 后段参考范围,'+
-    ' cv.Reserve1,cv.Reserve2,cv.Dosage1,cv.Dosage2,cv.Reserve5,cv.Reserve6,cv.Reserve7,cv.Reserve8,cv.Reserve9,cv.Reserve10, '+
-    ' cv.itemid as 项目代码 '+//cci.Reserve3,
-    ' from chk_valu cv WITH(NOLOCK) '+//combinitem,从组合项目表取组合项目名称，有可能代码变了，取不到名称了
-    ' inner join chk_con cc on cv.pkunid=cc.unid '+
-    ' left join clinicchkitem cci on cci.itemid=cv.itemid '+
-    ' where Patientname='''+sPatientname+''' and isnull(sex,'''')='''+sSex+''' and dbo.uf_GetAgeReal(age)=dbo.uf_GetAgeReal('''+sAge+
-    ''') and cv.issure=1 and ltrim(rtrim(isnull(itemvalue,'''')))<>'''' '+
-    ' and cci.sysname='''+SYSNAME+''' '+
-    sMergePrintWorkGroupRange+
-    ' order by cv.pkcombin_id,cv.printorder '//组合项目号,打印编号 '
-  else
     strsqlPrint:='select cv.combin_name as name,cv.name as 名称,cv.english_name as 英文名,cv.itemvalue as 检验结果,'+
     'cv.unit as 单位,cv.min_value as 最小值,cv.max_value as 最大值,'+
     ' dbo.uf_Reference_Value_B1(cv.min_value,cv.max_value) as 前段参考范围,dbo.uf_Reference_Value_B2(cv.min_value,cv.max_value) as 后段参考范围,'+
@@ -2061,37 +2015,6 @@ begin
   ADO_print.SQL.Text:=strsqlPrint;
   ADO_print.Open;
   if (ADO_print.RecordCount=0) and (not ifNoResultPrint) then exit;
-
-  //对姓别性别年龄的合并项做打印标记
-  if (N64.Checked)and(sPatientname<>'') then
-  begin
-    SelSql:='select unid,printtimes,report_doctor from chk_con where Patientname='''+sPatientname+''' and sex='''+sSex+''' and age='''+sAge+''' and isnull(Patientname,'''')<>'''' and unid<>'+sUnid;
-    adotemp22:=tadoquery.Create(nil);
-    adotemp22.Connection:=DM.ADOConnection1;
-    adotemp22.Close;
-    adotemp22.SQL.Clear;
-    adotemp22.SQL.Text:=SelSql;
-    adotemp22.Open;
-    while not adotemp22.Eof do
-    begin
-      unid:=adotemp22.fieldbyname('unid').AsInteger;
-      printtimes:=adotemp22.fieldbyname('printtimes').AsInteger;
-      report_doctor:=trim(adotemp22.fieldbyname('report_doctor').AsString);
-
-      if printtimes=0 then sPrinttimes:=' printtimes='+inttostr(printtimes+1) else sPrinttimes:='';//修改打印次数
-      if(ifAutoCheck)and(report_doctor='') then sReport_doctor2:=' report_doctor='''+operator_name+''',Audit_Date=getdate() ' else sReport_doctor2:='';//修改审核者
-
-      if(sPrinttimes='')and(sReport_doctor2='')then begin adotemp22.Next;continue; end;
-      if(sPrinttimes<>'')and(sReport_doctor2<>'')then ss:=',' else ss:='';
-
-      sql:='update chk_con set '+sPrinttimes+ss+sReport_doctor2+' where unid='+inttostr(unid);
-      ExecSQLCmd(LisConn,sql);
-
-      adotemp22.Next;
-    end;
-    adotemp22.Free;
-  end;
-  //==========================
 
   if ifHeightForItemNum and (ADO_print.RecordCount>ItemRecNum) then
     //frReport1.Pages.Pages[0].pgsize:=255;//.pgHeight:=70;
@@ -2351,7 +2274,6 @@ begin
 
   ss:='直方图光滑次数'+#2+'Edit'+#2+#2+'0'+#2+'注:次数越多曲线越光滑,但曲线偏离越多'+#2+#3+
       '允许无检验结果打印'+#2+'CheckListBox'+#2+#2+'0'+#2+#2+#3+
-      '"按姓名性别年龄合并"的工作组范围'+#2+'Edit'+#2+#2+'0'+#2+'如仅希望临检组与生化组合并,则填"临检组,生化组".空表示无限制'+#2+#3+
       '打印对话框'+#2+'CheckListBox'+#2+#2+'0'+#2+'打印预览模式的高级选项(打印机、页码、份数等)'+#2+#3+
       '打印时自动审核检验单'+#2+'CheckListBox'+#2+#2+'1'+#2+#2+#3+
       '根据"门诊/住院号"提取床号'+#2+'CheckListBox'+#2+#2+'1'+#2+#2+#3+
@@ -2887,7 +2809,6 @@ begin
   for i :=1  to length(pDeStr) do SCSYDW[i]:=pDeStr[i-1];
   //==========
 
-  MergePrintDays:=strtointdef(ScalarSQLCmd(LisConn,'select Name from CommCode where TypeName=''系统代码'' and ReMark=''历史结果合并打印的偏差天数'' '),0);
   MakeTjDescDays:=strtointdef(ScalarSQLCmd(LisConn,'select Name from CommCode where TypeName=''系统代码'' and ReMark=''生成体检结论的偏差天数'' '),0);
   bAppendMakeTjDesc:=ScalarSQLCmd(LisConn,'select Name from CommCode where TypeName=''系统代码'' and ReMark=''允许追加生成体检结论'' ');
 
@@ -2895,13 +2816,6 @@ begin
 
   SmoothNum:=configini.ReadInteger('报表','直方图光滑次数',0);
   ifNoResultPrint:=configini.ReadBool('报表','允许无检验结果打印',false);
-  MergePrintWorkGroupRange:=trim(configini.ReadString('报表','"按姓名性别年龄合并"的工作组范围',''));
-  MergePrintWorkGroupRange:=StringReplace(MergePrintWorkGroupRange,'，',',',[rfReplaceAll]);
-  if MergePrintWorkGroupRange<>'' then
-  begin
-    MergePrintWorkGroupRange:=StringReplace(MergePrintWorkGroupRange,',',''',''',[rfReplaceAll]);
-    MergePrintWorkGroupRange:=''''+MergePrintWorkGroupRange+'''';
-  end;
   ifShowPrintDialog:=configini.ReadBool('报表','打印对话框',false);
   ifAutoCheck:=configini.ReadBool('选项','打印时自动审核检验单',false);
   deptname_match:=configini.ReadString('选项','送检科室取码的匹配方式','');
@@ -3318,13 +3232,6 @@ end;
 procedure TSDIAppForm.SpeedButton5Click(Sender: TObject);
 begin
   NewAddStatus();
-end;
-
-procedure TSDIAppForm.N64Click(Sender: TObject);
-begin
-  if not ifhaspower(sender,powerstr_js_main) then exit;
-
-    tmenuitem(sender).Checked:= not tmenuitem(sender).Checked;
 end;
 
 procedure TSDIAppForm.N16Click(Sender: TObject);
@@ -4189,24 +4096,6 @@ begin
     exit;
   end;
 
-  if (N64.Checked)and(sPatientname<>'') then//按姓别性别年龄合并打印//只有存在姓名时才合并
-    strsqlPrint:='select cv.itemid as 项目代码,cv.name as 名称,cv.english_name as 英文名,'+
-          ' cv.itemvalue as 检验结果,'+
-          ' cv.min_value as 最小值,cv.max_value as 最大值,'+
-          ' dbo.uf_Reference_Value_B1(cv.min_value,cv.max_value) as 前段参考范围,dbo.uf_Reference_Value_B2(cv.min_value,cv.max_value) as 后段参考范围,'+
-          ' cv.unit as 单位,min(cv.printorder) as 打印编号,'+
-          ' min(cv.pkcombin_id) as 组合项目号, '+
-          ' cv.Reserve1,cv.Reserve2,cv.Dosage1,cv.Dosage2,cv.Reserve5,cv.Reserve6,cv.Reserve7,cv.Reserve8,cv.Reserve9,cv.Reserve10 '+
-          ' from chk_valu cv WITH(NOLOCK) '+
-          ' inner join chk_con cc on cv.pkunid=cc.unid '+
-          ' left join clinicchkitem cci on cci.itemid=cv.itemid '+
-          ' where Patientname='''+sPatientname+''' and isnull(sex,'''')='''+sSex+''' and dbo.uf_GetAgeReal(age)=dbo.uf_GetAgeReal('''+sAge+
-          ''') and cv.issure=1 and ltrim(rtrim(isnull(itemvalue,'''')))<>'''' '+
-          ' and cci.sysname='''+SYSNAME+''' '+
-          ' group by cv.itemid,cv.name,cv.english_name,cv.itemvalue,cv.min_value,cv.max_value,cv.unit, '+
-          ' cv.Reserve1,cv.Reserve2,cv.Dosage1,cv.Dosage2,cv.Reserve5,cv.Reserve6,cv.Reserve7,cv.Reserve8,cv.Reserve9,cv.Reserve10 '+
-          ' order by 组合项目号,打印编号 '
-  else
     strsqlPrint:='select itemid as 项目代码,name as 名称,english_name as 英文名,'+
           ' itemvalue as 检验结果,'+
           ' min_value as 最小值,max_value as 最大值,'+
@@ -4254,13 +4143,7 @@ var
 
   sUnid,sReport_Doctor,sCombin_Id:string;
 
-  //对姓别性别年龄的合并项做打印标记 变量
-  adotemp22:tadoquery;
-  SelSql:string;
-  unid,printtimes:integer;
-  report_doctor,sql,ss,sPrinttimes,sReport_doctor2:string;
-  sPatientname,sSex,sAge,sMergePrintWorkGroupRange:string;
-  //===============================  
+  sPatientname,sSex,sAge:string;
 
   frxMasterData:TfrxMasterData;  
 begin
@@ -4308,23 +4191,6 @@ begin
     exit;
   end;
 
-  if MergePrintWorkGroupRange<>'' then
-    sMergePrintWorkGroupRange:=' and cc.combin_id in ('+MergePrintWorkGroupRange+') ';
-  if (N64.Checked)and(sPatientname<>'') then//按姓别性别年龄合并打印//只有存在姓名时才合并
-    strsqlPrint:='select cv.combin_name as name,cv.name as 名称,cv.english_name as 英文名,cv.itemvalue as 检验结果,'+//combinitem.name
-    'cv.unit as 单位,cv.min_value as 最小值,cv.max_value as 最大值,'+
-    ' dbo.uf_Reference_Value_B1(cv.min_value,cv.max_value) as 前段参考范围,dbo.uf_Reference_Value_B2(cv.min_value,cv.max_value) as 后段参考范围,'+
-    ' cv.Reserve1,cv.Reserve2,cv.Dosage1,cv.Dosage2,cv.Reserve5,cv.Reserve6,cv.Reserve7,cv.Reserve8,cv.Reserve9,cv.Reserve10, '+
-    ' cv.itemid as 项目代码 '+//cci.Reserve3,
-    ' from chk_valu cv WITH(NOLOCK) '+//combinitem,从组合项目表取组合项目名称，有可能代码变了，取不到名称了
-    ' inner join chk_con cc on cv.pkunid=cc.unid '+
-    ' left join clinicchkitem cci on cci.itemid=cv.itemid '+
-    ' where Patientname='''+sPatientname+''' and isnull(sex,'''')='''+sSex+''' and dbo.uf_GetAgeReal(age)=dbo.uf_GetAgeReal('''+sAge+
-    ''') and cv.issure=1 and ltrim(rtrim(isnull(itemvalue,'''')))<>'''' '+
-    ' and cci.sysname='''+SYSNAME+''' '+
-    sMergePrintWorkGroupRange+
-    ' order by cv.pkcombin_id,cv.printorder '//组合项目号,打印编号 '
-  else
     strsqlPrint:='select cv.combin_name as name,cv.name as 名称,cv.english_name as 英文名,cv.itemvalue as 检验结果,'+
     'cv.unit as 单位,cv.min_value as 最小值,cv.max_value as 最大值,'+
     ' dbo.uf_Reference_Value_B1(cv.min_value,cv.max_value) as 前段参考范围,dbo.uf_Reference_Value_B2(cv.min_value,cv.max_value) as 后段参考范围,'+
@@ -4340,37 +4206,6 @@ begin
   ADO_print.SQL.Text:=strsqlPrint;
   ADO_print.Open;
   if (ADO_print.RecordCount=0) and (not ifNoResultPrint) then exit;
-
-  //对姓别性别年龄的合并项做打印标记
-  if (N64.Checked)and(sPatientname<>'') then
-  begin
-    SelSql:='select unid,printtimes,report_doctor from chk_con where Patientname='''+sPatientname+''' and sex='''+sSex+''' and age='''+sAge+''' and isnull(Patientname,'''')<>'''' and unid<>'+sUnid;
-    adotemp22:=tadoquery.Create(nil);
-    adotemp22.Connection:=DM.ADOConnection1;
-    adotemp22.Close;
-    adotemp22.SQL.Clear;
-    adotemp22.SQL.Text:=SelSql;
-    adotemp22.Open;
-    while not adotemp22.Eof do
-    begin
-      unid:=adotemp22.fieldbyname('unid').AsInteger;
-      printtimes:=adotemp22.fieldbyname('printtimes').AsInteger;
-      report_doctor:=trim(adotemp22.fieldbyname('report_doctor').AsString);
-
-      if printtimes=0 then sPrinttimes:=' printtimes='+inttostr(printtimes+1) else sPrinttimes:='';//修改打印次数
-      if(ifAutoCheck)and(report_doctor='') then sReport_doctor2:=' report_doctor='''+operator_name+''',Audit_Date=getdate() ' else sReport_doctor2:='';//修改审核者
-
-      if(sPrinttimes='')and(sReport_doctor2='')then begin adotemp22.Next;continue; end;
-      if(sPrinttimes<>'')and(sReport_doctor2<>'')then ss:=',' else ss:='';
-
-      sql:='update chk_con set '+sPrinttimes+ss+sReport_doctor2+' where unid='+inttostr(unid);
-      ExecSQLCmd(LisConn,sql);
-
-      adotemp22.Next;
-    end;
-    adotemp22.Free;
-  end;
-  //==========================
 
   {if ifHeightForItemNum and (ADO_print.RecordCount>ItemRecNum) then
     frReport1.Pages[0].ChangePaper($100,2100,PageHeigth,-1,poPortrait);  //1 inch=2.54 cm}

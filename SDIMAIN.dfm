@@ -1943,13 +1943,6 @@ object SDIAppForm: TSDIAppForm
     end
     object N5: TMenuItem
       Caption = #25171#21360#36873#25321
-      object N64: TMenuItem
-        Caption = #25353#22995#21517#24615#21035#24180#40836#21512#24182
-        OnClick = N64Click
-      end
-      object N7: TMenuItem
-        Caption = '-'
-      end
       object N8: TMenuItem
         Caption = #30452#25509#25171#21360#27169#24335
         Checked = True

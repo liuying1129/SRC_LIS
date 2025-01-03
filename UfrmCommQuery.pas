@@ -214,26 +214,6 @@ begin
   end;
   //动态创建图片标题end
   
-  if (SDIAppForm.N64.Checked)and(sPatientname<>'') then//按姓别性别年龄合并打印//只有存在姓名时才合并
-    strsqlPrint:='select cv.itemid as 项目代码,cv.name as 名称,cv.english_name as 英文名,'+
-          ' cv.itemvalue as 检验结果,'+
-          ' cv.min_value as 最小值,cv.max_value as 最大值,'+
-          ' dbo.uf_Reference_Value_B1(cv.min_value,cv.max_value) as 前段参考范围,dbo.uf_Reference_Value_B2(cv.min_value,cv.max_value) as 后段参考范围,'+
-          ' cv.unit as 单位,min(cv.printorder) as 打印编号,'+
-          ' min(cv.pkcombin_id) as 组合项目号, '+
-          ' cv.Reserve1,cv.Reserve2,cv.Dosage1,cv.Dosage2,cv.Reserve5,cv.Reserve6,cv.Reserve7,cv.Reserve8,cv.Reserve9,cv.Reserve10 '+
-          ' from chk_valu_bak cv '+
-          ' inner join chk_con_bak cc on cv.pkunid=cc.unid '+
-          ' left join clinicchkitem cci on cci.itemid=cv.itemid '+
-          ' where Patientname='''+sPatientname+''' and isnull(sex,'''')='''+sSex+''' and dbo.uf_GetAgeReal(age)=dbo.uf_GetAgeReal('''+sAge+
-          ''') and ltrim(rtrim(isnull(itemvalue,'''')))<>'''' '+
-          ' and CONVERT(CHAR(10),cc.check_date,121)>=DATEADD(day,'+inttostr(-1*MergePrintDays)+','''+sCheck_Date+''') '+
-          ' and CONVERT(CHAR(10),cc.check_date,121)<=DATEADD(day,'+inttostr(MergePrintDays)+','''+sCheck_Date+''') '+
-          ' and cci.sysname='''+SYSNAME+''' '+
-          ' group by cv.itemid,cv.name,cv.english_name,cv.itemvalue,cv.min_value,cv.max_value,cv.unit, '+
-          ' cv.Reserve1,cv.Reserve2,cv.Dosage1,cv.Dosage2,cv.Reserve5,cv.Reserve6,cv.Reserve7,cv.Reserve8,cv.Reserve9,cv.Reserve10 '+
-          ' order by 组合项目号,打印编号 '
-  else
     strsqlPrint:='select itemid as 项目代码,name as 名称,english_name as 英文名,'+
             ' itemvalue as 检验结果,'+
             ' min_value as 最小值,max_value as 最大值,'+
@@ -360,9 +340,7 @@ var
 
   sUnid:string;
 
-  //对姓别性别年龄的合并项做打印标记 变量
-  sPatientname,sSex,sAge,sCheck_Date,sMergePrintWorkGroupRange,sCombin_Id:string;
-  //===============================  
+  sPatientname,sSex,sAge,sCheck_Date,sCombin_Id:string;
 
   i,j:integer;
   mvPictureTitle:TfrMemoView;  
@@ -416,25 +394,6 @@ begin
   end;
   //动态创建图片标题end
   
-  if MergePrintWorkGroupRange<>'' then
-    sMergePrintWorkGroupRange:=' and cc.combin_id in ('+MergePrintWorkGroupRange+') ';
-  if (SDIAppForm.N64.Checked)and(sPatientname<>'') then//按姓别性别年龄合并打印//只有存在姓名时才合并
-    strsqlPrint:='select cv.combin_name as name,cv.name as 名称,cv.english_name as 英文名,cv.itemvalue as 检验结果,'+//combinitem.name
-    'cv.unit as 单位,cv.min_value as 最小值,cv.max_value as 最大值,'+
-    ' dbo.uf_Reference_Value_B1(cv.min_value,cv.max_value) as 前段参考范围,dbo.uf_Reference_Value_B2(cv.min_value,cv.max_value) as 后段参考范围,'+
-    ' cv.Reserve1,cv.Reserve2,cv.Dosage1,cv.Dosage2,cv.Reserve5,cv.Reserve6,cv.Reserve7,cv.Reserve8,cv.Reserve9,cv.Reserve10, '+
-    ' cv.itemid as 项目代码 '+//cci.Reserve3,
-    ' from chk_valu_bak cv '+//combinitem,从组合项目表取组合项目名称，有可能代码变了，取不到名称了
-    ' inner join chk_con_bak cc on cv.pkunid=cc.unid '+
-    ' left join clinicchkitem cci on cci.itemid=cv.itemid '+
-    ' where Patientname='''+sPatientname+''' and isnull(sex,'''')='''+sSex+''' and dbo.uf_GetAgeReal(age)=dbo.uf_GetAgeReal('''+sAge+
-    ''') and cv.issure=1 and ltrim(rtrim(isnull(itemvalue,'''')))<>'''' '+
-    ' and CONVERT(CHAR(10),cc.check_date,121)>=DATEADD(day,'+inttostr(-1*MergePrintDays)+','''+sCheck_Date+''') '+
-    ' and CONVERT(CHAR(10),cc.check_date,121)<=DATEADD(day,'+inttostr(MergePrintDays)+','''+sCheck_Date+''') '+
-    ' and cci.sysname='''+SYSNAME+''' '+
-    sMergePrintWorkGroupRange+
-    ' order by cv.pkcombin_id,cv.printorder '//组合项目号,打印编号 '
-  else
     strsqlPrint:='select cv.combin_name as name,cv.name as 名称,cv.english_name as 英文名,cv.itemvalue as 检验结果,'+
     'cv.unit as 单位,cv.min_value as 最小值,cv.max_value as 最大值,'+
     ' dbo.uf_Reference_Value_B1(cv.min_value,cv.max_value) as 前段参考范围,dbo.uf_Reference_Value_B2(cv.min_value,cv.max_value) as 后段参考范围,'+
@@ -825,26 +784,6 @@ begin
     exit;
   end;
 
-  if (SDIAppForm.N64.Checked)and(sPatientname<>'') then//按姓别性别年龄合并打印//只有存在姓名时才合并
-    strsqlPrint:='select cv.itemid as 项目代码,cv.name as 名称,cv.english_name as 英文名,'+
-          ' cv.itemvalue as 检验结果,'+
-          ' cv.min_value as 最小值,cv.max_value as 最大值,'+
-          ' dbo.uf_Reference_Value_B1(cv.min_value,cv.max_value) as 前段参考范围,dbo.uf_Reference_Value_B2(cv.min_value,cv.max_value) as 后段参考范围,'+
-          ' cv.unit as 单位,min(cv.printorder) as 打印编号,'+
-          ' min(cv.pkcombin_id) as 组合项目号, '+
-          ' cv.Reserve1,cv.Reserve2,cv.Dosage1,cv.Dosage2,cv.Reserve5,cv.Reserve6,cv.Reserve7,cv.Reserve8,cv.Reserve9,cv.Reserve10 '+
-          ' from chk_valu_bak cv '+
-          ' inner join chk_con_bak cc on cv.pkunid=cc.unid '+
-          ' left join clinicchkitem cci on cci.itemid=cv.itemid '+
-          ' where Patientname='''+sPatientname+''' and isnull(sex,'''')='''+sSex+''' and dbo.uf_GetAgeReal(age)=dbo.uf_GetAgeReal('''+sAge+
-          ''') and ltrim(rtrim(isnull(itemvalue,'''')))<>'''' '+
-          ' and CONVERT(CHAR(10),cc.check_date,121)>=DATEADD(day,'+inttostr(-1*MergePrintDays)+','''+sCheck_Date+''') '+
-          ' and CONVERT(CHAR(10),cc.check_date,121)<=DATEADD(day,'+inttostr(MergePrintDays)+','''+sCheck_Date+''') '+
-          ' and cci.sysname='''+SYSNAME+''' '+
-          ' group by cv.itemid,cv.name,cv.english_name,cv.itemvalue,cv.min_value,cv.max_value,cv.unit, '+
-          ' cv.Reserve1,cv.Reserve2,cv.Dosage1,cv.Dosage2,cv.Reserve5,cv.Reserve6,cv.Reserve7,cv.Reserve8,cv.Reserve9,cv.Reserve10 '+
-          ' order by 组合项目号,打印编号 '
-  else
     strsqlPrint:='select itemid as 项目代码,name as 名称,english_name as 英文名,'+
             ' itemvalue as 检验结果,'+
             ' min_value as 最小值,max_value as 最大值,'+
@@ -893,9 +832,7 @@ var
 
   sUnid:string;
 
-  //对姓别性别年龄的合并项做打印标记 变量
-  sPatientname,sSex,sAge,sCheck_Date,sMergePrintWorkGroupRange,sCombin_Id:string;
-  //===============================  
+  sPatientname,sSex,sAge,sCheck_Date,sCombin_Id:string;
 
   frxMasterData:TfrxMasterData;  
 begin
@@ -932,25 +869,6 @@ begin
     exit;
   end;
 
-  if MergePrintWorkGroupRange<>'' then
-    sMergePrintWorkGroupRange:=' and cc.combin_id in ('+MergePrintWorkGroupRange+') ';
-  if (SDIAppForm.N64.Checked)and(sPatientname<>'') then//按姓别性别年龄合并打印//只有存在姓名时才合并
-    strsqlPrint:='select cv.combin_name as name,cv.name as 名称,cv.english_name as 英文名,cv.itemvalue as 检验结果,'+//combinitem.name
-    'cv.unit as 单位,cv.min_value as 最小值,cv.max_value as 最大值,'+
-    ' dbo.uf_Reference_Value_B1(cv.min_value,cv.max_value) as 前段参考范围,dbo.uf_Reference_Value_B2(cv.min_value,cv.max_value) as 后段参考范围,'+
-    ' cv.Reserve1,cv.Reserve2,cv.Dosage1,cv.Dosage2,cv.Reserve5,cv.Reserve6,cv.Reserve7,cv.Reserve8,cv.Reserve9,cv.Reserve10, '+
-    ' cv.itemid as 项目代码 '+//cci.Reserve3,
-    ' from chk_valu_bak cv '+//combinitem,从组合项目表取组合项目名称，有可能代码变了，取不到名称了
-    ' inner join chk_con_bak cc on cv.pkunid=cc.unid '+
-    ' left join clinicchkitem cci on cci.itemid=cv.itemid '+
-    ' where Patientname='''+sPatientname+''' and isnull(sex,'''')='''+sSex+''' and dbo.uf_GetAgeReal(age)=dbo.uf_GetAgeReal('''+sAge+
-    ''') and cv.issure=1 and ltrim(rtrim(isnull(itemvalue,'''')))<>'''' '+
-    ' and CONVERT(CHAR(10),cc.check_date,121)>=DATEADD(day,'+inttostr(-1*MergePrintDays)+','''+sCheck_Date+''') '+
-    ' and CONVERT(CHAR(10),cc.check_date,121)<=DATEADD(day,'+inttostr(MergePrintDays)+','''+sCheck_Date+''') '+
-    ' and cci.sysname='''+SYSNAME+''' '+
-    sMergePrintWorkGroupRange+
-    ' order by cv.pkcombin_id,cv.printorder '//组合项目号,打印编号 '
-  else
     strsqlPrint:='select cv.combin_name as name,cv.name as 名称,cv.english_name as 英文名,cv.itemvalue as 检验结果,'+
     'cv.unit as 单位,cv.min_value as 最小值,cv.max_value as 最大值,'+
     ' dbo.uf_Reference_Value_B1(cv.min_value,cv.max_value) as 前段参考范围,dbo.uf_Reference_Value_B2(cv.min_value,cv.max_value) as 后段参考范围,'+

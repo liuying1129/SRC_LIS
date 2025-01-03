@@ -65,11 +65,9 @@ var
   deptname_match:string;//记录送检科室的取码匹配方式
   check_doctor_match:string;////记录送检医生的取码匹配方式
   ifNoResultPrint:boolean;//是否允许无检验结果打印
-  MergePrintWorkGroupRange:string;//"按姓名性别年龄合并"的工作组范围
   ifShowPrintDialog:boolean;//打印对话框
   bRegister:boolean;
   SCSYDW:STRING;//授权使用单位
-  MergePrintDays:integer;//历史结果合并打印的偏差天数
   MakeTjDescDays:integer;//生成体检结论、建议的偏差天数
   bAppendMakeTjDesc:string;//是否允许追加生成体检结论
   SmoothNum:integer;//直方图光滑次数
