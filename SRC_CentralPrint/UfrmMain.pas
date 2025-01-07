@@ -2014,7 +2014,12 @@ var
   OldCurrent:TBookmark;
   PDFExportPath:String;
 
-  frxMasterData:TfrxMasterData;  
+  frxMasterData:TfrxMasterData;
+
+  //对合并的检验单做打印标记 变量
+  ssUnid:String;
+  iiPrinttimes,iiIfCompleted:integer;
+  //=============================
 begin
   if not ifhaspower(sender,powerstr_js_main) then exit;
 
@@ -2135,6 +2140,26 @@ begin
   begin
     if frxReport1.PrepareReport then begin frxReport1.PrintOptions.ShowDialog:=false;frxReport1.Print;end;
   end;
+
+  //对合并的检验单做打印标记
+  //Grid勾选记录判断方式二 begin
+  //该方式无需循环全部数据集,只需循环所选记录
+  OldCurrent:=DBGrid1.DataSource.DataSet.GetBookmark;
+  DBGrid1.DataSource.DataSet.DisableControls;
+  for i:=0 to DBGrid1.SelectedRows.Count-1 do
+  begin
+    DBGrid1.DataSource.DataSet.Bookmark:=DBGrid1.SelectedRows[i];
+
+    ssUnid:=DBGrid1.DataSource.DataSet.fieldbyname('唯一编号').AsString;
+    iiPrinttimes:=DBGrid1.DataSource.DataSet.fieldbyname('打印次数').AsInteger;
+    iiIfCompleted:=DBGrid1.DataSource.DataSet.FieldByName('ifCompleted').AsInteger;
+
+    ExecSQLCmd(LisConn,'update '+ifThen(iiIfCompleted=1,'chk_con_bak','chk_con')+' set printtimes='+IntToStr(iiPrinttimes+1)+' where unid='+ssUnid);
+  end;
+  DBGrid1.DataSource.DataSet.GotoBookmark(OldCurrent);
+  DBGrid1.DataSource.DataSet.EnableControls;
+  //Grid勾选记录判断方式二 end}
+  //==========================  
 end;
 
 end.
