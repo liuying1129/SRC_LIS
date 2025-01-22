@@ -1473,9 +1473,11 @@ CREATE FUNCTION uf_ifHasHistoricalValue
 RETURNS bit AS  
 BEGIN 
   if @ValueUnid is null return 0
-  declare @pkunid int,@itemid varchar(50)
-  SELECT @pkunid=pkunid,@itemid=itemid FROM chk_valu where valueid=@ValueUnid 
+  declare @pkunid int,@itemid varchar(50),@ValueAlarm int
+  SELECT @pkunid=pkunid,@itemid=itemid,@ValueAlarm=dbo.uf_ValueAlarm(itemid,min_value,max_value,itemvalue) FROM chk_valu where valueid=@ValueUnid 
   if (@pkunid is null)  return 0--表示没找到刚刚插入记录相对应的主记录
+  if @ValueAlarm=0 return 0--20250122市政医院.为提升性能,仅对异常结果进行判断.删除该条件,则对所有结果进行判断
+  --20250122市政医院.经测试,chk_valu_bak.itemid增加索引,显著提升该函数性能
 
   declare @patientname varchar(50),@age varchar(50),@sex varchar(50),@report_date datetime
   select @patientname=patientname,@age=age,@sex=sex,@report_date=report_date from chk_con where unid=@pkunid
