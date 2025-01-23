@@ -20,8 +20,8 @@ object frmHistoryResult: TfrmHistoryResult
   object Chart1: TChart
     Left = 0
     Top = 0
-    Width = 351
-    Height = 341
+    Width = 343
+    Height = 336
     AllowZoom = False
     BackWall.Brush.Color = clWhite
     BackWall.Brush.Style = bsClear
@@ -36,7 +36,8 @@ object frmHistoryResult: TfrmHistoryResult
     object Series1: TLineSeries
       Marks.ArrowLength = 8
       Marks.Visible = False
-      SeriesColor = clRed
+      SeriesColor = clBlack
+      LinePen.Width = 2
       Pointer.InflateMargins = True
       Pointer.Style = psRectangle
       Pointer.Visible = True
@@ -49,12 +50,46 @@ object frmHistoryResult: TfrmHistoryResult
       YValues.Multiplier = 1.000000000000000000
       YValues.Order = loNone
     end
+    object Series2: TLineSeries
+      Marks.ArrowLength = 8
+      Marks.Visible = False
+      SeriesColor = clBlue
+      LinePen.Style = psDot
+      Pointer.InflateMargins = True
+      Pointer.Style = psRectangle
+      Pointer.Visible = False
+      XValues.DateTime = False
+      XValues.Name = 'X'
+      XValues.Multiplier = 1.000000000000000000
+      XValues.Order = loAscending
+      YValues.DateTime = False
+      YValues.Name = 'Y'
+      YValues.Multiplier = 1.000000000000000000
+      YValues.Order = loNone
+    end
+    object Series3: TLineSeries
+      Marks.ArrowLength = 8
+      Marks.Visible = False
+      SeriesColor = clRed
+      LinePen.Style = psDot
+      Pointer.InflateMargins = True
+      Pointer.Style = psRectangle
+      Pointer.Visible = False
+      XValues.DateTime = False
+      XValues.Name = 'X'
+      XValues.Multiplier = 1.000000000000000000
+      XValues.Order = loAscending
+      YValues.DateTime = False
+      YValues.Name = 'Y'
+      YValues.Multiplier = 1.000000000000000000
+      YValues.Order = loNone
+    end
   end
   object Memo1: TMemo
-    Left = 351
+    Left = 343
     Top = 0
     Width = 185
-    Height = 341
+    Height = 336
     Align = alRight
     BorderStyle = bsNone
     ReadOnly = True

@@ -171,7 +171,7 @@ var
 begin
   if not dbgrid.DataSource.DataSet.Active then exit;
   for i :=0  to dbgrid.Columns.Count-1 do
-    if uppercase(dbgrid.Fields[i].DisplayName)=uppercase(DisplayName) then
+    if SameText(dbgrid.Fields[i].DisplayName,DisplayName) then
       dbgrid.Columns[i].Visible:=ifVisible;
 end;
 
@@ -228,7 +228,7 @@ begin
     agestr:=uppercase(agestr);
     result:='';
     if (agestr='') then begin result:=''; exit;end;
-    if UpperCase(agestr)='C' then begin result:='成'; exit;end;
+    if SameText(agestr,'C') then begin result:='成'; exit;end;
     if trystrtofloat(agestr,fagestr) then begin result:=agestr+'岁';exit;end;
     result:=StringReplace(agestr,'N','分钟',[rfReplaceAll,rfIgnoreCase]);
     result:=StringReplace(result,'Y','岁',[rfReplaceAll,rfIgnoreCase]);
@@ -296,7 +296,7 @@ begin
         menuname_js:=trim(ADOquery_menuitem.fieldbyname('menuname').AsString)
     else  menuname_js:='';
 
-    if  UpperCase(menuname_js)= UpperCase(Trim(menuname)) then
+    if  SameText(menuname_js,Trim(menuname)) then
     begin
       result:=true;
       ADOquery_ryjs.Free;
@@ -391,7 +391,7 @@ begin
   pEnHDSn:=EnCryptStr(Pchar(HDSn),Pchar(CryptStr));
   EnHDSn:=StrPas(pEnHDSn);
 
-  if Uppercase(EnHDSn)=Uppercase(RegisterNum) then result:=true;
+  if SameText(EnHDSn,RegisterNum) then result:=true;
 
   if not result then messagedlg('对不起,您没有注册或注册码错误,请注册!',mtinformation,[mbok],0);
 end;
@@ -1110,7 +1110,7 @@ begin
     begin
       if TObject((Sender as TfrxReport).Pages[j].Objects.Items[k]) is TfrxPictureView then
       begin
-        if uppercase(leftstr(TfrxPictureView((Sender as TfrxReport).Pages[j].Objects.Items[k]).Name,7))='PICTURE' then
+        if SameText(leftstr(TfrxPictureView((Sender as TfrxReport).Pages[j].Objects.Items[k]).Name,7),'PICTURE') then
         begin
           mvPictureTitle:=TfrxMemoView.Create((Sender as TfrxReport).Pages[j]);
           mvPictureTitle.Name:='mv'+TfrxPictureView((Sender as TfrxReport).Pages[j].Objects.Items[k]).Name;
@@ -1192,8 +1192,8 @@ begin
 
   ExecSQLCmd(LisConn,'insert into pix_tran (pkunid,Reserve1,Reserve2,OpType) values ('+inttostr(unid)+','''+operator_name+''',''Class_Print'',''Lab'')');
 
-  if LowerCase(frxDBDataset1.GetDataSet.Owner.Name)='sdiappform' then TableName:='chk_con'
-    else if LowerCase(frxDBDataset1.GetDataSet.Owner.Name)='frmcommquery' then TableName:='chk_con_bak'
+  if SameText(frxDBDataset1.GetDataSet.Owner.Name,'sdiappform') then TableName:='chk_con'
+    else if SameText(frxDBDataset1.GetDataSet.Owner.Name,'frmcommquery') then TableName:='chk_con_bak'
       else exit;
 
   if printtimes=0 then//修改打印次数

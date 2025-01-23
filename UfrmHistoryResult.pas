@@ -11,6 +11,8 @@ type
     Chart1: TChart;
     Series1: TLineSeries;
     Memo1: TMemo;
+    Series2: TLineSeries;
+    Series3: TLineSeries;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormShow(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word;
@@ -19,22 +21,26 @@ type
   private
     { Private declarations }
     psHistorySeries:string;
+    psMin_value:string;
+    psMax_value:string;
   public
     { Public declarations }
   end;
 
 //var
-function frmHistoryResult(CONST sHistorySeries:STRING): TfrmHistoryResult;
+function frmHistoryResult(CONST sHistorySeries,sMin_value,sMax_value:STRING): TfrmHistoryResult;
 
 implementation
 var
   ffrmHistoryResult:TfrmHistoryResult;
 
 {$R *.dfm}
-function frmHistoryResult(CONST sHistorySeries:STRING): TfrmHistoryResult;
+function frmHistoryResult(CONST sHistorySeries,sMin_value,sMax_value:STRING): TfrmHistoryResult;
 begin
   if ffrmHistoryResult=nil then ffrmHistoryResult:=TfrmHistoryResult.Create(application.mainform);
   ffrmHistoryResult.psHistorySeries:=sHistorySeries;
+  ffrmHistoryResult.psMin_value:=sMin_value;
+  ffrmHistoryResult.psMax_value:=sMax_value;
   result:=ffrmHistoryResult;
 end;
 
@@ -51,6 +57,7 @@ var
   itemName,s1,sdate,svalue:string;
   fdate:tdatetime;
   fvalue:single;
+  fMin_value,fMax_value:single;
 begin
   iName:=pos(#$1,psHistorySeries);
   //itemName:=leftstr(psHistorySeries,iName);
@@ -73,7 +80,16 @@ begin
 
     delete(psHistorySeries,1,iJW);
     iJW:=pos(#$3,psHistorySeries);
+
+    if trystrtodatetime(trim(sdate),fdate) and trystrtofloat(trim(psMin_value),fMin_value) then
+      chart1.Series[1].AddXY(fdate,fMin_value);//画最小值水平线
+    if trystrtodatetime(trim(sdate),fdate) and trystrtofloat(trim(psMax_value),fMax_value) then
+      chart1.Series[2].AddXY(fdate,fMax_value);//画最大值水平线
   end;
+
+  memo1.Lines.Add('================');
+  memo1.Lines.Add('最大值 '+trim(psMax_value));
+  memo1.Lines.Add('最小值 '+trim(psMin_value));
 end;
 
 procedure TfrmHistoryResult.FormKeyDown(Sender: TObject; var Key: Word;

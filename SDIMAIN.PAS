@@ -765,7 +765,7 @@ begin
     begin
       if TObject(frReport1.Pages[j].Objects.Items[i]) is TfrPictureView then
       begin
-        if uppercase(leftstr(TfrPictureView(frReport1.Pages[j].Objects.Items[i]).Name,7))='PICTURE' then
+        if SameText(leftstr(TfrPictureView(frReport1.Pages[j].Objects.Items[i]).Name,7),'PICTURE') then
         begin
           mvPictureTitle:=TfrMemoView.Create;
           frReport1.Pages[j].Objects.Add(mvPictureTitle);
@@ -1469,7 +1469,7 @@ begin
   ifSuperUser:=adotemp12.Locate('id',trim(operator_id),[loCaseInsensitive]);
   adotemp12.Free;
   if ifSuperUser then begin result:=true;exit; end;
-  if uppercase(trim(DBGrid1.DataSource.DataSet.FieldByName('审核者').AsString))=uppercase(trim(operator_name)) then result:=true;
+  if SameText(trim(DBGrid1.DataSource.DataSet.FieldByName('审核者').AsString),trim(operator_name)) then result:=true;
 end;
 
 function TSDIAppForm.AddValetudinarianBasicInfo(const PLSH,pcheckid,Ppatientname,Psex,
@@ -1988,7 +1988,7 @@ begin
     begin
       if TObject(frReport1.Pages[j].Objects.Items[i]) is TfrPictureView then
       begin
-        if uppercase(leftstr(TfrPictureView(frReport1.Pages[j].Objects.Items[i]).Name,7))='PICTURE' then
+        if SameText(leftstr(TfrPictureView(frReport1.Pages[j].Objects.Items[i]).Name,7),'PICTURE') then
         begin
           mvPictureTitle:=TfrMemoView.Create;
           frReport1.Pages[j].Objects.Add(mvPictureTitle);
@@ -3889,7 +3889,7 @@ begin
     exit;
   end;
 
-  if uppercase(CheckListBox.Name)=uppercase('clbCommUsed') then
+  if SameText(CheckListBox.Name,'clbCommUsed') then
   begin
       ini:=TINIFILE.Create(ChangeFileExt(Application.ExeName,'.ini'));
       INI.WriteBool('备用组合项目',s2,TRUE);
@@ -3911,7 +3911,7 @@ procedure TSDIAppForm.N75Click(Sender: TObject);
 var
   Nname,Ssex,Qitemid,QitemName,Cbirthday:string;
   adotemp11,adotemp66:tadoquery;
-  sHistorySeries,sCurSeries,Cage,Creport_date:string;
+  sHistorySeries,sCurSeries,Cage,Creport_date,sMin_value,sMax_value:string;
   //sHistorySeries格式:项目名称#$1当前结果日期#$2当前结果#$3历史结果1日期#$2历史结果1#$3...历史结果n日期#$2历史结果n#$3
   ifHasHistoricalValue:boolean;
   Save_Cursor:TCursor;
@@ -3952,6 +3952,11 @@ begin
   Cbirthday:=ScalarSQLCmd(LisConn,'select dbo.uf_GetBirthday('''+Cage+''','''+Creport_date+''') as Cbirthday ');
   //==========================================================================//
 
+  //=====================当前病人的参考范围===================================//
+  sMin_value:=trim(ADO_dtl.fieldbyname('最小值').AsString);
+  sMax_value:=trim(ADO_dtl.fieldbyname('最大值').AsString);
+  //==========================================================================//
+
   sCurSeries:=QitemName+#$1+trim(ADObasic.fieldbyname('检查日期').AsString)+#$2+trim(ADO_dtl.fieldbyname('检验结果').AsString)+#$3;
   sHistorySeries:=sCurSeries;
 
@@ -3982,7 +3987,7 @@ begin
   Screen.Cursor := Save_Cursor;  { Always restore to normal }
 
   if sHistorySeries<>sCurSeries then//有历史结果则显示出来,但不一定有曲线（非数字结果无曲线）
-    frmHistoryResult(sHistorySeries).ShowModal;
+    frmHistoryResult(sHistorySeries,sMin_value,sMax_value).ShowModal;
 end;
 
 procedure TSDIAppForm.TimerMakeTjDescriptionTimer(Sender: TObject);

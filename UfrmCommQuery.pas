@@ -202,7 +202,7 @@ begin
     begin
       if TObject(frReport1.Pages[j].Objects.Items[i]) is TfrPictureView then
       begin
-        if uppercase(leftstr(TfrPictureView(frReport1.Pages[j].Objects.Items[i]).Name,7))='PICTURE' then
+        if SameText(leftstr(TfrPictureView(frReport1.Pages[j].Objects.Items[i]).Name,7),'PICTURE') then
         begin
           mvPictureTitle:=TfrMemoView.Create;
           frReport1.Pages[j].Objects.Add(mvPictureTitle);
@@ -382,7 +382,7 @@ begin
     begin
       if TObject(frReport1.Pages[j].Objects.Items[i]) is TfrPictureView then
       begin
-        if uppercase(leftstr(TfrPictureView(frReport1.Pages[j].Objects.Items[i]).Name,7))='PICTURE' then
+        if SameText(leftstr(TfrPictureView(frReport1.Pages[j].Objects.Items[i]).Name,7),'PICTURE') then
         begin
           mvPictureTitle:=TfrMemoView.Create;
           frReport1.Pages[j].Objects.Add(mvPictureTitle);

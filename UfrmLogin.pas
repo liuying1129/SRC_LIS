@@ -119,7 +119,7 @@ begin
 
   PWDfromDB:=ADOQuery1.fieldbyname('passwd').AsString;
 
-  if uppercase(trim(PWD))<>uppercase(TRIM(PWDfromDB)) then
+  if not SameText(trim(PWD),TRIM(PWDfromDB)) then
   begin
       messagedlg('√‹¬Î¥ÌŒÛ£°',mtError,[mbok],0);    
       LabeledEdit2.SetFocus;
