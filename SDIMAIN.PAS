@@ -238,6 +238,7 @@ type
     N6: TMenuItem;
     N24: TMenuItem;
     Action9: TAction;
+    SpeedButton3: TSpeedButton;
     procedure FileExit1Execute(Sender: TObject);
     procedure HelpAbout1Execute(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -393,6 +394,7 @@ type
     procedure LabeledEdit8DropDown(Sender: TObject);
     procedure LabeledEdit9DropDown(Sender: TObject);
     procedure cbxConnCharDropDown(Sender: TObject);
+    procedure SpeedButton3Click(Sender: TObject);
   private
     procedure CheckTheListBox;//根据当前病人的结果在checklistbox1中打钩
     procedure WriteProfile;
@@ -4278,6 +4280,11 @@ end;
 procedure TSDIAppForm.cbxConnCharDropDown(Sender: TObject);
 begin
   LoadGroupName(TComboBox(Sender),'select name from CommCode WITH(NOLOCK) where TypeName=''检验组别'' AND SysName='''+SYSNAME+''' group by name');
+end;
+
+procedure TSDIAppForm.SpeedButton3Click(Sender: TObject);
+begin
+  MessageDlg('年龄默认单位是岁'+#$D+'单位快速录入方式：Y-岁,M-月,D-天,H-小时',mtInformation,[MBOK],0);
 end;
 
 end.
