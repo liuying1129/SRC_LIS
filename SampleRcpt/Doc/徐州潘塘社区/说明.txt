@@ -1,0 +1,77 @@
+徐州潘塘社区（陈为浩） - 健康体检条码 - 扫码程序
+
+健康体检系统的项目代码长度为32，故手动将字段HisCombItem.HisItem从varchar(20)改为varchar(50)
+
+USE YkLis
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[view_UT_LIS_RESULT]') and OBJECTPROPERTY(id, N'IsView') = 1)
+drop view [dbo].[view_UT_LIS_RESULT]
+GO
+
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE VIEW [dbo].[view_UT_LIS_RESULT]
+AS
+--LIS提供的结果视图
+select	
+	cc.unid as Header_ID,
+	cc.patientname,
+	cc.sex,
+	cc.age,
+	cc.TjJianYan as Barcode,
+	cv.valueid as RESULT_ID,
+	cv.itemid,
+	cv.name as ITEM_NAME,
+	cv.itemvalue,
+	cv.unit,
+	case dbo.uf_ValueAlarm(cv.itemid,cv.Min_value,cv.Max_value,cv.itemvalue) when 1 then 'L' WHEN 2 THEN 'H' ELSE 'N' END as TEXT_NOTE,
+	cc.Audit_Date,
+	cc.report_doctor,
+	cv.pkcombin_id,
+	CV.COMBIN_NAME,
+	dbo.uf_Reference_Value_B1(cv.min_value,cv.max_value) as MinV,
+	dbo.uf_Reference_Value_B2(cv.min_value,cv.max_value) as MaxV,
+	cv.printorder
+from chk_con cc,chk_valu cv
+where cc.unid=cv.pkunid
+AND ISNULL(cc.report_doctor,'')<>''
+and cv.issure='1'
+and isnull(cv.itemvalue,'')<>''
+and isnull(cc.TjJianYan,'')<>''
+
+union all
+
+select	
+	cc.unid as Header_ID,
+	cc.patientname,
+	cc.sex,
+	cc.age,
+	cc.TjJianYan as Barcode,
+	cv.valueid as RESULT_ID,
+	cv.itemid,
+	cv.name as ITEM_NAME,
+	cv.itemvalue,
+	cv.unit,
+	case dbo.uf_ValueAlarm(cv.itemid,cv.Min_value,cv.Max_value,cv.itemvalue) when 1 then 'L' WHEN 2 THEN 'H' ELSE 'N' END as TEXT_NOTE,
+	cc.Audit_Date,
+	cc.report_doctor,
+	cv.pkcombin_id,
+	CV.COMBIN_NAME,
+	dbo.uf_Reference_Value_B1(cv.min_value,cv.max_value) as MinV,
+	dbo.uf_Reference_Value_B2(cv.min_value,cv.max_value) as MaxV,
+	cv.printorder
+from chk_con_bak cc,chk_valu_bak cv
+where cc.unid=cv.pkunid
+and isnull(cv.itemvalue,'')<>''
+and isnull(cc.TjJianYan,'')<>''
+and cc.check_date>getdate()-180
+
+GO
+
+sp_refreshview  'dbo.view_UT_LIS_RESULT'
+GO
