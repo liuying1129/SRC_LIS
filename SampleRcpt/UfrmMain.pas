@@ -50,9 +50,6 @@ type
     DataSource2: TDataSource;
     ADOQuery2: TADOQuery;
     GroupBox2: TGroupBox;
-    Panel2: TPanel;
-    Label2: TLabel;
-    ComboBox1: TComboBox;
     DBGrid2: TDBGrid;
     CheckBox1: TCheckBox;
     SpeedButton2: TSpeedButton;
@@ -65,9 +62,7 @@ type
     procedure CheckBox1Click(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FormShow(Sender: TObject);
-    procedure ComboBox1Change(Sender: TObject);
     procedure ADOQuery2AfterOpen(DataSet: TDataSet);
-    procedure ComboBox1DropDown(Sender: TObject);
     procedure SpeedButton2Click(Sender: TObject);
   private
     { Private declarations }
@@ -233,7 +228,7 @@ begin
   if SameText(UniConnExtSystem.ProviderName,'Oracle') then
   begin
     RowsSQL1:='';
-    RowsSQL2:=' WHERE ROWNUM<100 ';
+    RowsSQL2:=' and ROWNUM<100 ';
   end;
   if SameText(UniConnExtSystem.ProviderName,'SQL Server') then
   begin
@@ -365,7 +360,7 @@ begin
     DBGrid1.DataSource.DataSet.EnableControls;
     //Grid勾选记录判断方式二 end}
 
-    UpdateImportedReq(ComboBox1.Text);
+    UpdateImportedReq('');
   end;
 
   (Sender as TLabeledEdit).Enabled:=true;
@@ -518,7 +513,7 @@ begin
   if LabeledEdit1.CanFocus then LabeledEdit1.SetFocus; 
   BitBtn1.Enabled:=true;//因定义了ShortCut,故不能使用(Sender as TBitBtn)
 
-  UpdateImportedReq(ComboBox1.Text);
+  UpdateImportedReq('');
 end;
 
 procedure TfrmMain.SingleRequestForm2Lis(const WorkGroup, patientname, sex,
@@ -582,7 +577,6 @@ begin
   ConfigIni:=tinifile.Create(ChangeFileExt(Application.ExeName,'.ini'));
 
   configini.WriteBool('Interface','ifDirect2LIS',CheckBox1.Checked);{记录是否扫描后直接导入LIS}
-  ConfigIni.WriteString('Interface','ShowReportType',trim(ComboBox1.Text)); {记录主界面中要显示的检验单类型}
 
   configini.Free;
 end;
@@ -596,13 +590,12 @@ begin
   CONFIGINI:=TINIFILE.Create(ChangeFileExt(Application.ExeName,'.ini'));
 
   CheckBox1.Checked:=configini.ReadBool('Interface','ifDirect2LIS',false);{记录是否扫描后直接导入LIS}
-  ComboBox1.Text:=trim(CONFIGINI.ReadString('Interface','ShowReportType',''));
 
   configini.Free;
   
   BitBtn1.Enabled:=not CheckBox1.Checked;
 
-  UpdateImportedReq(ComboBox1.Text);
+  UpdateImportedReq('');
 end;
 
 procedure TfrmMain.updatestatusBar(const text: string);
@@ -794,11 +787,6 @@ begin
   ADOQuery2.Open;
 end;
 
-procedure TfrmMain.ComboBox1Change(Sender: TObject);
-begin
-  UpdateImportedReq((Sender as TComboBox).Text);
-end;
-
 procedure TfrmMain.ADOQuery2AfterOpen(DataSet: TDataSet);
 begin
   if not DataSet.Active then exit;
@@ -808,11 +796,6 @@ begin
   DBGrid2.Columns[2].Width:=60;//工作组
   DBGrid2.Columns[3].Width:=40;//联机号
   DBGrid2.Columns[4].Width:=230;//项目名称
-end;
-
-procedure TfrmMain.ComboBox1DropDown(Sender: TObject);
-begin
-  LoadGroupName(TComboBox(Sender),'select name from CommCode WITH(NOLOCK) where TypeName=''检验组别'' AND SysName=''LIS'' group by name');
 end;
 
 end.

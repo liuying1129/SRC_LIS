@@ -338,41 +338,15 @@ object frmMain: TfrmMain
     Align = alBottom
     Caption = #24050#25509#25910#26679#26412#21015#34920'('#27880':'#20165#26174#31034#26410#23457#26680#26816#39564#21333')'
     TabOrder = 2
-    object Panel2: TPanel
+    object DBGrid2: TDBGrid
       Left = 2
       Top = 15
       Width = 780
-      Height = 37
-      Align = alTop
-      TabOrder = 0
-      object Label2: TLabel
-        Left = 10
-        Top = 13
-        Width = 39
-        Height = 13
-        Caption = #24037#20316#32452
-      end
-      object ComboBox1: TComboBox
-        Left = 52
-        Top = 9
-        Width = 145
-        Height = 21
-        DropDownCount = 20
-        ItemHeight = 13
-        TabOrder = 0
-        OnChange = ComboBox1Change
-        OnDropDown = ComboBox1DropDown
-      end
-    end
-    object DBGrid2: TDBGrid
-      Left = 2
-      Top = 52
-      Width = 780
-      Height = 112
+      Height = 149
       Align = alClient
       DataSource = DataSource2
       ReadOnly = True
-      TabOrder = 1
+      TabOrder = 0
       TitleFont.Charset = ANSI_CHARSET
       TitleFont.Color = clWindowText
       TitleFont.Height = -13

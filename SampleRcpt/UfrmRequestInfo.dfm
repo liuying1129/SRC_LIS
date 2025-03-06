@@ -3,7 +3,7 @@ object frmRequestInfo: TfrmRequestInfo
   Top = 123
   Width = 950
   Height = 506
-  Caption = #26597#30475#30003#35831#21333
+  Caption = #26597#30475#22806#37096#31995#32479#30003#35831#21333
   Color = clBtnFace
   Font.Charset = ANSI_CHARSET
   Font.Color = clWindowText
