@@ -436,11 +436,6 @@ object frmMain: TfrmMain
       OnExecute = BitBtn1Click
     end
   end
-  object DosMove1: TDosMove
-    Active = True
-    Left = 226
-    Top = 8
-  end
   object UniConnExtSystem: TUniConnection
     Left = 409
     Top = 8

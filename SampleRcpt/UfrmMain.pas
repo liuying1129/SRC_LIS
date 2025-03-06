@@ -5,7 +5,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, ExtCtrls, DB, DBAccess,
-  ToolCtrlsEh, DBGridEhToolCtrls, DynVarsEh, ADODB, DosMove, ActnList,
+  ToolCtrlsEh, DBGridEhToolCtrls, DynVarsEh, ADODB, ActnList,
   MemDS, VirtualTable, Grids, DBGrids, ComCtrls, Buttons, GridsEh,
   DBAxisGridsEh, DBGridEh, IniFiles,StrUtils, DBGridEhGrouping,
   Uni, UniProvider, MySQLUniProvider, SQLServerUniProvider, OracleUniProvider;
@@ -32,7 +32,6 @@ type
     Label1: TLabel;
     ActionList1: TActionList;
     Action1: TAction;
-    DosMove1: TDosMove;
     LabeledEdit9: TLabeledEdit;
     Memo1: TMemo;
     StatusBar1: TStatusBar;
