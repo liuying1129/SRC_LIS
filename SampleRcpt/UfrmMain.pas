@@ -29,7 +29,6 @@ type
     LabeledEdit4: TLabeledEdit;
     LabeledEdit7: TLabeledEdit;
     Panel4: TPanel;
-    BitBtn1: TBitBtn;
     Label1: TLabel;
     ActionList1: TActionList;
     Action1: TAction;
@@ -53,6 +52,8 @@ type
     DBGrid2: TDBGrid;
     CheckBox1: TCheckBox;
     SpeedButton2: TSpeedButton;
+    LabeledEdit6: TLabeledEdit;
+    BitBtn1: TSpeedButton;
     procedure LabeledEdit1KeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure FormCreate(Sender: TObject);
@@ -68,7 +69,7 @@ type
     { Private declarations }
     function MakeExtSystemDBConn:boolean;
     function MakeAdoDBConn:boolean;
-    procedure SingleRequestForm2Lis(const WorkGroup,patientname,sex,age,age_unit,deptname,check_doctor,RequestDate:String;const ABarcode,checkid,SampleType,pkcombin_id,His_MzOrZy,PullPress:String);
+    procedure SingleRequestForm2Lis(const WorkGroup,His_Unid,patientname,sex,age,age_unit,deptname,check_doctor,RequestDate:String;const ABarcode,Surem1,checkid,SampleType,pkcombin_id,His_MzOrZy,PullPress:String);
     //==为了通过发送消息更新主窗体状态栏而增加==//
     procedure WMUpdateTextStatus(var message:twmupdatetextstatus);  {WM_UPDATETEXTSTATUS消息处理函数}
                                               message WM_UPDATETEXTSTATUS;
@@ -179,7 +180,9 @@ begin
       #$D+'HIS检验组合项目代码：his_item_no'+
       #$D+'HIS检验组合项目名称：his_item_name'+
       #$D+'样本类型：specimen_type'+
-      #$D+'患者类别：patient_type';
+      #$D+'患者类别：patient_type'+
+      #$D+'外部系统唯一编号：req_header_id'+
+      #$D+'外部系统项目申请编号：req_detail_id';
   MessageDlg(ss,mtInformation,[mbok],0);
 end;
 
@@ -260,6 +263,7 @@ begin
   LabeledEdit10.Text:=UniQryTemp11.fieldbyname('req_doc').AsString;
   LabeledEdit11.Text:=FormatDateTime('yyyy-mm-dd hh:nn:ss',UniQryTemp11.fieldbyname('req_time').AsDateTime);
   LabeledEdit5.Text:=UniQryTemp11.fieldbyname('specimen_type').AsString;
+  LabeledEdit6.Text:=UniQryTemp11.fieldbyname('req_header_id').AsString;
 
   VirtualTable1.Clear;
   for i:=0 to (DBGrid1.columns.count-1) do DBGrid1.columns[i].readonly:=False;
@@ -296,6 +300,7 @@ begin
       ini.Free;
 
       VirtualTable1.Append;
+      VirtualTable1.FieldByName('外部系统项目申请编号').AsString:=UniQryTemp11.FieldByName('req_detail_id').AsString;
       VirtualTable1.FieldByName('HIS项目代码').AsString:=UniQryTemp11.FieldByName('his_item_no').AsString;
       VirtualTable1.FieldByName('HIS项目名称').AsString:=UniQryTemp11.FieldByName('his_item_name').AsString;
       VirtualTable1.FieldByName('LIS项目代码').AsString:=ADOTemp33.FieldByName('Id').AsString;
@@ -330,6 +335,7 @@ begin
       
       SingleRequestForm2Lis(
         DBGrid1.DataSource.DataSet.fieldbyname('工作组').AsString,
+        LabeledEdit6.Text,
         LabeledEdit2.Text,
         LabeledEdit3.Text,
         LabeledEdit4.Text,
@@ -338,6 +344,7 @@ begin
         LabeledEdit10.Text,
         LabeledEdit11.Text,
         LabeledEdit7.Text,
+        DBGrid1.DataSource.DataSet.fieldbyname('外部系统项目申请编号').AsString,
         DBGrid1.DataSource.DataSet.fieldbyname('联机号').AsString,
         LabeledEdit5.Text,
         DBGrid1.DataSource.DataSet.fieldbyname('LIS项目代码').AsString,
@@ -446,12 +453,13 @@ procedure TfrmMain.VirtualTable1AfterOpen(DataSet: TDataSet);
 begin
   if not DataSet.Active then exit;
    
-  DBGrid1.Columns[0].Width:=77;//HIS项目代码
-  DBGrid1.Columns[1].Width:=100;//HIS项目名称
-  DBGrid1.Columns[2].Width:=77;//LIS项目代码
-  DBGrid1.Columns[3].Width:=100;//LIS项目名称
-  DBGrid1.Columns[4].Width:=80;//工作组
-  DBGrid1.Columns[5].Width:=90;//联机号
+  DBGrid1.Columns[0].Width:=150;//外部系统项目申请编号
+  DBGrid1.Columns[1].Width:=77;//HIS项目代码
+  DBGrid1.Columns[2].Width:=100;//HIS项目名称
+  DBGrid1.Columns[3].Width:=77;//LIS项目代码
+  DBGrid1.Columns[4].Width:=100;//LIS项目名称
+  DBGrid1.Columns[5].Width:=80;//工作组
+  DBGrid1.Columns[6].Width:=90;//联机号
 end;
 
 procedure TfrmMain.BitBtn1Click(Sender: TObject);
@@ -479,6 +487,7 @@ begin
     
     SingleRequestForm2Lis(
       DBGrid1.DataSource.DataSet.fieldbyname('工作组').AsString,
+      LabeledEdit6.Text,
       LabeledEdit2.Text,
       LabeledEdit3.Text,
       LabeledEdit4.Text,
@@ -487,6 +496,7 @@ begin
       LabeledEdit10.Text,
       LabeledEdit11.Text,
       LabeledEdit7.Text,
+      DBGrid1.DataSource.DataSet.fieldbyname('外部系统项目申请编号').AsString,
       DBGrid1.DataSource.DataSet.fieldbyname('联机号').AsString,
       LabeledEdit5.Text,
       DBGrid1.DataSource.DataSet.fieldbyname('LIS项目代码').AsString,
@@ -516,8 +526,8 @@ begin
   UpdateImportedReq('');
 end;
 
-procedure TfrmMain.SingleRequestForm2Lis(const WorkGroup, patientname, sex,
-  age, age_unit, deptname, check_doctor, RequestDate, ABarcode,
+procedure TfrmMain.SingleRequestForm2Lis(const WorkGroup, His_Unid, patientname, sex,
+  age, age_unit, deptname, check_doctor, RequestDate, ABarcode, Surem1,
   checkid, SampleType, pkcombin_id, His_MzOrZy, PullPress: String);
 var
   ObjectYZMZ:ISuperObject;
@@ -536,6 +546,7 @@ begin
   ObjectYZMZ.S['LIS组合项目代码'] := pkcombin_id;
   ObjectYZMZ.S['条码号'] := ABarcode;
   ObjectYZMZ.S['样本类型'] := SampleType;
+  ObjectYZMZ.S['外部系统项目申请编号'] := Surem1;
 
   ArrayYZMX.AsArray.Add(ObjectYZMZ);
   ObjectYZMZ:=nil;
@@ -549,6 +560,7 @@ begin
   ObjectJYYZ.S['申请日期']:=RequestDate;
   ObjectJYYZ.S['患者类别']:=His_MzOrZy;
   ObjectJYYZ.S['样本接收人']:=PullPress;
+  ObjectJYYZ.S['外部系统唯一编号']:=His_Unid;
   ObjectJYYZ.O['医嘱明细']:=ArrayYZMX;
   ArrayYZMX:=nil;
 

@@ -35,7 +35,7 @@ object frmMain: TfrmMain
       Align = alTop
       TabOrder = 1
       object LabeledEdit2: TLabeledEdit
-        Left = 130
+        Left = 128
         Top = 24
         Width = 53
         Height = 21
@@ -48,7 +48,7 @@ object frmMain: TfrmMain
         TabOrder = 0
       end
       object LabeledEdit3: TLabeledEdit
-        Left = 189
+        Left = 183
         Top = 24
         Width = 28
         Height = 21
@@ -61,7 +61,7 @@ object frmMain: TfrmMain
         TabOrder = 1
       end
       object LabeledEdit4: TLabeledEdit
-        Left = 222
+        Left = 213
         Top = 24
         Width = 28
         Height = 21
@@ -87,7 +87,7 @@ object frmMain: TfrmMain
         TabOrder = 3
       end
       object LabeledEdit9: TLabeledEdit
-        Left = 378
+        Left = 385
         Top = 24
         Width = 53
         Height = 21
@@ -100,7 +100,7 @@ object frmMain: TfrmMain
         TabOrder = 4
       end
       object LabeledEdit8: TLabeledEdit
-        Left = 436
+        Left = 440
         Top = 24
         Width = 53
         Height = 21
@@ -113,7 +113,7 @@ object frmMain: TfrmMain
         TabOrder = 5
       end
       object LabeledEdit10: TLabeledEdit
-        Left = 493
+        Left = 495
         Top = 24
         Width = 53
         Height = 21
@@ -152,7 +152,7 @@ object frmMain: TfrmMain
         TabOrder = 8
       end
       object Edit2: TEdit
-        Left = 250
+        Left = 241
         Top = 24
         Width = 28
         Height = 21
@@ -166,6 +166,19 @@ object frmMain: TfrmMain
         ParentFont = False
         ReadOnly = True
         TabOrder = 9
+      end
+      object LabeledEdit6: TLabeledEdit
+        Left = 272
+        Top = 24
+        Width = 105
+        Height = 21
+        TabStop = False
+        Color = clMenu
+        EditLabel.Width = 104
+        EditLabel.Height = 13
+        EditLabel.Caption = #22806#37096#31995#32479#21807#19968#32534#21495
+        ReadOnly = True
+        TabOrder = 10
       end
     end
     object Panel4: TPanel
@@ -188,13 +201,12 @@ object frmMain: TfrmMain
         Font.Style = []
         ParentFont = False
       end
-      object BitBtn1: TBitBtn
+      object BitBtn1: TSpeedButton
         Left = 7
-        Top = 4
+        Top = 6
         Width = 100
-        Height = 25
+        Height = 22
         Caption = #23548#20837'LIS(F3)'
-        TabOrder = 0
         OnClick = BitBtn1Click
       end
       object CheckBox1: TCheckBox
@@ -204,7 +216,7 @@ object frmMain: TfrmMain
         Height = 17
         TabStop = False
         Caption = #26080#38656#28857#20987#23548#20837#25353#38062','#25195#25551#21518#30452#25509#23548#20837'LIS'
-        TabOrder = 1
+        TabOrder = 0
         OnClick = CheckBox1Click
       end
     end
@@ -372,6 +384,11 @@ object frmMain: TfrmMain
     AfterOpen = VirtualTable1AfterOpen
     FieldDefs = <
       item
+        Name = #22806#37096#31995#32479#39033#30446#30003#35831#32534#21495
+        DataType = ftString
+        Size = 20
+      end
+      item
         Name = 'HIS'#39033#30446#20195#30721
         DataType = ftString
         Size = 50
@@ -404,10 +421,11 @@ object frmMain: TfrmMain
     Left = 72
     Top = 211
     Data = {
-      030006000B00484953CFEEC4BFB4FAC2EB01003200000000000B00484953CFEE
-      C4BFC3FBB3C601006400000000000B004C4953CFEEC4BFB4FAC2EB0100320000
-      0000000B004C4953CFEEC4BFC3FBB3C601006400000000000600B9A4D7F7D7E9
-      01003200000000000600C1AABBFABAC50100140000000000000000000000}
+      030007001400CDE2B2BFCFB5CDB3CFEEC4BFC9EAC7EBB1E0BAC5010014000000
+      00000B00484953CFEEC4BFB4FAC2EB01003200000000000B00484953CFEEC4BF
+      C3FBB3C601006400000000000B004C4953CFEEC4BFB4FAC2EB01003200000000
+      000B004C4953CFEEC4BFC3FBB3C601006400000000000600B9A4D7F7D7E90100
+      3200000000000600C1AABBFABAC50100140000000000000000000000}
   end
   object ActionList1: TActionList
     Left = 254
