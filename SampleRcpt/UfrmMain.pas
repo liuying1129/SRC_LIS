@@ -84,7 +84,10 @@ var
 
   operator_name:string;
   operator_id:string;
-  
+  LisConn:string;//Lis连接字符串,MakeDBConn过程中被赋值,然后传入QC.DLL、CalcItemPro.dll
+
+  function ScalarSQLCmd(AConnectionString:string;ASQL:string;AErrorDlg:boolean=True):string;
+
 implementation
 
 uses superobject, UfrmRequestInfo, UfrmLogin;
@@ -99,9 +102,6 @@ function GetMaxCheckID(const AWorkGroup,APreDate,APreCheckID:PChar):PChar;stdcal
 
 const
   CryptStr='lc';
-
-var
-  LisConn:string;//Lis连接字符串,MakeDBConn过程中被赋值,然后传入QC.DLL、CalcItemPro.dll
 
 procedure LoadGroupName(const comboBox:TcomboBox;const ASel:string);
 var

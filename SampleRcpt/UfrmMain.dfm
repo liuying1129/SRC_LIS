@@ -258,7 +258,7 @@ object frmMain: TfrmMain
         Top = 6
         Width = 23
         Height = 22
-        Hint = #26597#30475#33713#22495#30003#35831#21333
+        Hint = #26597#30475#30003#35831#21333
         Caption = #65311
         ParentShowHint = False
         ShowHint = True
