@@ -167,8 +167,8 @@ begin
       #$D+'外部系统编码：默认值HIS,一般为HIS/PEIS,应与LIS项目对照一致'+
       #$D+'视图名称：默认值view_test_request'+
       #$D+
-      #$D+'视图字段名称必须如下：'+
-      #$D+'条码号：barcode'+
+      #$D+'视图字段如下：'+
+      #$D+'条码号(*)：barcode'+
       #$D+'患者姓名：patientname'+
       #$D+'患者性别：sex'+
       #$D+'患者年龄：age'+
@@ -176,12 +176,12 @@ begin
       #$D+'开单时间：req_time'+
       #$D+'开单科室：req_dept'+
       #$D+'开单医生：req_doc'+
-      #$D+'HIS检验组合项目代码：his_item_no'+
+      #$D+'HIS检验组合项目代码(*)：his_item_no'+
       #$D+'HIS检验组合项目名称：his_item_name'+
       #$D+'样本类型：specimen_type'+
       #$D+'患者类别：patient_type'+
-      #$D+'外部系统唯一编号：req_header_id'+
-      #$D+'外部系统项目申请编号：req_detail_id';
+      #$D+'外部系统唯一编号(可选)：req_header_id'+
+      #$D+'外部系统项目申请编号(可选)：req_detail_id';
   MessageDlg(ss,mtInformation,[mbok],0);
 end;
 
@@ -253,16 +253,23 @@ begin
   (Sender as TLabeledEdit).Clear;
 
   LabeledEdit7.Text:=UniQryTemp11.fieldbyname('barcode').AsString;
-  LabeledEdit2.Text:=UniQryTemp11.fieldbyname('patientname').AsString;
+  if UniQryTemp11.FieldList.IndexOf('patientname')>=0 then LabeledEdit2.Text:=UniQryTemp11.fieldbyname('patientname').AsString;
+  if UniQryTemp11.FieldList.IndexOf('name')>=0        then LabeledEdit2.Text:=UniQryTemp11.fieldbyname('name').AsString;//兼容莱域PEIS 
   LabeledEdit3.Text:=UniQryTemp11.fieldbyname('sex').AsString;
   LabeledEdit4.Text:=UniQryTemp11.fieldbyname('age').AsString;
-  Edit2.Text:=UniQryTemp11.fieldbyname('ageunit').AsString;
-  LabeledEdit9.Text:=UniQryTemp11.fieldbyname('patient_type').AsString;
-  LabeledEdit8.Text:=UniQryTemp11.fieldbyname('req_dept').AsString;
-  LabeledEdit10.Text:=UniQryTemp11.fieldbyname('req_doc').AsString;
-  LabeledEdit11.Text:=FormatDateTime('yyyy-mm-dd hh:nn:ss',UniQryTemp11.fieldbyname('req_time').AsDateTime);
-  LabeledEdit5.Text:=UniQryTemp11.fieldbyname('specimen_type').AsString;
-  LabeledEdit6.Text:=UniQryTemp11.fieldbyname('req_header_id').AsString;
+  if UniQryTemp11.FieldList.IndexOf('ageunit')>=0  then Edit2.Text:=UniQryTemp11.fieldbyname('ageunit').AsString;
+  if UniQryTemp11.FieldList.IndexOf('age_unit')>=0 then Edit2.Text:=UniQryTemp11.fieldbyname('age_unit').AsString;//兼容莱域PEIS
+  if UniQryTemp11.FieldList.IndexOf('patient_type')>=0 then LabeledEdit9.Text:=UniQryTemp11.fieldbyname('patient_type').AsString;//兼容莱域PEIS,莱域PEIS无此字段
+  if UniQryTemp11.FieldList.IndexOf('req_dept')>=0 then LabeledEdit8.Text:=UniQryTemp11.fieldbyname('req_dept').AsString;
+  if UniQryTemp11.FieldList.IndexOf('reqdept')>=0  then LabeledEdit8.Text:=UniQryTemp11.fieldbyname('reqdept').AsString;//兼容莱域PEIS
+  if UniQryTemp11.FieldList.IndexOf('req_doc')>=0    then LabeledEdit10.Text:=UniQryTemp11.fieldbyname('req_doc').AsString;
+  if UniQryTemp11.FieldList.IndexOf('write_name')>=0 then LabeledEdit10.Text:=UniQryTemp11.fieldbyname('write_name').AsString;//兼容莱域PEIS
+  if UniQryTemp11.FieldList.IndexOf('req_time')>=0 then LabeledEdit11.Text:=FormatDateTime('yyyy-mm-dd hh:nn:ss',UniQryTemp11.fieldbyname('req_time').AsDateTime);
+  if UniQryTemp11.FieldList.IndexOf('write_time')>=0    then LabeledEdit11.Text:=FormatDateTime('yyyy-mm-dd hh:nn:ss',UniQryTemp11.fieldbyname('write_time').AsDateTime);//兼容莱域PEIS
+  if UniQryTemp11.FieldList.IndexOf('specimen_type')>=0 then LabeledEdit5.Text:=UniQryTemp11.fieldbyname('specimen_type').AsString;
+  if UniQryTemp11.FieldList.IndexOf('SPEC_TYPE')>=0     then LabeledEdit5.Text:=UniQryTemp11.fieldbyname('SPEC_TYPE').AsString;//兼容莱域PEIS
+  if UniQryTemp11.FieldList.IndexOf('req_header_id')>=0 then LabeledEdit6.Text:=UniQryTemp11.fieldbyname('req_header_id').AsString;
+  if UniQryTemp11.FieldList.IndexOf('REG_ID')>=0        then LabeledEdit6.Text:=UniQryTemp11.fieldbyname('REG_ID').AsString;//兼容莱域PEIS（体检号）
 
   VirtualTable1.Clear;
   for i:=0 to (DBGrid1.columns.count-1) do DBGrid1.columns[i].readonly:=False;
@@ -277,11 +284,16 @@ begin
                         'from combinitem ci,HisCombItem hci '+
                         'where ci.Unid=hci.CombUnid and hci.ExtSystemId='''+ExtSystemId+
                         ''' and hci.HisItem=:HisItem';
-    ADOTemp33.Parameters.ParamByName('HisItem').Value:=UniQryTemp11.fieldbyname('his_item_no').AsString;
+    if UniQryTemp11.FieldList.IndexOf('his_item_no')>=0 then ADOTemp33.Parameters.ParamByName('HisItem').Value:=UniQryTemp11.fieldbyname('his_item_no').AsString;
+    if UniQryTemp11.FieldList.IndexOf('order_id')>=0    then ADOTemp33.Parameters.ParamByName('HisItem').Value:=UniQryTemp11.fieldbyname('order_id').AsString;//兼容莱域PEIS
     ADOTemp33.Open;
 
     //LIS中没有相对应的项目
-    if ADOTemp33.RecordCount<=0 then Memo1.Lines.Add(DateTimeToStr(now)+':'+UniQryTemp11.fieldbyname('his_item_no').AsString+'【'+UniQryTemp11.fieldbyname('his_item_name').AsString+'】在LIS中没有对照'); 
+    if ADOTemp33.RecordCount<=0 then
+    begin
+      if UniQryTemp11.FieldList.IndexOf('his_item_no')>=0 then Memo1.Lines.Add(DateTimeToStr(now)+':'+UniQryTemp11.fieldbyname('his_item_no').AsString+'【'+UniQryTemp11.fieldbyname('his_item_name').AsString+'】在LIS中没有对照');
+      if UniQryTemp11.FieldList.IndexOf('order_id')>=0    then Memo1.Lines.Add(DateTimeToStr(now)+':'+UniQryTemp11.fieldbyname('order_id').AsString+'【'+UniQryTemp11.fieldbyname('ITEMNAME').AsString+'】在LIS中没有对照');//兼容莱域PEIS 
+    end;
 
     while not ADOTemp33.Eof do
     begin
@@ -299,9 +311,12 @@ begin
       ini.Free;
 
       VirtualTable1.Append;
-      VirtualTable1.FieldByName('外部系统项目申请编号').AsString:=UniQryTemp11.FieldByName('req_detail_id').AsString;
-      VirtualTable1.FieldByName('HIS项目代码').AsString:=UniQryTemp11.FieldByName('his_item_no').AsString;
-      VirtualTable1.FieldByName('HIS项目名称').AsString:=UniQryTemp11.FieldByName('his_item_name').AsString;
+      if UniQryTemp11.FieldList.IndexOf('req_detail_id')>=0 then VirtualTable1.FieldByName('外部系统项目申请编号').AsString:=UniQryTemp11.FieldByName('req_detail_id').AsString;
+      if UniQryTemp11.FieldList.IndexOf('REQUEST_NO')>=0    then VirtualTable1.FieldByName('外部系统项目申请编号').AsString:=UniQryTemp11.FieldByName('REQUEST_NO').AsString;//兼容莱域PEIS 
+      if UniQryTemp11.FieldList.IndexOf('his_item_no')>=0 then VirtualTable1.FieldByName('HIS项目代码').AsString:=UniQryTemp11.FieldByName('his_item_no').AsString;
+      if UniQryTemp11.FieldList.IndexOf('order_id')>=0    then VirtualTable1.FieldByName('HIS项目代码').AsString:=UniQryTemp11.FieldByName('order_id').AsString;//兼容莱域PEIS
+      if UniQryTemp11.FieldList.IndexOf('his_item_name')>=0 then VirtualTable1.FieldByName('HIS项目名称').AsString:=UniQryTemp11.FieldByName('his_item_name').AsString;
+      if UniQryTemp11.FieldList.IndexOf('ITEMNAME')>=0      then VirtualTable1.FieldByName('HIS项目名称').AsString:=UniQryTemp11.FieldByName('ITEMNAME').AsString;//兼容莱域PEIS
       VirtualTable1.FieldByName('LIS项目代码').AsString:=ADOTemp33.FieldByName('Id').AsString;
       VirtualTable1.FieldByName('LIS项目名称').AsString:=ADOTemp33.FieldByName('Name').AsString;
       VirtualTable1.FieldByName('工作组').AsString:=ADOTemp33.FieldByName('dept_DfValue').AsString;
@@ -553,7 +568,13 @@ begin
   ObjectJYYZ:=SO;
   ObjectJYYZ.S['患者姓名']:=patientname;
   ObjectJYYZ.S['患者性别']:=sex;
+  if sex='1' then ObjectJYYZ.S['患者性别']:='男';//兼容莱域PEIS
+  if sex='2' then ObjectJYYZ.S['患者性别']:='女';//兼容莱域PEIS
+  //    else ObjectJYYZ.S['患者性别']:='未知';
   ObjectJYYZ.S['患者年龄']:=age+age_unit;
+  if age_unit='Y' then ObjectJYYZ.S['患者年龄']:=age+'岁';//兼容莱域PEIS
+  if age_unit='M' then ObjectJYYZ.S['患者年龄']:=age+'月';//兼容莱域PEIS
+  if age_unit='D' then ObjectJYYZ.S['患者年龄']:=age+'天';//兼容莱域PEIS
   ObjectJYYZ.S['申请科室']:=deptname;
   ObjectJYYZ.S['申请医生']:=check_doctor;
   ObjectJYYZ.S['申请日期']:=RequestDate;
