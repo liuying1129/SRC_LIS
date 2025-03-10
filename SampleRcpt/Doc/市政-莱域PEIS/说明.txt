@@ -2,6 +2,11 @@
 外部系统编码：HIS
 视图名称：LIS_REQUEST
 
+连接外部系统数据库
+Oracle：启用
+服务器：10.161.97.1:1521:orcl
+用户：LYPEIS
+口令：lypeis
 
 if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[view_UT_LIS_RESULT]') and OBJECTPROPERTY(id, N'IsView') = 1)
 drop view [dbo].[view_UT_LIS_RESULT]
