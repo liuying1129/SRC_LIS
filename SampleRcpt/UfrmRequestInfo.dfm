@@ -1,8 +1,8 @@
 object frmRequestInfo: TfrmRequestInfo
   Left = 209
   Top = 77
-  Width = 800
-  Height = 600
+  Width = 900
+  Height = 500
   Caption = #26597#30475#30003#35831#21333
   Color = clBtnFace
   Font.Charset = ANSI_CHARSET
@@ -19,7 +19,7 @@ object frmRequestInfo: TfrmRequestInfo
   object Panel1: TPanel
     Left = 0
     Top = 0
-    Width = 784
+    Width = 884
     Height = 57
     Align = alTop
     TabOrder = 0
@@ -88,8 +88,8 @@ object frmRequestInfo: TfrmRequestInfo
   object DBGrid1: TDBGrid
     Left = 0
     Top = 57
-    Width = 784
-    Height = 504
+    Width = 884
+    Height = 404
     Align = alClient
     DataSource = DataSource1
     ReadOnly = True
