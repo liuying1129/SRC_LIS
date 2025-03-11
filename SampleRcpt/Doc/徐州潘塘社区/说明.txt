@@ -6,6 +6,9 @@
 外部系统编码：PEIS
 视图名称：his_test_view
 
+连接外部系统数据库
+MySQL：启用
+
 USE YkLis
 GO
 

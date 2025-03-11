@@ -166,6 +166,7 @@ begin
   ss:='系统设置->通用代码->样本接收'+
       #$D+'外部系统编码：默认值HIS,一般为HIS/PEIS,应与LIS项目对照一致'+
       #$D+'视图名称：默认值view_test_request'+
+      #$D+'项目对照：默认值[是],[否]表示HIS与LIS项目代码一致,LIS无需项目对照'+
       #$D+
       #$D+'视图字段如下：'+
       #$D+'条码号(*)：barcode'+
@@ -198,7 +199,10 @@ var
 
   ExtSystemId:String;
   ViewName:String;
+  ifItemCompare:String;
   RowsSQL1,RowsSQL2:String;
+
+  dept_DfValue:String;
 begin
   if key<>13 then exit;
 
@@ -211,12 +215,13 @@ begin
   ADOTemp22.Connection:=ADOConnection1;
   ADOTemp22.Close;
   ADOTemp22.SQL.Clear;
-  ADOTemp22.SQL.Text:='select * from CommCode where TypeName=''样本接收'' ';
+  ADOTemp22.SQL.Text:='select * from CommCode WITH(NOLOCK) where TypeName=''样本接收'' ';
   ADOTemp22.Open;
   while not ADOTemp22.Eof do
   begin
     if ADOTemp22.fieldbyname('id').AsString='外部系统编码' then ExtSystemId:=ADOTemp22.fieldbyname('Name').AsString;
     if ADOTemp22.fieldbyname('id').AsString='视图名称' then ViewName:=ADOTemp22.fieldbyname('Name').AsString;
+    if ADOTemp22.fieldbyname('id').AsString='项目对照' then ifItemCompare:=ADOTemp22.fieldbyname('Name').AsString;
   
     ADOTemp22.Next;
   end;
@@ -276,56 +281,84 @@ begin
 
   while not UniQryTemp11.Eof do
   begin
-    ADOTemp33:=TADOQuery.Create(nil);
-    ADOTemp33.Connection:=ADOConnection1;
-    ADOTemp33.Close;
-    ADOTemp33.SQL.Clear;
-    ADOTemp33.SQL.Text:='select ci.Id,ci.Name,ci.dept_DfValue '+
-                        'from combinitem ci,HisCombItem hci '+
-                        'where ci.Unid=hci.CombUnid and hci.ExtSystemId='''+ExtSystemId+
-                        ''' and hci.HisItem=:HisItem';
-    if UniQryTemp11.FieldList.IndexOf('his_item_no')>=0 then ADOTemp33.Parameters.ParamByName('HisItem').Value:=UniQryTemp11.fieldbyname('his_item_no').AsString;
-    if UniQryTemp11.FieldList.IndexOf('order_id')>=0    then ADOTemp33.Parameters.ParamByName('HisItem').Value:=UniQryTemp11.fieldbyname('order_id').AsString;//兼容莱域PEIS
-    ADOTemp33.Open;
-
-    //LIS中没有相对应的项目
-    if ADOTemp33.RecordCount<=0 then
-    begin
-      if UniQryTemp11.FieldList.IndexOf('his_item_no')>=0 then Memo1.Lines.Add(DateTimeToStr(now)+':'+UniQryTemp11.fieldbyname('his_item_no').AsString+'【'+UniQryTemp11.fieldbyname('his_item_name').AsString+'】在LIS中没有对照');
-      if UniQryTemp11.FieldList.IndexOf('order_id')>=0    then Memo1.Lines.Add(DateTimeToStr(now)+':'+UniQryTemp11.fieldbyname('order_id').AsString+'【'+UniQryTemp11.fieldbyname('ITEMNAME').AsString+'】在LIS中没有对照');//兼容莱域PEIS 
-    end;
-
-    while not ADOTemp33.Eof do
+    if '否'=ifItemCompare then//外部系统申请单的HIS组合项目代码与LIS组合项目代码一致，则LIS无需项目对照
     begin
       //如工作组为空,ini.ReadString报错ntdll.dll,且产生操作人员找不到病人信息的问题
-      if trim(ADOTemp33.FieldByName('dept_DfValue').AsString)='' then
+      dept_DfValue:=trim(ScalarSQLCmd(LisConn,'select TOP 1 dept_DfValue from combinitem where Id='''+UniQryTemp11.fieldbyname('his_item_no').AsString+''' '));
+      if ''=dept_DfValue then
       begin
-        Memo1.Lines.Add(DateTimeToStr(now)+':'+ADOTemp33.FieldByName('Id').AsString+'【'+ADOTemp33.FieldByName('Name').AsString+'】未设置默认工作组');
-        ADOTemp33.Next;
+        Memo1.Lines.Add(DateTimeToStr(now)+':'+UniQryTemp11.FieldByName('his_item_no').AsString+'【'+UniQryTemp11.FieldByName('his_item_name').AsString+'】在LIS中不存在,或未设置默认工作组');
+        UniQryTemp11.Next;
         continue;
       end;
-
+      
       ini:=tinifile.Create(ChangeFileExt(Application.ExeName,'.ini'));
-      PreDate:=ini.ReadString(ADOTemp33.FieldByName('dept_DfValue').AsString,'检查日期','');
-      PreCheckID:=ini.ReadString(ADOTemp33.FieldByName('dept_DfValue').AsString,'联机号','');
+      PreDate:=ini.ReadString(dept_DfValue,'检查日期','');
+      PreCheckID:=ini.ReadString(dept_DfValue,'联机号','');
       ini.Free;
 
       VirtualTable1.Append;
       if UniQryTemp11.FieldList.IndexOf('req_detail_id')>=0 then VirtualTable1.FieldByName('外部系统项目申请编号').AsString:=UniQryTemp11.FieldByName('req_detail_id').AsString;
-      if UniQryTemp11.FieldList.IndexOf('REQUEST_NO')>=0    then VirtualTable1.FieldByName('外部系统项目申请编号').AsString:=UniQryTemp11.FieldByName('REQUEST_NO').AsString;//兼容莱域PEIS 
       if UniQryTemp11.FieldList.IndexOf('his_item_no')>=0 then VirtualTable1.FieldByName('HIS项目代码').AsString:=UniQryTemp11.FieldByName('his_item_no').AsString;
-      if UniQryTemp11.FieldList.IndexOf('order_id')>=0    then VirtualTable1.FieldByName('HIS项目代码').AsString:=UniQryTemp11.FieldByName('order_id').AsString;//兼容莱域PEIS
       if UniQryTemp11.FieldList.IndexOf('his_item_name')>=0 then VirtualTable1.FieldByName('HIS项目名称').AsString:=UniQryTemp11.FieldByName('his_item_name').AsString;
-      if UniQryTemp11.FieldList.IndexOf('ITEMNAME')>=0      then VirtualTable1.FieldByName('HIS项目名称').AsString:=UniQryTemp11.FieldByName('ITEMNAME').AsString;//兼容莱域PEIS
-      VirtualTable1.FieldByName('LIS项目代码').AsString:=ADOTemp33.FieldByName('Id').AsString;
-      VirtualTable1.FieldByName('LIS项目名称').AsString:=ADOTemp33.FieldByName('Name').AsString;
-      VirtualTable1.FieldByName('工作组').AsString:=ADOTemp33.FieldByName('dept_DfValue').AsString;
-      VirtualTable1.FieldByName('联机号').AsString:=GetMaxCheckId(PChar(ADOTemp33.FieldByName('dept_DfValue').AsString),PChar(PreDate),PChar(PreCheckID));
+      if UniQryTemp11.FieldList.IndexOf('his_item_no')>=0 then VirtualTable1.FieldByName('LIS项目代码').AsString:=UniQryTemp11.FieldByName('his_item_no').AsString;
+      if UniQryTemp11.FieldList.IndexOf('his_item_name')>=0 then VirtualTable1.FieldByName('LIS项目名称').AsString:=UniQryTemp11.FieldByName('his_item_name').AsString;
+      VirtualTable1.FieldByName('工作组').AsString:=dept_DfValue;
+      VirtualTable1.FieldByName('联机号').AsString:=GetMaxCheckId(PChar(dept_DfValue),PChar(PreDate),PChar(PreCheckID));
       VirtualTable1.Post;
+    end else
+    begin//外部系统申请单的HIS组合项目代码与LIS组合项目代码不一致，LIS需要项目对照的情况
+      ADOTemp33:=TADOQuery.Create(nil);
+      ADOTemp33.Connection:=ADOConnection1;
+      ADOTemp33.Close;
+      ADOTemp33.SQL.Clear;
+      ADOTemp33.SQL.Text:='select ci.Id,ci.Name,ci.dept_DfValue '+
+                          'from combinitem ci,HisCombItem hci '+
+                          'where ci.Unid=hci.CombUnid and hci.ExtSystemId='''+ExtSystemId+
+                          ''' and hci.HisItem=:HisItem';
+      if UniQryTemp11.FieldList.IndexOf('his_item_no')>=0 then ADOTemp33.Parameters.ParamByName('HisItem').Value:=UniQryTemp11.fieldbyname('his_item_no').AsString;
+      if UniQryTemp11.FieldList.IndexOf('order_id')>=0    then ADOTemp33.Parameters.ParamByName('HisItem').Value:=UniQryTemp11.fieldbyname('order_id').AsString;//兼容莱域PEIS
+      ADOTemp33.Open;
 
-      ADOTemp33.Next;
+      //LIS中没有相对应的项目
+      if ADOTemp33.RecordCount<=0 then
+      begin
+        if UniQryTemp11.FieldList.IndexOf('his_item_no')>=0 then Memo1.Lines.Add(DateTimeToStr(now)+':'+UniQryTemp11.fieldbyname('his_item_no').AsString+'【'+UniQryTemp11.fieldbyname('his_item_name').AsString+'】在LIS中没有对照');
+        if UniQryTemp11.FieldList.IndexOf('order_id')>=0    then Memo1.Lines.Add(DateTimeToStr(now)+':'+UniQryTemp11.fieldbyname('order_id').AsString+'【'+UniQryTemp11.fieldbyname('ITEMNAME').AsString+'】在LIS中没有对照');//兼容莱域PEIS 
+      end;
+
+      while not ADOTemp33.Eof do
+      begin
+        //如工作组为空,ini.ReadString报错ntdll.dll,且产生操作人员找不到病人信息的问题
+        if trim(ADOTemp33.FieldByName('dept_DfValue').AsString)='' then
+        begin
+          Memo1.Lines.Add(DateTimeToStr(now)+':'+ADOTemp33.FieldByName('Id').AsString+'【'+ADOTemp33.FieldByName('Name').AsString+'】未设置默认工作组');
+          ADOTemp33.Next;
+          continue;
+        end;
+
+        ini:=tinifile.Create(ChangeFileExt(Application.ExeName,'.ini'));
+        PreDate:=ini.ReadString(ADOTemp33.FieldByName('dept_DfValue').AsString,'检查日期','');
+        PreCheckID:=ini.ReadString(ADOTemp33.FieldByName('dept_DfValue').AsString,'联机号','');
+        ini.Free;
+
+        VirtualTable1.Append;
+        if UniQryTemp11.FieldList.IndexOf('req_detail_id')>=0 then VirtualTable1.FieldByName('外部系统项目申请编号').AsString:=UniQryTemp11.FieldByName('req_detail_id').AsString;
+        if UniQryTemp11.FieldList.IndexOf('REQUEST_NO')>=0    then VirtualTable1.FieldByName('外部系统项目申请编号').AsString:=UniQryTemp11.FieldByName('REQUEST_NO').AsString;//兼容莱域PEIS
+        if UniQryTemp11.FieldList.IndexOf('his_item_no')>=0 then VirtualTable1.FieldByName('HIS项目代码').AsString:=UniQryTemp11.FieldByName('his_item_no').AsString;
+        if UniQryTemp11.FieldList.IndexOf('order_id')>=0    then VirtualTable1.FieldByName('HIS项目代码').AsString:=UniQryTemp11.FieldByName('order_id').AsString;//兼容莱域PEIS
+        if UniQryTemp11.FieldList.IndexOf('his_item_name')>=0 then VirtualTable1.FieldByName('HIS项目名称').AsString:=UniQryTemp11.FieldByName('his_item_name').AsString;
+        if UniQryTemp11.FieldList.IndexOf('ITEMNAME')>=0      then VirtualTable1.FieldByName('HIS项目名称').AsString:=UniQryTemp11.FieldByName('ITEMNAME').AsString;//兼容莱域PEIS
+        VirtualTable1.FieldByName('LIS项目代码').AsString:=ADOTemp33.FieldByName('Id').AsString;
+        VirtualTable1.FieldByName('LIS项目名称').AsString:=ADOTemp33.FieldByName('Name').AsString;
+        VirtualTable1.FieldByName('工作组').AsString:=ADOTemp33.FieldByName('dept_DfValue').AsString;
+        VirtualTable1.FieldByName('联机号').AsString:=GetMaxCheckId(PChar(ADOTemp33.FieldByName('dept_DfValue').AsString),PChar(PreDate),PChar(PreCheckID));
+        VirtualTable1.Post;
+
+        ADOTemp33.Next;
+      end;
+      ADOTemp33.Free;
     end;
-    ADOTemp33.Free;
     
     UniQryTemp11.Next;
   end;
