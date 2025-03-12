@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TfrxReport Version="5.4.6" DotMatrixReport="False" IniFile="\Software\Fast Reports" PreviewOptions.Buttons="4095" PreviewOptions.Zoom="1" PrintOptions.Printer="Ԥ��" PrintOptions.PrintOnSheet="0" ReportOptions.CreateDate="45395.772976632" ReportOptions.Description.Text="" ReportOptions.LastChange="45402.6840618519" ScriptLanguage="PascalScript" ScriptText.Text="begin&#13;&#10;&#13;&#10;end.">
+  <TfrxDataPage Name="Data" Height="1000" Left="0" Top="0" Width="1000"/>
+  <TfrxReportPage Name="Page1" Font.Charset="1" Font.Color="0" Font.Height="-13" Font.Name="����" Font.Style="0" PaperWidth="120" PaperHeight="60" PaperSize="256" LeftMargin="10" RightMargin="10" TopMargin="10" BottomMargin="10" ColumnWidth="0" ColumnPositions.Text="" HGuides.Text="" VGuides.Text="">
+    <TfrxMemoView Name="Memo1" Left="3.77953" Top="3.77953" Width="94.48825" Height="18.89765" Text="[申请科室]"/>
+    <TfrxMemoView Name="Memo2" Left="105.82684" Top="3.77953" Width="253.22851" Height="18.89765" Text="[姓名] [性别] [年龄][年龄单位]">
+      <Formats>
+        <item/>
+        <item/>
+        <item/>
+        <item/>
+      </Formats>
+    </TfrxMemoView>
+    <TfrxMemoView Name="Memo3" Left="3.77953" Top="30.23624" Width="211.65368" Height="18.89765" Text="[申请时间]"/>
+    <TfrxMemoView Name="Memo4" Left="3.77953" Top="128.50402" Width="351.49629" Height="18.89765" Text="[项目名称]"/>
+    <TfrxBarCodeView Name="BarCode7" Left="7.51979" Top="56.69295" Width="102" Height="68.03154" BarType="bcCode128" Expression="&#60;�����&#62;" Rotation="0" Text="123456" WideBarRatio="2" Zoom="1.5" Font.Charset="1" Font.Color="0" Font.Height="-12" Font.Name="Arial" Font.Style="0"/>
+  </TfrxReportPage>
+</TfrxReport>

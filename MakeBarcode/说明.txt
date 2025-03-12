@@ -1,0 +1,29 @@
+外部系统申请单表或视图名称必须为view_test_request，字段参照《HIS-LIS对接技术方案》
+
+必须在LIS中进行项目对照（因为需要通过默认工作组判断是否合管）
+
+系统设置->通用代码->样本接收
+外部系统编码：默认值HIS.应与LIS项目对照一致
+
+--LIS条码表创建脚本
+if not exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[make_barcode]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
+CREATE TABLE make_barcode
+(
+	req_detail_id varchar(50) primary key,
+	barcode varchar(50) NOT NULL,
+	req_header_id varchar(50) NOT NULL,
+	patientname varchar(40) NULL,
+	sex varchar(8) NULL,
+	age varchar(14) NULL,
+	ageunit varchar(14) NULL,
+	req_time datetime NULL,
+	req_dept varchar(40) NULL,
+	req_doc varchar(40) NULL,
+	his_item_no varchar(50) NULL,
+	his_item_name varchar(50) NULL,
+	specimen_type varchar(60) NULL,
+	patient_type varchar(50) NULL,
+	operator varchar(50) NULL,
+	create_time datetime NULL DEFAULT (getdate())
+)
+GO
