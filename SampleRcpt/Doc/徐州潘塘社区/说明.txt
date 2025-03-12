@@ -3,8 +3,8 @@
 健康体检系统的项目代码长度为32，故手动将字段HisCombItem.HisItem从varchar(20)改为varchar(50)
 
 系统设置->通用代码->样本接收
-外部系统编码：PEIS
 视图名称：his_test_view
+外部系统编码：PEIS
 
 连接外部系统数据库
 MySQL：启用

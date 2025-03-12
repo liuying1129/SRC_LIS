@@ -164,9 +164,9 @@ var
   ss:String;
 begin
   ss:='系统设置->通用代码->样本接收'+
-      #$D+'外部系统编码：默认值HIS,一般为HIS/PEIS,应与LIS项目对照一致'+
       #$D+'视图名称：默认值view_test_request'+
       #$D+'项目对照：默认值[是],[否]表示HIS与LIS项目代码一致,LIS无需项目对照'+
+      #$D+'外部系统编码：默认值HIS.如需项目对照,应与LIS项目对照一致'+
       #$D+
       #$D+'视图字段如下：'+
       #$D+'条码号(*)：barcode'+
@@ -208,9 +208,6 @@ begin
 
   if trim((Sender as TLabeledEdit).Text)='' then exit;
 
-  ExtSystemId:='HIS';
-  ViewName:='view_test_request';
-  
   ADOTemp22:=TADOQuery.Create(nil);
   ADOTemp22.Connection:=ADOConnection1;
   ADOTemp22.Close;
@@ -226,6 +223,9 @@ begin
     ADOTemp22.Next;
   end;
   ADOTemp22.Free;
+
+  if ViewName='' then ViewName:='view_test_request';
+  if ExtSystemId='' then ExtSystemId:='HIS';
 
   if SameText(UniConnExtSystem.ProviderName,'MySQL') then
   begin
