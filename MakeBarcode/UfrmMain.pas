@@ -3,12 +3,12 @@ unit UfrmMain;
 interface
 
 uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, ExtCtrls, DB, DBAccess, Uni, MemDS, Grids, DBGrids,
-  Buttons,OracleUniProvider, ADODB,IniFiles,StrUtils, VirtualTable,
-  ActnList, DosMove, Menus, ComCtrls, DBGridEhGrouping, ToolCtrlsEh,
+  Buttons, ADODB,IniFiles,StrUtils, VirtualTable,
+  DosMove, Menus, ComCtrls, DBGridEhGrouping, ToolCtrlsEh,
   DBGridEhToolCtrls, DynVarsEh, GridsEh, DBAxisGridsEh, DBGridEh, frxClass,
-  frxBarcode;
+  frxBarcode, UniProvider, SQLServerUniProvider, MySQLUniProvider, OracleUniProvider;
 
 //==为了通过发送消息更新主窗体状态栏而增加==//
 const
@@ -24,8 +24,6 @@ type
     ADOConnection1: TADOConnection;
     SpeedButton1: TSpeedButton;
     GroupBox1: TGroupBox;
-    ActionList1: TActionList;
-    Action1: TAction;
     DosMove1: TDosMove;
     RadioGroup1: TRadioGroup;
     Memo1: TMemo;
@@ -560,7 +558,9 @@ begin
     begin
       if VirtualTable1.FieldByName('条码号').AsString=barcode then
       begin
+        VirtualTable1.Edit;
         VirtualTable1.FieldByName('项目名称').AsString:=VirtualTable1.FieldByName('项目名称').AsString+' '+DBGridEh1.DataSource.DataSet.fieldbyname('项目名称').AsString;
+        VirtualTable1.Post;
         bFound:=true;
         break;
       end;
@@ -706,7 +706,7 @@ begin
         adotemp22.SQL.Clear;
         adotemp22.SQL.Text:='select * from view_test_request where req_detail_id='''+adotemp33.fieldbyname('req_detail_id').AsString+''' ';
         adotemp22.Open;
-        item_no:=adotemp22.fieldbyname('item_no').AsString;
+        item_no:=adotemp22.fieldbyname('his_item_no').AsString;
         specimen_type:=adotemp22.fieldbyname('specimen_type').AsString;
         adotemp22.Free;
 

@@ -258,14 +258,6 @@ object frmMain: TfrmMain
     Left = 752
     Top = 8
   end
-  object ActionList1: TActionList
-    Left = 724
-    Top = 8
-    object Action1: TAction
-      Caption = 'Action1'
-      ShortCut = 114
-    end
-  end
   object DosMove1: TDosMove
     Active = True
     Left = 696
