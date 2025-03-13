@@ -1,11 +1,11 @@
 object frmMain: TfrmMain
-  Left = 269
-  Top = 127
+  Left = 189
+  Top = 77
   BorderIcons = [biSystemMenu, biMinimize]
   BorderStyle = bsSingle
   Caption = #25171#21360#26465#30721' - '#26631#20934#29256
-  ClientHeight = 467
-  ClientWidth = 954
+  ClientHeight = 561
+  ClientWidth = 904
   Color = clBtnFace
   Font.Charset = ANSI_CHARSET
   Font.Color = clWindowText
@@ -23,7 +23,7 @@ object frmMain: TfrmMain
   object Panel1: TPanel
     Left = 0
     Top = 0
-    Width = 954
+    Width = 904
     Height = 80
     Align = alTop
     TabOrder = 0
@@ -118,14 +118,14 @@ object frmMain: TfrmMain
   object GroupBox1: TGroupBox
     Left = 0
     Top = 80
-    Width = 954
-    Height = 368
+    Width = 904
+    Height = 462
     Align = alClient
     TabOrder = 1
     object Memo1: TMemo
       Left = 2
-      Top = 284
-      Width = 950
+      Top = 378
+      Width = 900
       Height = 82
       Align = alBottom
       Color = clMenu
@@ -135,11 +135,11 @@ object frmMain: TfrmMain
     object DBGridEh1: TDBGridEh
       Left = 2
       Top = 15
-      Width = 950
-      Height = 228
+      Width = 900
+      Height = 322
       Align = alClient
       AllowedSelections = [gstRecordBookmarks, gstRectangle, gstColumns]
-      DataSource = DataSource2
+      DataSource = DataSource1
       DynProps = <>
       IndicatorOptions = [gioShowRowIndicatorEh, gioShowRowselCheckboxesEh]
       Options = [dgEditing, dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgConfirmDelete, dgCancelOnExit, dgMultiSelect]
@@ -151,8 +151,8 @@ object frmMain: TfrmMain
     end
     object Panel2: TPanel
       Left = 2
-      Top = 243
-      Width = 950
+      Top = 337
+      Width = 900
       Height = 41
       Align = alBottom
       TabOrder = 2
@@ -220,8 +220,8 @@ object frmMain: TfrmMain
   end
   object StatusBar1: TStatusBar
     Left = 0
-    Top = 448
-    Width = 954
+    Top = 542
+    Width = 904
     Height = 19
     Panels = <
       item
@@ -263,14 +263,14 @@ object frmMain: TfrmMain
     Left = 696
     Top = 8
   end
-  object UniQuery2: TUniQuery
+  object UniQuery1: TUniQuery
     Connection = UniConnExtSystem
-    AfterOpen = UniQuery2AfterOpen
+    AfterOpen = UniQuery1AfterOpen
     Left = 72
     Top = 252
   end
-  object DataSource2: TDataSource
-    DataSet = UniQuery2
+  object DataSource1: TDataSource
+    DataSet = UniQuery1
     Left = 104
     Top = 252
   end

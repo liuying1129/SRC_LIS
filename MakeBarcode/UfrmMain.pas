@@ -31,8 +31,8 @@ type
     Label2: TLabel;
     DateTimePicker1: TDateTimePicker;
     DBGridEh1: TDBGridEh;
-    UniQuery2: TUniQuery;
-    DataSource2: TDataSource;
+    UniQuery1: TUniQuery;
+    DataSource1: TDataSource;
     DateTimePicker2: TDateTimePicker;
     BitBtn2: TBitBtn;
     frxReport1: TfrxReport;
@@ -51,7 +51,7 @@ type
     procedure FormDestroy(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure BitBtn2Click(Sender: TObject);
-    procedure UniQuery2AfterOpen(DataSet: TDataSet);
+    procedure UniQuery1AfterOpen(DataSet: TDataSet);
     procedure BitBtn3Click(Sender: TObject);
     procedure frxReport1GetValue(const VarName: String;
       var Value: Variant);
@@ -64,7 +64,7 @@ type
                                               message WM_UPDATETEXTSTATUS;
     procedure updatestatusBar(const text:string);//Text为该格式#$2+'0:abc'+#$2+'1:def'表示状态栏第0格显示abc,第1格显示def,依此类推
     //==========================================//
-    procedure MakeBarcode(const AReq_Detail_ID, AReq_Header_ID, AItem_No, AFriend_Req_Detail_ID, ASpecimen_Type:String;const APatientname,ASex,AAge,AAgeunit,AReq_time,AReq_dept,AReq_doc,AItem_name,APatient_type:String);
+    procedure MakeBarcode(const AReq_Detail_ID, AReq_Header_ID, AHis_Item_No, AFriend_Req_Detail_ID, ASpecimen_Type:String;const APatientname,ASex,AAge,AAgeunit,AReq_time,AReq_dept,AReq_doc,AHis_item_name,APatient_type:String);
   public
     { Public declarations }
   end;
@@ -154,9 +154,6 @@ procedure TfrmMain.FormCreate(Sender: TObject);
 begin
   MakeExtSystemDBConn;
   MakeAdoDBConn;
-
-  //设计期设置VirtualTable字段
-  VirtualTable1.Open;
 end;
 
 procedure TfrmMain.SpeedButton1Click(Sender: TObject);
@@ -430,33 +427,33 @@ begin
   if RadioGroup1.ItemIndex=1 then patient_type:=' and patient_type=''门诊'' ';
   if RadioGroup1.ItemIndex=2 then patient_type:=' and patient_type=''住院'' ';
 
-  UniQuery2.Close;
-  UniQuery2.SQL.Clear;
-  UniQuery2.SQL.Text:='select patientname as 姓名,sex as 性别,age as 年龄,ageunit as 年龄单位,req_time as 申请时间,req_dept as 申请科室,req_doc as 申请医生,his_item_no as 项目代码,his_item_name as 项目名称,specimen_type as 样本类型,patient_type as 患者类别,'+
-                      ' req_header_id,req_detail_id '+
+  UniQuery1.Close;
+  UniQuery1.SQL.Clear;
+  UniQuery1.SQL.Text:='select req_header_id,patientname as 姓名,sex as 性别,age as 年龄,ageunit as 年龄单位,req_time as 申请时间,req_dept as 申请科室,req_doc as 申请医生,patient_type as 患者类别,'+
+                      ' req_detail_id,his_item_no as 项目代码,his_item_name as 项目名称,specimen_type as 样本类型 '+
                       ' from view_test_request where req_time between :DateTimePicker1 and :DateTimePicker2 '+patientname+req_dept+patient_type+' order by req_time desc,req_header_id';
-  UniQuery2.ParamByName('DateTimePicker1').Value:=DateTimePicker1.DateTime;//设计期Time设置为00:00:00.放心,下拉选择日期时不会改变Time值
-  UniQuery2.ParamByName('DateTimePicker2').Value:=DateTimePicker2.DateTime;//设计期Time设置为23:59:59.放心,下拉选择日期时不会改变Time值
-  UniQuery2.Open;
+  UniQuery1.ParamByName('DateTimePicker1').Value:=DateTimePicker1.DateTime;//设计期Time设置为00:00:00.放心,下拉选择日期时不会改变Time值
+  UniQuery1.ParamByName('DateTimePicker2').Value:=DateTimePicker2.DateTime;//设计期Time设置为23:59:59.放心,下拉选择日期时不会改变Time值
+  UniQuery1.Open;
 end;
 
-procedure TfrmMain.UniQuery2AfterOpen(DataSet: TDataSet);
+procedure TfrmMain.UniQuery1AfterOpen(DataSet: TDataSet);
 begin
   if not DataSet.Active then exit;
   
-  DBGridEh1.Columns.Items[0].Width:=42;//姓名
-  DBGridEh1.Columns.Items[1].Width:=30;//性别
-  DBGridEh1.Columns.Items[2].Width:=30;//年龄
-  DBGridEh1.Columns.Items[3].Width:=30;//年龄单位
-  DBGridEh1.Columns.Items[4].Width:=135;//开单时间
-  DBGridEh1.Columns.Items[5].Width:=60;
-  DBGridEh1.Columns.Items[6].Width:=42;//开单医生
-  DBGridEh1.Columns.Items[7].Width:=60;
-  DBGridEh1.Columns.Items[8].Width:=60;
-  DBGridEh1.Columns.Items[9].Width:=60;
-  DBGridEh1.Columns.Items[10].Width:=60;
-  DBGridEh1.Columns.Items[11].Width:=110;
-  DBGridEh1.Columns.Items[12].Width:=95;
+  DBGridEh1.Columns.Items[0].Width:=110;//req_header_id
+  DBGridEh1.Columns.Items[1].Width:=42;//姓名
+  DBGridEh1.Columns.Items[2].Width:=30;//性别
+  DBGridEh1.Columns.Items[3].Width:=30;//年龄
+  DBGridEh1.Columns.Items[4].Width:=30;//年龄单位
+  DBGridEh1.Columns.Items[5].Width:=135;//开单时间
+  DBGridEh1.Columns.Items[6].Width:=60;//开单科室
+  DBGridEh1.Columns.Items[7].Width:=60;//开单医生
+  DBGridEh1.Columns.Items[8].Width:=60;//患者类别
+  DBGridEh1.Columns.Items[9].Width:=95;//req_detail_id
+  DBGridEh1.Columns.Items[10].Width:=60;//项目代码
+  DBGridEh1.Columns.Items[11].Width:=60;//项目名称
+  DBGridEh1.Columns.Items[12].Width:=60;//样本类型
 end;
 
 procedure TfrmMain.BitBtn3Click(Sender: TObject);
@@ -466,16 +463,16 @@ var
   Save_Cursor:TCursor;
   OldCurrent:TBookmark;
 
-  Req_Detail_ID, Req_Header_ID, Item_No, specimen_type:String;
+  Req_Detail_ID, Req_Header_ID, His_Item_No, specimen_type:String;
   barcode:String;
-  patientname,sex,age,ageunit,req_time,req_dept,req_doc,item_name,patient_type:String;
+  patientname,sex,age,ageunit,req_time,req_dept,req_doc,his_item_name,patient_type:String;
 
   bFound:boolean;
   Select_Req_Detail_ID_List:TStrings;
   Friend_Req_Detail_ID:String;//友军.格式如('0001','0002','0003'),方便拼接SQL
 begin
-  if not UniQuery2.Active then exit;
-  if UniQuery2.RecordCount=0 then exit;
+  if not UniQuery1.Active then exit;
+  if UniQuery1.RecordCount=0 then exit;
 
   if DBGridEh1.SelectedRows.Count<=0 then exit;
 
@@ -487,7 +484,7 @@ begin
   //Grid勾选记录判断方式二 begin
   //该方式无需循环全部数据集,只需循环所选记录（该循环用于生成【选择的Req_Detail_ID列表】,生成条码及打印项目均在此范围内）
   if length(memo1.Lines.Text)>=60000 then memo1.Lines.Clear;//memo只能接受64K个字符
-  memo1.Lines.Add(FormatDatetime('YYYY-MM-DD HH:NN:SS', Now) + ':正在生成条码......');
+  memo1.Lines.Add(DateTimeToStr(now) + ':正在生成条码......');
   OldCurrent:=DBGridEh1.DataSource.DataSet.GetBookmark;
   DBGridEh1.DataSource.DataSet.DisableControls;
   for i:=0 to DBGridEh1.SelectedRows.Count-1 do
@@ -510,7 +507,7 @@ begin
 
     Req_Detail_ID:=DBGridEh1.DataSource.DataSet.fieldbyname('Req_Detail_ID').AsString;
     Req_Header_ID:=DBGridEh1.DataSource.DataSet.fieldbyname('Req_Header_ID').AsString;
-    Item_No:=DBGridEh1.DataSource.DataSet.fieldbyname('项目代码').AsString;
+    His_Item_No:=DBGridEh1.DataSource.DataSet.fieldbyname('项目代码').AsString;
     specimen_type:=DBGridEh1.DataSource.DataSet.fieldbyname('样本类型').AsString;
     
     patientname:=DBGridEh1.DataSource.DataSet.fieldbyname('姓名').AsString;
@@ -520,7 +517,7 @@ begin
     req_time:=FormatDatetime('YYYY-MM-DD HH:NN:SS',DBGridEh1.DataSource.DataSet.fieldbyname('申请时间').AsDateTime);
     req_dept:=DBGridEh1.DataSource.DataSet.fieldbyname('申请科室').AsString;
     req_doc:=DBGridEh1.DataSource.DataSet.fieldbyname('申请医生').AsString;
-    item_name:=DBGridEh1.DataSource.DataSet.fieldbyname('项目名称').AsString;
+    his_item_name:=DBGridEh1.DataSource.DataSet.fieldbyname('项目名称').AsString;
     patient_type:=DBGridEh1.DataSource.DataSet.fieldbyname('患者类别').AsString;
 
     Friend_Req_Detail_ID:='';
@@ -533,7 +530,7 @@ begin
     delete(Friend_Req_Detail_ID,1,1);//删除第一个字符，即逗号
     if Friend_Req_Detail_ID<>'' then Friend_Req_Detail_ID:='('+Friend_Req_Detail_ID+')';
 
-    MakeBarcode(Req_Detail_ID,Req_Header_ID,Item_No,Friend_Req_Detail_ID,specimen_type,patientname,sex,age,ageunit,req_time,req_dept,req_doc,item_name,patient_type);
+    MakeBarcode(Req_Detail_ID,Req_Header_ID,His_Item_No,Friend_Req_Detail_ID,specimen_type,patientname,sex,age,ageunit,req_time,req_dept,req_doc,his_item_name,patient_type);
   end;
   DBGridEh1.DataSource.DataSet.GotoBookmark(OldCurrent);
   DBGridEh1.DataSource.DataSet.EnableControls;
@@ -543,6 +540,10 @@ begin
 
   //Grid勾选记录判断方式二 begin
   //该方式无需循环全部数据集,只需循环所选记录（该循环拼接用于打印的内存表,条码相同的项目合并在一起）
+
+  //设计期设置VirtualTable字段
+  VirtualTable1.Open;
+  
   VirtualTable1.Clear;
   OldCurrent:=DBGridEh1.DataSource.DataSet.GetBookmark;
   DBGridEh1.DataSource.DataSet.DisableControls;
@@ -628,35 +629,45 @@ begin
   if VarName='条码号' then Value:=VirtualTable1.fieldbyname('条码号').AsString;//设计期,设置条码对象的Expression属性为<条码号>
 end;
 
-procedure TfrmMain.MakeBarcode(const AReq_Detail_ID, AReq_Header_ID, AItem_No, AFriend_Req_Detail_ID, ASpecimen_Type: String;const APatientname,ASex,AAge,AAgeunit,AReq_time,AReq_dept,AReq_doc,AItem_name,APatient_type:String);
+procedure TfrmMain.MakeBarcode(const AReq_Detail_ID, AReq_Header_ID, AHis_Item_No, AFriend_Req_Detail_ID, ASpecimen_Type: String;const APatientname,ASex,AAge,AAgeunit,AReq_time,AReq_dept,AReq_doc,AHis_item_name,APatient_type:String);
 var
-  adotemp11,adotemp33,adotemp44,adotemp55:TAdoquery;
-  adotemp22:TUniQuery;
+  adotemp11,adotemp33,adotemp44,adotemp55,adotemp66:TAdoquery;
 
   defaultWorkGroup:String;//默认工作组
   defaultWorkGroup44:String;//默认工作组
 
-  item_no:String;
+  his_item_no:String;
   specimen_type:String;
-
   ExtSystemId:String;
+  barcode:String;
 begin
     //make_barcode:条码表
     //自已:req_detail_id
     //友军:同一患者(req_header_id)下的其他req_detail_id
     
-    //情形1:自已存在于make_barcode中
-    if '1'=ScalarSQLCmd(LisConn,'select top 1 1 from make_barcode where req_detail_id='''+AReq_Detail_ID+''' ') then exit;
+    //条码表:将外部系统申请单视图复制到LIS，并补充条码字段
+    ADOTemp66:=TADOQuery.Create(nil);
+    ADOTemp66.Connection:=ADOConnection1;
+    ADOTemp66.Close;
+    ADOTemp66.SQL.Clear;
+    ADOTemp66.SQL.Text:='select TOP 1 * from make_barcode where req_detail_id='''+AReq_Detail_ID+''' ';
+    ADOTemp66.Open;
+    barcode:=ADOTemp66.fieldbyname('barcode').AsString;
+    if ADOTemp66.RecordCount<=0 then ExecSQLCmd(LisConn,'insert into make_barcode (req_detail_id,req_header_id,operator,patientname,sex,age,ageunit,req_time,req_dept,req_doc,his_item_no,his_item_name,specimen_type,patient_type) values ('''+AReq_Detail_ID+''','''+AReq_Header_ID+''','''+operator_name+''','''+APatientname+''','''+ASex+''','''+AAge+''','''+AAgeunit+''','''+AReq_time+''','''+AReq_dept+''','''+AReq_doc+''','''+AHis_Item_No+''','''+AHis_item_name+''','''+ASpecimen_Type+''','''+APatient_type+''')');
+    ADOTemp66.Free;
 
-    //情形2:自己及友军均不存在于make_barcode中,则自己做为条码且将自己写入make_barcode
-    //经过情形1的判断,现在自己肯定不在make_barcode中,故只用判断友军
-    if(AFriend_Req_Detail_ID<>'')and('1'<>ScalarSQLCmd(LisConn,'select TOP 1 1 from make_barcode where req_detail_id in '+AFriend_Req_Detail_ID)) then
+    //情形1:自已已生成过条码
+    if barcode<>'' then exit;
+
+    //情形2:自己及友军均无条码,则自己做为条码且将自己写入make_barcode
+    //经过情形1的判断,现在自己肯定无条码,故只用判断友军
+    if(AFriend_Req_Detail_ID<>'')and('1'<>ScalarSQLCmd(LisConn,'select TOP 1 1 from make_barcode where req_detail_id in '+AFriend_Req_Detail_ID+' and barcode<>'''' ')) then
     begin                                                                                                                                                                                                                
-      ExecSQLCmd(LisConn,'insert into make_barcode (req_detail_id,barcode,req_header_id,operator,patientname,sex,age,ageunit,req_time,req_dept,req_doc,his_item_no,his_item_name,specimen_type,patient_type) values ('''+AReq_Detail_ID+''','''+AReq_Detail_ID+''','''+AReq_Header_ID+''','''+operator_name+''','''+APatientname+''','''+ASex+''','''+AAge+''','''+AAgeunit+''','''+AReq_time+''','''+AReq_dept+''','''+AReq_doc+''','''+AItem_No+''','''+AItem_name+''','''+ASpecimen_Type+''','''+APatient_type+''')');
+      ExecSQLCmd(LisConn,'update make_barcode set barcode='''+AReq_Detail_ID+''' where req_detail_id='''+AReq_Detail_ID+''' ');
       exit;
     end; 
 
-    //情形3:友军存在于make_barcode中,且友军的工作组、样本类型与自己一样,则使用友军的条码,且将友军条码写入自己的条码
+    //情形3:友军存在条码,且友军的工作组、样本类型与自己一样,则使用友军的条码,且将友军条码写入自己的条码
     if AFriend_Req_Detail_ID<>'' then
     begin
       //查询外部系统编码 begin
@@ -681,51 +692,44 @@ begin
       ADOTemp11.Connection:=ADOConnection1;
       ADOTemp11.Close;
       ADOTemp11.SQL.Clear;
-      ADOTemp11.SQL.Text:='select top 1 ci.Id,ci.Name,ci.dept_DfValue,ci.specimentype_DfValue '+
+      ADOTemp11.SQL.Text:='select top 1 ci.dept_DfValue '+
                           'from combinitem ci,HisCombItem hci '+
                           'where ci.Unid=hci.CombUnid and hci.ExtSystemId='''+ExtSystemId+
                           ''' and hci.HisItem=:HisItem';
-      ADOTemp11.Parameters.ParamByName('HisItem').Value:=AItem_No;
+      ADOTemp11.Parameters.ParamByName('HisItem').Value:=AHis_Item_No;
       ADOTemp11.Open;
       defaultWorkGroup:=ADOTemp11.fieldbyname('dept_DfValue').AsString;
       ADOTemp11.Free;
       //查询自己的工作组 end
 
-      //查询存在于make_barcode中的友军(自身除外) begin
+      //查询存在条码的友军(自身除外) begin
       adotemp33:=TADOQuery.Create(nil);
       adotemp33.Connection:=ADOConnection1;
       adotemp33.Close;
       adotemp33.SQL.Clear;
-      adotemp33.SQL.Text:='select * from make_barcode where req_detail_id in '+AFriend_Req_Detail_ID;
+      adotemp33.SQL.Text:='select * from make_barcode where req_detail_id in '+AFriend_Req_Detail_ID+' and barcode<>'''' ';
       adotemp33.Open;
       while not adotemp33.Eof do
       begin
-        adotemp22:=TUniQuery.Create(nil);
-        adotemp22.Connection:=UniConnExtSystem;
-        adotemp22.Close;
-        adotemp22.SQL.Clear;
-        adotemp22.SQL.Text:='select * from view_test_request where req_detail_id='''+adotemp33.fieldbyname('req_detail_id').AsString+''' ';
-        adotemp22.Open;
-        item_no:=adotemp22.fieldbyname('his_item_no').AsString;
-        specimen_type:=adotemp22.fieldbyname('specimen_type').AsString;
-        adotemp22.Free;
+        his_item_no:=adotemp33.fieldbyname('his_item_no').AsString;
+        specimen_type:=adotemp33.fieldbyname('specimen_type').AsString;
 
         adotemp44:=TADOQuery.Create(nil);
         adotemp44.Connection:=ADOConnection1;
         adotemp44.Close;
         adotemp44.SQL.Clear;
-        adotemp44.SQL.Text:='select top 1 ci.Id,ci.Name,ci.dept_DfValue,ci.specimentype_DfValue '+
+        adotemp44.SQL.Text:='select top 1 ci.dept_DfValue '+
                             'from combinitem ci,HisCombItem hci '+
                             'where ci.Unid=hci.CombUnid and hci.ExtSystemId='''+ExtSystemId+
                             ''' and hci.HisItem=:HisItem';
-        adotemp44.Parameters.ParamByName('HisItem').Value:=item_no;
+        adotemp44.Parameters.ParamByName('HisItem').Value:=his_item_no;
         adotemp44.Open;
         defaultWorkGroup44:=adotemp44.fieldbyname('dept_DfValue').AsString;
         adotemp44.Free;
 
         if(specimen_type=ASpecimen_Type)and(defaultWorkGroup=defaultWorkGroup44)and(defaultWorkGroup<>'')and(ASpecimen_Type<>'')then
         begin
-          ExecSQLCmd(LisConn,'insert into make_barcode (req_detail_id,barcode,req_header_id,operator,patientname,sex,age,ageunit,req_time,req_dept,req_doc,his_item_no,his_item_name,specimen_type,patient_type) values ('''+Areq_detail_id+''','''+adotemp33.fieldbyname('barcode').AsString+''','''+AReq_Header_ID+''','''+operator_name+''','''+APatientname+''','''+ASex+''','''+AAge+''','''+AAgeunit+''','''+AReq_time+''','''+AReq_dept+''','''+AReq_doc+''','''+AItem_No+''','''+AItem_name+''','''+ASpecimen_Type+''','''+APatient_type+''')');
+          ExecSQLCmd(LisConn,'update make_barcode set barcode='''+adotemp33.fieldbyname('barcode').AsString+''' where req_detail_id='''+AReq_Detail_ID+''' ');
           exit;
         end;
 
@@ -736,7 +740,7 @@ begin
     end;
 
     //情形4:上面的情况均没有条码,则自己做为条码且将自己写入make_barcode
-    ExecSQLCmd(LisConn,'insert into make_barcode (req_detail_id,barcode,req_header_id,operator,patientname,sex,age,ageunit,req_time,req_dept,req_doc,his_item_no,his_item_name,specimen_type,patient_type) values ('''+Areq_detail_id+''','''+Areq_detail_id+''','''+AReq_Header_ID+''','''+operator_name+''','''+APatientname+''','''+ASex+''','''+AAge+''','''+AAgeunit+''','''+AReq_time+''','''+AReq_dept+''','''+AReq_doc+''','''+AItem_No+''','''+AItem_name+''','''+ASpecimen_Type+''','''+APatient_type+''')');
+    ExecSQLCmd(LisConn,'update make_barcode set barcode='''+AReq_Detail_ID+''' where req_detail_id='''+AReq_Detail_ID+''' ');
 end;
 
 end.

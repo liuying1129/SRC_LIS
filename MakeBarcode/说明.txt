@@ -10,7 +10,7 @@ if not exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[make_b
 CREATE TABLE make_barcode
 (
 	req_detail_id varchar(50) primary key,
-	barcode varchar(50) NOT NULL,
+	barcode varchar(50) NULL,
 	req_header_id varchar(50) NOT NULL,
 	patientname varchar(40) NULL,
 	sex varchar(8) NULL,
