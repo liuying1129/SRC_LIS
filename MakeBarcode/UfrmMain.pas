@@ -42,10 +42,10 @@ type
     Panel2: TPanel;
     BitBtn3: TBitBtn;
     RadioGroup2: TRadioGroup;
-    VirtualTable1: TVirtualTable;
     Label3: TLabel;
     Label4: TLabel;
     Label5: TLabel;
+    VirtualTable1: TADOQuery;
     procedure FormCreate(Sender: TObject);
     procedure SpeedButton1Click(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
@@ -154,6 +154,9 @@ procedure TfrmMain.FormCreate(Sender: TObject);
 begin
   MakeExtSystemDBConn;
   MakeAdoDBConn;
+
+  UniQuery1.Connection:=UniConnExtSystem;
+  VirtualTable1.Connection:=ADOConnection1;
 end;
 
 procedure TfrmMain.SpeedButton1Click(Sender: TObject);
@@ -464,11 +467,10 @@ var
   OldCurrent:TBookmark;
 
   Req_Detail_ID, Req_Header_ID, His_Item_No, specimen_type:String;
-  barcode:String;
   patientname,sex,age,ageunit,req_time,req_dept,req_doc,his_item_name,patient_type:String;
 
-  bFound:boolean;
   Select_Req_Detail_ID_List:TStrings;
+  Select_Req_Detail_ID:String;//格式如('0001','0002','0003'),方便拼接SQL
   Friend_Req_Detail_ID:String;//友军.格式如('0001','0002','0003'),方便拼接SQL
 begin
   if not UniQuery1.Active then exit;
@@ -479,6 +481,7 @@ begin
   Save_Cursor := Screen.Cursor;
   Screen.Cursor := crHourGlass;
 
+  Select_Req_Detail_ID:='';
   Select_Req_Detail_ID_List:=TStringList.Create;
 
   //Grid勾选记录判断方式二 begin
@@ -491,11 +494,16 @@ begin
   begin
     DBGridEh1.DataSource.DataSet.Bookmark:=DBGridEh1.SelectedRows[i];
 
-    Select_Req_Detail_ID_List.Add(DBGridEh1.DataSource.DataSet.fieldbyname('Req_Detail_ID').AsString+'='+DBGridEh1.DataSource.DataSet.fieldbyname('Req_Header_ID').AsString)
+    Select_Req_Detail_ID_List.Add(DBGridEh1.DataSource.DataSet.fieldbyname('Req_Detail_ID').AsString+'='+DBGridEh1.DataSource.DataSet.fieldbyname('Req_Header_ID').AsString);
+
+    Select_Req_Detail_ID:=Select_Req_Detail_ID+','+''''+DBGridEh1.DataSource.DataSet.fieldbyname('Req_Detail_ID').AsString+'''';
   end;
   DBGridEh1.DataSource.DataSet.GotoBookmark(OldCurrent);
   DBGridEh1.DataSource.DataSet.EnableControls;
-  //Grid勾选记录判断方式二 end}  
+  //Grid勾选记录判断方式二 end}
+  
+  delete(Select_Req_Detail_ID,1,1);//删除第一个字符，即逗号
+  if Select_Req_Detail_ID<>'' then Select_Req_Detail_ID:='('+Select_Req_Detail_ID+')';
 
   //Grid勾选记录判断方式二 begin
   //该方式无需循环全部数据集,只需循环所选记录（该循环用于生成条码）
@@ -538,55 +546,29 @@ begin
 
   Select_Req_Detail_ID_List.Free;
 
-  //Grid勾选记录判断方式二 begin
-  //该方式无需循环全部数据集,只需循环所选记录（该循环拼接用于打印的内存表,条码相同的项目合并在一起）
-
-  //设计期设置VirtualTable字段
+  //用于打印的数据集,条码相同的项目合并在一起 begin
+  //姓名|性别|年龄|年龄单位|申请时间|申请科室|条码号|项目名称1,项目名称2...
+  VirtualTable1.Close;
+  VirtualTable1.SQL.Clear;
+  VirtualTable1.SQL.Text:='SELECT '+
+                          'MIN(patientname) AS 姓名,'+            //barcode分组中其中一个patientname
+                          'MIN(sex) AS 性别,'+                    //barcode分组中其中一个sex
+                          'MIN(age) AS 年龄,'+                    //barcode分组中其中一个age
+                          'MIN(ageunit) AS 年龄单位,'+            //barcode分组中其中一个ageunit
+                          'MIN(req_time) AS 申请时间,'+           //barcode分组中其中一个req_time
+                          'MIN(req_dept) AS 申请科室,'+           //barcode分组中其中一个req_dept
+                          'barcode as 条码号,'+
+                          'STUFF( '+
+                          '  (SELECT '','' + his_item_name '+
+                          '   FROM make_barcode b2 '+
+                          '   WHERE b2.barcode = b1.barcode '+
+                          '   FOR XML PATH(''''), TYPE).value(''.'', ''NVARCHAR(MAX)''), 1, 1, '''') AS 项目名称 '+
+                          'FROM make_barcode b1 '+
+                          'where barcode<>'' '+
+                          'and req_detail_id in '+Select_Req_Detail_ID+
+                          'GROUP BY barcode';
   VirtualTable1.Open;
-  
-  VirtualTable1.Clear;
-  OldCurrent:=DBGridEh1.DataSource.DataSet.GetBookmark;
-  DBGridEh1.DataSource.DataSet.DisableControls;
-  for i:=0 to DBGridEh1.SelectedRows.Count-1 do
-  begin
-    DBGridEh1.DataSource.DataSet.Bookmark:=DBGridEh1.SelectedRows[i];
-
-    barcode:=ScalarSQLCmd(LisConn,'select barcode from make_barcode where req_detail_id='''+DBGridEh1.DataSource.DataSet.fieldbyname('req_detail_id').AsString+''' ');
-
-    bFound:=false;
-    VirtualTable1.First;
-    while not VirtualTable1.Eof do
-    begin
-      if VirtualTable1.FieldByName('条码号').AsString=barcode then
-      begin
-        VirtualTable1.Edit;
-        VirtualTable1.FieldByName('项目名称').AsString:=VirtualTable1.FieldByName('项目名称').AsString+' '+DBGridEh1.DataSource.DataSet.fieldbyname('项目名称').AsString;
-        VirtualTable1.Post;
-        bFound:=true;
-        break;
-      end;
-      VirtualTable1.Next;
-    end;
-
-    if not bFound then
-    begin
-      VirtualTable1.Append;
-      VirtualTable1.FieldByName('姓名').AsString:=DBGridEh1.DataSource.DataSet.fieldbyname('姓名').AsString;
-      VirtualTable1.FieldByName('性别').AsString:=DBGridEh1.DataSource.DataSet.fieldbyname('性别').AsString;
-      VirtualTable1.FieldByName('年龄').AsString:=DBGridEh1.DataSource.DataSet.fieldbyname('年龄').AsString;
-      VirtualTable1.FieldByName('年龄单位').AsString:=DBGridEh1.DataSource.DataSet.fieldbyname('年龄单位').AsString;
-      VirtualTable1.FieldByName('申请科室').AsString:=DBGridEh1.DataSource.DataSet.fieldbyname('申请科室').AsString;
-      VirtualTable1.FieldByName('申请时间').AsString:=DBGridEh1.DataSource.DataSet.fieldbyname('申请时间').AsString;
-      VirtualTable1.FieldByName('条码号').AsString:=barcode;
-      VirtualTable1.FieldByName('项目名称').AsString:=DBGridEh1.DataSource.DataSet.fieldbyname('项目名称').AsString;
-      VirtualTable1.Post;
-    end;
-  end;
-  DBGridEh1.DataSource.DataSet.GotoBookmark(OldCurrent);
-  DBGridEh1.DataSource.DataSet.EnableControls;
-  if length(memo1.Lines.Text)>=60000 then memo1.Lines.Clear;//memo只能接受64K个字符
-  memo1.Lines.Add(FormatDatetime('YYYY-MM-DD HH:NN:SS', Now) + ':条码生成完毕!');
-  //Grid勾选记录判断方式二 end}
+  //用于打印的数据集,条码相同的项目合并在一起 end
 
   //打印 begin
   frxReport1.Clear;//清除报表模板
@@ -597,7 +579,6 @@ begin
     exit;
   end;
 
-  VirtualTable1.First;
   while not VirtualTable1.Eof do
   begin
     if RadioGroup2.ItemIndex=0 then  //预览模式

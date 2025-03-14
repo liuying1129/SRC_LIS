@@ -358,55 +358,9 @@ object frmMain: TfrmMain
       end
     end
   end
-  object VirtualTable1: TVirtualTable
-    FieldDefs = <
-      item
-        Name = #22995#21517
-        DataType = ftString
-        Size = 50
-      end
-      item
-        Name = #24615#21035
-        DataType = ftString
-        Size = 20
-      end
-      item
-        Name = #24180#40836
-        DataType = ftString
-        Size = 20
-      end
-      item
-        Name = #24180#40836#21333#20301
-        DataType = ftString
-        Size = 20
-      end
-      item
-        Name = #30003#35831#31185#23460
-        DataType = ftString
-        Size = 20
-      end
-      item
-        Name = #30003#35831#26102#38388
-        DataType = ftString
-        Size = 30
-      end
-      item
-        Name = #26465#30721#21495
-        DataType = ftString
-        Size = 50
-      end
-      item
-        Name = #39033#30446#21517#31216
-        DataType = ftString
-        Size = 200
-      end>
-    Left = 224
-    Top = 252
-    Data = {
-      030008000400D0D5C3FB01003200000000000400D0D4B1F00100140000000000
-      0400C4EAC1E401001400000000000800C4EAC1E4B5A5CEBB0100140000000000
-      0800C9EAC7EBBFC6CAD201001400000000000800C9EAC7EBCAB1BCE401001E00
-      000000000600CCF5C2EBBAC501003200000000000800CFEEC4BFC3FBB3C60100
-      C80000000000000000000000}
+  object VirtualTable1: TADOQuery
+    Parameters = <>
+    Left = 724
+    Top = 8
   end
 end
