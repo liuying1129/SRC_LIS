@@ -564,9 +564,9 @@ begin
                           '   WHERE b2.barcode = b1.barcode '+
                           '   FOR XML PATH(''''), TYPE).value(''.'', ''NVARCHAR(MAX)''), 1, 1, '''') AS 项目名称 '+
                           'FROM make_barcode b1 '+
-                          'where barcode<>'' '+
+                          'where barcode<>'''' '+
                           'and req_detail_id in '+Select_Req_Detail_ID+
-                          'GROUP BY barcode';
+                          ' GROUP BY barcode';
   VirtualTable1.Open;
   //用于打印的数据集,条码相同的项目合并在一起 end
 
