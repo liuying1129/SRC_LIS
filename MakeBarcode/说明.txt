@@ -5,6 +5,9 @@
 系统设置->通用代码->样本接收
 外部系统编码：默认值HIS.应与LIS项目对照一致
 
+使用req_detail_id字段做为条码号，有字母有数字，
+经测试这四种码是可扫描的：Code128、Code93Extended、CodeEAN128A、CodeEAN128C
+
 --LIS条码表创建脚本
 if not exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[make_barcode]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
 CREATE TABLE make_barcode
