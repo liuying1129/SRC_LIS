@@ -28,3 +28,9 @@ jdk-17\conf\security\java.security,找到【TLSv1, TLSv1.1,】,删除并保存
 
 # 项目SRC_CentralPrint
 集中打印程序
+
+# 项目MakeBarcode
+条码打印程序 - 标准版
+
+# 项目SampleRcpt
+样本接收程序 - 标准版
