@@ -2348,8 +2348,8 @@ begin
   tmpADOLYGetcode.OpenStr:='select caseno as 病历号,patientname as 姓名,sex as 性别,age as 年龄,deptname as 送检科室,check_doctor as 送检医生,issure as 备注,bedno as 床号,diagnose as 临床诊断 from view_Chk_Con_All where isnull(caseno,'''')<>'''' order by unid desc';//最近输入的显示在最前(一般希望选择最近的病历) 
   tmpADOLYGetcode.InField:='caseno';
   tmpADOLYGetcode.InValue:=tLabeledEdit(sender).Text;
-  tmpADOLYGetcode.ShowX:=left+tLabeledEdit(SENDER).Parent.Left+tLabeledEdit(SENDER).Left;
-  tmpADOLYGetcode.ShowY:=top+22{当前窗体标题栏高度}+21{当前窗体菜单高度}+tLabeledEdit(SENDER).Parent.Top+tLabeledEdit(SENDER).Parent.Parent.Top{Panel7}+tLabeledEdit(SENDER).Top+tLabeledEdit(SENDER).Height;
+  tmpADOLYGetcode.ShowX:=tLabeledEdit(SENDER).ClientToScreen(Point(0, 0)).X;//left+tLabeledEdit(SENDER).Parent.Left+tLabeledEdit(SENDER).Left;
+  tmpADOLYGetcode.ShowY:=tLabeledEdit(SENDER).ClientToScreen(Point(0, tLabeledEdit(SENDER).Height)).Y;//top+22{当前窗体标题栏高度}+21{当前窗体菜单高度}+tLabeledEdit(SENDER).Parent.Top+tLabeledEdit(SENDER).Parent.Parent.Top{Panel7}+tLabeledEdit(SENDER).Top+tLabeledEdit(SENDER).Height;
 
   if tmpADOLYGetcode.Execute then
   begin
@@ -2378,8 +2378,8 @@ begin
   tmpADOLYGetcode.OpenStr:='select name as 名称 from CommCode where TypeName=''优先级别'' ';
   tmpADOLYGetcode.InField:='id,wbm,pym';
   tmpADOLYGetcode.InValue:=tLabeledEdit(sender).Text;
-  tmpADOLYGetcode.ShowX:=left+tLabeledEdit(SENDER).Parent.Left+tLabeledEdit(SENDER).Left;
-  tmpADOLYGetcode.ShowY:=top+22{当前窗体标题栏高度}+21{当前窗体菜单高度}+tLabeledEdit(SENDER).Parent.Top+tLabeledEdit(SENDER).Parent.Parent.Top{Panel7}+tLabeledEdit(SENDER).Top+tLabeledEdit(SENDER).Height;
+  tmpADOLYGetcode.ShowX:=TComboBox(SENDER).ClientToScreen(Point(0, 0)).X;//left+tLabeledEdit(SENDER).Parent.Left+tLabeledEdit(SENDER).Left;
+  tmpADOLYGetcode.ShowY:=TComboBox(SENDER).ClientToScreen(Point(0, TComboBox(SENDER).Height)).Y;//top+22{当前窗体标题栏高度}+21{当前窗体菜单高度}+tLabeledEdit(SENDER).Parent.Top+tLabeledEdit(SENDER).Parent.Parent.Top{Panel7}+tLabeledEdit(SENDER).Top+tLabeledEdit(SENDER).Height;
 
   if tmpADOLYGetcode.Execute then
   begin
@@ -2404,8 +2404,8 @@ begin
   tmpADOLYGetcode.OpenStr:='select name as 名称 from CommCode where TypeName=''部门'' ';
   tmpADOLYGetcode.InField:='id,wbm,pym';
   tmpADOLYGetcode.InValue:=tLabeledEdit(sender).Text;
-  tmpADOLYGetcode.ShowX:=left+tLabeledEdit(SENDER).Parent.Left+tLabeledEdit(SENDER).Left;
-  tmpADOLYGetcode.ShowY:=top+22{当前窗体标题栏高度}+21{当前窗体菜单高度}+tLabeledEdit(SENDER).Parent.Top+tLabeledEdit(SENDER).Parent.Parent.Top{Panel7}+tLabeledEdit(SENDER).Top+tLabeledEdit(SENDER).Height;
+  tmpADOLYGetcode.ShowX:=TComboBox(SENDER).ClientToScreen(Point(0, 0)).X;//left+tLabeledEdit(SENDER).Parent.Left+tLabeledEdit(SENDER).Left;
+  tmpADOLYGetcode.ShowY:=TComboBox(SENDER).ClientToScreen(Point(0, TComboBox(SENDER).Height)).Y;//top+22{当前窗体标题栏高度}+21{当前窗体菜单高度}+tLabeledEdit(SENDER).Parent.Top+tLabeledEdit(SENDER).Parent.Parent.Top{Panel7}+tLabeledEdit(SENDER).Top+tLabeledEdit(SENDER).Height;
 
   if tmpADOLYGetcode.Execute then
   begin
@@ -2430,8 +2430,8 @@ begin
   tmpADOLYGetcode.OpenStr:='select name as 名称 from worker';
   tmpADOLYGetcode.InField:='id,wbm,pinyin';
   tmpADOLYGetcode.InValue:=tLabeledEdit(sender).Text;
-  tmpADOLYGetcode.ShowX:=left+tLabeledEdit(SENDER).Parent.Left+tLabeledEdit(SENDER).Left;
-  tmpADOLYGetcode.ShowY:=top+22{当前窗体标题栏高度}+21{当前窗体菜单高度}+tLabeledEdit(SENDER).Parent.Top+tLabeledEdit(SENDER).Parent.Parent.Top{Panel7}+tLabeledEdit(SENDER).Top+tLabeledEdit(SENDER).Height;
+  tmpADOLYGetcode.ShowX:=TComboBox(SENDER).ClientToScreen(Point(0, 0)).X;//left+tLabeledEdit(SENDER).Parent.Left+tLabeledEdit(SENDER).Left;
+  tmpADOLYGetcode.ShowY:=TComboBox(SENDER).ClientToScreen(Point(0, TComboBox(SENDER).Height)).Y;//top+22{当前窗体标题栏高度}+21{当前窗体菜单高度}+tLabeledEdit(SENDER).Parent.Top+tLabeledEdit(SENDER).Parent.Parent.Top{Panel7}+tLabeledEdit(SENDER).Top+tLabeledEdit(SENDER).Height;
 
   if tmpADOLYGetcode.Execute then
   begin
@@ -2452,8 +2452,8 @@ begin
   tmpADOLYGetcode.OpenStr:='select name as 名称 from CommCode where TypeName=''样本类型'' ';
   tmpADOLYGetcode.InField:='id,wbm,pym';
   tmpADOLYGetcode.InValue:=tLabeledEdit(sender).Text;
-  tmpADOLYGetcode.ShowX:=left+tLabeledEdit(SENDER).Parent.Left+tLabeledEdit(SENDER).Left;
-  tmpADOLYGetcode.ShowY:=top+22{当前窗体标题栏高度}+21{当前窗体菜单高度}+tLabeledEdit(SENDER).Parent.Top+tLabeledEdit(SENDER).Parent.Parent.Top{Panel7}+tLabeledEdit(SENDER).Top+tLabeledEdit(SENDER).Height;
+  tmpADOLYGetcode.ShowX:=TComboBox(SENDER).ClientToScreen(Point(0, 0)).X;//left+tLabeledEdit(SENDER).Parent.Left+tLabeledEdit(SENDER).Left;
+  tmpADOLYGetcode.ShowY:=TComboBox(SENDER).ClientToScreen(Point(0, TComboBox(SENDER).Height)).Y;//top+22{当前窗体标题栏高度}+21{当前窗体菜单高度}+tLabeledEdit(SENDER).Parent.Top+tLabeledEdit(SENDER).Parent.Parent.Top{Panel7}+tLabeledEdit(SENDER).Top+tLabeledEdit(SENDER).Height;
 
   if tmpADOLYGetcode.Execute then
   begin
@@ -2474,8 +2474,8 @@ begin
   tmpADOLYGetcode.OpenStr:='select name as 名称 from CommCode where TypeName=''样本状态'' ';
   tmpADOLYGetcode.InField:='id,wbm,pym';
   tmpADOLYGetcode.InValue:=tLabeledEdit(sender).Text;
-  tmpADOLYGetcode.ShowX:=left+tLabeledEdit(SENDER).Parent.Left+tLabeledEdit(SENDER).Left;
-  tmpADOLYGetcode.ShowY:=top+22{当前窗体标题栏高度}+21{当前窗体菜单高度}+tLabeledEdit(SENDER).Parent.Top+tLabeledEdit(SENDER).Parent.Parent.Top{Panel7}+tLabeledEdit(SENDER).Top+tLabeledEdit(SENDER).Height;
+  tmpADOLYGetcode.ShowX:=TComboBox(SENDER).ClientToScreen(Point(0, 0)).X;//left+tLabeledEdit(SENDER).Parent.Left+tLabeledEdit(SENDER).Left;
+  tmpADOLYGetcode.ShowY:=TComboBox(SENDER).ClientToScreen(Point(0, TComboBox(SENDER).Height)).Y;//top+22{当前窗体标题栏高度}+21{当前窗体菜单高度}+tLabeledEdit(SENDER).Parent.Top+tLabeledEdit(SENDER).Parent.Parent.Top{Panel7}+tLabeledEdit(SENDER).Top+tLabeledEdit(SENDER).Height;
 
   if tmpADOLYGetcode.Execute then
   begin
@@ -2497,8 +2497,8 @@ begin
   tmpADOLYGetcode.OpenStr:='select name as 名称 from CommCode where TypeName=''临床诊断'' ';
   tmpADOLYGetcode.InField:='id,wbm,pym';
   tmpADOLYGetcode.InValue:=tLabeledEdit(sender).Text;
-  tmpADOLYGetcode.ShowX:=left+tLabeledEdit(SENDER).Parent.Left+tLabeledEdit(SENDER).Left;
-  tmpADOLYGetcode.ShowY:=top+22{当前窗体标题栏高度}+21{当前窗体菜单高度}+tLabeledEdit(SENDER).Parent.Top+tLabeledEdit(SENDER).Parent.Parent.Top{Panel7}+tLabeledEdit(SENDER).Top+tLabeledEdit(SENDER).Height;
+  tmpADOLYGetcode.ShowX:=tLabeledEdit(SENDER).ClientToScreen(Point(0, 0)).X;//left+tLabeledEdit(SENDER).Parent.Left+tLabeledEdit(SENDER).Left;
+  tmpADOLYGetcode.ShowY:=tLabeledEdit(SENDER).ClientToScreen(Point(0, tLabeledEdit(SENDER).Height)).Y;//top+22{当前窗体标题栏高度}+21{当前窗体菜单高度}+tLabeledEdit(SENDER).Parent.Top+tLabeledEdit(SENDER).Parent.Parent.Top{Panel7}+tLabeledEdit(SENDER).Top+tLabeledEdit(SENDER).Height;
 
   if tmpADOLYGetcode.Execute then
   begin
@@ -2519,8 +2519,8 @@ begin
   tmpADOLYGetcode.OpenStr:='select name as 名称 from CommCode where TypeName=''备注'' ';
   tmpADOLYGetcode.InField:='id,wbm,pym';
   tmpADOLYGetcode.InValue:=tLabeledEdit(sender).Text;
-  tmpADOLYGetcode.ShowX:=left+tLabeledEdit(SENDER).Parent.Left+tLabeledEdit(SENDER).Left;
-  tmpADOLYGetcode.ShowY:=top+22{当前窗体标题栏高度}+21{当前窗体菜单高度}+tLabeledEdit(SENDER).Parent.Top+tLabeledEdit(SENDER).Parent.Parent.Top{Panel7}+tLabeledEdit(SENDER).Top+tLabeledEdit(SENDER).Height;
+  tmpADOLYGetcode.ShowX:=tLabeledEdit(SENDER).ClientToScreen(Point(0, 0)).X;//left+tLabeledEdit(SENDER).Parent.Left+tLabeledEdit(SENDER).Left;
+  tmpADOLYGetcode.ShowY:=tLabeledEdit(SENDER).ClientToScreen(Point(0, tLabeledEdit(SENDER).Height)).Y;//top+22{当前窗体标题栏高度}+21{当前窗体菜单高度}+tLabeledEdit(SENDER).Parent.Top+tLabeledEdit(SENDER).Parent.Parent.Top{Panel7}+tLabeledEdit(SENDER).Top+tLabeledEdit(SENDER).Height;
 
   if tmpADOLYGetcode.Execute then
   begin
@@ -3740,8 +3740,8 @@ begin
   tmpADOLYGetcode.OpenStr:='select name as 名称,ID AS 代码 from CommCode where TypeName=''所属公司'' ';
   tmpADOLYGetcode.InField:='id,wbm,pym';
   tmpADOLYGetcode.InValue:=tLabeledEdit(sender).Text;
-  tmpADOLYGetcode.ShowX:=left+tLabeledEdit(SENDER).Parent.Left+tLabeledEdit(SENDER).Left;
-  tmpADOLYGetcode.ShowY:=top+22{当前窗体标题栏高度}+21{当前窗体菜单高度}+tLabeledEdit(SENDER).Parent.Top+tLabeledEdit(SENDER).Parent.Parent.Top{Panel7}+tLabeledEdit(SENDER).Top+tLabeledEdit(SENDER).Height;
+  tmpADOLYGetcode.ShowX:=tLabeledEdit(SENDER).ClientToScreen(Point(0, 0)).X;//left+tLabeledEdit(SENDER).Parent.Left+tLabeledEdit(SENDER).Left;
+  tmpADOLYGetcode.ShowY:=tLabeledEdit(SENDER).ClientToScreen(Point(0, tLabeledEdit(SENDER).Height)).Y;//top+22{当前窗体标题栏高度}+21{当前窗体菜单高度}+tLabeledEdit(SENDER).Parent.Top+tLabeledEdit(SENDER).Parent.Parent.Top{Panel7}+tLabeledEdit(SENDER).Top+tLabeledEdit(SENDER).Height;
 
   if tmpADOLYGetcode.Execute then
   begin
@@ -3760,8 +3760,8 @@ begin
   tmpADOLYGetcode.OpenStr:='select name as 名称,ID AS 代码 from CommCode where TypeName=''所属部门'' ';
   tmpADOLYGetcode.InField:='id,wbm,pym';
   tmpADOLYGetcode.InValue:=tLabeledEdit(sender).Text;
-  tmpADOLYGetcode.ShowX:=left+tLabeledEdit(SENDER).Parent.Left+tLabeledEdit(SENDER).Left;
-  tmpADOLYGetcode.ShowY:=top+22{当前窗体标题栏高度}+21{当前窗体菜单高度}+tLabeledEdit(SENDER).Parent.Top+tLabeledEdit(SENDER).Parent.Parent.Top{Panel7}+tLabeledEdit(SENDER).Top+tLabeledEdit(SENDER).Height;
+  tmpADOLYGetcode.ShowX:=tLabeledEdit(SENDER).ClientToScreen(Point(0, 0)).X;//left+tLabeledEdit(SENDER).Parent.Left+tLabeledEdit(SENDER).Left;
+  tmpADOLYGetcode.ShowY:=tLabeledEdit(SENDER).ClientToScreen(Point(0, tLabeledEdit(SENDER).Height)).Y;//top+22{当前窗体标题栏高度}+21{当前窗体菜单高度}+tLabeledEdit(SENDER).Parent.Top+tLabeledEdit(SENDER).Parent.Parent.Top{Panel7}+tLabeledEdit(SENDER).Top+tLabeledEdit(SENDER).Height;
 
   if tmpADOLYGetcode.Execute then
   begin
@@ -3780,8 +3780,8 @@ begin
   tmpADOLYGetcode.OpenStr:='select name as 名称,ID AS 代码 from CommCode where TypeName=''工种'' ';
   tmpADOLYGetcode.InField:='id,wbm,pym';
   tmpADOLYGetcode.InValue:=tLabeledEdit(sender).Text;
-  tmpADOLYGetcode.ShowX:=left+tLabeledEdit(SENDER).Parent.Left+tLabeledEdit(SENDER).Left;
-  tmpADOLYGetcode.ShowY:=top+22{当前窗体标题栏高度}+21{当前窗体菜单高度}+tLabeledEdit(SENDER).Parent.Top+tLabeledEdit(SENDER).Parent.Parent.Top{Panel7}+tLabeledEdit(SENDER).Top+tLabeledEdit(SENDER).Height;
+  tmpADOLYGetcode.ShowX:=tLabeledEdit(SENDER).ClientToScreen(Point(0, 0)).X;//left+tLabeledEdit(SENDER).Parent.Left+tLabeledEdit(SENDER).Left;
+  tmpADOLYGetcode.ShowY:=tLabeledEdit(SENDER).ClientToScreen(Point(0, tLabeledEdit(SENDER).Height)).Y;//top+22{当前窗体标题栏高度}+21{当前窗体菜单高度}+tLabeledEdit(SENDER).Parent.Top+tLabeledEdit(SENDER).Parent.Parent.Top{Panel7}+tLabeledEdit(SENDER).Top+tLabeledEdit(SENDER).Height;
 
   if tmpADOLYGetcode.Execute then
   begin
@@ -3801,8 +3801,8 @@ begin
   tmpADOLYGetcode.OpenStr:='select name as 名称,id as 代码 from CommCode where TypeName=''性别'' ';
   tmpADOLYGetcode.InField:='id,wbm,pym';
   tmpADOLYGetcode.InValue:=tLabeledEdit(sender).Text;
-  tmpADOLYGetcode.ShowX:=left+tLabeledEdit(SENDER).Parent.Left+tLabeledEdit(SENDER).Left;
-  tmpADOLYGetcode.ShowY:=top+22{当前窗体标题栏高度}+21{当前窗体菜单高度}+tLabeledEdit(SENDER).Parent.Top+tLabeledEdit(SENDER).Parent.Parent.Top{Panel7}+tLabeledEdit(SENDER).Top+tLabeledEdit(SENDER).Height;
+  tmpADOLYGetcode.ShowX:=tLabeledEdit(SENDER).ClientToScreen(Point(0, 0)).X;//left+tLabeledEdit(SENDER).Parent.Left+tLabeledEdit(SENDER).Left;
+  tmpADOLYGetcode.ShowY:=tLabeledEdit(SENDER).ClientToScreen(Point(0, tLabeledEdit(SENDER).Height)).Y;//top+22{当前窗体标题栏高度}+21{当前窗体菜单高度}+tLabeledEdit(SENDER).Parent.Top+tLabeledEdit(SENDER).Parent.Parent.Top{Panel7}+tLabeledEdit(SENDER).Top+tLabeledEdit(SENDER).Height;
 
   if tmpADOLYGetcode.Execute then
   begin
