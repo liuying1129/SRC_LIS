@@ -8,7 +8,8 @@ uses
   ToolCtrlsEh, DBGridEhToolCtrls, DynVarsEh, ADODB, ActnList,
   MemDS, VirtualTable, Grids, DBGrids, ComCtrls, Buttons, GridsEh,
   DBAxisGridsEh, DBGridEh, IniFiles,StrUtils, DBGridEhGrouping,
-  Uni, UniProvider, MySQLUniProvider, SQLServerUniProvider, OracleUniProvider;
+  Uni, UniProvider, MySQLUniProvider, SQLServerUniProvider, OracleUniProvider,
+  EhLibVCL;
 
 //==为了通过发送消息更新主窗体状态栏而增加==//
 const
@@ -53,6 +54,7 @@ type
     SpeedButton2: TSpeedButton;
     LabeledEdit6: TLabeledEdit;
     BitBtn1: TSpeedButton;
+    SpeedButton3: TSpeedButton;
     procedure LabeledEdit1KeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure FormCreate(Sender: TObject);
@@ -64,6 +66,7 @@ type
     procedure FormShow(Sender: TObject);
     procedure ADOQuery2AfterOpen(DataSet: TDataSet);
     procedure SpeedButton2Click(Sender: TObject);
+    procedure SpeedButton3Click(Sender: TObject);
   private
     { Private declarations }
     function MakeExtSystemDBConn:boolean;
@@ -75,6 +78,7 @@ type
     procedure updatestatusBar(const text:string);//Text为该格式#$2+'0:abc'+#$2+'1:def'表示状态栏第0格显示abc,第1格显示def,依此类推
     //==========================================//
     procedure UpdateImportedReq(const AWorkGroup:String);//显示已导入的申请
+    procedure ReadLocalConfig;
   public
     { Public declarations }
   end;
@@ -85,6 +89,7 @@ var
   operator_name:string;
   operator_id:string;
   LisConn:string;//Lis连接字符串,MakeDBConn过程中被赋值,然后传入QC.DLL、CalcItemPro.dll
+  SelectWorkGroup:String;
 
   function ScalarSQLCmd(AConnectionString:string;ASQL:string;AErrorDlg:boolean=True):string;
 
@@ -366,9 +371,24 @@ begin
 
   for i:=0 to (DBGrid1.columns.count-2) do DBGrid1.columns[i].readonly:=True;//仅保留最后1列(联机号)可编辑
 
-  //Grid全选方式二 begin
-  DBGrid1.Selection.Rows.SelectAll;
-  //Grid全选方式二 end
+  //勾选 begin
+  if trim(SelectWorkGroup)='' then DBGrid1.Selection.Rows.SelectAll//Grid全选
+  else begin//根据条件进行勾选
+    DBGrid1.SelectedRows.Clear;
+    OldCurrent:=DBGrid1.DataSource.DataSet.GetBookmark;
+    DBGrid1.DataSource.DataSet.DisableControls;
+    DBGrid1.DataSource.DataSet.First;
+    while not DBGrid1.DataSource.DataSet.Eof do
+    begin
+      if SameText(SelectWorkGroup,DBGrid1.DataSource.DataSet.Fieldbyname('工作组').AsString) then
+        DBGrid1.SelectedRows.CurrentRowSelected:=True;
+
+      DBGrid1.DataSource.DataSet.Next;
+    end;
+    DBGrid1.DataSource.DataSet.GotoBookmark(OldCurrent);
+    DBGrid1.DataSource.DataSet.EnableControls;
+  end;
+  //勾选 end
 
   if CheckBox1.Checked then
   begin
@@ -425,6 +445,8 @@ procedure TfrmMain.FormCreate(Sender: TObject);
 begin
   MakeExtSystemDBConn;
   MakeAdoDBConn;
+
+  ReadLocalConfig;
 
   //设计期设置VirtualTable字段
   VirtualTable1.IndexFieldNames:='工作组';//按工作组排序
@@ -861,6 +883,27 @@ begin
   DBGrid2.Columns[2].Width:=60;//工作组
   DBGrid2.Columns[3].Width:=40;//联机号
   DBGrid2.Columns[4].Width:=230;//项目名称
+end;
+
+procedure TfrmMain.SpeedButton3Click(Sender: TObject);
+var
+  ss:String;
+begin
+  ss:='默认勾选的工作组'+#2+'Edit'+#2+#2+'0'+#2+'为空则默认勾选所有工作组'+#2+#3;
+  
+  if ShowOptionForm('','选项',Pchar(ss),Pchar(ChangeFileExt(Application.ExeName,'.ini'))) then
+	  ReadLocalConfig;
+end;
+
+procedure TfrmMain.ReadLocalConfig;
+var
+  ini:TInifile;
+begin
+  ini:=TINIFILE.Create(ChangeFileExt(Application.ExeName,'.ini'));
+
+  SelectWorkGroup:=ini.ReadString('选项','默认勾选的工作组','');
+
+  ini.Free;
 end;
 
 end.
