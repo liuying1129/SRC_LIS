@@ -55,6 +55,10 @@ type
     LabeledEdit6: TLabeledEdit;
     BitBtn1: TSpeedButton;
     SpeedButton3: TSpeedButton;
+    Panel2: TPanel;
+    ComboBox1: TComboBox;
+    Label2: TLabel;
+    Label3: TLabel;
     procedure LabeledEdit1KeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure FormCreate(Sender: TObject);
@@ -67,6 +71,8 @@ type
     procedure ADOQuery2AfterOpen(DataSet: TDataSet);
     procedure SpeedButton2Click(Sender: TObject);
     procedure SpeedButton3Click(Sender: TObject);
+    procedure ComboBox1DropDown(Sender: TObject);
+    procedure ComboBox1Change(Sender: TObject);
   private
     { Private declarations }
     function MakeExtSystemDBConn:boolean;
@@ -434,7 +440,7 @@ begin
     DBGrid1.DataSource.DataSet.EnableControls;
     //Grid勾选记录判断方式二 end}
 
-    UpdateImportedReq('');
+    UpdateImportedReq(ComboBox1.Text);
   end;
 
   (Sender as TLabeledEdit).Enabled:=true;
@@ -592,7 +598,7 @@ begin
   if LabeledEdit1.CanFocus then LabeledEdit1.SetFocus; 
   BitBtn1.Enabled:=true;//因定义了ShortCut,故不能使用(Sender as TBitBtn)
 
-  UpdateImportedReq('');
+  UpdateImportedReq(ComboBox1.Text);
 end;
 
 procedure TfrmMain.SingleRequestForm2Lis(const WorkGroup, His_Unid, patientname, sex,
@@ -664,6 +670,7 @@ begin
   ConfigIni:=tinifile.Create(ChangeFileExt(Application.ExeName,'.ini'));
 
   configini.WriteBool('Interface','ifDirect2LIS',CheckBox1.Checked);{记录是否扫描后直接导入LIS}
+  ConfigIni.WriteString('Interface','ShowReportType',trim(ComboBox1.Text)); {记录主界面中要显示的检验单类型}
 
   configini.Free;
 end;
@@ -677,12 +684,13 @@ begin
   CONFIGINI:=TINIFILE.Create(ChangeFileExt(Application.ExeName,'.ini'));
 
   CheckBox1.Checked:=configini.ReadBool('Interface','ifDirect2LIS',false);{记录是否扫描后直接导入LIS}
+  ComboBox1.Text:=trim(CONFIGINI.ReadString('Interface','ShowReportType',''));
 
   configini.Free;
   
   BitBtn1.Enabled:=not CheckBox1.Checked;
 
-  UpdateImportedReq('');
+  UpdateImportedReq(ComboBox1.Text);
 end;
 
 procedure TfrmMain.updatestatusBar(const text: string);
@@ -904,6 +912,16 @@ begin
   SelectWorkGroup:=ini.ReadString('选项','默认勾选的工作组','');
 
   ini.Free;
+end;
+
+procedure TfrmMain.ComboBox1DropDown(Sender: TObject);
+begin
+  LoadGroupName(TComboBox(Sender),'select name from CommCode WITH(NOLOCK) where TypeName=''检验组别'' AND SysName=''LIS'' group by name');
+end;
+
+procedure TfrmMain.ComboBox1Change(Sender: TObject);
+begin
+  UpdateImportedReq((Sender as TComboBox).Text);
 end;
 
 end.

@@ -389,9 +389,9 @@ object frmMain: TfrmMain
     TabOrder = 2
     object DBGrid2: TDBGrid
       Left = 2
-      Top = 15
+      Top = 45
       Width = 780
-      Height = 149
+      Height = 119
       Align = alClient
       DataSource = DataSource2
       ReadOnly = True
@@ -401,6 +401,44 @@ object frmMain: TfrmMain
       TitleFont.Height = -13
       TitleFont.Name = #23435#20307
       TitleFont.Style = []
+    end
+    object Panel2: TPanel
+      Left = 2
+      Top = 15
+      Width = 780
+      Height = 30
+      Align = alTop
+      TabOrder = 1
+      object Label2: TLabel
+        Left = 7
+        Top = 9
+        Width = 39
+        Height = 13
+        Caption = #24037#20316#32452
+      end
+      object Label3: TLabel
+        Left = 200
+        Top = 9
+        Width = 247
+        Height = 13
+        Caption = #27880#65306#20026#31354#26102#26174#31034#25152#26377#24037#20316#32452#30340#26410#23457#26680#26816#39564#21333
+        Font.Charset = ANSI_CHARSET
+        Font.Color = clBlue
+        Font.Height = -13
+        Font.Name = #23435#20307
+        Font.Style = []
+        ParentFont = False
+      end
+      object ComboBox1: TComboBox
+        Left = 48
+        Top = 5
+        Width = 145
+        Height = 21
+        ItemHeight = 13
+        TabOrder = 0
+        OnChange = ComboBox1Change
+        OnDropDown = ComboBox1DropDown
+      end
     end
   end
   object ADOConnection1: TADOConnection
