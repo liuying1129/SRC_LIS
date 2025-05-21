@@ -684,7 +684,7 @@ begin
     strsql44:=''
   else strsql44:=' combin_id='''+trim(cbxConnChar.Text)+''' and ';
   STRSQL47:=' 1=1 ';
-  STRSQL45:=' order by CONVERT(CHAR(10),check_date,121),优先级别,'+ifThen(N6.Checked,'right(''0000''+lsh,4)','联机号');
+  STRSQL45:=' order by CONVERT(CHAR(10),check_date,121),优先级别,'+ifThen(N6.Checked,'right(''0000''+lsh,4)','LEFT(checkid,1)+RIGHT(''000000000000000''+SUBSTRING(checkid,2,50),15)');
   ADObasic.Close;
   ADObasic.SQL.Clear;
   ADObasic.SQL.Add(strsql22);
