@@ -1496,12 +1496,6 @@ CREATE NONCLUSTERED INDEX [IX_chk_con_bak_1] ON [dbo].[chk_con_bak]
 )
 GO
 
-CREATE NONCLUSTERED INDEX [IX_chk_valu_bak_1] ON [dbo].[chk_valu_bak] 
-(
-	[itemid] ASC
-)
-GO
-
 CREATE NONCLUSTERED INDEX [IX_chk_valu_bak_2] ON [dbo].[chk_valu_bak] 
 (
 	[pkunid] ASC,
