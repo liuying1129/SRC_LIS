@@ -1473,10 +1473,11 @@ CREATE FUNCTION uf_ifHasHistoricalValue
 RETURNS bit AS  
 BEGIN 
   if @ValueUnid is null return 0
-  declare @pkunid int,@itemid varchar(50),@ValueAlarm int
-  SELECT @pkunid=pkunid,@itemid=itemid,@ValueAlarm=dbo.uf_ValueAlarm(itemid,min_value,max_value,itemvalue) FROM chk_valu where valueid=@ValueUnid 
+  declare @pkunid int,@itemid varchar(50),@itemvalue varchar(500)--,@ValueAlarm int
+  SELECT @pkunid=pkunid,@itemid=itemid,@itemvalue=itemvalue/*,@ValueAlarm=dbo.uf_ValueAlarm(itemid,min_value,max_value,itemvalue)*/ FROM chk_valu where valueid=@ValueUnid 
   if (@pkunid is null)  return 0--表示没找到刚刚插入记录相对应的主记录
-  if @ValueAlarm=0 return 0--20250122市政医院.为提升性能,仅对异常结果进行判断.删除该条件,则对所有结果进行判断
+  if (@itemvalue='')or(@itemvalue is null) return 0--如该项目结果为空，表示该项目根本没做，也就不必查看历史结果
+  --if @ValueAlarm=0 return 0--20250122市政医院.为提升性能,仅对异常结果进行判断.删除该条件,则对所有结果进行判断
   --20250122市政医院.经测试,chk_valu_bak.itemid增加索引,显著提升该函数性能
 
   declare @patientname varchar(50),@age varchar(50),@sex varchar(50),@report_date datetime
@@ -1488,11 +1489,11 @@ BEGIN
   set @Birthday=dbo.uf_GetBirthday(@age,@report_date)
   if (@Birthday='')or(@Birthday is null)or(@Birthday=0) return 0
 
-  if exists(select 1 from chk_con_bak Z,chk_valu_bak F 
+  if exists(select TOP 1 1 from chk_con_bak Z,chk_valu_bak F 
    where z.unid=f.pkunid and 
    z.patientname=@patientname and 
    z.sex=@sex and 
-   datepart(yyyy,dbo.uf_GetBirthday(z.age,z.report_date))=datepart(yyyy,@Birthday) and 
+   YEAR(dbo.uf_GetBirthday(z.age,z.report_date)) between YEAR(@Birthday)-1 and YEAR(@Birthday)+1 and
    f.itemid=@itemid and
    z.check_date is not null and 
    z.check_date<>'' and 
