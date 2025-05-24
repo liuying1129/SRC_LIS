@@ -3041,6 +3041,74 @@ GO
 SET ANSI_NULLS ON 
 GO
 
+--存储过程pro_GetLastTimeValue创建脚本
+if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[pro_GetLastTimeValue]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+  drop procedure [dbo].[pro_GetLastTimeValue]
+GO
+
+SET QUOTED_IDENTIFIER ON 
+GO
+SET ANSI_NULLS ON 
+GO
+
+  /*通过查看执行计划，增加如下索引，显著提升性能
+CREATE NONCLUSTERED INDEX [IX_chk_con_bak_1] ON [dbo].[chk_con_bak] 
+(
+	[patientname] ASC,
+	[sex] ASC,
+	[check_date] ASC
+)
+GO
+
+CREATE NONCLUSTERED INDEX [IX_chk_valu_bak_2] ON [dbo].[chk_valu_bak] 
+(
+	[pkunid] ASC,
+	[itemid] ASC
+)
+INCLUDE ( [itemvalue]) 
+GO
+  */
+
+CREATE PROCEDURE [dbo].[pro_GetLastTimeValue]
+--获取指定结果最近一次的历史结果及时间
+    @valueid int,                      --输入参数.指定结果记录的valueid字段值
+    @LastTimeValue varchar(500) OUTPUT,--输出参数.最近一次的历史结果
+    @LastTimeTime datetime OUTPUT      --输出参数.最近一次的历史时间
+AS
+BEGIN    
+  if @valueid is null return 
+  declare @pkunid int,@itemid varchar(50),@itemvalue varchar(500)
+  SELECT @pkunid=pkunid,@itemid=itemid,@itemvalue=itemvalue FROM chk_valu where valueid=@valueid 
+  if (@pkunid is null)  return --表示没找到刚刚插入记录相对应的主记录
+  if (@itemvalue='')or(@itemvalue is null) return 0--如该项目结果为空，表示该项目根本没做，也就不必查看历史结果
+
+  declare @patientname varchar(50),@age varchar(50),@sex varchar(50),@report_date datetime
+  select @patientname=patientname,@age=age,@sex=sex,@report_date=report_date from chk_con where unid=@pkunid
+  if (@patientname='')or(@patientname is null) return 
+  if (@age='')or(@age is null) return 
+  if (@sex='')or(@sex is null) return 
+  declare @Birthday datetime
+  set @Birthday=dbo.uf_GetBirthday(@age,@report_date)
+  if (@Birthday='')or(@Birthday is null)or(@Birthday=0) return 
+
+  select TOP 1 @LastTimeValue=F.itemvalue,@LastTimeTime=Z.check_date 
+   from chk_con_bak Z,chk_valu_bak F 
+   where z.unid=f.pkunid and 
+   z.patientname=@patientname and 
+   z.sex=@sex and 
+   YEAR(dbo.uf_GetBirthday(z.age,z.report_date)) between YEAR(@Birthday)-1 and YEAR(@Birthday)+1 and
+   f.itemid=@itemid and
+   z.check_date is not null and 
+   z.check_date<>'' and 
+   z.check_date<>0 and 
+   f.itemvalue is not null and 
+   f.itemvalue<>'' and
+   z.check_date>GETDATE()-365*2 --最近2年的结果
+   order by z.check_date desc
+END
+
+GO
+
 --20220921删除存储过程DYMRCG
 if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[DYMRCG]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
   drop procedure [dbo].[DYMRCG]
