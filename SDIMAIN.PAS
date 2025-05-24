@@ -3983,10 +3983,9 @@ end;
 procedure TSDIAppForm.N75Click(Sender: TObject);
 var
   Nname,Ssex,Qitemid,QitemName,Cbirthday:string;
-  adotemp11,adotemp66:tadoquery;
+  adotemp66:tadoquery;
   sHistorySeries,sCurSeries,Cage,Creport_date,sMin_value,sMax_value:string;
   //sHistorySeries格式:项目名称#$1当前结果日期#$2当前结果#$3历史结果1日期#$2历史结果1#$3...历史结果n日期#$2历史结果n#$3
-  ifHasHistoricalValue:boolean;
   Save_Cursor:TCursor;
 begin
   if not ADObasic.Active then exit;
@@ -3995,22 +3994,11 @@ begin
   if not ADO_dtl.Active then exit;
   if ADO_dtl.RecordCount=0 then exit;
 
+  //实际上,【最近历史结果】为空也可能有历史结果,因为【最近历史结果】限制了时间范围.该情况不显示历史结果对话框也不影响业务
+  if ADO_dtl.FieldByName('最近历史结果').AsString='' then exit;
+
   Save_Cursor := Screen.Cursor;
   Screen.Cursor := crHourGlass;
-  
-  adotemp11:=tadoquery.Create(nil);
-  adotemp11.Connection:=DM.ADOConnection1;
-  adotemp11.SQL.Clear;
-  adotemp11.SQL.Text:='select dbo.uf_ifHasHistoricalValue('+ADO_dtl.fieldbyname('唯一编号').AsString+') as ifHasHistoricalValue ';
-  adotemp11.Open;
-  ifHasHistoricalValue:=adotemp11.fieldbyname('ifHasHistoricalValue').AsBoolean;
-  adotemp11.Free;
-
-  if not ifHasHistoricalValue then//用该自定义函数判断是否有历史结果
-  begin
-    Screen.Cursor := Save_Cursor;  { Always restore to normal }
-    exit;
-  end;
 
   //=====================当前病人的基本信息===================================//
   Qitemid:=trim(ADO_dtl.fieldbyname('项目编号').AsString);
@@ -4041,7 +4029,7 @@ begin
    'where z.unid=f.pkunid and '+
    'z.patientname='''+Nname+''' and '+
    'z.sex='''+Ssex+''' and '+
-   'datepart(yyyy,dbo.uf_GetBirthday(z.age,z.report_date))=datepart(yyyy,'''+Cbirthday+''') and '+
+   'YEAR(dbo.uf_GetBirthday(z.age,z.report_date)) between YEAR('''+Cbirthday+''')-1 and YEAR('''+Cbirthday+''')+1 and '+
    'f.itemid='''+Qitemid+''' and '+
    'z.check_date is not null and '+
    'z.check_date<>'''' and '+
