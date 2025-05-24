@@ -239,6 +239,7 @@ type
     N24: TMenuItem;
     Action9: TAction;
     SpeedButton3: TSpeedButton;
+    N7: TMenuItem;
     procedure FileExit1Execute(Sender: TObject);
     procedure HelpAbout1Execute(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -395,6 +396,7 @@ type
     procedure LabeledEdit9DropDown(Sender: TObject);
     procedure cbxConnCharDropDown(Sender: TObject);
     procedure SpeedButton3Click(Sender: TObject);
+    procedure N7Click(Sender: TObject);
   private
     procedure CheckTheListBox;//根据当前病人的结果在checklistbox1中打钩
     procedure WriteProfile;
@@ -970,6 +972,7 @@ begin
   n36.Checked:=configini.ReadBool('Interface','ifShowMinValue',true);{记录是否显示项目最小值}
   n47.Checked:=configini.ReadBool('Interface','ifShowMaxValue',true);{记录是否显示项目最大值}
   n49.Checked:=configini.ReadBool('Interface','ifShowUnit',true);{记录是否显示项目单位}
+  n7.Checked:=configini.ReadBool('Interface','ifShowLastTimeValue',false);{记录是否显示最近历史结果}
   PageControl2.Height:=configini.ReadInteger('Interface','clbCombItemHeight',150);{记录组合项目选择框高度}
   Panel7.Width:=configini.ReadInteger('Interface','gridBaseInfoWidth',490);{记录基本信息框宽度}
   CheckBox1.Checked:=configini.ReadBool('Interface','ifContinuousEdit',false);{记录是否连续录入基本信息}
@@ -1026,6 +1029,7 @@ begin
   configini.WriteBool('Interface','ifShowMinValue',n36.Checked);{记录是否显示项目最小值}
   configini.WriteBool('Interface','ifShowMaxValue',n47.Checked);{记录是否显示项目最大值}
   configini.WriteBool('Interface','ifShowUnit',n49.Checked);{记录是否显示项目单位}
+  configini.WriteBool('Interface','ifShowLastTimeValue',n7.Checked);{记录是否显示最近历史结果}
   if PageControl2.Height<60 then PageControl2.Height:=60;
   configini.WriteInteger('Interface','clbCombItemHeight',PageControl2.Height);{记录组合项目选择框高度}
   configini.WriteInteger('Interface','gridBaseInfoWidth',Panel7.Width);{记录基本信息框宽度}
@@ -1160,6 +1164,8 @@ begin
   dbgrid2.Columns[8].Width:=50;
   dbgrid2.Columns[9].Width:=50;
   dbgrid2.Columns[10].Width:=50;
+  dbgrid2.Columns[12].Width:=82;//最近历史结果
+  dbgrid2.Columns[13].Width:=82;//最近历史时间
 
   for i:=0 to (dbgrid2.columns.count-1) do
    dbgrid2.columns[i].readonly:=TRUE;
@@ -1169,6 +1175,8 @@ begin
   VisibleColumn(dbgrid2,'最小值',N36.Checked);
   VisibleColumn(dbgrid2,'最大值',N47.Checked);
   VisibleColumn(dbgrid2,'单位',N49.Checked);
+  VisibleColumn(dbgrid2,'最近历史结果',N7.Checked);
+  VisibleColumn(dbgrid2,'最近历史时间',N7.Checked);
   
   VisibleColumn(dbgrid2,'项目编号',false);
   VisibleColumn(dbgrid2,'组合项目号',false);
@@ -2037,9 +2045,61 @@ end;
 procedure TSDIAppForm.update_Ado_dtl;
 var
   strsql11:string;
+  adotemp11,adotemp22:TAdoQuery;
+  SPTemp11:TADOStoredProc;
+  selectLastTimeValue,selectLastTimeTime:string;
 begin
   if not ADObasic.Active then exit;
 
+  selectLastTimeValue:='''''';
+  selectLastTimeTime:='''''';
+
+  if N7.Checked then
+  begin
+    //创建局部临时表(注:仅当前连接有效,且连接断开则自动删除)
+    dm.ADOConnection1.Execute('IF OBJECT_ID(''tempdb..#TTLastTime'') IS NULL CREATE TABLE #TTLastTime (valueid int,LastTimeValue varchar(500), LastTimeTime datetime)');
+
+    //获取所有需要处理的valueid
+    adotemp11:=tadoquery.Create(nil);
+    adotemp11.Connection:=dm.ADOConnection1;
+    adotemp11.Close;
+    adotemp11.SQL.Clear;
+    adotemp11.SQL.Text:='select * from chk_valu where pkunid=:pkunid and issure=1';//where条件与ADO_dtl一致
+    adotemp11.Parameters.ParamByName('pkunid').Value:=dsbasic.DataSet.FieldByName('唯一编号').AsInteger;
+    adotemp11.Open;
+    while not adotemp11.Eof do
+    begin
+      //执行存储过程.获取指定结果最近一次的历史结果及时间
+      SPTemp11:=TADOStoredProc.Create(nil);
+      SPTemp11.Connection:=dm.ADOConnection1;
+      SPTemp11.ProcedureName:='pro_GetLastTimeValue';
+      SPTemp11.Parameters.CreateParameter('valueid', ftInteger, pdInput, 0, adotemp11.FieldByName('valueid').AsInteger);
+      SPTemp11.Parameters.CreateParameter('LastTimeValue', ftString, pdOutput, 500, Null);
+      SPTemp11.Parameters.CreateParameter('LastTimeTime', ftDateTime, pdOutput, 0, Null);
+      SPTemp11.ExecProc;
+
+      //数据插入临时表
+      adotemp22:=tadoquery.Create(nil);
+      adotemp22.Connection:=dm.ADOConnection1;
+      adotemp22.Close;
+      adotemp22.SQL.Clear;
+      adotemp22.SQL.Text:='INSERT INTO #TTLastTime VALUES (:valueid,:LastTimeValue,:LastTimeTime)';
+      adotemp22.Parameters.ParamByName('valueid').Value:=adotemp11.FieldByName('valueid').AsInteger;
+      adotemp22.Parameters.ParamByName('LastTimeValue').Value:=SPTemp11.Parameters.ParamByName('LastTimeValue').Value;
+      adotemp22.Parameters.ParamByName('LastTimeTime').Value:=SPTemp11.Parameters.ParamByName('LastTimeTime').Value;
+      adotemp22.ExecSQL;
+      adotemp22.Free;
+
+      SPTemp11.Free;
+
+      adotemp11.Next;
+    end;
+    adotemp11.Free;
+
+    selectLastTimeValue:='(SELECT TOP 1 LastTimeValue FROM #TTLastTime WHERE valueid=cv.valueid)';
+    selectLastTimeTime:='(SELECT TOP 1 LastTimeTime FROM #TTLastTime WHERE valueid=cv.valueid)';
+  end;
+  
   strsql11:='select '+
             IfThen(ifSearchHistValue,'(case dbo.uf_ifHasHistoricalValue(valueid) when 1 then ''√'' else '''' end)','''/''')+
             ' as 史,'+
@@ -2047,8 +2107,9 @@ begin
             'name as 名称,english_name as 英文名,itemvalue as 检验结果,'+
             'min_value as 最小值,max_value as 最大值,'+
             'unit as 单位,'+
-            'pkcombin_id as 组合项目号,itemid as 项目编号,valueid as 唯一编号,IsEdited as 修改标志 '+
-            ' from chk_valu where pkunid=:pkunid and issure=1 '+
+            'pkcombin_id as 组合项目号,itemid as 项目编号,valueid as 唯一编号,IsEdited as 修改标志, '+
+            selectLastTimeValue+' as 最近历史结果,'+selectLastTimeTime+' as 最近历史时间 '+
+            ' from chk_valu cv where pkunid=:pkunid and issure=1 '+
             ' order by pkcombin_id,printorder ';
 
   ADO_dtl.Close;
@@ -2060,6 +2121,9 @@ begin
     ADO_dtl.Open;
   except
   end;
+  
+  //局部临时表在连接关闭时自动删除.或手动删除
+  dm.ADOConnection1.Execute('IF OBJECT_ID(''tempdb..#TTLastTime'') IS NOT NULL DROP TABLE #TTLastTime');
 end;
 
 procedure TSDIAppForm.ADO_dtlAfterOpen(DataSet: TDataSet);
@@ -2989,6 +3053,13 @@ procedure TSDIAppForm.N49Click(Sender: TObject);
 begin
   TMenuItem(sender).Checked:=not TMenuItem(sender).Checked;
   VisibleColumn(dbgrid2,'单位',TMenuItem(sender).Checked);
+end;
+
+procedure TSDIAppForm.N7Click(Sender: TObject);
+begin
+  TMenuItem(sender).Checked:=not TMenuItem(sender).Checked;
+  VisibleColumn(dbgrid2,'最近历史结果',TMenuItem(sender).Checked);
+  VisibleColumn(dbgrid2,'最近历史时间',TMenuItem(sender).Checked);
 end;
 
 procedure TSDIAppForm.SpeedButton1Click(Sender: TObject);
