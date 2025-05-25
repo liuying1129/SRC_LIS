@@ -73,6 +73,10 @@ type
     procedure SpeedButton3Click(Sender: TObject);
     procedure ComboBox1DropDown(Sender: TObject);
     procedure ComboBox1Change(Sender: TObject);
+    procedure DBGrid1KeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure DBGrid1KeyUp(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
   private
     { Private declarations }
     function MakeExtSystemDBConn:boolean;
@@ -922,6 +926,25 @@ end;
 procedure TfrmMain.ComboBox1Change(Sender: TObject);
 begin
   UpdateImportedReq((Sender as TComboBox).Text);
+end;
+
+procedure TfrmMain.DBGrid1KeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if(not VirtualTable1.Active)or(VirtualTable1.RecordCount=0) then exit;
+  
+  try
+    if VirtualTable1.Eof then (Sender as TDBGridEh).Columns.Items[6].ReadOnly:=true;
+  except
+  end;
+end;
+
+procedure TfrmMain.DBGrid1KeyUp(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+      if(not VirtualTable1.Active)or(VirtualTable1.RecordCount=0) then exit;
+
+      (Sender as TDBGridEh).Columns.Items[6].ReadOnly:=false;
 end;
 
 end.

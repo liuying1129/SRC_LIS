@@ -243,6 +243,8 @@ object frmMain: TfrmMain
       Options = [dgEditing, dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgConfirmDelete, dgCancelOnExit, dgMultiSelect]
       OptionsEh = [dghFixed3D, dghHighlightFocus, dghDialogFind, dghColumnResize, dghColumnMove, dghExtendVertLines]
       TabOrder = 4
+      OnKeyDown = DBGrid1KeyDown
+      OnKeyUp = DBGrid1KeyUp
       object RowDetailData: TRowDetailPanelControlEh
       end
     end
