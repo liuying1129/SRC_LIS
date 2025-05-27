@@ -90,8 +90,6 @@ var
   GP_WorkGroup_T3:string;//分组模板3工作组
   GP_TempFile_T3:string;//分组模板3文件
 
-  ifSearchHistValue:boolean;//是否查找历史结果
-
   ifHeightForItemNum:boolean;
   ItemRecNum:integer;
   PageHeigth:integer;

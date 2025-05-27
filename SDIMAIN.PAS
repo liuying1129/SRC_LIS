@@ -1150,26 +1150,26 @@ var
   colValueWidth:integer;
 begin
   if not dbgrid2.DataSource.DataSet.Active then exit;
-  dbgrid2.Columns[2].Width:=80;//中文名
-  dbgrid2.Columns[3].Width:=50;//英文名
+  dbgrid2.Columns[1].Width:=80;//中文名
+  dbgrid2.Columns[2].Width:=50;//英文名
 
   ConfigIni:=tinifile.Create(ChangeFileExt(Application.ExeName,'.ini'));
   colValueWidth:=configini.ReadInteger('Interface','colValueWidth',70);{记录检验结果列的宽度}
   configini.Free;
-  dbgrid2.Columns[4].Width:=ifThen(colValueWidth<=0,70,colValueWidth);
+  dbgrid2.Columns[3].Width:=ifThen(colValueWidth<=0,70,colValueWidth);
     
-  dbgrid2.Columns[5].Width:=50;
-  dbgrid2.Columns[6].Width:=50;
-  dbgrid2.Columns[7].Width:=50;
-  dbgrid2.Columns[8].Width:=50;
-  dbgrid2.Columns[9].Width:=50;
-  dbgrid2.Columns[10].Width:=50;
-  dbgrid2.Columns[12].Width:=82;//最近历史结果
-  dbgrid2.Columns[13].Width:=82;//最近历史时间
+  dbgrid2.Columns[4].Width:=50;//最小值
+  dbgrid2.Columns[5].Width:=50;//最大值
+  dbgrid2.Columns[6].Width:=50;//单位
+  //dbgrid2.Columns[7].Width:=50;//pkcombin_id as 组合项目号.隐藏,无需设置宽度
+  //dbgrid2.Columns[8].Width:=50;//itemid as 项目编号.隐藏,无需设置宽度
+  //dbgrid2.Columns[9].Width:=50;//valueid as 唯一编号.隐藏,无需设置宽度
+  //dbgrid2.Columns[10].Width:=0;//修改标志.隐藏,无需设置宽度
+  dbgrid2.Columns[11].Width:=82;//最近历史结果
+  dbgrid2.Columns[12].Width:=82;//最近历史时间
 
-  for i:=0 to (dbgrid2.columns.count-1) do
-   dbgrid2.columns[i].readonly:=TRUE;
-  dbgrid2.columns[4].readonly:=FALSE;
+  for i:=0 to (dbgrid2.columns.count-1) do dbgrid2.columns[i].readonly:=TRUE;
+  dbgrid2.columns[3].readonly:=FALSE;
 
   VisibleColumn(dbgrid2,'英文名',N50.Checked);
   VisibleColumn(dbgrid2,'最小值',N36.Checked);
@@ -2056,8 +2056,11 @@ begin
 
   if N7.Checked then
   begin
-    //创建局部临时表(注:仅当前连接有效,且连接断开则自动删除)
+    //创建局部临时表(注:仅当前连接有效,且连接关闭则自动删除)
     dm.ADOConnection1.Execute('IF OBJECT_ID(''tempdb..#TTLastTime'') IS NULL CREATE TABLE #TTLastTime (valueid int,LastTimeValue varchar(500), LastTimeTime datetime)');
+    //手动删除临时表的方法
+    //dm.ADOConnection1.Execute('IF OBJECT_ID(''tempdb..#TTLastTime'') IS NOT NULL DROP TABLE #TTLastTime');
+    dm.ADOConnection1.Execute('IF OBJECT_ID(''tempdb..#TTLastTime'') IS NOT NULL TRUNCATE TABLE #TTLastTime');//避免数据无限制增长
 
     //获取所有需要处理的valueid
     adotemp11:=tadoquery.Create(nil);
@@ -2103,8 +2106,6 @@ begin
   end;
   
   strsql11:='select '+
-            IfThen(ifSearchHistValue,'(case dbo.uf_ifHasHistoricalValue(valueid) when 1 then ''√'' else '''' end)','''/''')+
-            ' as 史,'+
             '(case when photo is null then null else ''图'' end) as 图,'+
             'name as 名称,english_name as 英文名,itemvalue as 检验结果,'+
             'min_value as 最小值,max_value as 最大值,'+
@@ -2123,9 +2124,6 @@ begin
     ADO_dtl.Open;
   except
   end;
-  
-  //局部临时表在连接关闭时自动删除.或手动删除
-  dm.ADOConnection1.Execute('IF OBJECT_ID(''tempdb..#TTLastTime'') IS NOT NULL DROP TABLE #TTLastTime');
 end;
 
 procedure TSDIAppForm.ADO_dtlAfterOpen(DataSet: TDataSet);
@@ -2234,6 +2232,7 @@ begin
 
   ADO_dtl.Close;
   ADO_dtl.Parameters.ParamByName('pkunid').Value := checkunid;
+  dm.ADOConnection1.Execute('IF OBJECT_ID(''tempdb..#TTLastTime'') IS NULL CREATE TABLE #TTLastTime (valueid int,LastTimeValue varchar(500), LastTimeTime datetime)');//避免下面的ADO_dtl.Open报错:对象名'#TTLastTime'无效
   ADO_dtl.Open;
 end;
 
@@ -2243,7 +2242,7 @@ begin
   if(not ado_dtl.Active)or(ado_dtl.RecordCount=0) then exit;
   
   try
-    if ado_dtl.Eof then (Sender as TDBGrid).Columns.Items[4].ReadOnly:=true;
+    if ado_dtl.Eof then (Sender as TDBGrid).Columns.Items[3].ReadOnly:=true;
   except
   end;
 end;
@@ -2253,7 +2252,7 @@ procedure TSDIAppForm.DBGrid2KeyUp(Sender: TObject; var Key: Word;
 begin
       if(not ado_dtl.Active)or(ado_dtl.RecordCount=0) then exit;
 
-      (Sender as TDBGrid).Columns.Items[4].ReadOnly:=false;
+      (Sender as TDBGrid).Columns.Items[3].ReadOnly:=false;
 end;
 
 procedure TSDIAppForm.Q1Click(Sender: TObject);
@@ -2350,7 +2349,6 @@ begin
       '送检科室取码的匹配方式'+#2+'Combobox'+#2+'模糊匹配'+#13+'左匹配'+#13+'右匹配'+#13+'全匹配'+#2+'1'+#2+#2+#3+
       '送检医生取码的匹配方式'+#2+'Combobox'+#2+'模糊匹配'+#13+'左匹配'+#13+'右匹配'+#13+'全匹配'+#2+'1'+#2+#2+#3+
       '弹出登录窗口的时间'+#2+'Edit'+#2+#2+'1'+#2+'注:表示多长时间内无操作,则自动弹出登录窗口(单位:秒)'+#2+#3+
-      '查找历史结果'+#2+'CheckListBox'+#2+#2+'1'+#2+'注:启用该选项将降低系统性能,慎用!'+#2+#3+
       '特殊模板1工作组'+#2+'Combobox'+#2+sWorkGroup+#2+'2'+#2+#2+#3+
       '特殊模板1文件'+#2+'File'+#2+#2+'2'+#2+#2+#3+
       '特殊模板2工作组'+#2+'Combobox'+#2+sWorkGroup+#2+'2'+#2+#2+#3+
@@ -2892,7 +2890,6 @@ begin
   ifGetDiagnoseFromCaseNo:=configini.ReadBool('选项','根据"门诊/住院号"提取临床诊断',false);
   ifGetMemoFromCaseNo:=configini.ReadBool('选项','根据"门诊/住院号"提取备注',false);
   LoginTime:=configini.ReadInteger('选项','弹出登录窗口的时间',30);
-  ifSearchHistValue:=configini.ReadBool('选项','查找历史结果',false);
 
   WorkGroup_T1:=configini.ReadString('打印模板','特殊模板1工作组','');
   TempFile_T1:=configini.ReadString('打印模板','特殊模板1文件','');
@@ -4026,7 +4023,7 @@ begin
   adotemp66:=tadoquery.Create(nil);
   adotemp66.Connection:=DM.ADOConnection1;
   adotemp66.SQL.Clear;
-  //该SQL语句与dbo.uf_ifHasHistoricalValue中的相应语句相同
+  //该SQL语句与dbo.pro_GetLastTimeValue中的相应语句相同
   adotemp66.SQL.Text:='select z.check_date,f.itemvalue from chk_con_bak Z,chk_valu_bak F '+
    'where z.unid=f.pkunid and '+
    'z.patientname='''+Nname+''' and '+
