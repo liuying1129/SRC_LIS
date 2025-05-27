@@ -2078,17 +2078,19 @@ begin
       SPTemp11.Parameters.CreateParameter('LastTimeTime', ftDateTime, pdOutput, 0, Null);
       SPTemp11.ExecProc;
 
-      //数据插入临时表
-      adotemp22:=tadoquery.Create(nil);
-      adotemp22.Connection:=dm.ADOConnection1;
-      adotemp22.Close;
-      adotemp22.SQL.Clear;
-      adotemp22.SQL.Text:='INSERT INTO #TTLastTime VALUES (:valueid,:LastTimeValue,:LastTimeTime)';
-      adotemp22.Parameters.ParamByName('valueid').Value:=adotemp11.FieldByName('valueid').AsInteger;
-      adotemp22.Parameters.ParamByName('LastTimeValue').Value:=SPTemp11.Parameters.ParamByName('LastTimeValue').Value;
-      adotemp22.Parameters.ParamByName('LastTimeTime').Value:=SPTemp11.Parameters.ParamByName('LastTimeTime').Value;
-      adotemp22.ExecSQL;
-      adotemp22.Free;
+      if(not VarIsNull(SPTemp11.Parameters.ParamByName('LastTimeValue').Value))and(VarToStr(SPTemp11.Parameters.ParamByName('LastTimeValue').Value)<>'') then
+      begin//数据插入临时表
+        adotemp22:=tadoquery.Create(nil);
+        adotemp22.Connection:=dm.ADOConnection1;
+        adotemp22.Close;
+        adotemp22.SQL.Clear;
+        adotemp22.SQL.Text:='INSERT INTO #TTLastTime VALUES (:valueid,:LastTimeValue,:LastTimeTime)';
+        adotemp22.Parameters.ParamByName('valueid').Value:=adotemp11.FieldByName('valueid').AsInteger;
+        adotemp22.Parameters.ParamByName('LastTimeValue').Value:=SPTemp11.Parameters.ParamByName('LastTimeValue').Value;
+        adotemp22.Parameters.ParamByName('LastTimeTime').Value:=SPTemp11.Parameters.ParamByName('LastTimeTime').Value;
+        adotemp22.ExecSQL;
+        adotemp22.Free;
+      end;
 
       SPTemp11.Free;
 
