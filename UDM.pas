@@ -161,6 +161,11 @@ begin
   CONFIGINI.Free;
 
   MakeDBConn;
+  
+  //创建局部临时表(注:仅当前连接有效,且连接关闭则自动删除)
+  ADOConnection1.Execute('IF OBJECT_ID(''tempdb..#TTLastTime'') IS NULL CREATE TABLE #TTLastTime (valueid int,LastTimeValue varchar(500), LastTimeTime datetime)');
+  //手动删除临时表的方法
+  //ADOConnection1.Execute('IF OBJECT_ID(''tempdb..#TTLastTime'') IS NOT NULL DROP TABLE #TTLastTime');
 end;
 
 procedure VisibleColumn(dbgrid:tdbgrid;const DisplayName:string;const ifVisible:boolean);

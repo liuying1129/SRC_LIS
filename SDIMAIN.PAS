@@ -2056,10 +2056,6 @@ begin
 
   if N7.Checked then
   begin
-    //创建局部临时表(注:仅当前连接有效,且连接关闭则自动删除)
-    dm.ADOConnection1.Execute('IF OBJECT_ID(''tempdb..#TTLastTime'') IS NULL CREATE TABLE #TTLastTime (valueid int,LastTimeValue varchar(500), LastTimeTime datetime)');
-    //手动删除临时表的方法
-    //dm.ADOConnection1.Execute('IF OBJECT_ID(''tempdb..#TTLastTime'') IS NOT NULL DROP TABLE #TTLastTime');
     dm.ADOConnection1.Execute('IF OBJECT_ID(''tempdb..#TTLastTime'') IS NOT NULL TRUNCATE TABLE #TTLastTime');//避免数据无限制增长
 
     //获取所有需要处理的valueid
@@ -2232,7 +2228,6 @@ begin
 
   ADO_dtl.Close;
   ADO_dtl.Parameters.ParamByName('pkunid').Value := checkunid;
-  dm.ADOConnection1.Execute('IF OBJECT_ID(''tempdb..#TTLastTime'') IS NULL CREATE TABLE #TTLastTime (valueid int,LastTimeValue varchar(500), LastTimeTime datetime)');//避免下面的ADO_dtl.Open报错:对象名'#TTLastTime'无效
   ADO_dtl.Open;
 end;
 
