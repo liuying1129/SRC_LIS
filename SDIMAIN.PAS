@@ -1268,7 +1268,7 @@ var
   adotemp22:tadoquery;
 begin
   //======================检验结果超出参考范围时变化颜色======================//
-  if (datacol=4) then
+  if (datacol=3) then
   begin
     ItemChnName:=trim(tdbgrid(sender).DataSource.DataSet.fieldbyname('项目编号').AsString);
     cur_value:=trim(tdbgrid(sender).DataSource.DataSet.fieldbyname('检验结果').AsString);
@@ -1297,7 +1297,7 @@ begin
   //==========================================================================//
 
   //用不同的颜色进行分组标识
-  if (datacol=2)and(lsGroupShow.Count>1) then//起码有两个组才用颜色进行标识
+  if (datacol=1)and(lsGroupShow.Count>1) then//起码有两个组才用颜色进行标识
   begin
     sGroup:=tdbgrid(sender).DataSource.DataSet.FieldByName('组合项目号').AsString;
     for  i:=0  to lsGroupShow.Count-1 do
@@ -1321,7 +1321,7 @@ begin
   //========================
 
   //======================修改过的检验结果变化颜色============================//
-  if (datacol=4) then
+  if (datacol=3) then
   begin
     IsEdited:=tdbgrid(sender).DataSource.DataSet.fieldbyname('修改标志').AsString;
     if IsEdited='1' then
