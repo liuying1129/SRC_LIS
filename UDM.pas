@@ -29,6 +29,7 @@ type
     procedure frxReport1GetValue(const VarName: String;
       var Value: Variant);
     procedure frxReport1BeginDoc(Sender: TObject);
+    procedure ADOConnection1AfterConnect(Sender: TObject);
   private
     { Private declarations }
   public
@@ -161,11 +162,6 @@ begin
   CONFIGINI.Free;
 
   MakeDBConn;
-  
-  //创建局部临时表(注:仅当前连接有效,且连接关闭则自动删除)
-  ADOConnection1.Execute('IF OBJECT_ID(''tempdb..#TTLastTime'') IS NULL CREATE TABLE #TTLastTime (valueid int,LastTimeValue varchar(500), LastTimeTime datetime)');
-  //手动删除临时表的方法
-  //ADOConnection1.Execute('IF OBJECT_ID(''tempdb..#TTLastTime'') IS NOT NULL DROP TABLE #TTLastTime');
 end;
 
 procedure VisibleColumn(dbgrid:tdbgrid;const DisplayName:string;const ifVisible:boolean);
@@ -1204,6 +1200,15 @@ begin
     ExecSQLCmd(LisConn,'update '+TableName+' set printtimes='+inttostr(printtimes+1)+' where unid='+inttostr(unid));
     frxDBDataset1.GetDataSet.Refresh;//打印后要显示红色
   end;
+end;
+
+procedure TDM.ADOConnection1AfterConnect(Sender: TObject);
+begin
+  //经测试,AfterConnect为连接成功后触发事件
+  //创建局部临时表(注:仅当前连接有效,且连接关闭则自动删除)
+  ADOConnection1.Execute('IF OBJECT_ID(''tempdb..#TTLastTime'') IS NULL CREATE TABLE #TTLastTime (valueid int,LastTimeValue varchar(500), LastTimeTime datetime)');
+  //手动删除临时表的方法
+  //ADOConnection1.Execute('IF OBJECT_ID(''tempdb..#TTLastTime'') IS NOT NULL DROP TABLE #TTLastTime');
 end;
 
 end.

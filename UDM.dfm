@@ -8,6 +8,7 @@ object DM: TDM
   object ADOConnection1: TADOConnection
     LoginPrompt = False
     Provider = 'SQLOLEDB.1'
+    AfterConnect = ADOConnection1AfterConnect
     Left = 43
     Top = 16
   end

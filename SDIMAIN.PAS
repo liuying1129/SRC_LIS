@@ -2047,12 +2047,8 @@ var
   strsql11:string;
   adotemp11,adotemp22:TAdoQuery;
   SPTemp11:TADOStoredProc;
-  selectLastTimeValue,selectLastTimeTime:string;
 begin
   if not ADObasic.Active then exit;
-
-  selectLastTimeValue:='''''';
-  selectLastTimeTime:='''''';
 
   if N7.Checked then
   begin
@@ -2096,9 +2092,6 @@ begin
       adotemp11.Next;
     end;
     adotemp11.Free;
-
-    selectLastTimeValue:='(SELECT TOP 1 LastTimeValue FROM #TTLastTime WHERE valueid=cv.valueid)';
-    selectLastTimeTime:='(SELECT TOP 1 LastTimeTime FROM #TTLastTime WHERE valueid=cv.valueid)';
   end;
   
   strsql11:='select '+
@@ -2107,7 +2100,7 @@ begin
             'min_value as 最小值,max_value as 最大值,'+
             'unit as 单位,'+
             'pkcombin_id as 组合项目号,itemid as 项目编号,valueid as 唯一编号,IsEdited as 修改标志, '+
-            selectLastTimeValue+' as 最近历史结果,'+selectLastTimeTime+' as 最近历史时间 '+
+            '(SELECT TOP 1 LastTimeValue FROM #TTLastTime WHERE valueid=cv.valueid) as 最近历史结果,(SELECT TOP 1 LastTimeTime FROM #TTLastTime WHERE valueid=cv.valueid) as 最近历史时间 '+
             ' from chk_valu cv where pkunid=:pkunid and issure=1 '+
             ' order by pkcombin_id,printorder ';
 
