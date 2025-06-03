@@ -3051,24 +3051,6 @@ GO
 SET ANSI_NULLS ON 
 GO
 
-  /*通过查看执行计划，增加如下索引，显著提升性能
-CREATE NONCLUSTERED INDEX [IX_chk_con_bak_1] ON [dbo].[chk_con_bak] 
-(
-	[patientname] ASC,
-	[sex] ASC,
-	[check_date] ASC
-)
-GO
-
-CREATE NONCLUSTERED INDEX [IX_chk_valu_bak_2] ON [dbo].[chk_valu_bak] 
-(
-	[pkunid] ASC,
-	[itemid] ASC
-)
-INCLUDE ( [itemvalue]) 
-GO
-  */
-
 CREATE PROCEDURE [dbo].[pro_GetLastTimeValue]
 --获取指定结果最近一次的历史结果及时间
     @valueid int,                      --输入参数.指定结果记录的valueid字段值
@@ -4286,6 +4268,30 @@ begin
 	SJUnid,
 	SonPackName
 	) ON [PRIMARY]
+end
+GO
+
+--20250603 通过查看执行计划，增加该索引，显著提升存储过程pro_GetLastTimeValue性能
+if not exists(select * from sysindexes where name='IX_chk_con_bak_1')
+begin
+	CREATE NONCLUSTERED INDEX [IX_chk_con_bak_1] ON [dbo].[chk_con_bak] 
+	(
+		[patientname] ASC,
+		[sex] ASC,
+		[check_date] ASC
+	)
+end
+GO
+
+--20250603 通过查看执行计划，增加该索引，显著提升存储过程pro_GetLastTimeValue性能
+if not exists(select * from sysindexes where name='IX_chk_valu_bak_2')
+begin
+	CREATE NONCLUSTERED INDEX [IX_chk_valu_bak_2] ON [dbo].[chk_valu_bak] 
+	(
+		[pkunid] ASC,
+		[itemid] ASC
+	)
+	INCLUDE ( [itemvalue]) 
 end
 GO
 
