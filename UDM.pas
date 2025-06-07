@@ -99,8 +99,6 @@ var
   CryptStr:String;//加解密种子,从市政版本开始改为'lc'，以前版本为'YIDA'
 
 //**********************Dll接口函数部分***************************************//
-//该函数计算pSourStr中有多少个pSS
-function ManyStr(const pSS, pSourStr: Pchar): integer;stdcall;external 'LYFunction.dll';
 //范围字符串pRangeStr类似5,7-9,11 转换为('0005','0007','0008','0009','0011')
 function RangeStrToSql(const pRangeStr:Pchar;const ifLPad:boolean;const LPad:Char;const sWidth:integer;var pSqlStr:Pchar):boolean;stdcall;external 'LYFunction.dll';
 //加强型的Pos函数,取得psubStr在pAllstr中第Times次出现的位置
@@ -119,17 +117,14 @@ function ShowOptionForm(const pCaption,pTabSheetCaption,pItemInfo,pInifile:Pchar
 procedure addOrEditCalcItem(const Aadoconnstr:Pchar;const ComboItemID:Pchar;const checkunid: integer);stdcall;external 'CalcItemPro.dll';
 //将计算数据增加或编辑到检验结果表中
 procedure addOrEditCalcValu(const Aadoconnstr:Pchar;const checkunid: integer;const AifInterface:boolean;const ATransItemidString:pchar);stdcall;external 'CalcItemPro.dll';
-function LastPos(const ASubStr,ASourStr:Pchar):integer;stdcall;external 'LYFunction.dll';
 procedure WriteLog(const ALogStr: Pchar);stdcall;external 'LYFunction.dll';
 procedure RequestForm2Lis(const AAdoconnstr,ARequestJSON,CurrentWorkGroup:PChar);stdcall;external 'Request2Lis.dll';
-function UnicodeToChinese(const AUnicodeStr:PChar):PChar;stdcall;external 'LYFunction.dll';
 function GetMaxCheckID(const AWorkGroup,APreDate,APreCheckID:PChar):PChar;stdcall;external 'LYFunction.dll';
 //****************************************************************************//
 
 procedure SendKeyToControl(const VK:byte;control:Twincontrol);
 function ageConvertChinese(agestr: string): string;
 function GetServerDate(adoConn:TADOConnection):TDate;
-procedure AddPickList(dbgrid: tdbgrid; const FieldIndex: integer;const JoinStr: string);//JoinStr是这样的样式：aa,bb,cc,dd
 //控制指定列的显示与否
 procedure VisibleColumn(dbgrid:tdbgrid;const DisplayName:string;const ifVisible:boolean);
 function ifhaspower(sender: tobject;const powerstr_js:string): boolean;
@@ -139,7 +134,6 @@ Procedure ChangeYouFormAllControlIme(YFormName:TWinControl);//需要更改输入法的窗
 function SmoothLine(const strHistogram:string;const SmoothNum:byte;var Strings:TStrings;var AMin:single;var AMax:single):integer;
 function MakeDBConn:boolean;
 procedure LoadGroupName(const comboBox:TcomboBox;const ASel:string);
-procedure MakeDBGridColumnsAutoFixItsWidth(objDBGrid:TDBGrid);
 function ExecSQLCmd(AConnectionString:string;ASQL:string;AErrorDlg:boolean=True):integer;
 function ScalarSQLCmd(AConnectionString:string;ASQL:string;AErrorDlg:boolean=True):string;
 procedure combinchecklistbox(CheckListBox:TCheckListBox);//将组合项目号及名称导入CheckListBox中
@@ -172,28 +166,6 @@ begin
   for i :=0  to dbgrid.Columns.Count-1 do
     if SameText(dbgrid.Fields[i].DisplayName,DisplayName) then
       dbgrid.Columns[i].Visible:=ifVisible;
-end;
-
-procedure AddPickList(dbgrid: tdbgrid; const FieldIndex: integer;
-  const JoinStr: string);//JoinStr是这样的样式：aa,bb,cc,dd 注：用英文或中文状态的逗号分隔均可
-var
-  CommaPos:integer;
-  s1,s2:string;
-begin
-  s1:=JoinStr;
-  if not dbgrid.DataSource.DataSet.Active then exit;
-  if dbgrid.DataSource.DataSet.RecordCount=0 then exit;
-  dbgrid.Columns[FieldIndex].PickList.Clear;
-  if trim(JoinStr)='' then exit;
-  CommaPos:=pos(',',s1);
-  while CommaPos<>0 do
-  begin
-    s2:=trim(copy(s1,1,CommaPos-1));
-    if trim(s2)<>'' then dbgrid.Columns[FieldIndex].PickList.add(s2);
-    delete(s1,1,CommaPos);
-    CommaPos:=pos(',',s1);
-  end;
-  if trim(s1)<>'' then dbgrid.Columns[FieldIndex].PickList.add(s1);
 end;
 
 function GetServerDate(adoConn:TADOConnection):TDate;
@@ -680,44 +652,6 @@ begin
       adotemp3.Next;
      end;
      adotemp3.Free;
-end;
-
-procedure MakeDBGridColumnsAutoFixItsWidth(objDBGrid:TDBGrid);
-//使dbGrid的内容自动适应他的宽度{如为DBGridEh则将改为：(objDBGrid:TDBGridEh);}
-var
-  cc:integer;
-  i,tmpLength:integer;
-  objDataSet:TAdoquery;
-  aDgCLength:array of integer;
-begin
-  cc:=objDbGrid.Columns.Count-1;
-
-  objDataSet:=TAdoquery.Create(nil);
-  //objDataSet.Clone(objDBGrid.DataSource.DataSet);
-
-  setlength(aDgCLength,cc+1);
-  //取标题字段的长度
-  for i:=0 to  cc do
-  begin
-    aDgCLength[i]:= length(objDbGrid.Columns[i].Title.Caption);
-  end; 
-
-  objDataSet.First;
-  while not objDataSet.Eof do
-  begin
-    //取列中每个字段的长度
-    for i:=0 to  cc do
-    begin
-      tmpLength:=length(objDataSet.Fields.Fields[i].AsString);
-      if tmpLength>aDgCLength[i] then aDgCLength[i]:=tmpLength;
-    end;
-    objDataSet.Next;
-  end; 
-
-  for i:=0 to  cc do
-  begin
-    objDbGrid.Columns[i].Width:=aDgCLength[i]*8;
-  end;
 end;
 
 function ExecSQLCmd(AConnectionString:string;ASQL:string;AErrorDlg:boolean=True):integer;

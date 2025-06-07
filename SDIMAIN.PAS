@@ -5,9 +5,9 @@ interface
 uses Windows,Messages, Classes,SysUtils, Graphics, Forms, Controls, Menus,
   Dialogs, StdCtrls, Buttons, ExtCtrls,CheckLst, ComCtrls, ImgList, StdActns,
   ActnList, ToolWin, DosMove,ADODB, Grids, DBGrids,
-  DB,inifiles,FR_DBSet, FR_Class, LYAboutBox,Printers,
-  StrUtils,  TeEngine, Series, TeeProcs, Chart,fr_chart,shellapi{ShellExecute}, 
-  DateUtils, FR_DSet, ADOLYGetcode,Math, UfrmLocateRecord,
+  DB,inifiles, LYAboutBox,Printers,
+  StrUtils, Series, Chart,shellapi{ShellExecute}, 
+  DateUtils, ADOLYGetcode,Math, UfrmLocateRecord,
   UADOLYQuery, LYLed, frxClass, ExtDlgs,Variants,Jpeg;
 
 //==为了通过发送消息更新主窗体状态栏而增加==//
@@ -50,14 +50,12 @@ type
     N21: TMenuItem;
     LYAboutBox1: TLYAboutBox;
     LJ1: TMenuItem;
-    Action5: TAction;
     Action6: TAction;
     Action7: TAction;
     N28: TMenuItem;
     ADO_print: TADOQuery;
     Q1: TMenuItem;
     N14: TMenuItem;
-    Action10: TAction;
     N30: TMenuItem;
     N12: TMenuItem;
     N41: TMenuItem;
@@ -85,8 +83,6 @@ type
     N22: TMenuItem;
     Y1: TMenuItem;
     N27: TMenuItem;
-    frReport1: TfrReport;
-    frDB_ADO_print: TfrDBDataSet;
     N31: TMenuItem;
     Excel2: TMenuItem;
     N62: TMenuItem;
@@ -100,8 +96,6 @@ type
     suiButton3: TSpeedButton;
     suiButton4: TSpeedButton;
     ToolButton6: TToolButton;
-    ToolButton8: TSpeedButton;
-    suiButton1: TSpeedButton;
     Panel1: TPanel;
     Panel5: TPanel;
     Label1: TLabel;
@@ -208,7 +202,6 @@ type
     N17: TMenuItem;
     N60: TMenuItem;
     N75: TMenuItem;
-    ToolButton5: TToolButton;
     LYLed2: TLYLed;
     TimerMakeTjDescription: TTimer;
     N85: TMenuItem;
@@ -247,8 +240,7 @@ type
     procedure N9Click(Sender: TObject);
     procedure ToolButton1Click(Sender: TObject);
     procedure N3Click(Sender: TObject);
-    procedure UpdateADObasic;//全部检验单事件
-    procedure ToolButton8Click(Sender: TObject);
+    procedure UpdateADObasic;
     procedure FormCreate(Sender: TObject);
     procedure N4Click(Sender: TObject);
     procedure FileOpenItemClick(Sender: TObject);
@@ -257,8 +249,6 @@ type
     procedure suiButton3Click(Sender: TObject);
     procedure suiButton4Click(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
-    procedure frReport1GetValue(const ParName: String;
-      var ParValue: Variant);
     procedure DBGrid2KeyUp(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure clbCommUsedClickCheck(Sender: TObject);
@@ -275,7 +265,6 @@ type
     procedure LabeledEdit13KeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure LabeledEdit5Exit(Sender: TObject);
-    procedure suiButton1Click(Sender: TObject);
     procedure ADO_dtlAfterOpen(DataSet: TDataSet);
     procedure DBGrid2KeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
@@ -340,7 +329,6 @@ type
     procedure SpeedButton1Click(Sender: TObject);
     procedure LabeledEdit1KeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
-    procedure frReport1BeforePrint(Memo: TStringList; View: TfrView);
     procedure LabeledEdit3Change(Sender: TObject);
     procedure TimerIdleTrackerTimer(Sender: TObject);
     procedure SpeedButton5Click(Sender: TObject);
@@ -375,7 +363,6 @@ type
       Shift: TShiftState);
     procedure N17Click(Sender: TObject);
     procedure N75Click(Sender: TObject);
-    procedure frReport1PrintReport;
     procedure TimerMakeTjDescriptionTimer(Sender: TObject);
     procedure N85Click(Sender: TObject);
     procedure FormActivate(Sender: TObject);
@@ -478,7 +465,6 @@ begin
   ClearAll(1);
 
   LabeledEdit16.text:=ScalarSQLCmd(LisConn,' select dbo.uf_GetNextSerialNum('''+trim(cbxConnChar.Text)+''',CONVERT(CHAR(10),getdate(),121),'''+trim(LabeledEdit12.Text)+''') ');
-  //LabeledEdit16.Text:=getmaxid(trim(cbxConnChar.Text),GetServerDate(DM.ADOConnection1),trim(LabeledEdit12.Text));
   if LabeledEdit1.CanFocus then LabeledEdit1.SetFocus;
 
   ifnewadd:=true;
@@ -707,112 +693,6 @@ begin
   if not suiButton8.Glyph.Empty then suiButton8.Glyph:=nil;
   lsTransUnid.Clear;
   adobasic.Locate('唯一编号',ff,[loCaseInsensitive]);
-end;
-
-procedure TSDIAppForm.ToolButton8Click(Sender: TObject);
-var
-  strsqlPrint:string;
-  sUnid,sReport_Doctor,sCombin_Id:string;
-  
-  //对姓别性别年龄的合并项做打印标记 变量
-  sPatientname,sSex,sAge:string;
-  //===============================
-
-  i,j:integer;
-  mvPictureTitle:TfrMemoView;  
-begin
-  if not ifhaspower(sender,powerstr_js_main) then exit;
-
-  if not ADObasic.Active then exit;
-  if ADObasic.RecordCount=0 then exit;
-
-  sUnid:=adobasic.fieldbyname('唯一编号').AsString;//防止点击打印后，马上将光标移到另一条病人信息上。故写在最前面
-  sReport_Doctor:=trim(ADObasic.FieldByName('审核者').AsString);
-  sCombin_Id:=adobasic.FieldByName('组别').AsString;
-
-  sPatientname:=trim(adobasic.fieldbyname('姓名').AsString);
-  sSex:=adobasic.fieldbyname('性别').AsString;
-  sAge:=adobasic.fieldbyname('年龄').AsString;
-  
-   if not ifAutoCheck then  //打印前要检查是否已被审核
-   begin
-     if sReport_Doctor='' then
-     begin
-      MessageBox(Handle, '请先审核！', '系统提示', MB_ICONASTERISK);
-      exit;
-     end;
-   end;
-
-  if (sCombin_Id=WorkGroup_T1)
-    and frReport1.LoadFromFile(TempFile_T1) then//加载模板文件是不区分大小写的.空字符串将加载失败
-  begin
-  end else
-  if (sCombin_Id=WorkGroup_T2)
-    and frReport1.LoadFromFile(TempFile_T2) then
-  begin
-  end else
-  if (sCombin_Id=WorkGroup_T3)
-    and frReport1.LoadFromFile(TempFile_T3) then
-  begin
-  end else
-  if not frReport1.LoadFromFile(ExtractFilePath(application.ExeName)+'report_cur.frf') then
-  begin
-    showmessage('加载默认通用打印模板report_cur.frf失败，请设置:系统设置->选项->打印模板');
-    exit;
-  end;
-
-  //动态创建图片标题begin
-  //待处理问题:是否需要释放mvPictureTitle?何时释放?
-  for j:=0 to frReport1.Pages.Count-1 do
-  begin
-    for i:=0 to frReport1.Pages[j].Objects.Count-1 do
-    begin
-      if TObject(frReport1.Pages[j].Objects.Items[i]) is TfrPictureView then
-      begin
-        if SameText(leftstr(TfrPictureView(frReport1.Pages[j].Objects.Items[i]).Name,7),'PICTURE') then
-        begin
-          mvPictureTitle:=TfrMemoView.Create;
-          frReport1.Pages[j].Objects.Add(mvPictureTitle);
-          mvPictureTitle.Name:='mv'+TfrPictureView(frReport1.Pages[j].Objects.Items[i]).Name;
-          mvPictureTitle.Visible:=false;
-        end;
-      end;
-    end;
-  end;
-  //动态创建图片标题end
-  
-    strsqlPrint:='select itemid as 项目代码,name as 名称,english_name as 英文名,'+
-          ' itemvalue as 检验结果,'+
-          ' min_value as 最小值,max_value as 最大值,'+
-          ' dbo.uf_Reference_Value_B1(chk_valu.min_value,chk_valu.max_value) as 前段参考范围,dbo.uf_Reference_Value_B2(chk_valu.min_value,chk_valu.max_value) as 后段参考范围,'+
-          ' unit as 单位,min(printorder) as 打印编号,'+
-          ' min(pkcombin_id) as 组合项目号, '+
-          ' Reserve1,Reserve2,Dosage1,Dosage2,Reserve5,Reserve6,Reserve7,Reserve8,Reserve9,Reserve10 '+
-          ' from chk_valu WITH(NOLOCK) where pkunid='+sUnid+
-          ' and chk_valu.issure=1 and ltrim(rtrim(isnull(itemvalue,'''')))<>'''' '+
-          ' group by itemid,name,english_name,itemvalue,min_value,max_value,unit, '+
-          ' Reserve1,Reserve2,Dosage1,Dosage2,Reserve5,Reserve6,Reserve7,Reserve8,Reserve9,Reserve10 '+
-          ' order by 组合项目号,打印编号 ';
-  ado_print.Close;
-  ado_print.SQL.Clear;
-  ado_print.SQL.Text:=strsqlPrint;
-  ado_print.Open;
-  if (ADO_print.RecordCount=0) and (not ifNoResultPrint) then exit;
-
-  if ifHeightForItemNum and (ADO_print.RecordCount>ItemRecNum) then
-    //frReport1.Pages.Pages[0].pgsize:=255;//.pgHeight:=70;
-    //frReport1.Pages.Pages[0].pgHeight:=70;
-    frReport1.Pages[0].ChangePaper($100,2100,PageHeigth,-1,poPortrait);  //1 inch=2.54 cm
-
-  if n9.Checked then  //预览模式
-  begin
-    frReport1.ShowPrintDialog:=ifShowPrintDialog;
-    frReport1.ShowReport;
-  end;
-  if n8.Checked then  //直接打印模式
-  begin
-    if frReport1.PrepareReport then frReport1.PrintPreparedReport('', 1, True, frAll);
-  end;
 end;
 
 procedure TSDIAppForm.FormCreate(Sender: TObject);
@@ -1069,78 +949,6 @@ begin
 
   lsGroupShow.free;
   lsTransUnid.Free;
-end;
-
-procedure TSDIAppForm.frReport1GetValue(const ParName: String;
-  var ParValue: Variant);
-var
-  ItemChnName:string;
-  cur_value:string;
-  min_value:string;
-  max_value:string;
-  i:integer;
-  adotemp22:Tadoquery;
-begin
-    if parname='SCSYDW' then ParValue:=SCSYDW;
-
-    if parname='CXZF' then
-    BEGIN
-      ItemChnName:=trim(ADO_print.fieldbyname('项目代码').AsString);
-      cur_value:=trim(ADO_print.fieldbyname('检验结果').AsString);
-      min_value:=trim(ADO_print.fieldbyname('最小值').AsString);
-      max_value:=trim(ADO_print.fieldbyname('最大值').AsString);
-
-      adotemp22:=Tadoquery.Create(nil);
-      adotemp22.Connection:=dm.ADOConnection1;
-      adotemp22.Close;
-      adotemp22.SQL.Clear;
-      adotemp22.SQL.Text:='select dbo.uf_ValueAlarm('''+ItemChnName+''','''+min_value+''','''+max_value+''','''+cur_value+''') as ifValueAlarm';
-      try//uf_ValueAlarm中的convert函数可能抛出异常
-        adotemp22.Open;
-        i:=adotemp22.fieldbyname('ifValueAlarm').AsInteger;
-      except
-        i:=0;
-      end;
-      adotemp22.Free;
-      if i=1 then
-        ParValue := '↓'
-      else if i=2 then
-        ParValue := '↑'
-      else ParValue:='';
-    END;
-
-    if parname='打印者' then ParValue:=operator_name;
-    if parname='所属公司' then ParValue:=trim(ADObasic.fieldbyname('所属公司').AsString);
-    if parname='姓名' then ParValue:=trim(ADObasic.fieldbyname('姓名').AsString);
-    if parname='性别' then ParValue:=trim(ADObasic.fieldbyname('性别').AsString);
-    if parname='体检日期' then ParValue:=ADObasic.fieldbyname('检查日期').AsDateTime;
-    if parname='年龄' then ParValue:=trim(ADObasic.fieldbyname('年龄').AsString);
-    if parname='婚否' then ParValue:=trim(ADObasic.fieldbyname('婚否').AsString);
-    if parname='工种' then ParValue:=trim(ADObasic.fieldbyname('工种').AsString);
-    if parname='籍贯' then ParValue:=trim(ADObasic.fieldbyname('籍贯').AsString);
-    if parname='住址' then ParValue:=trim(ADObasic.fieldbyname('住址').AsString);
-    if parname='电话' then ParValue:=trim(ADObasic.fieldbyname('电话').AsString);
-    {if parname='舒张压' then ParValue:=trim(ADObasic.fieldbyname('舒张压').AsString);
-    if parname='收缩压' then ParValue:=trim(ADObasic.fieldbyname('收缩压').AsString);
-    if parname='左眼视力' then ParValue:=trim(ADObasic.fieldbyname('左眼视力').AsString);
-    if parname='右眼视力' then ParValue:=trim(ADObasic.fieldbyname('右眼视力').AsString);
-    if parname='身高' then ParValue:=trim(ADObasic.fieldbyname('身高').AsString);
-    if parname='体重' then ParValue:=trim(ADObasic.fieldbyname('体重').AsString);
-    if parname='既往史' then ParValue:=ADObasic.fieldbyname('既往史').AsString;
-    if parname='家族史' then ParValue:=ADObasic.fieldbyname('家族史').AsString;
-    if parname='内科' then ParValue:=ADObasic.fieldbyname('内科').AsString;
-    if parname='外科' then ParValue:=ADObasic.fieldbyname('外科').AsString;
-    if parname='五官科' then ParValue:=ADObasic.fieldbyname('五官科').AsString;
-    if parname='妇科' then ParValue:=ADObasic.fieldbyname('妇科').AsString;
-    if parname='冷强光' then ParValue:=ADObasic.fieldbyname('冷强光').AsString;
-    if parname='X光' then ParValue:=ADObasic.fieldbyname('X光').AsString;
-    if parname='B超' then ParValue:=ADObasic.fieldbyname('B超').AsString;
-    if parname='心电图' then ParValue:=ADObasic.fieldbyname('心电图').AsString;
-    if parname='检验' then ParValue:=ADObasic.fieldbyname('检验').AsString;
-    if parname='结论' then ParValue:=ADObasic.fieldbyname('结论').AsString;
-    if parname='建议' then ParValue:=ADObasic.fieldbyname('建议').AsString;//}
-    
-    if parname='检验设备' then ParValue:=ScalarSQLCmd(LisConn,'select dbo.uf_GetEquipFromChkUnid(0,'+ADObasic.fieldbyname('唯一编号').AsString+')');
 end;
 
 procedure TSDIAppForm.updateDBGrid2;
@@ -1403,12 +1211,6 @@ begin
     Msg.Result := 1;
     exit;
   end;
-
-  //if not n41.Checked then
-  //begin
-  //  Msg.Result := 1;
-  //  exit;
-  //end;
 
   if not ADObasic.Active then
   begin
@@ -1937,109 +1739,6 @@ end;
 procedure TSDIAppForm.LabeledEdit5Exit(Sender: TObject);
 begin
   tlabelededit(sender).Text:=ageConvertChinese(trim(tlabelededit(sender).Text));
-end;
-
-procedure TSDIAppForm.suiButton1Click(Sender: TObject);
-var
-  strsqlPrint:string;
-
-  sUnid,sReport_Doctor,sCombin_Id:string;
-
-  sPatientname,sSex,sAge:string;
-
-  i,j:integer;
-  mvPictureTitle:TfrMemoView;  
-begin
-  if not ifhaspower(sender,powerstr_js_main) then exit;
-
-  if not ADObasic.Active then exit;
-  if ADObasic.RecordCount=0 then exit;
-
-  sUnid:=adobasic.fieldbyname('唯一编号').AsString;//防止点击打印后，马上将光标移到另一条病人信息上。故写在最前面
-  sReport_Doctor:=trim(ADObasic.FieldByName('审核者').AsString);
-  sCombin_Id:=adobasic.FieldByName('组别').AsString;
-
-  sPatientname:=trim(adobasic.fieldbyname('姓名').AsString);
-  sSex:=adobasic.fieldbyname('性别').AsString;
-  sAge:=adobasic.fieldbyname('年龄').AsString;
-  
-   if not ifAutoCheck then  //打印前要检查是否已被审核
-   begin
-     if sReport_Doctor='' then
-     begin
-      MessageBox(Handle, '请先审核！', '系统提示', MB_ICONASTERISK);
-      exit;
-     end;
-   end;
-
-  if (sCombin_Id=GP_WorkGroup_T1)
-    and frReport1.LoadFromFile(GP_TempFile_T1) then//加载模板文件是不区分大小写的.空字符串将加载失败
-  begin
-  end else
-  if (sCombin_Id=GP_WorkGroup_T2)
-    and frReport1.LoadFromFile(GP_TempFile_T2) then
-  begin
-  end else
-  if (sCombin_Id=GP_WorkGroup_T3)
-    and frReport1.LoadFromFile(GP_TempFile_T3) then
-  begin
-  end else
-  if not frReport1.LoadFromFile(ExtractFilePath(application.ExeName)+'report_Cur_group.frf') then
-  begin
-    showmessage('加载默认分组打印模板report_Cur_group.frf失败，请设置:系统设置->选项->打印模板');
-    exit;
-  end;
-
-  //动态创建图片标题begin
-  //待处理问题:是否需要释放mvPictureTitle?何时释放?
-  for j:=0 to frReport1.Pages.Count-1 do
-  begin
-    for i:=0 to frReport1.Pages[j].Objects.Count-1 do
-    begin
-      if TObject(frReport1.Pages[j].Objects.Items[i]) is TfrPictureView then
-      begin
-        if SameText(leftstr(TfrPictureView(frReport1.Pages[j].Objects.Items[i]).Name,7),'PICTURE') then
-        begin
-          mvPictureTitle:=TfrMemoView.Create;
-          frReport1.Pages[j].Objects.Add(mvPictureTitle);
-          mvPictureTitle.Name:='mv'+TfrPictureView(frReport1.Pages[j].Objects.Items[i]).Name;
-          mvPictureTitle.Visible:=false;
-        end;
-      end;
-    end;
-  end;
-  //动态创建图片标题end
-  
-    strsqlPrint:='select cv.combin_name as name,cv.name as 名称,cv.english_name as 英文名,cv.itemvalue as 检验结果,'+
-    'cv.unit as 单位,cv.min_value as 最小值,cv.max_value as 最大值,'+
-    ' dbo.uf_Reference_Value_B1(cv.min_value,cv.max_value) as 前段参考范围,dbo.uf_Reference_Value_B2(cv.min_value,cv.max_value) as 后段参考范围,'+
-    ' cv.Reserve1,cv.Reserve2,cv.Dosage1,cv.Dosage2,cv.Reserve5,cv.Reserve6,cv.Reserve7,cv.Reserve8,cv.Reserve9,cv.Reserve10, '+
-    ' cv.itemid as 项目代码 '+//cci.Reserve3,
-    ' from chk_valu cv WITH(NOLOCK) '+
-    ' left join clinicchkitem cci on cci.itemid=cv.itemid '+
-    ' where cv.pkunid='+sUnid+
-    ' and cv.issure=1 and ltrim(rtrim(isnull(itemvalue,'''')))<>'''' '+
-    ' order by cv.pkcombin_id,cv.printorder ';//组合项目号,打印编号 '
-  ADO_print.Close;
-  ADO_print.SQL.Clear;
-  ADO_print.SQL.Text:=strsqlPrint;
-  ADO_print.Open;
-  if (ADO_print.RecordCount=0) and (not ifNoResultPrint) then exit;
-
-  if ifHeightForItemNum and (ADO_print.RecordCount>ItemRecNum) then
-    //frReport1.Pages.Pages[0].pgsize:=255;//.pgHeight:=70;
-    //frReport1.Pages.Pages[0].pgHeight:=70;
-    frReport1.Pages[0].ChangePaper($100,2100,PageHeigth,-1,poPortrait);  //1 inch=2.54 cm
-
-  if n9.Checked then  //预览模式
-  begin
-    frReport1.ShowPrintDialog:=ifShowPrintDialog;
-    frReport1.ShowReport;
-  end;
-  if n8.Checked then  //直接打印模式
-  begin
-    if frReport1.PrepareReport then frReport1.PrintPreparedReport('', 1, True, frAll);
-  end;
 end;
 
 procedure TSDIAppForm.update_Ado_dtl;
@@ -2932,40 +2631,6 @@ begin
   configini.Free;
 end;
 
-{//体检结果录入菜单
-procedure TSDIAppForm.N17Click(Sender: TObject);
-TYPE
-  TDLLProc=function(AHandle:THandle;ABasicDs:TAdoquery;AImeName:Pchar;AifCurTab:boolean;AOperator_ID:Pchar):boolean;stdcall;
-VAR
-  DLLProc:TDLLProc;
-  HTJLIB:THandle;
-  
-  ConfigIni:tinifile;
-  StrImeName:string;
-  FExecute:boolean;
-begin
-  if not ifhaspower(sender,powerstr_js_main) then exit;
-
-  if not ADObasic.Active then exit;
-  if ADObasic.RecordCount=0 then exit;
-  
-  ConfigIni:=tinifile.Create(ChangeFileExt(Application.ExeName,'.ini'));
-  try
-    StrImeName:=ConfigIni.ReadString('输入法选择','默认中文输入法','中文 (简体) - 智能 ABC');
-  finally
-    ConfigIni.Free;
-  end;
-
-  HTJLIB:=LOADLIBRARY('TJ.dll');
-  IF HTJLIB=0 THEN BEGIN SHOWMESSAGE('对不起,您使用的版本无此功能!');EXIT; END;//动态链接库TJ.DLL不存在
-  DLLProc:=TDLLProc(GETPROCADDRESS(HTJLIB,'ShowTJForm'));
-  IF @DLLProc=NIL THEN BEGIN SHOWMESSAGE('函数ShowTJForm不存在!');EXIT; END;
-  FExecute:=DLLProc(Application.Handle,ADObasic,Pchar(StrImeName),true,Pchar(operator_id));
-  FreeLIBRARY(HTJLIB);
-
-  if FExecute then suiButton8Click(nil);
-end;//}
-
 procedure TSDIAppForm.pmChangeGroupPopup(Sender: TObject);
 var
   adotemp3:tadoquery;
@@ -3079,188 +2744,6 @@ begin
   if adotemp11.RecordCount>0 then unid:=adotemp11.fieldbyname('unid').AsInteger;
   adotemp11.Free;
   ADObasic.Locate('唯一编号',unid,[]);
-end;
-
-procedure TSDIAppForm.frReport1BeforePrint(Memo: TStringList;
-  View: TfrView);
-var
-  adotemp11:tadoquery;
-  unid:integer;
-  report_doctor:string;
-  
-  strsqlPrint,strEnglishName,strHistogram,strXTitle:string;
-  MS:tmemorystream;
-  tempjpeg:TJPEGImage;
-  Chart_ZFT:TChart;
-
-  //血流变变量start
-  Reserve8_1,Reserve8_2:single;//切变率
-  mPa_1,mPa_2:string;//粘度
-  mPa_min_1,mPa_min_2:string;//粘度
-  mPa_max_1,mPa_max_2:string;//粘度
-  Chart_XLB:TChart;
-  //血流变变量stop
-
-  mvPictureTitle :TfrView;
-begin
-  if not ADObasic.Active then exit;
-  if not ADObasic.RecordCount=0 then exit;
-
-  unid:=ADObasic.fieldbyname('唯一编号').AsInteger;
-  report_doctor:=trim(ADObasic.fieldbyname('审核者').AsString);
-
-  //加载血流变曲线、直方图、散点图 start
-  if(View is TfrChartView)and(pos('CURVE',uppercase(View.Name))>0)then
-  begin
-    View.Visible:=false;
-    strsqlPrint:='select Reserve8,itemValue,Min_Value,Max_Value '+
-       ' from chk_valu WITH(NOLOCK) '+
-       ' where pkunid=:pkunid '+
-       ' and Reserve8 is not null '+
-       ' and issure=1 ';
-    adotemp11:=tadoquery.Create(nil);
-    adotemp11.Connection:=DM.ADOConnection1;
-    adotemp11.Close;
-    adotemp11.SQL.Clear;
-    adotemp11.SQL.Text:=strsqlPrint;
-    adotemp11.Parameters.ParamByName('pkunid').Value:=unid;
-    adotemp11.Open;
-    if adotemp11.RecordCount=2 then
-    begin
-      View.Visible:=true;
-
-      Chart_XLB:=TChart.Create(nil);
-      Chart_XLB.Visible:=false;
-      
-      Reserve8_1:=adotemp11.fieldbyname('Reserve8').AsFloat;//切变率
-      mPa_1:=adotemp11.fieldbyname('itemValue').AsString;//粘度
-      mPa_min_1:=adotemp11.fieldbyname('Min_Value').AsString;//粘度
-      mPa_max_1:=adotemp11.fieldbyname('Max_Value').AsString;//粘度
-      adotemp11.Next;
-      Reserve8_2:=adotemp11.fieldbyname('Reserve8').AsFloat;//切变率
-      mPa_2:=adotemp11.fieldbyname('itemValue').AsString;//粘度
-      mPa_min_2:=adotemp11.fieldbyname('Min_Value').AsString;//粘度
-      mPa_max_2:=adotemp11.fieldbyname('Max_Value').AsString;//粘度
-      Draw_MVIS2035_Curve(Chart_XLB,Reserve8_1,strtofloatdef(mPa_1,-1),Reserve8_2,strtofloatdef(mPa_2,-1),
-                          Reserve8_1,strtofloatdef(mPa_min_1,-1),Reserve8_2,strtofloatdef(mPa_min_2,-1),
-                          Reserve8_1,strtofloatdef(mPa_max_1,-1),Reserve8_2,strtofloatdef(mPa_max_2,-1));
-      TfrChartView(View).Assignchart(Chart_XLB);//指定统计图給FastReport
-
-      Chart_XLB.Free;
-    end;
-    adotemp11.Free;
-  end;
-    
-  if(View is TfrChartView)and(pos('CHART',uppercase(View.Name))>0)then
-  begin
-    View.Visible:=false;
-    strEnglishName:=(View as TfrChartView).Name;
-    strEnglishName:=stringreplace(strEnglishName,'Chart','',[rfIgnoreCase]);
-    strsqlPrint:='select top 1 histogram,Dosage1 '+
-       ' from chk_valu WITH(NOLOCK) '+
-       ' where pkunid=:pkunid '+
-       ' and english_name=:english_name '+
-       ' and isnull(histogram,'''')<>'''' '+
-       ' and issure=1 ';
-    adotemp11:=tadoquery.Create(nil);
-    adotemp11.Connection:=DM.ADOConnection1;
-    adotemp11.Close;
-    adotemp11.SQL.Clear;
-    adotemp11.SQL.Text:=strsqlPrint;
-    adotemp11.Parameters.ParamByName('pkunid').Value:=unid;
-    adotemp11.Parameters.ParamByName('english_name').Value:=strEnglishName;
-    adotemp11.Open;
-    strHistogram:=trim(adotemp11.fieldbyname('histogram').AsString);
-    strXTitle:=adotemp11.fieldbyname('Dosage1').AsString;
-    adotemp11.Free;
-    if strHistogram<>'' then
-    begin
-      View.Visible:=true;
-
-      Chart_ZFT:=TChart.Create(nil);
-      Chart_ZFT.Visible:=false;
-
-      updatechart(Chart_ZFT,strHistogram,strEnglishName,strXTitle);
-      TfrChartView(View).Assignchart(Chart_ZFT);//指定统计图給FastReport
-
-      Chart_ZFT.Free;
-    end;
-  end;
-
-  if(View is TfrPictureView)and(pos('PICTURE',uppercase(View.Name))>0)then
-  begin
-    View.Visible:=false;
-    strEnglishName:=(View as TfrPictureView).Name;
-    strEnglishName:=stringreplace(strEnglishName,'Picture','',[rfIgnoreCase]);
-    strsqlPrint:='select top 1 Photo,english_name '+
-       ' from chk_valu WITH(NOLOCK) '+
-       ' where pkunid=:pkunid '+
-       //' and english_name=:english_name '+
-       ' and itemid=:itemid '+//edit by liuying 20110414
-       ' and Photo is not null '+
-       ' and issure=1 ';
-    adotemp11:=tadoquery.Create(nil);
-    adotemp11.Connection:=DM.ADOConnection1;
-    adotemp11.Close;
-    adotemp11.SQL.Clear;
-    adotemp11.SQL.Text:=strsqlPrint;
-    adotemp11.Parameters.ParamByName('pkunid').Value:=unid;
-    //adotemp11.Parameters.ParamByName('english_name').Value:=strEnglishName;
-    adotemp11.Parameters.ParamByName('itemid').Value:=strEnglishName;//edit by liuying 20110414
-    adotemp11.Open;
-    if not adotemp11.fieldbyname('photo').IsNull then
-    begin
-      View.Visible:=true;
-      MS:=TMemoryStream.Create;
-      TBlobField(adotemp11.fieldbyname('photo')).SaveToStream(MS);
-      MS.Position:=0;
-      tempjpeg:=TJPEGImage.Create;
-      tempjpeg.LoadFromStream(MS);
-      MS.Free;
-      TfrPictureView(View).Picture.assign(tempjpeg);
-      tempjpeg.Free;
-
-      //显示图片标题begin
-      mvPictureTitle:=frReport1.FindObject('mv'+(View as TfrPictureView).Name);
-      if (mvPictureTitle<>nil) and (mvPictureTitle is TfrMemoView) then
-      begin
-        mvPictureTitle.Prop['AutoWidth']:=True;
-        TfrMemoView(mvPictureTitle).Font.Name:='宋体';
-        mvPictureTitle.SetBounds((View as TfrPictureView).Prop['left'], (View as TfrPictureView).Prop['top']-20, 50, 20);
-        mvPictureTitle.Memo.Text:=adotemp11.fieldbyname('english_name').AsString;
-        mvPictureTitle.Visible:=true;
-      end;
-      //显示图片标题end
-    end;
-    adotemp11.Free;
-  end;
-  //加载血流变曲线、直方图、散点图 stop
-
-  //可能要打印审核者，故只能在BeforePrint事件中处理.(其实在PrintReport中处理更合理)
-  if(ifAutoCheck)and(report_doctor='') then//修改审核者
-  begin
-    ExecSQLCmd(LisConn,'update chk_con set report_doctor='''+operator_name+''',Audit_Date=getdate() where unid='+inttostr(unid));
-    adobasic.Refresh;//更新显示审核者
-  end;
-end;
-
-procedure TSDIAppForm.frReport1PrintReport;
-var
-  unid,printtimes:integer;
-begin
-  if not ADObasic.Active then exit;
-  if not ADObasic.RecordCount=0 then exit;
-
-  unid:=ADObasic.fieldbyname('唯一编号').AsInteger;
-  printtimes:=ADObasic.fieldbyname('打印次数').AsInteger;
-
-  if printtimes=0 then//修改打印次数
-  begin
-    ExecSQLCmd(LisConn,'update chk_con set printtimes='+inttostr(printtimes+1)+' where unid='+inttostr(unid));
-    adobasic.Refresh;//打印后要显示红色
-  end;
-  
-  ExecSQLCmd(LisConn,'insert into pix_tran (pkunid,Reserve1,Reserve2,OpType) values ('+inttostr(unid)+','''+operator_name+''',''Class_Print'',''Lab'')');
 end;
 
 procedure TSDIAppForm.LabeledEdit3Change(Sender: TObject);

@@ -207,7 +207,7 @@ begin
       BigObjectJYYZ.S['JSON数据源']:='Excel';
       BigObjectJYYZ.O['检验医嘱']:=ArrayJYYZ;
 
-      RequestForm2Lis(PChar(LisConn),UnicodeToChinese(PChar(AnsiString(BigObjectJYYZ.AsJson))),PChar(ZB));
+      RequestForm2Lis(PChar(LisConn),PChar(AnsiString(BigObjectJYYZ.AsJson)),PChar(ZB));
 
       inc(i);
       //基本信息

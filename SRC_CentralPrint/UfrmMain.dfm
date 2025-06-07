@@ -281,48 +281,24 @@ object frmMain: TfrmMain
       Color = 16767438
       ParentColor = False
       TabOrder = 0
-      object SpeedButton1: TSpeedButton
+      object SpeedButton3: TSpeedButton
         Left = 0
         Top = 2
         Width = 81
         Height = 22
         Caption = #25171#21360'F7'
-        OnClick = SpeedButton1Click
+        OnClick = SpeedButton3Click
       end
-      object SpeedButton6: TSpeedButton
+      object SpeedButton9: TSpeedButton
         Left = 81
         Top = 2
         Width = 112
         Height = 22
         Caption = #20998#32452#25171#21360'F9'
-        OnClick = SpeedButton6Click
-      end
-      object ToolButton5: TToolButton
-        Left = 193
-        Top = 2
-        Width = 3
-        Caption = 'ToolButton5'
-        ImageIndex = 3
-        Style = tbsSeparator
-      end
-      object SpeedButton3: TSpeedButton
-        Left = 196
-        Top = 2
-        Width = 81
-        Height = 22
-        Caption = #25171#21360'V3 F10'
-        OnClick = SpeedButton3Click
-      end
-      object SpeedButton9: TSpeedButton
-        Left = 277
-        Top = 2
-        Width = 112
-        Height = 22
-        Caption = #20998#32452#25171#21360'V3 F11'
         OnClick = SpeedButton9Click
       end
       object ToolButton6: TToolButton
-        Left = 389
+        Left = 193
         Top = 2
         Width = 3
         Caption = 'ToolButton6'
@@ -330,7 +306,7 @@ object frmMain: TfrmMain
         Style = tbsSeparator
       end
       object SpeedButton7: TSpeedButton
-        Left = 392
+        Left = 196
         Top = 2
         Width = 100
         Height = 22
@@ -338,14 +314,14 @@ object frmMain: TfrmMain
         OnClick = SpeedButton7Click
       end
       object ToolButton1: TToolButton
-        Left = 492
+        Left = 296
         Top = 2
         Width = 3
         Caption = 'ToolButton1'
         Style = tbsSeparator
       end
       object SpeedButton4: TSpeedButton
-        Left = 495
+        Left = 299
         Top = 2
         Width = 88
         Height = 22
@@ -353,7 +329,7 @@ object frmMain: TfrmMain
         OnClick = SpeedButton4Click
       end
       object ToolButton2: TToolButton
-        Left = 583
+        Left = 387
         Top = 2
         Width = 3
         Caption = 'ToolButton2'
@@ -361,7 +337,7 @@ object frmMain: TfrmMain
         Style = tbsSeparator
       end
       object SpeedButton5: TSpeedButton
-        Left = 586
+        Left = 390
         Top = 2
         Width = 112
         Height = 22
@@ -369,7 +345,7 @@ object frmMain: TfrmMain
         OnClick = SpeedButton5Click
       end
       object ToolButton3: TToolButton
-        Left = 698
+        Left = 502
         Top = 2
         Width = 3
         Caption = 'ToolButton3'
@@ -377,7 +353,7 @@ object frmMain: TfrmMain
         Style = tbsSeparator
       end
       object SpeedButton2: TSpeedButton
-        Left = 701
+        Left = 505
         Top = 2
         Width = 80
         Height = 22
@@ -385,7 +361,7 @@ object frmMain: TfrmMain
         OnClick = SpeedButton2Click
       end
       object ToolButton4: TToolButton
-        Left = 781
+        Left = 585
         Top = 2
         Width = 3
         Caption = 'ToolButton4'
@@ -393,7 +369,7 @@ object frmMain: TfrmMain
         Style = tbsSeparator
       end
       object SpeedButton8: TSpeedButton
-        Left = 784
+        Left = 588
         Top = 2
         Width = 80
         Height = 22
@@ -577,28 +553,11 @@ object frmMain: TfrmMain
     Left = 569
     Top = 102
   end
-  object frReport1: TfrReport
-    Dataset = frDBDataSet1
-    InitialZoom = pzDefault
-    PreviewButtons = [pbZoom, pbLoad, pbSave, pbPrint, pbFind, pbHelp, pbExit]
-    RebuildPrinter = False
-    OnGetValue = frReport1GetValue
-    OnBeforePrint = frReport1BeforePrint
-    OnPrintReport = frReport1PrintReport
-    Left = 305
-    Top = 253
-    ReportForm = {19000000}
-  end
   object ado_print: TADOQuery
     Connection = DM.ADOConnection1
     Parameters = <>
     Left = 273
     Top = 333
-  end
-  object frDBDataSet1: TfrDBDataSet
-    DataSet = ado_print
-    Left = 337
-    Top = 253
   end
   object ActionList1: TActionList
     Left = 377
@@ -608,24 +567,14 @@ object frmMain: TfrmMain
       ShortCut = 114
       OnExecute = BitBtn1Click
     end
-    object Action3: TAction
-      Caption = 'Action3'
-      ShortCut = 118
-      OnExecute = SpeedButton1Click
-    end
-    object Action4: TAction
-      Caption = 'Action4'
-      ShortCut = 120
-      OnExecute = SpeedButton6Click
-    end
     object Action2: TAction
       Caption = 'Action2'
-      ShortCut = 121
+      ShortCut = 118
       OnExecute = SpeedButton3Click
     end
     object Action5: TAction
       Caption = 'Action5'
-      ShortCut = 122
+      ShortCut = 120
       OnExecute = SpeedButton9Click
     end
   end

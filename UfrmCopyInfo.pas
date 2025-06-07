@@ -137,16 +137,6 @@ begin
     exit;
   end;
 
-  {//如此取样本号不是非常严谨.因待复制记录的检查日期可能非今天.先用着吧,反正也没什么大问题:)
-  //为降低程序复杂性，按今天日期、常规来取流水号
-  sMaxLSH:=getmaxid(pCombin_id,datetostr(GetServerDate(DM.ADOConnection1)),CGYXJB);
-  IF NOT TRYSTRTOINT(sMaxLSH,iMaxLSH) THEN
-  BEGIN
-    MessageBox(Handle, PCHAR('无效的最大流水号'+sMaxLSH), '提示', MB_ICONERROR);//该情况应该不可能出现
-    EXIT;
-  END;
-  PLSH:=sMaxLSH;//}
-
   sMinCheckID:=trim(LabeledEdit2.Text);
   IF sMinCheckID<>'' then//表示允许不填联机号
     if NOT TRYSTRTOINT(sMinCheckID,icheckid) THEN

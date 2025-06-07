@@ -4,8 +4,8 @@ interface
 
 uses
   WINDOWS,SysUtils, Classes, DB, ADODB,INIFILES,Dialogs{ShowMessage函数},Controls,
-  ComCtrls, Buttons,StdCtrls, ExtCtrls,MENUS,DBGrids,StrUtils, FR_Class,
-  FR_DSet, FR_DBSet,Forms{Application变量},DBCtrls{DBEdit},Mask{TMaskEdit},Imm{ImmGetIMEFileName},
+  ComCtrls, Buttons,StdCtrls, ExtCtrls,MENUS,DBGrids,StrUtils, 
+  Forms{Application变量},DBCtrls{DBEdit},Mask{TMaskEdit},Imm{ImmGetIMEFileName},
   CheckLst{TCheckListBox};
 
 type
@@ -106,54 +106,25 @@ var
   Merge_TempFile:string;//合并打印模板文件
 
 //**********************Dll接口函数部分***************************************//
-//该函数计算pSourStr中有多少个pSS
-function ManyStr(const pSS, pSourStr: Pchar): integer;stdcall;external 'LYFunction.dll';
-//范围字符串pRangeStr类似5,7-9,11 转换为('0005','0007','0008','0009','0011')
-function RangeStrToSql(const pRangeStr:Pchar;const ifLPad:boolean;const LPad:Char;const sWidth:integer;var pSqlStr:Pchar):boolean;stdcall;external 'LYFunction.dll';
 //加强型的Pos函数,取得psubStr在pAllstr中第Times次出现的位置
 function PosExt(const psubStr,pAllstr:Pchar;const Times:Byte):integer;stdcall;external 'LYFunction.dll';
-//找到表达式中小数点位数的最大值.如56.5*100+23.01的值为2
-function MaxDotLen(const ACalaExp:PChar):integer;stdcall;external 'LYFunction.dll';
 function GetHDSn(const RootPath:pchar):pchar;stdcall;external 'LYFunction.dll';
-function GetSysCurImeName: pchar;stdcall;external 'LYFunction.dll';//取得系统当前的中文输入法名称
-function GetVersionLY(const AFileName:pchar):pchar;stdcall;external 'LYFunction.dll';
 function CassonEquation(const X1,Y1,X2,Y2:Real;var A,B:Real):boolean;stdcall;external 'LYFunction.dll';//卡松方程式
 function DeCryptStr(aStr: Pchar; aKey: Pchar): Pchar;stdcall;external 'LYFunction.dll';//解密
 function EnCryptStr(aStr: Pchar; aKey: Pchar): Pchar;stdcall;external 'LYFunction.dll';//加密
-function CalParserValue(const CalExpress:Pchar;var ReturnValue:single):boolean;stdcall;external 'CalParser.dll';
 function ShowOptionForm(const pCaption,pTabSheetCaption,pItemInfo,pInifile:Pchar):boolean;stdcall;external 'OptionSetForm.dll';
-Function IdleTrackerInit:boolean;stdcall;external 'IdleTrac.dll';//start the monitoring process
-Procedure IdleTrackerTerm;stdcall;external 'IdleTrac.dll';//stop the monitoring process
-Function IdleTrackerGetLastTickCount:Longint;stdcall;external 'IdleTrac.dll';//get the tick count of last user input
-//将计算项目增加或编辑到检验结果表中
-procedure addOrEditCalcItem(const Aadoconnstr:Pchar;const ComboItemID:Pchar;const checkunid: integer);stdcall;external 'CalcItemPro.dll';
-//将计算数据增加或编辑到检验结果表中
-procedure addOrEditCalcValu(const Aadoconnstr:Pchar;const checkunid: integer;const AifInterface:boolean;const ATransItemidString:pchar);stdcall;external 'CalcItemPro.dll';
-function LastPos(const ASubStr,ASourStr:Pchar):integer;stdcall;external 'LYFunction.dll';
 procedure WriteLog(const ALogStr: Pchar);stdcall;external 'LYFunction.dll';
 //****************************************************************************//
 
-procedure SendKeyToControl(const VK:byte;control:Twincontrol);
-function ageConvertChinese(agestr: string): string;
-function GetServerDate(adoConn:TADOConnection):TDate;
-procedure AddPickList(dbgrid: tdbgrid; const FieldIndex: integer;const JoinStr: string);//JoinStr是这样的样式：aa,bb,cc,dd
 //控制指定列的显示与否
 procedure VisibleColumn(dbgrid:tdbgrid;const DisplayName:string;const ifVisible:boolean);
 function ifhaspower(sender: tobject;const powerstr_js:string): boolean;
-//function GetMaxId(const combin_id:string;CurDate:tdate;Diagnosetype:string): string;//取得最大流水号,参数:组别名及日期
-function HasSubInDbf(Node:TTreeNode):Boolean;
-function ifRegister:boolean;
 Procedure ChangeYouFormAllControlIme(YFormName:TWinControl);//需要更改输入法的窗体名称
 function SmoothLine(const strHistogram:string;const SmoothNum:byte;var Strings:TStrings;var AMin:single;var AMax:single):integer;
-function GetNextValue(CurValue: string): string;
-function GetFirstValue(CurValue: string): string;
 function MakeDBConn:boolean;
 procedure LoadGroupName(const comboBox:TcomboBox;const ASel:string);
-procedure MakeDBGridColumnsAutoFixItsWidth(objDBGrid:TDBGrid);
-function GetMaxCheckId(const ACombin_ID:string;const AServerDate:tdate):string;//获取指定工作组、日期的下一个联机号
 function ExecSQLCmd(AConnectionString:string;ASQL:string):integer;
 function ScalarSQLCmd(AConnectionString:string;ASQL:string):string;
-procedure combinchecklistbox(CheckListBox:TCheckListBox);//将组合项目号及名称导入CheckListBox中
 
 implementation
 
@@ -172,68 +143,6 @@ begin
   for i :=0  to dbgrid.Columns.Count-1 do
     if uppercase(dbgrid.Fields[i].DisplayName)=uppercase(DisplayName) then
       dbgrid.Columns[i].Visible:=ifVisible;
-end;
-
-procedure AddPickList(dbgrid: tdbgrid; const FieldIndex: integer;
-  const JoinStr: string);//JoinStr是这样的样式：aa,bb,cc,dd 注：用英文或中文状态的逗号分隔均可
-var
-  CommaPos:integer;
-  s1,s2:string;
-begin
-  s1:=JoinStr;
-  if not dbgrid.DataSource.DataSet.Active then exit;
-  if dbgrid.DataSource.DataSet.RecordCount=0 then exit;
-  dbgrid.Columns[FieldIndex].PickList.Clear;
-  if trim(JoinStr)='' then exit;
-  CommaPos:=pos(',',s1);
-  while CommaPos<>0 do
-  begin
-    s2:=trim(copy(s1,1,CommaPos-1));
-    if trim(s2)<>'' then dbgrid.Columns[FieldIndex].PickList.add(s2);
-    delete(s1,1,CommaPos);
-    CommaPos:=pos(',',s1);
-  end;
-  if trim(s1)<>'' then dbgrid.Columns[FieldIndex].PickList.add(s1);
-end;
-
-function GetServerDate(adoConn:TADOConnection):TDate;
-//返回值中包括了日期部分及时间部分
-//datetimetostr(返回值)-->2005-8-28 10:05:36
-//datetostr(返回值)-->2005-8-28
-//timetostr(返回值)-->10:05:36
-var
-  adotempDate:tadoquery;
-begin
-  adotempDate:=tadoquery.Create(NIL);
-  ADOTEMPDATE.Connection:=adoConn;
-  ADOTEMPDATE.Close;
-  ADOTEMPDATE.SQL.Clear;
-  ADOTEMPDATE.SQL.Text:='SELECT GETDATE() as ServerDate ';
-  ADOTEMPDATE.Open;
-  result:=ADOTEMPDATE.fieldbyname('ServerDate').AsDateTime;
-  ADOTEMPDATE.Free;  //}
-end;
-
-procedure SendKeyToControl(const VK:byte;control:Twincontrol);
-BEGIN
-  control.SetFocus;
-  keybd_event(VK,MapVirtualKey(VK,0),0,0); //指定键被按下
-END;
-
-function ageConvertChinese(agestr: string): string;
-var
-  fagestr:single;
-begin
-    agestr:=uppercase(agestr);
-    result:='';
-    if (agestr='') then begin result:=''; exit;end;
-    if UpperCase(agestr)='C' then begin result:='成'; exit;end;
-    if trystrtofloat(agestr,fagestr) then begin result:=agestr+'岁';exit;end;
-    result:=StringReplace(agestr,'N','分钟',[rfReplaceAll,rfIgnoreCase]);
-    result:=StringReplace(result,'Y','岁',[rfReplaceAll,rfIgnoreCase]);
-    result:=StringReplace(result,'M','月',[rfReplaceAll,rfIgnoreCase]);
-    result:=StringReplace(result,'D','天',[rfReplaceAll,rfIgnoreCase]);
-    result:=StringReplace(result,'H','小时',[rfReplaceAll,rfIgnoreCase]);
 end;
 
 function haspower(powerstr_cur, menuname,sDatabaseName: string): boolean;
@@ -356,86 +265,6 @@ begin
 
   if not result then
       messagedlg('对不起，您没有该权限！',mtinformation,[mbok],0);
-end;
-
-{function GetMaxId(const combin_id:string;CurDate:tdate;Diagnosetype:string): string;  //取得最大流水号
-var
-  maxid: string;
-  adotemp11:tadoquery;
-  iMaxId:integer;
-begin
-  if(Diagnosetype<>CGYXJB)and(Diagnosetype<>'急诊')and(Diagnosetype<>'加急')then Diagnosetype:=CGYXJB;
-
-  adotemp11:=tadoquery.Create(nil);
-  adotemp11.Connection:=DM.ADOConnection1;
-          ADOtemp11.Close;
-          ADOtemp11.SQL.Clear;
-          //ADOtemp11.SQL.Text:='select max(LSH)+1 as maxid from chk_con '+
-          //                  ' WHERE (CONVERT(CHAR(10),check_date,121)=:p_CHECK_DATE1 ) '+
-          //                  ' and (chk_con.LSH like ''[0-9][0-9][0-9][0-9]'') '+
-          //                  ' AND (chk_con.combin_id='''+combin_id+''')'+
-          //                  ' and (chk_con.Diagnosetype='''+Diagnosetype+''')'+
-          //                  ' order by maxid desc';     //按降序排序
-          ADOtemp11.SQL.Text:='select LSH from chk_con '+
-                            ' WHERE (CONVERT(CHAR(10),check_date,121)=:p_CHECK_DATE1 ) '+
-                            ' AND (chk_con.combin_id='''+combin_id+''')'+
-                            ' and (chk_con.Diagnosetype='''+Diagnosetype+''')'+
-                            ' order by right(''0000''+lsh,4) desc';     //按降序排序
-
-          ADOtemp11.Parameters.ParamByName('p_CHECK_DATE1').Value:=FormatDateTime('YYYY-MM-DD',CurDate);
-          ADOtemp11.open;
-          //ADOtemp11.First;
-      maxid := trim(ADOtemp11.FieldByName('LSH').AsString);
-      ADOtemp11.Free;
-      
-       if not trystrtoint(maxid,iMaxId) then begin result:='0001';exit;end;
-
-      //if Length(maxid) = 0 then
-      //  maxid := '0001';
-      //if Length(maxid) = 1 then
-      //  maxid := '000' + maxid;
-      //if Length(maxid) = 2 then
-      //  maxid := '00' + maxid;
-      //if Length(maxid) = 3 then
-      //  maxid := '0' + maxid; 
-      result := rightstr('0000'+inttostr(iMaxId+1),4);
-end;//}
-
-function HasSubInDbf(Node:TTreeNode):Boolean;
-//检查节点Node有无子节点,有则返回True,反之返回False
-var
-  adotemp22:tadoquery;
-begin
-  result:=false;
-  adotemp22:=tadoquery.Create(nil);
-  adotemp22.Connection:=dm.ADOConnection1;
-  adotemp22.Close;
-  adotemp22.SQL.Clear;
-  adotemp22.SQL.Text:='select * from RisDescriptType where UpID='''+PDescriptType(Node.Data)^.ID+'''';
-  adotemp22.Open;
-  if adotemp22.RecordCount<>0 then result:= True;
-  adotemp22.Free;
-end;
-
-function ifRegister:boolean;
-var
-  HDSn,RegisterNum,EnHDSn:string;
-  configini:tinifile;
-  pEnHDSn:Pchar;
-begin
-  result:=false;
-  
-  HDSn:=GetHDSn('C:\')+'-'+GetHDSn('D:\');//函数返回的Pchar类型还真能直接赋值给string!!!
-
-  CONFIGINI:=TINIFILE.Create(ChangeFileExt(Application.ExeName,'.ini'));
-  RegisterNum:=CONFIGINI.ReadString('Register','RegisterNum','');
-  CONFIGINI.Free;
-  pEnHDSn:=EnCryptStr(Pchar(HDSn),Pchar(CryptStr));
-  EnHDSn:=StrPas(pEnHDSn);
-
-  if Uppercase(EnHDSn)=Uppercase(RegisterNum) then result:=true;
-
-  if not result then messagedlg('对不起,您没有注册或注册码错误,请注册!',mtinformation,[mbok],0);
 end;
 
 Procedure ChangeYouFormAllControlIme(YFormName:TWinControl);//需要更改输入法的窗体名称
@@ -638,70 +467,6 @@ begin
   result:=t;
 end;
 
-function GetNextValue(CurValue: string): string;
-VAR
-  iCurValue,i:INTEGER;
-  rCurValue,sCurValue:STRING;
-begin
-    RESULT:='';
-    for i :=length(CurValue) downto 1 do
-    begin
-      if not(CurValue[i] in ['0'..'9']) then
-      begin
-        if i=length(CurValue) then //最后一个字符为非数字
-        begin
-          exit;
-        end;
-        iCurValue:=strtoint(copy(CurValue,i+1,length(CurValue)-i));
-        inc(iCurValue);
-        rCurValue:=Format('%.'+inttostr(length(CurValue)-i)+'d', [iCurValue]);//iMaxFieldValue
-        sCurValue:=copy(CurValue,1,i);
-        result:=sCurValue + rCurValue;
-        exit;
-      end else
-      begin
-        if i=1 then //全部为数字的情况
-        begin
-          iCurValue:=strtoint(CurValue);
-          inc(iCurValue);
-          rCurValue:=Format('%.'+inttostr(length(CurValue))+'d', [iCurValue]);//iMaxFieldValue
-          result:= rCurValue;
-          exit;
-        end;
-      end;
-    end;
-end;
-
-function GetFirstValue(CurValue: string): string;
-VAR
-  rCurValue,sCurValue:STRING;
-  i:integer;
-begin
-    RESULT:='';
-    for i :=length(CurValue) downto 1 do
-    begin
-      if not(CurValue[i] in ['0'..'9']) then
-      begin
-        if i=length(CurValue) then //最后一个字符为非数字
-        begin
-          exit;
-        end;
-        rCurValue:=Format('%.'+inttostr(length(CurValue)-i)+'d', [1]);//iMaxFieldValue
-        sCurValue:=copy(CurValue,1,i);
-        result:=sCurValue + rCurValue;
-        exit;
-      end else
-      begin
-        if i=1 then //全部为数字的情况
-        begin
-          rCurValue:=Format('%.'+inttostr(length(CurValue))+'d', [1]);//iMaxFieldValue
-          result:= rCurValue;
-          exit;
-        end;
-      end;
-    end;
-end;
-
 function MakeDBConn:boolean;
 var
   newconnstr,ss: string;
@@ -789,82 +554,6 @@ begin
      adotemp3.Free;
 end;
 
-procedure MakeDBGridColumnsAutoFixItsWidth(objDBGrid:TDBGrid);
-//使dbGrid的内容自动适应他的宽度{如为DBGridEh则将改为：(objDBGrid:TDBGridEh);}
-var
-  cc:integer;
-  i,tmpLength:integer;
-  objDataSet:TAdoquery;
-  aDgCLength:array of integer;
-begin
-  cc:=objDbGrid.Columns.Count-1;
-
-  objDataSet:=TAdoquery.Create(nil);
-  //objDataSet.Clone(objDBGrid.DataSource.DataSet);
-
-  setlength(aDgCLength,cc+1);
-  //取标题字段的长度
-  for i:=0 to  cc do
-  begin
-    aDgCLength[i]:= length(objDbGrid.Columns[i].Title.Caption);
-  end; 
-
-  objDataSet.First;
-  while not objDataSet.Eof do
-  begin
-    //取列中每个字段的长度
-    for i:=0 to  cc do
-    begin
-      tmpLength:=length(objDataSet.Fields.Fields[i].AsString);
-      if tmpLength>aDgCLength[i] then aDgCLength[i]:=tmpLength;
-    end;
-    objDataSet.Next;
-  end; 
-
-  for i:=0 to  cc do
-  begin
-    objDbGrid.Columns[i].Width:=aDgCLength[i]*8;
-  end;
-end;
-
-function GetMaxCheckId(const ACombin_ID:string;const AServerDate:tdate):string;
-var
-  ini:tinifile;
-  CheckDate,CheckId:string;
-  sList:TStrings;
-  i:integer;
-begin
-  result:='';
-  
-  if trim(ACombin_ID)='' then exit;
-
-  ini:=tinifile.Create(ChangeFileExt(Application.ExeName,'.ini'));
-  CheckDate:=ini.ReadString(ACombin_ID,'检查日期','');
-  CheckId:=ini.ReadString(ACombin_ID,'联机号','');
-  ini.Free;
-  CheckId:=StringReplace(CheckId,'，',',',[rfReplaceAll,rfIgnoreCase]);
-  sList:=TStringList.Create;
-  ExtractStrings([','],[],PChar(CheckId),sList);
-  CheckId:='';
-  if datetostr(AServerDate)=CheckDate then
-  begin
-    for i :=0  to sList.Count-1 do
-    begin
-      CheckId:=CheckId+GetNextValue(sList[i])+',';
-    end;
-  end
-  else begin
-    for i :=0  to sList.Count-1 do
-    begin
-      CheckId:=CheckId+GetFirstValue(sList[i])+',';
-    end;
-  end;
-  sList.Free;
-  if(CheckId<>'')and(CheckId[length(CheckId)]=',')then CheckId:=copy(CheckId,1,length(CheckId)-1);
-    
-  result:=CheckId;
-end;
-
 function ExecSQLCmd(AConnectionString:string;ASQL:string):integer;
 var
   Conn:TADOConnection;
@@ -919,28 +608,6 @@ begin
   Result:=Qry.Fields[0].AsString;
   Qry.Free;
   Conn.Free;
-end;
-
-procedure combinchecklistbox(CheckListBox:TCheckListBox);//将组合项目号及名称导入CheckListBox中
-const
-  sqll='select id,name from combinitem where sysname='''+SYSNAME+''' order by id';
-var
-  adotemp3:tadoquery;
-begin
-     CheckListBox.Items.Clear;
-
-     adotemp3:=tadoquery.Create(nil);
-     adotemp3.Connection:=DM.ADOConnection1;
-     adotemp3.Close;
-     adotemp3.SQL.Clear;
-     adotemp3.SQL.Text:=sqll;
-     adotemp3.Open;
-     while not adotemp3.Eof do
-     begin
-      CheckListBox.Items.Add(trim(adotemp3.fieldbyname('id').AsString)+'   '+adotemp3.fieldbyname('name').AsString);
-      adotemp3.Next;
-     end;
-     adotemp3.Free;
 end;
 
 end.

@@ -140,48 +140,24 @@ object SDIAppForm: TSDIAppForm
         ImageIndex = 3
         Style = tbsSeparator
       end
-      object ToolButton8: TSpeedButton
+      object SpeedButton2: TSpeedButton
         Left = 439
         Top = 2
-        Width = 47
+        Width = 75
         Height = 22
         Caption = #25171#21360'F7'
-        OnClick = ToolButton8Click
-      end
-      object suiButton1: TSpeedButton
-        Left = 486
-        Top = 2
-        Width = 75
-        Height = 22
-        Caption = #20998#32452#25171#21360'F9'
-        OnClick = suiButton1Click
-      end
-      object ToolButton5: TToolButton
-        Left = 561
-        Top = 2
-        Width = 3
-        Caption = 'ToolButton5'
-        ImageIndex = 5
-        Style = tbsSeparator
-      end
-      object SpeedButton2: TSpeedButton
-        Left = 564
-        Top = 2
-        Width = 75
-        Height = 22
-        Caption = #25171#21360'V3 F10'
         OnClick = SpeedButton2Click
       end
       object SpeedButton8: TSpeedButton
-        Left = 639
+        Left = 514
         Top = 2
         Width = 100
         Height = 22
-        Caption = #20998#32452#25171#21360'V3 F11'
+        Caption = #20998#32452#25171#21360'F9'
         OnClick = SpeedButton8Click
       end
       object ToolButton3: TToolButton
-        Left = 739
+        Left = 614
         Top = 2
         Width = 8
         Caption = 'ToolButton3'
@@ -189,7 +165,7 @@ object SDIAppForm: TSDIAppForm
         Style = tbsSeparator
       end
       object LYLed2: TLYLed
-        Left = 747
+        Left = 622
         Top = 2
         Width = 19
         Height = 22
@@ -206,7 +182,7 @@ object SDIAppForm: TSDIAppForm
         SoundInValue = True
       end
       object ToolButton7: TToolButton
-        Left = 766
+        Left = 641
         Top = 2
         Width = 8
         Caption = 'ToolButton7'
@@ -214,7 +190,7 @@ object SDIAppForm: TSDIAppForm
         Style = tbsSeparator
       end
       object LYLed1: TLYLed
-        Left = 774
+        Left = 649
         Top = 2
         Width = 19
         Height = 22
@@ -1116,11 +1092,6 @@ object SDIAppForm: TSDIAppForm
       ShortCut = 116
       OnExecute = suiButton8Click
     end
-    object Action5: TAction
-      Caption = 'Action5'
-      ShortCut = 120
-      OnExecute = suiButton1Click
-    end
     object Action6: TAction
       Caption = 'Action6'
       ShortCut = 117
@@ -1131,11 +1102,6 @@ object SDIAppForm: TSDIAppForm
       ShortCut = 119
       OnExecute = suiButton4Click
     end
-    object Action10: TAction
-      Caption = 'Action10'
-      ShortCut = 118
-      OnExecute = ToolButton8Click
-    end
     object Action3: TAction
       Caption = 'Action3'
       ShortCut = 113
@@ -1143,12 +1109,12 @@ object SDIAppForm: TSDIAppForm
     end
     object Action8: TAction
       Caption = 'Action8'
-      ShortCut = 121
+      ShortCut = 118
       OnExecute = SpeedButton2Click
     end
     object Action9: TAction
       Caption = 'Action9'
-      ShortCut = 122
+      ShortCut = 120
       OnExecute = SpeedButton8Click
     end
   end
@@ -2245,26 +2211,6 @@ object SDIAppForm: TSDIAppForm
     object N72: TMenuItem
       Caption = '-'
     end
-  end
-  object frReport1: TfrReport
-    Dataset = frDB_ADO_print
-    InitialZoom = pzDefault
-    ModifyPrepared = False
-    PreviewButtons = [pbZoom, pbLoad, pbSave, pbPrint, pbFind, pbHelp, pbExit]
-    ShowPrintDialog = False
-    ShowProgress = False
-    RebuildPrinter = False
-    OnGetValue = frReport1GetValue
-    OnBeforePrint = frReport1BeforePrint
-    OnPrintReport = frReport1PrintReport
-    Left = 483
-    Top = 375
-    ReportForm = {19000000}
-  end
-  object frDB_ADO_print: TfrDBDataSet
-    DataSet = ADO_print
-    Left = 483
-    Top = 406
   end
   object DosMove1: TDosMove
     Active = True

@@ -95,7 +95,6 @@ var
   sTemp,LshRange,LocateType:string;
   pLshRange:Pchar;
   sList:tstrings;
-//  ini:tinifile;
 begin
   sTemp:=ifThen(RadioGroup2.ItemIndex=0,LabeledEdit3.Text,LabeledEdit14.Text);
   if not RangeStrToSql(pchar(sTemp),true,'0',4,pLshRange) then
@@ -168,23 +167,13 @@ begin
   end;
   adotemp15.Free;
   sList.Free;
-  
-  //ini:=TINIFILE.Create(ExtractFilePath(application.ExeName)+'AppProfile.INI');
-  //ini.WriteString('Interface','Áª»úºÅ·¶Î§×ÖÄ¸',LabeledEdit14.Text);
-  //ini.Free;
 
   close;
 end;
 
 
 procedure TForm_pllr.FormShow(Sender: TObject);
-//var
-//  ini:tinifile;
 begin
-  //ini:=TINIFILE.Create(ExtractFilePath(application.ExeName)+'AppProfile.INI');
-  //LabeledEdit14.Text:=trim(uppercase(ini.ReadString('Interface','Áª»úºÅ·¶Î§×ÖÄ¸','s')));
-  //ini.Free;
-
   combinchecklistbox(CheckListBox1);
 
   if (not SDIAppForm.ADObasic.Active)or(SDIAppForm.ADObasic.RecordCount=0) then
@@ -210,13 +199,11 @@ end;
 procedure TForm_pllr.ComboBox1Change(Sender: TObject);
 begin
   LabeledEdit3.text:=ScalarSQLCmd(LisConn,' select dbo.uf_GetNextSerialNum('''+trim(SDIAppForm.cbxConnChar.Text)+''','''+FormatDateTime('YYYY-MM-DD',DateTimePicker1.Date)+''','''+trim((SENDER AS TComboBox).Text)+''') ');
-  // getmaxid(trim(SDIAppForm.cbxConnChar.Text),DateTimePicker1.Date,trim((SENDER AS TComboBox).Text));
 end;
 
 procedure TForm_pllr.DateTimePicker1Change(Sender: TObject);
 begin
   LabeledEdit3.text:=ScalarSQLCmd(LisConn,' select dbo.uf_GetNextSerialNum('''+trim(SDIAppForm.cbxConnChar.Text)+''','''+FormatDateTime('YYYY-MM-DD',(SENDER AS TDateTimePicker).Date)+''','''+trim(ComboBox1.Text)+''') ');
-  //getmaxid(trim(SDIAppForm.cbxConnChar.Text),(SENDER AS TDateTimePicker).Date,ComboBox1.Text);
 end;
 
 procedure TForm_pllr.RadioGroup2Click(Sender: TObject);

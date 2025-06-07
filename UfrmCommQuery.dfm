@@ -66,31 +66,13 @@ object frmCommQuery: TfrmCommQuery
       TabOrder = 1
       OnClick = BitBtnCommQryCloseClick
     end
-    object BitBtn1: TBitBtn
-      Left = 121
-      Top = 5
-      Width = 70
-      Height = 25
-      Caption = #25171#21360'(&P)'
-      TabOrder = 2
-      OnClick = BitBtn1Click
-    end
-    object BitBtn3: TBitBtn
-      Left = 191
-      Top = 5
-      Width = 70
-      Height = 25
-      Caption = #20998#32452#25171#21360
-      TabOrder = 3
-      OnClick = BitBtn3Click
-    end
     object BitBtn6: TBitBtn
       Left = 261
       Top = 5
       Width = 70
       Height = 25
-      Caption = #25171#21360'V3'
-      TabOrder = 4
+      Caption = #25171#21360
+      TabOrder = 2
       OnClick = BitBtn6Click
     end
     object BitBtn7: TBitBtn
@@ -98,8 +80,8 @@ object frmCommQuery: TfrmCommQuery
       Top = 5
       Width = 70
       Height = 25
-      Caption = #20998#32452#25171#21360'V3'
-      TabOrder = 5
+      Caption = #20998#32452#25171#21360
+      TabOrder = 3
       OnClick = BitBtn7Click
     end
   end
@@ -193,20 +175,6 @@ object frmCommQuery: TfrmCommQuery
     Left = 336
     Top = 280
   end
-  object frReport1: TfrReport
-    Dataset = frDBDataSet2
-    InitialZoom = pzDefault
-    ModifyPrepared = False
-    PreviewButtons = [pbZoom, pbLoad, pbSave, pbPrint, pbFind, pbHelp, pbExit]
-    ShowPrintDialog = False
-    RebuildPrinter = False
-    OnGetValue = frReport1GetValue
-    OnBeforePrint = frReport1BeforePrint
-    OnPrintReport = frReport1PrintReport
-    Left = 304
-    Top = 80
-    ReportForm = {19000000}
-  end
   object ADObasic: TADOQuery
     CursorType = ctStatic
     AfterOpen = ADObasicAfterOpen
@@ -214,11 +182,6 @@ object frmCommQuery: TfrmCommQuery
     Parameters = <>
     Left = 304
     Top = 136
-  end
-  object frDBDataSet2: TfrDBDataSet
-    DataSet = ADO_print
-    Left = 472
-    Top = 104
   end
   object ADO_print: TADOQuery
     Parameters = <>
@@ -248,7 +211,7 @@ object frmCommQuery: TfrmCommQuery
     end
   end
   object LYDataToExcel1: TLYDataToExcel
-    Left = 360
-    Top = 80
+    Left = 440
+    Top = 104
   end
 end

@@ -4,7 +4,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, ExtCtrls, TeeProcs, TeEngine, Chart, Series,StrUtils, StdCtrls;
+  Dialogs, ExtCtrls, Chart, Series,StrUtils, StdCtrls, TeeProcs, TeEngine;
 
 type
   TfrmHistoryResult = class(TForm)

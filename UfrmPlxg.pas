@@ -80,7 +80,6 @@ var
   l_ReturnValue:single;
   itemvalue:string;
   cfxs,jfxs,ss:string;
-//  ini:tinifile;
   iMaxDotLen:integer;//小数点后的位数
 begin
   if not ADOQuery1.Active then exit;
@@ -171,23 +170,13 @@ begin
 
   SDIAppForm.update_Ado_dtl;
 
-  //ini:=TINIFILE.Create(ExtractFilePath(application.ExeName)+'AppProfile.INI');
-  //ini.WriteString('Interface','联机号范围字母',LabeledEdit1.Text);
-  //ini.Free;
-
   close;
 end;
 
 
 procedure TfrmPlxg.FormShow(Sender: TObject);
 begin
-  //ini:=TINIFILE.Create(ExtractFilePath(application.ExeName)+'AppProfile.INI');
-  //LabeledEdit1.Text:=trim(ini.ReadString('Interface','联机号范围字母',''));
-  //ini.Free;
-
-
-  //ServerDate:=GetServerDate(DM.ADOConnection1);
-  DateTimePicker1.DateTime := SDIAppForm.ADObasic.FieldByName('检查日期').AsDateTime;//ServerDate;
+  DateTimePicker1.DateTime := SDIAppForm.ADObasic.FieldByName('检查日期').AsDateTime;
 
   ExecSQLCmd(LisConn,'update clinicchkitem set cfxs='''',jfxs='''' ');
 

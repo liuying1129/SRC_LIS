@@ -5,7 +5,7 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, ExtCtrls, Buttons, DB, ADODB,inifiles, DosMove,StrUtils,
-  FR_Class, ComCtrls;
+  ComCtrls;
 
 type
   TfrmBatchSpecNo = class(TForm)
@@ -151,8 +151,8 @@ begin
         xx:=adotemp4.fieldbyname('unid').AsInteger;
         if SDIAppForm.ADObasic.Locate('Î¨Ò»±àºÅ',xx,[loCaseInsensitive]) then
           begin
-             if RadioGroup1.ItemIndex=0 then SDIAppForm.ToolButton8Click(SDIAppForm.ToolButton8);
-             if RadioGroup1.ItemIndex=1 then SDIAppForm.suiButton1Click(SDIAppForm.suiButton1);
+             //if RadioGroup1.ItemIndex=0 then SDIAppForm.ToolButton8Click(SDIAppForm.ToolButton8);
+             //if RadioGroup1.ItemIndex=1 then SDIAppForm.suiButton1Click(SDIAppForm.suiButton1);
           end;
         adotemp4.Next;
     end;
@@ -227,10 +227,6 @@ procedure TfrmBatchSpecNo.FormShow(Sender: TObject);
 var
   ini:tinifile;
 begin
-  //ini:=TINIFILE.Create(ExtractFilePath(application.ExeName)+'AppProfile.INI');
-  //LabeledEdit1.Text:=trim(ini.ReadString('Interface','Áª»úºÅ·¶Î§×ÖÄ¸',''));
-  //ini.Free;
-
   if pPLLX=1 then
   begin
     RadioGroup1.Visible:=true;
