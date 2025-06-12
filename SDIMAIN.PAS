@@ -384,6 +384,7 @@ type
     procedure cbxConnCharDropDown(Sender: TObject);
     procedure SpeedButton3Click(Sender: TObject);
     procedure N7Click(Sender: TObject);
+    procedure DBGrid1DblClick(Sender: TObject);
   private
     procedure CheckTheListBox;//根据当前病人的结果在checklistbox1中打钩
     procedure WriteProfile;
@@ -1654,7 +1655,7 @@ begin
    if not ADObasic.Active then exit;
    if ADObasic.RecordCount=0 then exit;
 
-  frmBatchSpecNo(0).ShowModal; //批审核
+  frmBatchSpecNo(0).Show;//Modal; //批审核
 end;
 
 procedure TSDIAppForm.N46Click(Sender: TObject);
@@ -1664,7 +1665,7 @@ begin
    if not ADObasic.Active then exit;
    if ADObasic.RecordCount=0 then exit;
 
-  frmBatchSpecNo(2).ShowModal;
+  frmBatchSpecNo(2).Show;//Modal;//批量删除
 end;
 
 procedure TSDIAppForm.LabeledEdit13KeyDown(Sender: TObject; var Key: Word;
@@ -1953,12 +1954,9 @@ procedure TSDIAppForm.ADObasicAfterScroll(DataSet: TDataSet);
 begin
   FillBasic;
       
-  if not ifBatchOperater then
-  begin
-    update_Ado_dtl;
-    ShowPictureValue(DataSet.fieldbyname('唯一编号').AsInteger);
-    ShowBarcode2D(DataSet.fieldbyname('唯一编号').AsInteger);
-  end;
+  update_Ado_dtl;
+  ShowPictureValue(DataSet.fieldbyname('唯一编号').AsInteger);
+  ShowBarcode2D(DataSet.fieldbyname('唯一编号').AsInteger);
 
   ifnewadd:=false;
 end;
@@ -3814,6 +3812,26 @@ end;
 procedure TSDIAppForm.SpeedButton3Click(Sender: TObject);
 begin
   MessageDlg('年龄默认单位是岁'+#$D+'单位快速录入方式：Y-岁,M-月,D-天,H-小时',mtInformation,[MBOK],0);
+end;
+
+procedure TSDIAppForm.DBGrid1DblClick(Sender: TObject);
+begin
+  if not TDBGrid(Sender).DataSource.DataSet.Active then exit;
+  if TDBGrid(Sender).DataSource.DataSet.RecordCount<=0 then exit;
+
+  if not Assigned(ffrmBatchSpecNo) then exit;
+
+  //为批量窗体赋值
+  if ffrmBatchSpecNo.LabeledEdit3.Color=clYellow then
+  begin
+    ffrmBatchSpecNo.LabeledEdit3.Text:=TDBGrid(Sender).DataSource.DataSet.FieldByName('检查日期').AsString+' '+TDBGrid(Sender).DataSource.DataSet.FieldByName('流水号').AsString;//仅为友好显示,无任何控制作用
+    ffrmBatchSpecNo.Edit2.Text:=TDBGrid(Sender).DataSource.DataSet.FieldByName('唯一编号').AsString;
+  end;
+  if ffrmBatchSpecNo.LabeledEdit1.Color=clYellow then
+  begin
+    ffrmBatchSpecNo.LabeledEdit1.Text:=TDBGrid(Sender).DataSource.DataSet.FieldByName('检查日期').AsString+' '+TDBGrid(Sender).DataSource.DataSet.FieldByName('流水号').AsString;//仅为友好显示,无任何控制作用
+    ffrmBatchSpecNo.Edit1.Text:=TDBGrid(Sender).DataSource.DataSet.FieldByName('唯一编号').AsString;
+  end;
 end;
 
 end.

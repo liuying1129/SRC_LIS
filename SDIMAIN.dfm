@@ -515,6 +515,7 @@ object SDIAppForm: TSDIAppForm
         TitleFont.Name = #23435#20307
         TitleFont.Style = []
         OnDrawColumnCell = DBGrid1DrawColumnCell
+        OnDblClick = DBGrid1DblClick
       end
       object Panel6: TPanel
         Left = 2
