@@ -134,7 +134,6 @@ type
     N34: TMenuItem;
     N35: TMenuItem;
     N36: TMenuItem;
-    N47: TMenuItem;
     N49: TMenuItem;
     SpeedButton1: TSpeedButton;
     ToolButton2: TToolButton;
@@ -324,7 +323,6 @@ type
     procedure pmChangeGroupPopup(Sender: TObject);
     procedure N26Click(Sender: TObject);
     procedure N36Click(Sender: TObject);
-    procedure N47Click(Sender: TObject);
     procedure N49Click(Sender: TObject);
     procedure SpeedButton1Click(Sender: TObject);
     procedure LabeledEdit1KeyDown(Sender: TObject; var Key: Word;
@@ -850,8 +848,7 @@ begin
   n41.Checked:=configini.ReadBool('Interface','ifRTTransData',true);
   cbxConnChar.Text:=trim(CONFIGINI.ReadString('Interface','ShowReportType',ScalarSQLCmd(LisConn,'select TOP 1 name from CommCode WITH(NOLOCK) where TypeName=''检验组别'' AND SysName='''+SYSNAME+'''')));
   n50.Checked:=configini.ReadBool('Interface','ifShowEnglish',true);
-  n36.Checked:=configini.ReadBool('Interface','ifShowMinValue',true);{记录是否显示项目最小值}
-  n47.Checked:=configini.ReadBool('Interface','ifShowMaxValue',true);{记录是否显示项目最大值}
+  n36.Checked:=configini.ReadBool('Interface','ifShowMinValue',true);{记录是否显示参考范围}
   n49.Checked:=configini.ReadBool('Interface','ifShowUnit',true);{记录是否显示项目单位}
   n7.Checked:=configini.ReadBool('Interface','ifShowLastTimeValue',false);{记录是否显示最近历史结果}
   PageControl2.Height:=configini.ReadInteger('Interface','clbCombItemHeight',150);{记录组合项目选择框高度}
@@ -907,8 +904,7 @@ begin
   ConfigIni.WriteBool('Interface','ifRTTransData',n41.Checked); {记录是否实时显示传输数据}
   ConfigIni.WriteString('Interface','ShowReportType',trim(cbxConnChar.Text)); {记录主界面中要显示的检验单类型}
   configini.WriteBool('Interface','ifShowEnglish',n50.Checked);{记录是否显示项目英文名}
-  configini.WriteBool('Interface','ifShowMinValue',n36.Checked);{记录是否显示项目最小值}
-  configini.WriteBool('Interface','ifShowMaxValue',n47.Checked);{记录是否显示项目最大值}
+  configini.WriteBool('Interface','ifShowMinValue',n36.Checked);{记录是否显示参考范围}
   configini.WriteBool('Interface','ifShowUnit',n49.Checked);{记录是否显示项目单位}
   configini.WriteBool('Interface','ifShowLastTimeValue',n7.Checked);{记录是否显示最近历史结果}
   if PageControl2.Height<60 then PageControl2.Height:=60;
@@ -982,7 +978,7 @@ begin
 
   VisibleColumn(dbgrid2,'英文名',N50.Checked);
   VisibleColumn(dbgrid2,'最小值',N36.Checked);
-  VisibleColumn(dbgrid2,'最大值',N47.Checked);
+  VisibleColumn(dbgrid2,'最大值',N36.Checked);
   VisibleColumn(dbgrid2,'单位',N49.Checked);
   VisibleColumn(dbgrid2,'最近历史结果',N7.Checked);
   VisibleColumn(dbgrid2,'最近历史时间',N7.Checked);
@@ -1010,7 +1006,7 @@ begin
   dbgrid1.Columns[11].Width:=55;//送检医生
   dbgrid1.Columns[12].Width:=72;//申请日期
 
-  VisibleColumn(dbgrid1,'流水号',N6.Checked);//按流水号排序时显示流水号,否则(联机号)不显示流水号
+  //VisibleColumn(dbgrid1,'流水号',N6.Checked);//按流水号排序时显示流水号,否则(联机号)不显示流水号
 end;
 
 procedure TSDIAppForm.clbCommUsedClickCheck(Sender: TObject);
@@ -2061,7 +2057,7 @@ begin
   if not DataSet.Active then exit;
   if DataSet.RecordCount=0 then exit;
 
-  dbgrid2.Columns[4].PickList.Clear;
+  dbgrid2.Columns[3].PickList.Clear;
 
   adotemp11:=tadoquery.Create(nil);
   adotemp11.Connection:=DM.ADOConnection1;
@@ -2073,7 +2069,7 @@ begin
   adotemp11.Open;
   while not adotemp11.Eof do
   begin
-    dbgrid2.Columns[4].PickList.add(adotemp11.fieldbyname('sValue').AsString);
+    dbgrid2.Columns[3].PickList.add(adotemp11.fieldbyname('sValue').AsString);
     adotemp11.Next;
   end;
   adotemp11.Free;
@@ -2691,11 +2687,6 @@ procedure TSDIAppForm.N36Click(Sender: TObject);
 begin
   TMenuItem(sender).Checked:=not TMenuItem(sender).Checked;
   VisibleColumn(dbgrid2,'最小值',TMenuItem(sender).Checked);
-end;
-
-procedure TSDIAppForm.N47Click(Sender: TObject);
-begin
-  TMenuItem(sender).Checked:=not TMenuItem(sender).Checked;
   VisibleColumn(dbgrid2,'最大值',TMenuItem(sender).Checked);
 end;
 

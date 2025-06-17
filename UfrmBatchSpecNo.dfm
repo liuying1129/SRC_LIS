@@ -69,6 +69,7 @@ object frmBatchSpecNo: TfrmBatchSpecNo
     Top = 31
     Width = 180
     Height = 21
+    ReadOnly = True
     TabOrder = 0
     OnEnter = LabeledEdit3Enter
   end
@@ -77,6 +78,7 @@ object frmBatchSpecNo: TfrmBatchSpecNo
     Top = 93
     Width = 180
     Height = 21
+    ReadOnly = True
     TabOrder = 1
     OnEnter = LabeledEdit1Enter
   end
