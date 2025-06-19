@@ -23,7 +23,7 @@ object SDIAppForm: TSDIAppForm
   PixelsPerInch = 96
   TextHeight = 13
   object Splitter1: TSplitter
-    Left = 460
+    Left = 620
     Top = 37
     Height = 590
   end
@@ -210,9 +210,9 @@ object SDIAppForm: TSDIAppForm
     end
   end
   object Panel1: TPanel
-    Left = 463
+    Left = 623
     Top = 37
-    Width = 421
+    Width = 261
     Height = 590
     Align = alClient
     BevelOuter = bvNone
@@ -221,7 +221,7 @@ object SDIAppForm: TSDIAppForm
     object Panel5: TPanel
       Left = 0
       Top = 0
-      Width = 421
+      Width = 261
       Height = 23
       Align = alTop
       Color = 16767438
@@ -269,21 +269,21 @@ object SDIAppForm: TSDIAppForm
     object Panel2: TPanel
       Left = 0
       Top = 23
-      Width = 421
+      Width = 261
       Height = 567
       Align = alClient
       TabOrder = 1
       object Panel3: TPanel
         Left = 1
         Top = 1
-        Width = 419
+        Width = 259
         Height = 565
         Align = alClient
         TabOrder = 0
         object Splitter2: TSplitter
           Left = 1
           Top = 151
-          Width = 417
+          Width = 257
           Height = 5
           Cursor = crVSplit
           Align = alTop
@@ -293,7 +293,7 @@ object SDIAppForm: TSDIAppForm
         object PageControl1: TPageControl
           Left = 1
           Top = 156
-          Width = 417
+          Width = 257
           Height = 408
           ActivePage = TabSheet1
           Align = alClient
@@ -303,7 +303,7 @@ object SDIAppForm: TSDIAppForm
             object DBGrid2: TDBGrid
               Left = 0
               Top = 0
-              Width = 409
+              Width = 249
               Height = 380
               Align = alClient
               Color = 16767438
@@ -415,7 +415,7 @@ object SDIAppForm: TSDIAppForm
         object PageControl2: TPageControl
           Left = 1
           Top = 1
-          Width = 417
+          Width = 257
           Height = 150
           ActivePage = TabSheet5
           Align = alTop
@@ -425,7 +425,7 @@ object SDIAppForm: TSDIAppForm
             object clbCommUsed: TCheckListBox
               Left = 0
               Top = 0
-              Width = 409
+              Width = 249
               Height = 122
               OnClickCheck = clbCommUsedClickCheck
               Align = alClient
@@ -453,7 +453,7 @@ object SDIAppForm: TSDIAppForm
             object clbNoCommUsed: TCheckListBox
               Left = 0
               Top = 0
-              Width = 409
+              Width = 249
               Height = 122
               OnClickCheck = clbCommUsedClickCheck
               Align = alClient
@@ -482,14 +482,14 @@ object SDIAppForm: TSDIAppForm
   object Panel7: TPanel
     Left = 0
     Top = 37
-    Width = 460
+    Width = 620
     Height = 590
     Align = alLeft
     TabOrder = 2
     object GroupBox1: TGroupBox
       Left = 190
       Top = 1
-      Width = 269
+      Width = 429
       Height = 588
       Align = alClient
       Caption = #26816#39564#21333#21015#34920'(&Q)'
@@ -499,7 +499,7 @@ object SDIAppForm: TSDIAppForm
       object DBGrid1: TDBGrid
         Left = 2
         Top = 42
-        Width = 265
+        Width = 425
         Height = 544
         Align = alClient
         Color = 16767438
@@ -520,7 +520,7 @@ object SDIAppForm: TSDIAppForm
       object Panel6: TPanel
         Left = 2
         Top = 15
-        Width = 265
+        Width = 425
         Height = 27
         Align = alTop
         BevelInner = bvRaised
