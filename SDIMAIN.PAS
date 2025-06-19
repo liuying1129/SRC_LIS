@@ -1260,6 +1260,29 @@ begin
       end;
     end;
    //==========================================================================//   
+
+  //====================流水号、联机号排序的背景色标识========================// 
+  if Column.FieldName='流水号' then
+  begin
+    if N6.checked then
+    begin
+      if Column.Title.Color<>clYellow then Column.Title.Color:=clYellow;
+    end else
+    begin
+      if Column.Title.Color<>clBtnFace then Column.Title.Color:=clBtnFace;
+    end;
+  end;
+  if Column.FieldName='联机号' then
+  begin
+    if N24.checked then
+    begin
+      if Column.Title.Color<>clYellow then Column.Title.Color:=clYellow;
+    end else
+    begin
+      if Column.Title.Color<>clBtnFace then Column.Title.Color:=clBtnFace;
+    end;
+  end;
+  //==========================================================================// 
 end;
 
 function TSDIAppForm.CheckMan: boolean;//20080130
@@ -3758,11 +3781,13 @@ end;
 procedure TSDIAppForm.N6Click(Sender: TObject);
 begin
   (Sender as TMenuItem).Checked := true;
+  suiButton8Click(nil);
 end;
 
 procedure TSDIAppForm.N24Click(Sender: TObject);
 begin
   (Sender as TMenuItem).Checked := true;
+  suiButton8Click(nil);
 end;
 
 procedure TSDIAppForm.LabeledEdit12DropDown(Sender: TObject);
