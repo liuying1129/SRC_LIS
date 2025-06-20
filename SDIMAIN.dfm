@@ -377,25 +377,14 @@ object SDIAppForm: TSDIAppForm
               TabOrder = 0
             end
           end
-          object TabSheet3: TTabSheet
-            Caption = #20108#32500#30721
-            ImageIndex = 2
-            object ImageBarcode2D: TImage
-              Left = 0
-              Top = 0
-              Width = 409
-              Height = 319
-              Align = alClient
-            end
-          end
           object TabSheet4: TTabSheet
             Caption = #32467#26524#35814#24773
             ImageIndex = 3
             object meValueDesc: TMemo
               Left = 0
               Top = 40
-              Width = 409
-              Height = 279
+              Width = 249
+              Height = 340
               Align = alClient
               ScrollBars = ssBoth
               TabOrder = 0
@@ -403,7 +392,7 @@ object SDIAppForm: TSDIAppForm
             object Panel4: TPanel
               Left = 0
               Top = 0
-              Width = 409
+              Width = 249
               Height = 40
               Align = alTop
               TabOrder = 1

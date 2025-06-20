@@ -164,8 +164,6 @@ type
     ScrollBoxPicture: TScrollBox;
     N66: TMenuItem;
     N71: TMenuItem;
-    TabSheet3: TTabSheet;
-    ImageBarcode2D: TImage;
     N29: TMenuItem;
     N72: TMenuItem;
     TabSheet4: TTabSheet;
@@ -406,7 +404,6 @@ type
     procedure LoadToolMenu(const ToolMenuItem:TMenuItem;const ASel:string);
     procedure miToolItemClick(Sender: TObject);
     procedure ShowPictureValue(const ACheckUnid:integer);
-    procedure ShowBarcode2D(const ACheckUnid:integer);
   public
       { Public declarations }
     ifnewadd:boolean;
@@ -446,7 +443,7 @@ uses  Unit_dialog_pllr,
   UfrmExcelQuery, UfrmStaticCombItem,
   UDM, UfrmFromExcelLoad,
   UfrmXDepictType, UfrmXDepict, UfrmCommCode, UfrmPlxg, UfrmCopyInfo,
-  UfrmPhoto, uQRCode,
+  UfrmPhoto, 
   UfrmModifyPwd, UfrmEquipManage, UfrmSJ_JBXX, softMeter_globalVar,
   UfrmHorizontalExport, UfrmCriticalValueDetail;
 
@@ -1856,8 +1853,15 @@ begin
   updateDBGrid2;
 
   //更新数量
-  TabSheet1.Caption:='检验结果('+ScalarSQLCmd(LisConn,'select count(*) from chk_valu where pkunid='+ADObasic.fieldbyname('唯一编号').AsString+'and issure=1 and ltrim(rtrim(isnull(itemvalue,'''')))<>'''' ')+')';
-  TabSheet2.Caption:='图像('+ScalarSQLCmd(LisConn,'select count(*) from chk_valu where pkunid='+ADObasic.fieldbyname('唯一编号').AsString+'and issure=1 and (isnull(histogram,'''')<>'''' or Photo is not null or Reserve8 is not null)')+')';
+  if ADObasic.fieldbyname('唯一编号').AsString='' then
+  begin
+    TabSheet1.Caption:='检验结果(0)';
+    TabSheet2.Caption:='图像(0)';
+  end else
+  begin
+    TabSheet1.Caption:='检验结果('+ScalarSQLCmd(LisConn,'select count(*) from chk_valu where pkunid='+ADObasic.fieldbyname('唯一编号').AsString+'and issure=1 and ltrim(rtrim(isnull(itemvalue,'''')))<>'''' ')+')';
+    TabSheet2.Caption:='图像('+ScalarSQLCmd(LisConn,'select count(*) from chk_valu where pkunid='+ADObasic.fieldbyname('唯一编号').AsString+'and issure=1 and (isnull(histogram,'''')<>'''' or Photo is not null or Reserve8 is not null)')+')';
+  end;
 end;
 
 procedure TSDIAppForm.InsertOrDeleteVaue(const ComboItemID:string;const ifAddorDel:boolean;const checkunid:integer;const AChk_Valu_His_ValueId:integer);
@@ -1970,7 +1974,6 @@ begin
       
   update_Ado_dtl;
   ShowPictureValue(DataSet.fieldbyname('唯一编号').AsInteger);
-  ShowBarcode2D(DataSet.fieldbyname('唯一编号').AsInteger);
 
   ifnewadd:=false;
 end;
@@ -2001,8 +2004,15 @@ begin
   ADO_dtl.Refresh;//更新界面(计算值、翻译值、是否修改标识...)
 
   //更新数量
-  TabSheet1.Caption:='检验结果('+ScalarSQLCmd(LisConn,'select count(*) from chk_valu where pkunid='+ADObasic.fieldbyname('唯一编号').AsString+'and issure=1 and ltrim(rtrim(isnull(itemvalue,'''')))<>'''' ')+')';
-  TabSheet2.Caption:='图像('+ScalarSQLCmd(LisConn,'select count(*) from chk_valu where pkunid='+ADObasic.fieldbyname('唯一编号').AsString+'and issure=1 and (isnull(histogram,'''')<>'''' or Photo is not null or Reserve8 is not null)')+')';
+  if ADObasic.fieldbyname('唯一编号').AsString='' then
+  begin
+    TabSheet1.Caption:='检验结果(0)';
+    TabSheet2.Caption:='图像(0)';
+  end else
+  begin
+    TabSheet1.Caption:='检验结果('+ScalarSQLCmd(LisConn,'select count(*) from chk_valu where pkunid='+ADObasic.fieldbyname('唯一编号').AsString+'and issure=1 and ltrim(rtrim(isnull(itemvalue,'''')))<>'''' ')+')';
+    TabSheet2.Caption:='图像('+ScalarSQLCmd(LisConn,'select count(*) from chk_valu where pkunid='+ADObasic.fieldbyname('唯一编号').AsString+'and issure=1 and (isnull(histogram,'''')<>'''' or Photo is not null or Reserve8 is not null)')+')';
+  end;
 end;
 
 procedure TSDIAppForm.LabeledEdit16Exit(Sender: TObject);
@@ -3173,44 +3183,6 @@ begin
                         Reserve8_1,strtofloatdef(mPa_min_1,-1),Reserve8_2,strtofloatdef(mPa_min_2,-1),
                         Reserve8_1,strtofloatdef(mPa_max_1,-1),Reserve8_2,strtofloatdef(mPa_max_2,-1));
   end;
-end;
-
-procedure TSDIAppForm.ShowBarcode2D(const ACheckUnid: integer);
-var
-  ss:string;
-  adotemp3:tadoquery;
-begin
-  adotemp3:=tadoquery.Create(nil);
-  adotemp3.Connection:=DM.ADOConnection1;
-  adotemp3.Close;
-  adotemp3.SQL.Clear;
-  adotemp3.SQL.Text:='select * from chk_con cc,chk_valu cv where cc.unid=cv.pkunid and cv.issure=1 and isnull(cv.itemvalue,'''')<>'''' and cc.unid='+inttostr(ACheckUnid);
-  adotemp3.Open;
-  ss:=ss+'姓名:'+adotemp3.fieldbyname('patientname').AsString+';';
-  ss:=ss+'性别:'+adotemp3.fieldbyname('sex').AsString+';';
-  ss:=ss+'年龄:'+adotemp3.fieldbyname('age').AsString+';';
-  ss:=ss+'门诊/住院号:'+adotemp3.fieldbyname('Caseno').AsString+';';
-  ss:=ss+'床号:'+adotemp3.fieldbyname('bedno').AsString+';';
-  ss:=ss+'送检科室:'+adotemp3.fieldbyname('deptname').AsString+';';
-  ss:=ss+'检查日期:'+adotemp3.fieldbyname('check_date').AsString+';';
-  ss:=ss+'送检医生:'+adotemp3.fieldbyname('check_doctor').AsString+';';
-  ss:=ss+'样本类型:'+adotemp3.fieldbyname('flagetype').AsString+';';
-  ss:=ss+'临床诊断:'+adotemp3.fieldbyname('diagnose').AsString;
-  ss:=ss+#13;
-  while not adotemp3.Eof do
-  begin
-    ss:=ss+adotemp3.fieldbyname('name').AsString+':';
-    ss:=ss+adotemp3.fieldbyname('itemvalue').AsString+' ';
-    ss:=ss+adotemp3.fieldbyname('Unit').AsString;
-    ss:=ss+#13;
-    adotemp3.Next;
-  end;
-  adotemp3.Free;
-
-  //BeginDraw(Canvas, ScaleX, ScaleY, OffsetX, OffsetY);
-  ImageBarcode2D.Canvas.FillRect(rect(0,0,ImageBarcode2D.Width,ImageBarcode2D.Height));
-  //Create 2D Barcode
-  CreateQRCode(ss, 0, 0, 3,ImageBarcode2D.Canvas.Handle);
 end;
 
 procedure TSDIAppForm.BitBtn1Click(Sender: TObject);

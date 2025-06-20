@@ -32,7 +32,6 @@ uses
   UfrmPhoto in 'UfrmPhoto.pas' {frmPhoto},
   UfrmCommValue in 'UfrmCommValue.pas' {frmCommValue},
   UfrmHisCombItem in 'UfrmHisCombItem.pas' {frmHisCombItem},
-  uQRCode in 'uQRCode.pas',
   UfrmExtItemSetup in 'UfrmExtItemSetup.pas' {frmExtItemSetup},
   UfrmExceptionValue in 'UfrmExceptionValue.pas' {frmExceptionValue},
   UfrmModifyPwd in 'UfrmModifyPwd.pas' {frmModifyPwd},
