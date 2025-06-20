@@ -232,6 +232,9 @@ type
     Action9: TAction;
     SpeedButton3: TSpeedButton;
     N7: TMenuItem;
+    SpeedButton4: TSpeedButton;
+    SpeedButton6: TSpeedButton;
+    ToolButton5: TToolButton;
     procedure FileExit1Execute(Sender: TObject);
     procedure HelpAbout1Execute(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -383,6 +386,7 @@ type
     procedure SpeedButton3Click(Sender: TObject);
     procedure N7Click(Sender: TObject);
     procedure DBGrid1DblClick(Sender: TObject);
+    procedure SpeedButton4Click(Sender: TObject);
   private
     procedure CheckTheListBox;//根据当前病人的结果在checklistbox1中打钩
     procedure WriteProfile;
@@ -1850,6 +1854,10 @@ begin
 
   checkthelistbox;
   updateDBGrid2;
+
+  //更新数量
+  TabSheet1.Caption:='检验结果('+ScalarSQLCmd(LisConn,'select count(*) from chk_valu where pkunid='+ADObasic.fieldbyname('唯一编号').AsString+'and issure=1 and ltrim(rtrim(isnull(itemvalue,'''')))<>'''' ')+')';
+  TabSheet2.Caption:='图像('+ScalarSQLCmd(LisConn,'select count(*) from chk_valu where pkunid='+ADObasic.fieldbyname('唯一编号').AsString+'and issure=1 and (isnull(histogram,'''')<>'''' or Photo is not null or Reserve8 is not null)')+')';
 end;
 
 procedure TSDIAppForm.InsertOrDeleteVaue(const ComboItemID:string;const ifAddorDel:boolean;const checkunid:integer;const AChk_Valu_His_ValueId:integer);
@@ -1991,6 +1999,10 @@ procedure TSDIAppForm.ADO_dtlAfterPost(DataSet: TDataSet);
 begin
   addOrEditCalcValu(pchar(LisConn),dsbasic.DataSet.FieldByName('唯一编号').AsInteger,false,''); //计算
   ADO_dtl.Refresh;//更新界面(计算值、翻译值、是否修改标识...)
+
+  //更新数量
+  TabSheet1.Caption:='检验结果('+ScalarSQLCmd(LisConn,'select count(*) from chk_valu where pkunid='+ADObasic.fieldbyname('唯一编号').AsString+'and issure=1 and ltrim(rtrim(isnull(itemvalue,'''')))<>'''' ')+')';
+  TabSheet2.Caption:='图像('+ScalarSQLCmd(LisConn,'select count(*) from chk_valu where pkunid='+ADObasic.fieldbyname('唯一编号').AsString+'and issure=1 and (isnull(histogram,'''')<>'''' or Photo is not null or Reserve8 is not null)')+')';
 end;
 
 procedure TSDIAppForm.LabeledEdit16Exit(Sender: TObject);
@@ -2711,6 +2723,8 @@ begin
   TMenuItem(sender).Checked:=not TMenuItem(sender).Checked;
   VisibleColumn(dbgrid2,'最近历史结果',TMenuItem(sender).Checked);
   VisibleColumn(dbgrid2,'最近历史时间',TMenuItem(sender).Checked);
+
+  update_Ado_dtl;//更新最近历史结果
 end;
 
 procedure TSDIAppForm.SpeedButton1Click(Sender: TObject);
@@ -3835,6 +3849,11 @@ begin
     ffrmBatchSpecNo.LabeledEdit1.Text:=TDBGrid(Sender).DataSource.DataSet.FieldByName('检查日期').AsString+' '+TDBGrid(Sender).DataSource.DataSet.FieldByName('流水号').AsString;//仅为友好显示,无任何控制作用
     ffrmBatchSpecNo.Edit1.Text:=TDBGrid(Sender).DataSource.DataSet.FieldByName('唯一编号').AsString;
   end;
+end;
+
+procedure TSDIAppForm.SpeedButton4Click(Sender: TObject);
+begin
+  MessageDlg('录入门诊/住院号后回车,可带出患者基本信息',mtInformation,[MBOK],0);
 end;
 
 end.
