@@ -64,26 +64,11 @@ type
     O1: TMenuItem;
     Excel1: TMenuItem;
     PopupMenu1: TPopupMenu;
-    N39: TMenuItem;
-    N43: TMenuItem;
-    N51: TMenuItem;
-    N52: TMenuItem;
-    N53: TMenuItem;
-    N54: TMenuItem;
-    N55: TMenuItem;
-    N56: TMenuItem;
-    N57: TMenuItem;
-    N58: TMenuItem;
-    N59: TMenuItem;
-    N61: TMenuItem;
     pmChangeGroup: TPopupMenu;
-    N38: TMenuItem;
-    N40: TMenuItem;
     N11: TMenuItem;
     N22: TMenuItem;
     Y1: TMenuItem;
     N27: TMenuItem;
-    N31: TMenuItem;
     Excel2: TMenuItem;
     N62: TMenuItem;
     N63: TMenuItem;
@@ -144,7 +129,6 @@ type
     N65: TMenuItem;
     N16: TMenuItem;
     N67: TMenuItem;
-    N68: TMenuItem;
     N69: TMenuItem;
     N70: TMenuItem;
     Label5: TLabel;
@@ -182,14 +166,6 @@ type
     lbedtOldAddress: TLabeledEdit;
     lbedtAddress: TLabeledEdit;
     lbedtTelephone: TLabeledEdit;
-    N77: TMenuItem;
-    N78: TMenuItem;
-    N79: TMenuItem;
-    N80: TMenuItem;
-    N81: TMenuItem;
-    N82: TMenuItem;
-    N83: TMenuItem;
-    N84: TMenuItem;
     PageControl2: TPageControl;
     TabSheet5: TTabSheet;
     TabSheet6: TTabSheet;
@@ -233,6 +209,29 @@ type
     SpeedButton4: TSpeedButton;
     SpeedButton6: TSpeedButton;
     ToolButton5: TToolButton;
+    N25: TMenuItem;
+    N44: TMenuItem;
+    N47: TMenuItem;
+    N64: TMenuItem;
+    N87: TMenuItem;
+    N88: TMenuItem;
+    N89: TMenuItem;
+    N90: TMenuItem;
+    N91: TMenuItem;
+    N92: TMenuItem;
+    N93: TMenuItem;
+    N94: TMenuItem;
+    N95: TMenuItem;
+    N96: TMenuItem;
+    N97: TMenuItem;
+    N98: TMenuItem;
+    N99: TMenuItem;
+    N100: TMenuItem;
+    N101: TMenuItem;
+    N102: TMenuItem;
+    N103: TMenuItem;
+    N104: TMenuItem;
+    N31: TMenuItem;
     procedure FileExit1Execute(Sender: TObject);
     procedure HelpAbout1Execute(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -271,7 +270,6 @@ type
     procedure Q1Click(Sender: TObject);
     procedure ADObasicAfterScroll(DataSet: TDataSet);
     procedure N30Click(Sender: TObject);
-    procedure N39Click(Sender: TObject);
     procedure suiButton8Click(Sender: TObject);
     procedure N41Click(Sender: TObject);
     procedure cbxConnCharChange(Sender: TObject);
@@ -299,22 +297,10 @@ type
     procedure LabeledEdit15KeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure Excel1Click(Sender: TObject);
-    procedure N43Click(Sender: TObject);
-    procedure N51Click(Sender: TObject);
-    procedure N52Click(Sender: TObject);
-    procedure N53Click(Sender: TObject);
-    procedure N54Click(Sender: TObject);
-    procedure N55Click(Sender: TObject);
-    procedure N56Click(Sender: TObject);
-    procedure N57Click(Sender: TObject);
-    procedure N58Click(Sender: TObject);
-    procedure N59Click(Sender: TObject);
-    procedure N61Click(Sender: TObject);
     procedure LabeledEdit2KeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure Y1Click(Sender: TObject);
     procedure ADObasicAfterOpen(DataSet: TDataSet);
-    procedure N31Click(Sender: TObject);
     procedure Excel2Click(Sender: TObject);
     procedure N63Click(Sender: TObject);
     procedure M1Click(Sender: TObject);
@@ -343,14 +329,6 @@ type
     procedure BitBtn1Click(Sender: TObject);
     procedure BitBtn2Click(Sender: TObject);
     procedure N76Click(Sender: TObject);
-    procedure N77Click(Sender: TObject);
-    procedure N78Click(Sender: TObject);
-    procedure N79Click(Sender: TObject);
-    procedure N80Click(Sender: TObject);
-    procedure N81Click(Sender: TObject);
-    procedure N82Click(Sender: TObject);
-    procedure N83Click(Sender: TObject);
-    procedure N84Click(Sender: TObject);
     procedure lbedtifMarryExit(Sender: TObject);
     procedure lbedtWorkCompanyKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
@@ -385,6 +363,28 @@ type
     procedure N7Click(Sender: TObject);
     procedure DBGrid1DblClick(Sender: TObject);
     procedure SpeedButton4Click(Sender: TObject);
+    procedure N44Click(Sender: TObject);
+    procedure N47Click(Sender: TObject);
+    procedure N64Click(Sender: TObject);
+    procedure N87Click(Sender: TObject);
+    procedure N88Click(Sender: TObject);
+    procedure N89Click(Sender: TObject);
+    procedure N90Click(Sender: TObject);
+    procedure N91Click(Sender: TObject);
+    procedure N92Click(Sender: TObject);
+    procedure N93Click(Sender: TObject);
+    procedure N94Click(Sender: TObject);
+    procedure N95Click(Sender: TObject);
+    procedure N96Click(Sender: TObject);
+    procedure N97Click(Sender: TObject);
+    procedure N98Click(Sender: TObject);
+    procedure N99Click(Sender: TObject);
+    procedure N100Click(Sender: TObject);
+    procedure N101Click(Sender: TObject);
+    procedure N102Click(Sender: TObject);
+    procedure N103Click(Sender: TObject);
+    procedure N104Click(Sender: TObject);
+    procedure N31Click(Sender: TObject);
   private
     procedure CheckTheListBox;//根据当前病人的结果在checklistbox1中打钩
     procedure WriteProfile;
@@ -465,7 +465,10 @@ begin
   ClearAll(1);
 
   LabeledEdit16.text:=ScalarSQLCmd(LisConn,' select dbo.uf_GetNextSerialNum('''+trim(cbxConnChar.Text)+''',CONVERT(CHAR(10),getdate(),121),'''+trim(LabeledEdit12.Text)+''') ');
-  if LabeledEdit1.CanFocus then LabeledEdit1.SetFocus;
+  //因屏蔽/启用输入栏功能
+  if LabeledEdit1.CanFocus then LabeledEdit1.SetFocus//联机号
+    else if LabeledEdit2.CanFocus then LabeledEdit2.SetFocus//门诊/住院号
+      else if LabeledEdit3.CanFocus then LabeledEdit3.SetFocus;//姓名  
 
   ifnewadd:=true;
 end;
@@ -868,6 +871,7 @@ begin
   end;
 
   LabeledEdit16.Enabled:=configini.ReadBool('EditEnabled','LSH',true);
+  LabeledEdit1.Enabled:=configini.ReadBool('EditEnabled','checkid',true);
   LabeledEdit2.Enabled:=configini.ReadBool('EditEnabled','Caseno',true);
   LabeledEdit6.Enabled:=configini.ReadBool('EditEnabled','deptname',true);
   LabeledEdit7.Enabled:=configini.ReadBool('EditEnabled','bedno',true);
@@ -916,6 +920,7 @@ begin
   configini.WriteBool('Interface','ifLSHOrder',n6.Checked);{记录是否流水号排序}
 
   configini.WriteBool('EditEnabled','LSH',LabeledEdit16.Enabled);
+  configini.WriteBool('EditEnabled','checkid',LabeledEdit1.Enabled);
   configini.WriteBool('EditEnabled','Caseno',LabeledEdit2.Enabled);
   configini.WriteBool('EditEnabled','deptname',LabeledEdit6.Enabled);
   configini.WriteBool('EditEnabled','bedno',LabeledEdit7.Enabled);
@@ -2360,111 +2365,6 @@ begin
   frmHorizontalExport.ShowModal;
 end;
 
-procedure TSDIAppForm.N31Click(Sender: TObject);
-begin
-  LabeledEdit16.Enabled:=not LabeledEdit16.Enabled;
-end;
-
-procedure TSDIAppForm.N39Click(Sender: TObject);
-begin
-  LabeledEdit2.Enabled:=not LabeledEdit2.Enabled;
-end;
-
-procedure TSDIAppForm.N43Click(Sender: TObject);
-begin
-  LabeledEdit6.Enabled:=not LabeledEdit6.Enabled;
-end;
-
-procedure TSDIAppForm.N51Click(Sender: TObject);
-begin
-  LabeledEdit7.Enabled:=not LabeledEdit7.Enabled;
-end;
-
-procedure TSDIAppForm.N52Click(Sender: TObject);
-begin
-  LabeledEdit10.Enabled:=not LabeledEdit10.Enabled;
-end;
-
-procedure TSDIAppForm.N53Click(Sender: TObject);
-begin
-  LabeledEdit8.Enabled:=not LabeledEdit8.Enabled;
-end;
-
-procedure TSDIAppForm.N54Click(Sender: TObject);
-begin
-  LabeledEdit9.Enabled:=not LabeledEdit9.Enabled;
-end;
-
-procedure TSDIAppForm.N55Click(Sender: TObject);
-begin
-  LabeledEdit14.Enabled:=not LabeledEdit14.Enabled;
-end;
-
-procedure TSDIAppForm.N56Click(Sender: TObject);
-begin
-  DateTimePicker1.Enabled:=not DateTimePicker1.Enabled;
-end;
-
-procedure TSDIAppForm.N57Click(Sender: TObject);
-begin
-  DateTimePicker3.Enabled:=not DateTimePicker3.Enabled;
-end;
-
-procedure TSDIAppForm.N58Click(Sender: TObject);
-begin
-  DateTimePicker2.Enabled:=not DateTimePicker2.Enabled;
-end;
-
-procedure TSDIAppForm.N59Click(Sender: TObject);
-begin
-  DateTimePicker4.Enabled:=not DateTimePicker4.Enabled;
-end;
-
-procedure TSDIAppForm.N61Click(Sender: TObject);
-begin
-  LabeledEdit15.Enabled:=not LabeledEdit15.Enabled;
-end;
-
-procedure TSDIAppForm.N77Click(Sender: TObject);
-begin
-  lbedtWorkID.Enabled:=not lbedtWorkID.Enabled;
-end;
-
-procedure TSDIAppForm.N78Click(Sender: TObject);
-begin
-  lbedtWorkCompany.Enabled:=not lbedtWorkCompany.Enabled;
-end;
-
-procedure TSDIAppForm.N79Click(Sender: TObject);
-begin
-  lbedtWorkDepartment.Enabled:=not lbedtWorkDepartment.Enabled;
-end;
-
-procedure TSDIAppForm.N80Click(Sender: TObject);
-begin
-  lbedtWorkCategory.Enabled:=not lbedtWorkCategory.Enabled;
-end;
-
-procedure TSDIAppForm.N81Click(Sender: TObject);
-begin
-  lbedtifMarry.Enabled:=not lbedtifMarry.Enabled;
-end;
-
-procedure TSDIAppForm.N82Click(Sender: TObject);
-begin
-  lbedtOldAddress.Enabled:=not lbedtOldAddress.Enabled;
-end;
-
-procedure TSDIAppForm.N83Click(Sender: TObject);
-begin
-  lbedtAddress.Enabled:=not lbedtAddress.Enabled;
-end;
-
-procedure TSDIAppForm.N84Click(Sender: TObject);
-begin
-  lbedtTelephone.Enabled:=not lbedtTelephone.Enabled;
-end;
-
 procedure TSDIAppForm.pmChangeGroupItemClick(Sender: TObject);
 var
   Insert_Identity:INTEGER;
@@ -3826,6 +3726,116 @@ end;
 procedure TSDIAppForm.SpeedButton4Click(Sender: TObject);
 begin
   MessageDlg('录入门诊/住院号后回车,可带出患者基本信息',mtInformation,[MBOK],0);
+end;
+
+procedure TSDIAppForm.N44Click(Sender: TObject);
+begin
+  LabeledEdit16.Enabled:=not LabeledEdit16.Enabled;
+end;
+
+procedure TSDIAppForm.N31Click(Sender: TObject);
+begin
+  LabeledEdit1.Enabled:=not LabeledEdit1.Enabled;
+end;
+
+procedure TSDIAppForm.N47Click(Sender: TObject);
+begin
+  LabeledEdit2.Enabled:=not LabeledEdit2.Enabled;
+end;
+
+procedure TSDIAppForm.N64Click(Sender: TObject);
+begin
+  LabeledEdit6.Enabled:=not LabeledEdit6.Enabled;
+end;
+
+procedure TSDIAppForm.N87Click(Sender: TObject);
+begin
+  LabeledEdit7.Enabled:=not LabeledEdit7.Enabled;
+end;
+
+procedure TSDIAppForm.N88Click(Sender: TObject);
+begin
+  LabeledEdit10.Enabled:=not LabeledEdit10.Enabled;
+end;
+
+procedure TSDIAppForm.N89Click(Sender: TObject);
+begin
+  LabeledEdit8.Enabled:=not LabeledEdit8.Enabled;
+end;
+
+procedure TSDIAppForm.N90Click(Sender: TObject);
+begin
+  LabeledEdit9.Enabled:=not LabeledEdit9.Enabled;
+end;
+
+procedure TSDIAppForm.N91Click(Sender: TObject);
+begin
+  LabeledEdit14.Enabled:=not LabeledEdit14.Enabled;
+end;
+
+procedure TSDIAppForm.N92Click(Sender: TObject);
+begin
+  DateTimePicker1.Enabled:=not DateTimePicker1.Enabled;
+end;
+
+procedure TSDIAppForm.N93Click(Sender: TObject);
+begin
+  DateTimePicker3.Enabled:=not DateTimePicker3.Enabled;
+end;
+
+procedure TSDIAppForm.N94Click(Sender: TObject);
+begin
+  DateTimePicker2.Enabled:=not DateTimePicker2.Enabled;
+end;
+
+procedure TSDIAppForm.N95Click(Sender: TObject);
+begin
+  DateTimePicker4.Enabled:=not DateTimePicker4.Enabled;
+end;
+
+procedure TSDIAppForm.N96Click(Sender: TObject);
+begin
+  LabeledEdit15.Enabled:=not LabeledEdit15.Enabled;
+end;
+
+procedure TSDIAppForm.N97Click(Sender: TObject);
+begin
+  lbedtWorkID.Enabled:=not lbedtWorkID.Enabled;
+end;
+
+procedure TSDIAppForm.N98Click(Sender: TObject);
+begin
+  lbedtWorkCompany.Enabled:=not lbedtWorkCompany.Enabled;
+end;
+
+procedure TSDIAppForm.N99Click(Sender: TObject);
+begin
+  lbedtWorkDepartment.Enabled:=not lbedtWorkDepartment.Enabled;
+end;
+
+procedure TSDIAppForm.N100Click(Sender: TObject);
+begin
+  lbedtWorkCategory.Enabled:=not lbedtWorkCategory.Enabled;
+end;
+
+procedure TSDIAppForm.N101Click(Sender: TObject);
+begin
+  lbedtifMarry.Enabled:=not lbedtifMarry.Enabled;
+end;
+
+procedure TSDIAppForm.N102Click(Sender: TObject);
+begin
+  lbedtOldAddress.Enabled:=not lbedtOldAddress.Enabled;
+end;
+
+procedure TSDIAppForm.N103Click(Sender: TObject);
+begin
+  lbedtAddress.Enabled:=not lbedtAddress.Enabled;
+end;
+
+procedure TSDIAppForm.N104Click(Sender: TObject);
+begin
+  lbedtTelephone.Enabled:=not lbedtTelephone.Enabled;
 end;
 
 end.

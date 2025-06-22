@@ -2114,6 +2114,97 @@ object SDIAppForm: TSDIAppForm
         RadioItem = True
         OnClick = N24Click
       end
+      object N25: TMenuItem
+        Caption = '-'
+      end
+      object N44: TMenuItem
+        Caption = #23631#34109'/'#21551#29992#36755#20837#26639'-'#27969#27700#21495
+        OnClick = N44Click
+      end
+      object N31: TMenuItem
+        Caption = #23631#34109'/'#21551#29992#36755#20837#26639'-'#32852#26426#21495
+        OnClick = N31Click
+      end
+      object N47: TMenuItem
+        Caption = #23631#34109'/'#21551#29992#36755#20837#26639'-'#38376#35786'/'#20303#38498#21495
+        OnClick = N47Click
+      end
+      object N64: TMenuItem
+        Caption = #23631#34109'/'#21551#29992#36755#20837#26639'-'#36865#26816#31185#23460
+        OnClick = N64Click
+      end
+      object N87: TMenuItem
+        Caption = #23631#34109'/'#21551#29992#36755#20837#26639'-'#24202#21495
+        OnClick = N87Click
+      end
+      object N88: TMenuItem
+        Caption = #23631#34109'/'#21551#29992#36755#20837#26639'-'#36865#26816#21307#29983
+        OnClick = N88Click
+      end
+      object N89: TMenuItem
+        Caption = #23631#34109'/'#21551#29992#36755#20837#26639'-'#26679#26412#31867#22411
+        OnClick = N89Click
+      end
+      object N90: TMenuItem
+        Caption = #23631#34109'/'#21551#29992#36755#20837#26639'-'#26679#26412#29366#24577
+        OnClick = N90Click
+      end
+      object N91: TMenuItem
+        Caption = #23631#34109'/'#21551#29992#36755#20837#26639'-'#20020#24202#35786#26029
+        OnClick = N91Click
+      end
+      object N92: TMenuItem
+        Caption = #23631#34109'/'#21551#29992#36755#20837#26639'-'#30003#35831#26085#26399
+        OnClick = N92Click
+      end
+      object N93: TMenuItem
+        Caption = #23631#34109'/'#21551#29992#36755#20837#26639'-'#30003#35831#26102#38388
+        OnClick = N93Click
+      end
+      object N94: TMenuItem
+        Caption = #23631#34109'/'#21551#29992#36755#20837#26639'-'#26816#26597#26085#26399
+        OnClick = N94Click
+      end
+      object N95: TMenuItem
+        Caption = #23631#34109'/'#21551#29992#36755#20837#26639'-'#26816#26597#26102#38388
+        OnClick = N95Click
+      end
+      object N96: TMenuItem
+        Caption = #23631#34109'/'#21551#29992#36755#20837#26639'-'#22791#27880
+        OnClick = N96Click
+      end
+      object N97: TMenuItem
+        Caption = #23631#34109'/'#21551#29992#36755#20837#26639'-'#24037#21495
+        OnClick = N97Click
+      end
+      object N98: TMenuItem
+        Caption = #23631#34109'/'#21551#29992#36755#20837#26639'-'#25152#23646#20844#21496
+        OnClick = N98Click
+      end
+      object N99: TMenuItem
+        Caption = #23631#34109'/'#21551#29992#36755#20837#26639'-'#25152#23646#37096#38376
+        OnClick = N99Click
+      end
+      object N100: TMenuItem
+        Caption = #23631#34109'/'#21551#29992#36755#20837#26639'-'#24037#31181
+        OnClick = N100Click
+      end
+      object N101: TMenuItem
+        Caption = #23631#34109'/'#21551#29992#36755#20837#26639'-'#23130#21542
+        OnClick = N101Click
+      end
+      object N102: TMenuItem
+        Caption = #23631#34109'/'#21551#29992#36755#20837#26639'-'#31821#36143
+        OnClick = N102Click
+      end
+      object N103: TMenuItem
+        Caption = #23631#34109'/'#21551#29992#36755#20837#26639'-'#20303#22336
+        OnClick = N103Click
+      end
+      object N104: TMenuItem
+        Caption = #23631#34109'/'#21551#29992#36755#20837#26639'-'#30005#35805
+        OnClick = N104Click
+      end
     end
     object N65: TMenuItem
       Caption = #24037#20855
@@ -2153,99 +2244,6 @@ object SDIAppForm: TSDIAppForm
     AutoHotkeys = maManual
     Left = 548
     Top = 376
-    object N40: TMenuItem
-      Caption = #21551#29992'/'#23631#34109#20449#24687#26694
-    end
-    object N38: TMenuItem
-      Caption = '-'
-    end
-    object N31: TMenuItem
-      Caption = #27969#27700#21495
-      OnClick = N31Click
-    end
-    object N39: TMenuItem
-      Caption = #38376#35786#20303#38498#21495
-      OnClick = N39Click
-    end
-    object N43: TMenuItem
-      Caption = #36865#26816#31185#23460
-      OnClick = N43Click
-    end
-    object N51: TMenuItem
-      Caption = #24202#21495
-      OnClick = N51Click
-    end
-    object N52: TMenuItem
-      Caption = #36865#26816#21307#29983
-      OnClick = N52Click
-    end
-    object N53: TMenuItem
-      Caption = #26679#26412#31867#22411
-      OnClick = N53Click
-    end
-    object N54: TMenuItem
-      Caption = #26679#26412#29366#24577
-      OnClick = N54Click
-    end
-    object N55: TMenuItem
-      Caption = #20020#24202#35786#26029
-      OnClick = N55Click
-    end
-    object N56: TMenuItem
-      Caption = #30003#35831#26085#26399
-      OnClick = N56Click
-    end
-    object N57: TMenuItem
-      Caption = #30003#35831#26102#38388
-      OnClick = N57Click
-    end
-    object N58: TMenuItem
-      Caption = #26816#26597#26085#26399
-      OnClick = N58Click
-    end
-    object N59: TMenuItem
-      Caption = #26816#26597#26102#38388
-      OnClick = N59Click
-    end
-    object N61: TMenuItem
-      Caption = #22791#27880
-      OnClick = N61Click
-    end
-    object N77: TMenuItem
-      Caption = #24037#21495
-      OnClick = N77Click
-    end
-    object N78: TMenuItem
-      Caption = #25152#23646#20844#21496
-      OnClick = N78Click
-    end
-    object N79: TMenuItem
-      Caption = #25152#23646#37096#38376
-      OnClick = N79Click
-    end
-    object N80: TMenuItem
-      Caption = #24037#31181
-      OnClick = N80Click
-    end
-    object N81: TMenuItem
-      Caption = #23130#21542
-      OnClick = N81Click
-    end
-    object N82: TMenuItem
-      Caption = #31821#36143
-      OnClick = N82Click
-    end
-    object N83: TMenuItem
-      Caption = #20303#22336
-      OnClick = N83Click
-    end
-    object N84: TMenuItem
-      Caption = #30005#35805
-      OnClick = N84Click
-    end
-    object N68: TMenuItem
-      Caption = '-'
-    end
     object N69: TMenuItem
       Caption = #22797#21046#30149#20154#20449#24687
       OnClick = N69Click
