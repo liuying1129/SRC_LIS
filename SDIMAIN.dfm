@@ -2225,16 +2225,6 @@ object SDIAppForm: TSDIAppForm
       end
     end
   end
-  object LYAboutBox1: TLYAboutBox
-    ProcuctName = 'ProductName'
-    Version = 'Version'
-    Copyright = 'Copyright'
-    Comments = 'Comments'
-    Author = 'Author'
-    WebPage = 'WebPage'
-    Left = 315
-    Top = 375
-  end
   object ADO_print: TADOQuery
     Parameters = <>
     Left = 225

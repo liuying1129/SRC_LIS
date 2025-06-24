@@ -41,7 +41,8 @@ uses
   UfrmHorizontalExport in 'UfrmHorizontalExport.pas' {frmHorizontalExport},
   superobject in 'superobject.pas',
   UfrmCriticalManage in 'UfrmCriticalManage.pas' {frmCriticalManage},
-  UfrmCriticalValueDetail in 'UfrmCriticalValueDetail.pas' {frmCriticalValueDetail};
+  UfrmCriticalValueDetail in 'UfrmCriticalValueDetail.pas' {frmCriticalValueDetail},
+  UfrmAboutBox in 'UfrmAboutBox.pas' {frmAboutBox};
 
 {$R *.RES}
 

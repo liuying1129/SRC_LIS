@@ -5,7 +5,7 @@ interface
 uses Windows,Messages, Classes,SysUtils, Graphics, Forms, Controls, Menus,
   Dialogs, StdCtrls, Buttons, ExtCtrls,CheckLst, ComCtrls, ImgList, StdActns,
   ActnList, ToolWin, DosMove,ADODB, Grids, DBGrids,
-  DB,inifiles, LYAboutBox,Printers,
+  DB,inifiles, Printers,
   StrUtils, Series, Chart,shellapi{ShellExecute}, 
   DateUtils, ADOLYGetcode,Math, UfrmLocateRecord,
   UADOLYQuery, LYLed, frxClass, ExtDlgs,Variants,Jpeg;
@@ -48,7 +48,6 @@ type
     N18: TMenuItem;
     N20: TMenuItem;
     N21: TMenuItem;
-    LYAboutBox1: TLYAboutBox;
     LJ1: TMenuItem;
     Action6: TAction;
     Action7: TAction;
@@ -445,7 +444,7 @@ uses  Unit_dialog_pllr,
   UfrmXDepictType, UfrmXDepict, UfrmCommCode, UfrmPlxg, UfrmCopyInfo,
   UfrmPhoto, 
   UfrmModifyPwd, UfrmEquipManage, UfrmSJ_JBXX, softMeter_globalVar,
-  UfrmHorizontalExport, UfrmCriticalValueDetail;
+  UfrmHorizontalExport, UfrmCriticalValueDetail, UfrmAboutBox;
 
 var
     copyName,copySex,copyage,copyCaseno,copyBedno,copydeptname,copycheck_doctor:string;//复制的病人基本信息，仅粘贴时有用
@@ -479,21 +478,8 @@ begin
 end;
 
 procedure TSDIAppForm.HelpAbout1Execute(Sender: TObject);
-var
-  ini:tinifile;
-  sWeChat:String;
 begin
-  LYAboutBox1.ProcuctName:=Caption;
-  LYAboutBox1.Version:=GetVersionLY(pchar(APPLICATION.ExeName));//函数返回的Pchar类型还真能直接赋值给string!!!
-  LYAboutBox1.Copyright:='版权所有,严禁反编译，反汇编';
-  ini:=TINIFILE.Create(ChangeFileExt(Application.ExeName,'.ini'));
-  LYAboutBox1.Comments:=ini.ReadString('Interface','companyname','广东誉凯软件工作室');
-  LYAboutBox1.Author:=ini.ReadString('Interface','companytel','13710248644、QQ:46524223');
-  LYAboutBox1.WebPage:=ini.ReadString('Interface','companywww','http://yklis.ys168.com');//会员帐号:yklis;密码是:liu771129
-  sWeChat:=ScalarSQLCmd(LisConn,'select Name from CommCode where TypeName=''系统代码'' and ReMark=''微信公众号'' ');
-  LYAboutBox1.WeChat:=ifThen(sWeChat='','http://weixin.qq.com/r/GDvN1Y7EmtPlrcq2924K',sWeChat);
-  ini.Free;
-  LYAboutBox1.Execute;
+  frmAboutBox.ShowModal;
 end;
 
 procedure TSDIAppForm.FormShow(Sender: TObject);
