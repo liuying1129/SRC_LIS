@@ -11,7 +11,6 @@ program ProYkLis;
 uses
   Forms,
   SDIMAIN in 'SDIMAIN.PAS' {SDIAppForm},
-  Unit_dialog_pllr in 'Unit_dialog_pllr.pas' {Form_pllr},
   Unitstatic in 'Unitstatic.pas' {Formstatic},
   UfrmCommQuery in 'UfrmCommQuery.pas' {frmCommQuery},
   UfrmLogin in 'UfrmLogin.pas' {frmLogin},

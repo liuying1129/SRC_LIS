@@ -34,7 +34,6 @@ type
     N1: TMenuItem;
     FileOpenItem: TMenuItem;
     N2: TMenuItem;
-    N3: TMenuItem;
     N10: TMenuItem;
     N4: TMenuItem;
     N13: TMenuItem;
@@ -237,7 +236,6 @@ type
     procedure N8Click(Sender: TObject);
     procedure N9Click(Sender: TObject);
     procedure ToolButton1Click(Sender: TObject);
-    procedure N3Click(Sender: TObject);
     procedure UpdateADObasic;
     procedure FormCreate(Sender: TObject);
     procedure N4Click(Sender: TObject);
@@ -432,8 +430,7 @@ var
 
 implementation
 
-uses  Unit_dialog_pllr,
-   Unitstatic, UfrmCommQuery,
+uses Unitstatic, UfrmCommQuery,
    UfrmLogin, 
    UfrmBatchSpecNo,
   ufrm_referencevalue,ufrmItemSetup,
@@ -628,13 +625,6 @@ begin
   if (MessageDlg('是否真要删除当前记录？', mtConfirmation, [mbYes, mbNo], 0) <> mrYes) then exit;
 
   DBGrid1.DataSource.DataSet.Delete;
-end;
-
-procedure TSDIAppForm.N3Click(Sender: TObject);
-begin
-  if not ifhaspower(sender,powerstr_js_main) then exit;
-
-  Form_pllr.ShowModal;
 end;
 
 procedure TSDIAppForm.UpdateADObasic;  //全部检验单事件
