@@ -186,19 +186,19 @@ procedure TfrmBatchSpecNo.LabeledEdit3Enter(Sender: TObject);
 begin
   TEdit(Sender).Color := clYellow;
   LabeledEdit1.Color := clWindow;
-  Label3.Caption:='请双击选择开始的检验单';
+  Label3.Caption:='请双击选择用于开始的检验单';
 end;
 
 procedure TfrmBatchSpecNo.LabeledEdit1Enter(Sender: TObject);
 begin
   TEdit(Sender).Color := clYellow;
   LabeledEdit3.Color := clWindow;
-  Label3.Caption:='请双击选择结束的检验单';
+  Label3.Caption:='请双击选择用于结束的检验单';
 end;
 
 procedure TfrmBatchSpecNo.FormShow(Sender: TObject);
 begin
-  LabeledEdit3.SetFocus;
+  if LabeledEdit3.CanFocus then LabeledEdit3.SetFocus;
 end;
 
 initialization

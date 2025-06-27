@@ -98,8 +98,6 @@ var
   CryptStr:String;//加解密种子,从市政版本开始改为'lc'，以前版本为'YIDA'
 
 //**********************Dll接口函数部分***************************************//
-//范围字符串pRangeStr类似5,7-9,11 转换为('0005','0007','0008','0009','0011')
-function RangeStrToSql(const pRangeStr:Pchar;const ifLPad:boolean;const LPad:Char;const sWidth:integer;var pSqlStr:Pchar):boolean;stdcall;external 'LYFunction.dll';
 //加强型的Pos函数,取得psubStr在pAllstr中第Times次出现的位置
 function PosExt(const psubStr,pAllstr:Pchar;const Times:Byte):integer;stdcall;external 'LYFunction.dll';
 //找到表达式中小数点位数的最大值.如56.5*100+23.01的值为2

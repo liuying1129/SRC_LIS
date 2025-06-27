@@ -2582,7 +2582,7 @@ procedure TSDIAppForm.N26Click(Sender: TObject);
 begin
   if not ifhaspower(sender,powerstr_js_main) then exit;
 
-  frmPlxg.ShowModal;
+  frmPlxg.Show;//Modal
 end;
 
 procedure TSDIAppForm.N50Click(Sender: TObject);
@@ -3684,18 +3684,34 @@ begin
   if not TDBGrid(Sender).DataSource.DataSet.Active then exit;
   if TDBGrid(Sender).DataSource.DataSet.RecordCount<=0 then exit;
 
-  if not Assigned(ffrmBatchSpecNo) then exit;
-
   //为批量窗体赋值
-  if ffrmBatchSpecNo.LabeledEdit3.Color=clYellow then
+  if Assigned(ffrmBatchSpecNo) then
   begin
-    ffrmBatchSpecNo.LabeledEdit3.Text:=TDBGrid(Sender).DataSource.DataSet.FieldByName('检查日期').AsString+' '+TDBGrid(Sender).DataSource.DataSet.FieldByName('流水号').AsString;//仅为友好显示,无任何控制作用
-    ffrmBatchSpecNo.Edit2.Text:=TDBGrid(Sender).DataSource.DataSet.FieldByName('唯一编号').AsString;
+    if ffrmBatchSpecNo.LabeledEdit3.Color=clYellow then
+    begin
+      ffrmBatchSpecNo.LabeledEdit3.Text:=TDBGrid(Sender).DataSource.DataSet.FieldByName('检查日期').AsString+' '+TDBGrid(Sender).DataSource.DataSet.FieldByName('流水号').AsString;//仅为友好显示,无任何控制作用
+      ffrmBatchSpecNo.Edit2.Text:=TDBGrid(Sender).DataSource.DataSet.FieldByName('唯一编号').AsString;
+    end;
+    if ffrmBatchSpecNo.LabeledEdit1.Color=clYellow then
+    begin
+      ffrmBatchSpecNo.LabeledEdit1.Text:=TDBGrid(Sender).DataSource.DataSet.FieldByName('检查日期').AsString+' '+TDBGrid(Sender).DataSource.DataSet.FieldByName('流水号').AsString;//仅为友好显示,无任何控制作用
+      ffrmBatchSpecNo.Edit1.Text:=TDBGrid(Sender).DataSource.DataSet.FieldByName('唯一编号').AsString;
+    end;
   end;
-  if ffrmBatchSpecNo.LabeledEdit1.Color=clYellow then
+  
+  //为结果批量修改窗体赋值
+  if Assigned(ffrmPlxg) then
   begin
-    ffrmBatchSpecNo.LabeledEdit1.Text:=TDBGrid(Sender).DataSource.DataSet.FieldByName('检查日期').AsString+' '+TDBGrid(Sender).DataSource.DataSet.FieldByName('流水号').AsString;//仅为友好显示,无任何控制作用
-    ffrmBatchSpecNo.Edit1.Text:=TDBGrid(Sender).DataSource.DataSet.FieldByName('唯一编号').AsString;
+    if ffrmPlxg.LabeledEdit3.Color=clYellow then
+    begin
+      ffrmPlxg.LabeledEdit3.Text:=TDBGrid(Sender).DataSource.DataSet.FieldByName('检查日期').AsString+' '+TDBGrid(Sender).DataSource.DataSet.FieldByName('流水号').AsString;//仅为友好显示,无任何控制作用
+      ffrmPlxg.Edit2.Text:=TDBGrid(Sender).DataSource.DataSet.FieldByName('唯一编号').AsString;
+    end;
+    if ffrmPlxg.LabeledEdit1.Color=clYellow then
+    begin
+      ffrmPlxg.LabeledEdit1.Text:=TDBGrid(Sender).DataSource.DataSet.FieldByName('检查日期').AsString+' '+TDBGrid(Sender).DataSource.DataSet.FieldByName('流水号').AsString;//仅为友好显示,无任何控制作用
+      ffrmPlxg.Edit1.Text:=TDBGrid(Sender).DataSource.DataSet.FieldByName('唯一编号').AsString;
+    end;
   end;
 end;
 
