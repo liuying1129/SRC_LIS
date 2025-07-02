@@ -4218,6 +4218,11 @@ GO
 update menuitem set menuname='结果合并打印',SysName='CentralPrint' where bm='274' --and menuname='权限设置' and SysName='BC'
 GO
 
+--20250702
+update menuitem set menuname='打印F7',SysName='CentralPrint' where bm='275' --and menuname='直接打印模式' and SysName='BC'
+update menuitem set menuname='分组打印F9',SysName='CentralPrint' where bm='276' --and menuname='打印预览模式' and SysName='BC'
+GO
+
 ---------------表约束、索引相关操作---------------
 
 if not exists(select * from sysindexes where name='IX_combinitem')
