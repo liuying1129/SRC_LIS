@@ -1781,7 +1781,7 @@ CREATE FUNCTION [dbo].[uf_GetAIPrompt]
   @ifCompleted int, --0:chk_con,1:chk_con_bak
   @chk_con_unid int --chk_con.unid或chk_con_bak.unid
 )  
-RETURNS varchar(2000) AS  
+RETURNS varchar(4000) AS  
 BEGIN 
   declare @patientname varchar(40),@sex varchar(8),@age varchar(14)
   if @ifCompleted=1 
@@ -1791,7 +1791,7 @@ BEGIN
   if @patientname is null return ''--有患者基本信息记录但姓名为null,无患者基本信息记录
   if ltrim(rtrim(@patientname))='' return ''--有患者基本信息记录但姓名为空串
 
-  declare @AIPrompt varchar(2000) 
+  declare @AIPrompt varchar(4000) 
   set @AIPrompt='患者姓名:'+@patientname+',患者性别:'+@sex+',患者年龄:'+@age+'。'+CHAR(13)+CHAR(10)
 
   if @ifCompleted=1 
