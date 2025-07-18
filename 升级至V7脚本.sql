@@ -1487,23 +1487,6 @@ BEGIN
   set @Birthday=dbo.uf_GetBirthday(@age,@report_date)
   if (@Birthday='')or(@Birthday is null)or(@Birthday=0) return 0
 
-  /*通过查看执行计划，增加如下索引，显著提升性能
-CREATE NONCLUSTERED INDEX [IX_chk_con_bak_1] ON [dbo].[chk_con_bak] 
-(
-	[patientname] ASC,
-	[sex] ASC,
-	[check_date] ASC
-)
-GO
-
-CREATE NONCLUSTERED INDEX [IX_chk_valu_bak_2] ON [dbo].[chk_valu_bak] 
-(
-	[pkunid] ASC,
-	[itemid] ASC
-)
-INCLUDE ( [itemvalue]) 
-GO
-  */
   if exists(select TOP 1 1 from chk_con_bak Z,chk_valu_bak F 
    where z.unid=f.pkunid and 
    z.patientname=@patientname and 
@@ -1785,6 +1768,63 @@ BEGIN
   if exists(select 1 from ItemCriticalValue where ItemUnid=@ItemUnid and ISNULL(sex,'')<>'' and sex=@sex and dbo.uf_GetAgeReal(@age)>=age_low and dbo.uf_GetAgeReal(@age)<=age_high and MatchMode='=' and @cur_value_float=CONVERT(float, CriticalValue)) return 1
 
   return 0
+END
+GO
+
+--2025-7-18 获取AI分析提示词
+if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[uf_GetAIPrompt]') and xtype in (N'FN', N'IF', N'TF'))
+drop function [dbo].[uf_GetAIPrompt]
+GO
+
+CREATE FUNCTION [dbo].[uf_GetAIPrompt]
+(
+  @ifCompleted int, --0:chk_con,1:chk_con_bak
+  @chk_con_unid int --chk_con.unid或chk_con_bak.unid
+)  
+RETURNS varchar(2000) AS  
+BEGIN 
+  declare @patientname varchar(40),@sex varchar(8),@age varchar(14)
+  if @ifCompleted=1 
+    select @patientname=patientname,@sex=sex,@age=age from chk_con_bak where unid=@chk_con_unid
+  else 
+    select @patientname=patientname,@sex=sex,@age=age from chk_con     where unid=@chk_con_unid
+  if @patientname is null return ''--有患者基本信息记录但姓名为null,无患者基本信息记录
+  if ltrim(rtrim(@patientname))='' return ''--有患者基本信息记录但姓名为空串
+
+  declare @AIPrompt varchar(2000) 
+  set @AIPrompt='患者姓名:'+@patientname+',患者性别:'+@sex+',患者年龄:'+@age+'。'+CHAR(13)+CHAR(10)
+
+  if @ifCompleted=1 
+  begin
+    IF not EXISTS(select TOP 1 1 from chk_valu_bak where pkunid=@chk_con_unid and issure=1 and ltrim(rtrim(isnull(itemvalue,'')))<>'' and dbo.uf_ValueAlarm(itemid,Min_value,Max_value,itemvalue) in (1,2)) return ''--不存在异常结果,无需AI分析
+  end else 
+  begin
+    IF not EXISTS(select TOP 1 1 from chk_valu     where pkunid=@chk_con_unid and issure=1 and ltrim(rtrim(isnull(itemvalue,'')))<>'' and dbo.uf_ValueAlarm(itemid,Min_value,Max_value,itemvalue) in (1,2)) return ''--不存在异常结果,无需AI分析
+  end
+
+  if @ifCompleted=1 
+    DECLARE Cur_value_dataset Cursor For select combin_Name,Name,itemvalue,dbo.uf_ValueAlarm(itemid,Min_value,Max_value,itemvalue) from chk_valu_bak where pkunid=@chk_con_unid and issure=1 and ltrim(rtrim(isnull(itemvalue,'')))<>'' order by pkcombin_id,printorder
+  else
+    DECLARE Cur_value_dataset Cursor For select combin_Name,Name,itemvalue,dbo.uf_ValueAlarm(itemid,Min_value,Max_value,itemvalue) from chk_valu     where pkunid=@chk_con_unid and issure=1 and ltrim(rtrim(isnull(itemvalue,'')))<>'' order by pkcombin_id,printorder
+
+  Open Cur_value_dataset
+  declare @combin_Name varchar(50),@Name varchar(50),@itemvalue varchar(500),@re_Alarm int
+  FETCH NEXT FROM Cur_value_dataset INTO @combin_Name,@Name,@itemvalue,@re_Alarm
+  WHILE @@FETCH_STATUS=0
+  BEGIN
+    declare @Alarm_Tip varchar(20)	
+	if @re_Alarm=1 set @Alarm_Tip=',结果异常:偏低'
+	  else if @re_Alarm=2 set @Alarm_Tip=',结果异常:偏高'
+	    else set @Alarm_Tip=''
+    set @AIPrompt=@AIPrompt+'组合项目:'+@combin_Name+',子项目:'+@Name+',结果:'+@itemvalue+@Alarm_Tip+';'+CHAR(13)+CHAR(10)
+	FETCH NEXT FROM Cur_value_dataset INTO @combin_Name,@Name,@itemvalue,@re_Alarm
+  END
+  CLOSE Cur_value_dataset
+  DEALLOCATE Cur_value_dataset
+
+  set @AIPrompt=@AIPrompt+'请针对提示的异常结果给出结论及建议'
+
+  return @AIPrompt
 END
 GO
 

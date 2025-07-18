@@ -31,6 +31,12 @@ const
   CGYXJB='常规';//常规优先级别字符串
   CryptStr='lc';
 
+  //gBASE_URL='https://qianfan.baidubce.com/v2/chat/completions';//百度智能云 - 文心大模型 -  文本大模型 - 语言模型(对话) - ERNIE 4.5 Turbo
+  gHost='qianfan.baidubce.com';//百度智能云 - 文心大模型 -  文本大模型 - 语言模型(对话) - ERNIE 4.5 Turbo
+  gPath='/v2/chat/completions';//百度智能云 - 文心大模型 -  文本大模型 - 语言模型(对话) - ERNIE 4.5 Turbo
+  gAPIpassword='bce-v3/ALTAK-pirsNIWA4KueThaTXj0gP/bfec2105dabaa945309008b5b38950f749ab77b8';//百度智能云 - 文心大模型 -  文本大模型 - 语言模型(对话) - ERNIE 4.5 Turbo
+  gModel='ernie-4.5-turbo-128k';//百度智能云 - 文心大模型 -  文本大模型 - 语言模型(对话) - ERNIE 4.5 Turbo  
+
   //0 as 选择,默认是未选择的.1--选择,非1--未选
   SHOW_CHK_CON='select top 1000 patientname as 姓名,'+
         ' sex as 性别,'+
@@ -123,8 +129,8 @@ Procedure ChangeYouFormAllControlIme(YFormName:TWinControl);//需要更改输入法的窗
 function SmoothLine(const strHistogram:string;const SmoothNum:byte;var Strings:TStrings;var AMin:single;var AMax:single):integer;
 function MakeDBConn:boolean;
 procedure LoadGroupName(const comboBox:TcomboBox;const ASel:string);
-function ExecSQLCmd(AConnectionString:string;ASQL:string):integer;
-function ScalarSQLCmd(AConnectionString:string;ASQL:string):string;
+function ExecSQLCmd(AConnectionString:string;ASQL:string;AErrorDlg:boolean=True):integer;
+function ScalarSQLCmd(AConnectionString:string;ASQL:string;AErrorDlg:boolean=True):string;
 
 implementation
 
@@ -554,7 +560,7 @@ begin
      adotemp3.Free;
 end;
 
-function ExecSQLCmd(AConnectionString:string;ASQL:string):integer;
+function ExecSQLCmd(AConnectionString:string;ASQL:string;AErrorDlg:boolean=True):integer;
 var
   Conn:TADOConnection;
   Qry:TAdoQuery;
@@ -572,7 +578,8 @@ begin
   except
     on E:Exception do
     begin
-      MESSAGEDLG('函数ExecSQLCmd失败:'+E.Message+'。错误的SQL:'+ASQL,mtError,[mbOK],0);
+      if AErrorDlg then MESSAGEDLG('函数ExecSQLCmd失败:'+E.Message+'。错误的SQL:'+ASQL,mtError,[mbOK],0)
+        else WriteLog(pchar('操作者:'+operator_name+'。函数ExecSQLCmd失败:'+E.Message+'。错误的SQL:'+ASQL));
       Result:=-1;
     end;
   end;
@@ -580,7 +587,7 @@ begin
   Conn.Free;
 end;
 
-function ScalarSQLCmd(AConnectionString:string;ASQL:string):string;
+function ScalarSQLCmd(AConnectionString:string;ASQL:string;AErrorDlg:boolean=True):string;
 var
   Conn:TADOConnection;
   Qry:TAdoQuery;
@@ -599,7 +606,8 @@ begin
   except
     on E:Exception do
     begin
-      MESSAGEDLG('函数ScalarSQLCmd失败:'+E.Message+'。错误的SQL:'+ASQL,mtError,[mbOK],0);
+      if AErrorDlg then MESSAGEDLG('函数ScalarSQLCmd失败:'+E.Message+'。错误的SQL:'+ASQL,mtError,[mbOK],0)
+        else WriteLog(pchar('操作者:'+operator_name+'。函数ScalarSQLCmd失败:'+E.Message+'。错误的SQL:'+ASQL));
       Qry.Free;
       Conn.Free;
       exit;

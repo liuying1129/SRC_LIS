@@ -8,7 +8,8 @@ uses
   DB, ADODB,IniFiles,StrUtils, ADOLYGetcode,ShellAPI, Printers,
   Jpeg,Chart,Series,Math, ActnList,
   DBGridEhGrouping, ToolCtrlsEh, DBGridEhToolCtrls, DynVarsEh, GridsEh, DBAxisGridsEh, DBGridEh, EhLibADO,
-  frxClass, frxDBSet, frxExportPDF, frxChart, FileCtrl, EhLibVCL;
+  frxClass, frxDBSet, frxExportPDF, frxChart, FileCtrl, EhLibVCL, WinInet,
+  Menus;
 
 //==为了通过发送消息更新主窗体状态栏而增加==//
 const
@@ -79,6 +80,8 @@ type
     Action5: TAction;
     SpeedButton7: TSpeedButton;
     ToolButton6: TToolButton;
+    PopupMenu1: TPopupMenu;
+    AI1: TMenuItem;
     procedure FormShow(Sender: TObject);
     procedure SpeedButton4Click(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
@@ -108,6 +111,8 @@ type
     procedure frxReport1BeforePrint(Sender: TfrxReportComponent);
     procedure frxReport1BeginDoc(Sender: TObject);
     procedure SpeedButton7Click(Sender: TObject);
+    procedure Memo1Change(Sender: TObject);
+    procedure AI1Click(Sender: TObject);
   private
     procedure WriteProfile;
     procedure ReadConfig;
@@ -129,7 +134,7 @@ var
 
 implementation
 
-uses UfrmLogin, UDM, UfrmModifyPwd;
+uses UfrmLogin, UDM, UfrmModifyPwd, superobject;
 var
   lsGroupShow:TStrings;
 
@@ -969,7 +974,6 @@ begin
     //判断该就诊人员是否存在未审核结果START
     if strtoint(ScalarSQLCmd(LisConn,'select count(*) from chk_con where Patientname='''+sPatientname+''' and isnull(sex,'''')='''+sSex+''' and dbo.uf_GetAgeReal(age)=dbo.uf_GetAgeReal('''+sAge+''') and isnull(report_doctor,'''')='''' '))>0 then
     begin
-      if length(memo1.Lines.Text)>=60000 then memo1.Lines.Clear;//memo只能接受64K个字符
       memo1.Lines.Add(FormatDatetime('YYYY-MM-DD HH:NN:SS', Now) + ':就诊人员['+sPatientname+']存在未审核报告!');
       WriteLog(pchar('就诊人员['+sPatientname+']存在未审核报告!'));
     end;
@@ -1041,7 +1045,6 @@ begin
     end else
     if not frxReport1.LoadFromFile(ExtractFilePath(application.ExeName)+'report_cur.fr3') then
     begin
-      if length(memo1.Lines.Text)>=60000 then memo1.Lines.Clear;//memo只能接受64K个字符
       memo1.Lines.Add(FormatDatetime('YYYY-MM-DD HH:NN:SS', Now) + ':['+sPatientname+']加载默认通用打印模板report_cur.fr3失败，请设置:选项->打印模板');
       WriteLog(pchar('['+sPatientname+']加载默认通用打印模板report_cur.fr3失败，请设置:选项->打印模板'));
       
@@ -1069,7 +1072,6 @@ begin
     ado_print.Open;
     if ADO_print.RecordCount=0 then
     begin
-      if length(memo1.Lines.Text)>=60000 then memo1.Lines.Clear;//memo只能接受64K个字符
       memo1.Lines.Add(FormatDatetime('YYYY-MM-DD HH:NN:SS', Now) + ':['+sPatientname+']无效结果!');
       WriteLog(pchar('['+sPatientname+']无效结果!'));
       
@@ -1106,7 +1108,6 @@ begin
 
   Screen.Cursor := Save_Cursor;  { Always restore to normal }
   
-  if length(memo1.Lines.Text)>=60000 then memo1.Lines.Clear;//memo只能接受64K个字符
   memo1.Lines.Add(FormatDatetime('YYYY-MM-DD HH:NN:SS', Now) + ':打印操作完成！');
 end;
 
@@ -1159,7 +1160,6 @@ begin
     //判断该就诊人员是否存在未审核结果START
     if strtoint(ScalarSQLCmd(LisConn,'select count(*) from chk_con where Patientname='''+sPatientname+''' and isnull(sex,'''')='''+sSex+''' and dbo.uf_GetAgeReal(age)=dbo.uf_GetAgeReal('''+sAge+''') and isnull(report_doctor,'''')='''' '))>0 then
     begin
-      if length(memo1.Lines.Text)>=60000 then memo1.Lines.Clear;//memo只能接受64K个字符
       memo1.Lines.Add(FormatDatetime('YYYY-MM-DD HH:NN:SS', Now) + ':就诊人员['+sPatientname+']存在未审核报告!');
       WriteLog(pchar('就诊人员['+sPatientname+']存在未审核报告!'));
     end;
@@ -1183,7 +1183,6 @@ begin
     end else
     if not frxReport1.LoadFromFile(ExtractFilePath(application.ExeName)+'report_Cur_group.fr3') then
     begin
-      if length(memo1.Lines.Text)>=60000 then memo1.Lines.Clear;//memo只能接受64K个字符
       memo1.Lines.Add(FormatDatetime('YYYY-MM-DD HH:NN:SS', Now) + ':['+sPatientname+']加载默认分组打印模板report_Cur_group.frf失败，请设置:选项->打印模板');
       WriteLog(pchar('['+sPatientname+']加载默认分组打印模板report_Cur_group.fr3失败，请设置:选项->打印模板'));
       
@@ -1208,7 +1207,6 @@ begin
     ADO_print.Open;
     if ADO_print.RecordCount=0 then
     begin
-      if length(memo1.Lines.Text)>=60000 then memo1.Lines.Clear;//memo只能接受64K个字符
       memo1.Lines.Add(FormatDatetime('YYYY-MM-DD HH:NN:SS', Now) + ':['+sPatientname+']无效结果!');
       WriteLog(pchar('['+sPatientname+']无效结果!'));
       
@@ -1245,7 +1243,6 @@ begin
 
   Screen.Cursor := Save_Cursor;  { Always restore to normal }
 
-  if length(memo1.Lines.Text)>=60000 then memo1.Lines.Clear;//memo只能接受64K个字符
   memo1.Lines.Add(FormatDatetime('YYYY-MM-DD HH:NN:SS', Now) + ':打印操作完成！');
 end;
 
@@ -1577,7 +1574,6 @@ begin
     //判断该就诊人员是否存在未审核结果START
     if strtoint(ScalarSQLCmd(LisConn,'select count(*) from chk_con where Patientname='''+sPatientname+''' and isnull(sex,'''')='''+sSex+''' and dbo.uf_GetAgeReal(age)=dbo.uf_GetAgeReal('''+sAge+''') and isnull(report_doctor,'''')='''' '))>0 then
     begin
-      if length(memo1.Lines.Text)>=60000 then memo1.Lines.Clear;//memo只能接受64K个字符
       memo1.Lines.Add(FormatDatetime('YYYY-MM-DD HH:NN:SS', Now) + ':就诊人员['+sPatientname+']存在未审核报告!');
       WriteLog(pchar('就诊人员['+sPatientname+']存在未审核报告!'));
     end;
@@ -1664,6 +1660,144 @@ begin
   DBGrid1.DataSource.DataSet.EnableControls;
   //Grid勾选记录判断方式二 end}
   //==========================  
+end;
+
+procedure TfrmMain.Memo1Change(Sender: TObject);
+begin
+  //避免日志无限增长
+  if length(memo1.Lines.Text)>=60000 then memo1.Lines.Clear;//memo在win98只能接受64K个字符,在win2000无限制
+end;
+
+procedure TfrmMain.AI1Click(Sender: TObject);
+var
+  inJSONRoot:ISuperObject;
+  AIPrompt:String;
+  PromptJSON:String;
+
+  ResponseJSON:String;
+
+  outJSONRoot: ISuperObject;
+  Content: String;
+
+  i:Integer;
+
+  hSession,hConnect,hRequest: HINTERNET;
+  Headers: string;
+  buf: array[0..4095] of Char;
+  dwBytesRead: DWORD;
+begin
+  if not ADObasic.Active then exit;
+  if ADObasic.RecordCount=0 then exit;
+
+  AIPrompt:=ScalarSQLCmd(LisConn,'select dbo.uf_GetAIPrompt('+ADObasic.fieldbyname('ifCompleted').AsString+','+ADObasic.fieldbyname('唯一编号').AsString+')');
+  if AIPrompt='' then exit;
+  
+  //构造输入JSON begin
+  //AIPrompt中可能存在回车换行,故使用JSON对象构造
+  //{"model":"lite","messages": [{"role": "user","content": "MES是什么系统"}]}
+  inJSONRoot := SO;
+  inJSONRoot.S['model'] := gModel;
+  inJSONRoot.O['messages'] := SA([SO(['role', 'user', 'content', AIPrompt])]);
+  PromptJSON := inJSONRoot.AsJson;
+  inJSONRoot:=nil;
+  //构造输入JSON end
+
+  Headers:='Content-Type:application/json'+#13#10+
+           'Authorization:Bearer '+gAPIpassword+#13#10;
+
+  //1. 初始化会话
+  hSession := InternetOpen('', INTERNET_OPEN_TYPE_PRECONFIG, nil, nil, 0);
+  if hSession=nil then
+  begin
+    memo1.Lines.Add(DateTimeToStr(now)+':hSession=nil');
+    Exit;
+  end;
+
+  // 2. 连接到服务器
+  hConnect := InternetConnect(hSession, gHost, INTERNET_DEFAULT_HTTPS_PORT, nil, nil, INTERNET_SERVICE_HTTP, 0, 0);//aip.baidubce.com
+  if hConnect=nil then
+  begin
+    memo1.Lines.Add(DateTimeToStr(now)+':hConnect=nil');
+    InternetCloseHandle(hSession);
+    Exit;
+  end;
+
+  //3. 创建请求           
+  hRequest := HttpOpenRequest(hConnect, 'POST',gPath,'HTTP/1.1', nil, nil,INTERNET_FLAG_SECURE or INTERNET_FLAG_RELOAD, 0);
+  if hRequest=nil then
+  begin
+    memo1.Lines.Add(DateTimeToStr(now)+':hRequest=nil');
+    InternetCloseHandle(hConnect);
+    InternetCloseHandle(hSession);
+    Exit;
+  end;
+
+  // 4. 添加头部
+  if not HttpAddRequestHeaders(hRequest, PChar(Headers), Length(Headers), HTTP_ADDREQ_FLAG_ADD or HTTP_ADDREQ_FLAG_REPLACE) then
+  begin
+    memo1.Lines.Add(DateTimeToStr(now)+':添加头部失败');
+    InternetCloseHandle(hRequest);
+    InternetCloseHandle(hConnect);
+    InternetCloseHandle(hSession);
+    Exit;
+  end;    
+
+  memo1.Lines.Add(DateTimeToStr(now)+':分析中...');
+  
+  //5. 发送请求并读取响应
+  if not HttpSendRequest(hRequest, nil, 0, PChar(PromptJSON), Length(PromptJSON)) then
+  begin
+    memo1.Lines.Add(DateTimeToStr(now)+':请求失败');
+    InternetCloseHandle(hRequest);
+    InternetCloseHandle(hConnect);
+    InternetCloseHandle(hSession);
+    Exit;
+  end;
+
+  //6. 读取返回数据
+  while InternetReadFile(hRequest, @buf, SizeOf(buf), dwBytesRead) and (dwBytesRead > 0) do
+  begin
+    SetLength(ResponseJSON, Length(ResponseJSON) + dwBytesRead);//编译警告:Combining signed and unsigned types - widened both operands.无影响
+    Move(buf, ResponseJSON[Length(ResponseJSON) - dwBytesRead + 1], dwBytesRead);//编译警告:Combining signed and unsigned types - widened both operands.无影响
+  end;
+
+  InternetCloseHandle(hRequest);
+  InternetCloseHandle(hConnect);
+  InternetCloseHandle(hSession);
+
+  ResponseJSON:=UTF8Decode(ResponseJSON);
+
+  // 解析 JSON
+  outJSONRoot:=SO(ResponseJSON);
+  if outJSONRoot=nil then
+  begin
+    memo1.Lines.Add(DateTimeToStr(now)+':返回非JSON:'+ResponseJSON);
+    exit;
+  end;
+
+  if outJSONRoot.AsObject.Exists('error') then//判断根上是否存在error键
+  begin
+    memo1.Lines.Add(DateTimeToStr(now)+':返回error:'+ResponseJSON);
+    outJSONRoot:=nil;
+    exit;
+  end;
+
+  if not outJSONRoot.AsObject.Exists('choices') then//判断根上是否存在choices键
+  begin
+    memo1.Lines.Add(DateTimeToStr(now)+':无choices键:'+ResponseJSON);
+    outJSONRoot:=nil;
+    exit;
+  end;
+
+  for I := 0 to outJSONRoot.O['choices'].AsArray.Length - 1 do//遍历 "choices" 数组
+  begin
+    Content := outJSONRoot.O['choices'].AsArray[I].O['message'].S['content'];
+    Content := StringReplace(Content, #$A, #$D#$A, [rfReplaceAll]);//为了更好的视觉效果.如此替换后文本在Memo才会真正实现换行效果
+
+    memo1.Lines.Add(DateTimeToStr(now)+':本次分析如下');  
+    memo1.Lines.Add(Content);
+  end;
+  outJSONRoot:=nil;
 end;
 
 end.

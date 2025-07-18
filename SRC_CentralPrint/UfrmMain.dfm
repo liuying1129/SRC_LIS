@@ -415,8 +415,9 @@ object frmMain: TfrmMain
         Ctl3D = False
         ParentCtl3D = False
         ReadOnly = True
-        ScrollBars = ssBoth
+        ScrollBars = ssVertical
         TabOrder = 0
+        OnChange = Memo1Change
       end
       object PageControl1: TPageControl
         Left = 1
@@ -475,6 +476,7 @@ object frmMain: TfrmMain
       IndicatorOptions = [gioShowRowIndicatorEh, gioShowRowselCheckboxesEh]
       Options = [dgEditing, dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgConfirmDelete, dgCancelOnExit, dgMultiSelect]
       OptionsEh = [dghFixed3D, dghHighlightFocus, dghAutoSortMarking, dghDialogFind, dghColumnResize, dghColumnMove, dghExtendVertLines]
+      PopupMenu = PopupMenu1
       ReadOnly = True
       TabOrder = 1
       OnSelectionChanged = DBGrid1SelectionChanged
@@ -706,5 +708,14 @@ object frmMain: TfrmMain
     PdfA = False
     Left = 369
     Top = 285
+  end
+  object PopupMenu1: TPopupMenu
+    AutoHotkeys = maManual
+    Left = 345
+    Top = 125
+    object AI1: TMenuItem
+      Caption = 'AI'#20998#26512
+      OnClick = AI1Click
+    end
   end
 end

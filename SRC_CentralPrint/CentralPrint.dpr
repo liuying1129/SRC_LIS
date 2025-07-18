@@ -5,7 +5,8 @@ uses
   UfrmMain in 'UfrmMain.pas' {frmMain},
   UDM in 'UDM.pas' {DM: TDataModule},
   UfrmLogin in 'UfrmLogin.pas' {frmLogin},
-  UfrmModifyPwd in 'UfrmModifyPwd.pas' {frmModifyPwd};
+  UfrmModifyPwd in 'UfrmModifyPwd.pas' {frmModifyPwd},
+  superobject in 'superobject.pas';
 
 {$R *.res}
 
