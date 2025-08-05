@@ -303,6 +303,8 @@ begin
       if ''=dept_DfValue then
       begin
         Memo1.Lines.Add(DateTimeToStr(now)+':'+UniQryTemp11.FieldByName('his_item_no').AsString+'【'+UniQryTemp11.FieldByName('his_item_name').AsString+'】在LIS中不存在,或未设置默认工作组');
+        //市政管超要求弹窗提示
+        MESSAGEDLG(UniQryTemp11.FieldByName('his_item_no').AsString+'【'+UniQryTemp11.FieldByName('his_item_name').AsString+'】在LIS中不存在,或未设置默认工作组',mtWarning,[mbOK],0);
         UniQryTemp11.Next;
         continue;
       end;
@@ -339,7 +341,12 @@ begin
       if ADOTemp33.RecordCount<=0 then
       begin
         if UniQryTemp11.FieldList.IndexOf('his_item_no')>=0 then Memo1.Lines.Add(DateTimeToStr(now)+':'+UniQryTemp11.fieldbyname('his_item_no').AsString+'【'+UniQryTemp11.fieldbyname('his_item_name').AsString+'】在LIS中没有对照');
-        if UniQryTemp11.FieldList.IndexOf('order_id')>=0    then Memo1.Lines.Add(DateTimeToStr(now)+':'+UniQryTemp11.fieldbyname('order_id').AsString+'【'+UniQryTemp11.fieldbyname('ITEMNAME').AsString+'】在LIS中没有对照');//兼容莱域PEIS 
+        if UniQryTemp11.FieldList.IndexOf('order_id')>=0    then
+        begin
+          Memo1.Lines.Add(DateTimeToStr(now)+':'+UniQryTemp11.fieldbyname('order_id').AsString+'【'+UniQryTemp11.fieldbyname('ITEMNAME').AsString+'】在LIS中没有对照');//兼容莱域PEIS
+          //市政管超要求弹窗提示
+          MESSAGEDLG(UniQryTemp11.fieldbyname('order_id').AsString+'【'+UniQryTemp11.fieldbyname('ITEMNAME').AsString+'】在LIS中没有对照',mtWarning,[mbOK],0);
+        end;
       end;
 
       while not ADOTemp33.Eof do
@@ -348,6 +355,8 @@ begin
         if trim(ADOTemp33.FieldByName('dept_DfValue').AsString)='' then
         begin
           Memo1.Lines.Add(DateTimeToStr(now)+':'+ADOTemp33.FieldByName('Id').AsString+'【'+ADOTemp33.FieldByName('Name').AsString+'】未设置默认工作组');
+          //市政管超要求弹窗提示
+          MESSAGEDLG(ADOTemp33.FieldByName('Id').AsString+'【'+ADOTemp33.FieldByName('Name').AsString+'】未设置默认工作组',mtWarning,[mbOK],0);
           ADOTemp33.Next;
           continue;
         end;
