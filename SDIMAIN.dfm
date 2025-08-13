@@ -737,7 +737,7 @@ object SDIAppForm: TSDIAppForm
           FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF}
         ParentShowHint = False
         ShowHint = True
-        OnClick = k
+        OnClick = SpeedButton4Click
       end
       object SpeedButton7: TSpeedButton
         Left = 5

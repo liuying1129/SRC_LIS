@@ -358,7 +358,6 @@ type
     procedure SpeedButton3Click(Sender: TObject);
     procedure N7Click(Sender: TObject);
     procedure DBGrid1DblClick(Sender: TObject);
-    procedure k(Sender: TObject);
     procedure N44Click(Sender: TObject);
     procedure N47Click(Sender: TObject);
     procedure N64Click(Sender: TObject);
@@ -381,6 +380,7 @@ type
     procedure N103Click(Sender: TObject);
     procedure N104Click(Sender: TObject);
     procedure N31Click(Sender: TObject);
+    procedure SpeedButton4Click(Sender: TObject);
   private
     procedure CheckTheListBox;//根据当前病人的结果在checklistbox1中打钩
     procedure WriteProfile;
@@ -3714,7 +3714,7 @@ begin
   end;
 end;
 
-procedure TSDIAppForm.k(Sender: TObject);
+procedure TSDIAppForm.SpeedButton4Click(Sender: TObject);
 begin
   MessageDlg('录入门诊/住院号后回车,可带出患者基本信息',mtInformation,[MBOK],0);
 end;
