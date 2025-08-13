@@ -61,7 +61,6 @@ type
     N50: TMenuItem;
     O1: TMenuItem;
     Excel1: TMenuItem;
-    PopupMenu1: TPopupMenu;
     pmChangeGroup: TPopupMenu;
     N11: TMenuItem;
     N22: TMenuItem;
@@ -127,8 +126,6 @@ type
     N65: TMenuItem;
     N16: TMenuItem;
     N67: TMenuItem;
-    N69: TMenuItem;
-    N70: TMenuItem;
     Label5: TLabel;
     Label6: TLabel;
     PopupMenu2: TPopupMenu;
@@ -230,6 +227,8 @@ type
     N103: TMenuItem;
     N104: TMenuItem;
     N31: TMenuItem;
+    SpeedButton7: TSpeedButton;
+    SpeedButton9: TSpeedButton;
     procedure FileExit1Execute(Sender: TObject);
     procedure HelpAbout1Execute(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -315,8 +314,8 @@ type
     procedure TimerIdleTrackerTimer(Sender: TObject);
     procedure SpeedButton5Click(Sender: TObject);
     procedure N16Click(Sender: TObject);
-    procedure N69Click(Sender: TObject);
-    procedure N70Click(Sender: TObject);
+    procedure SpeedButton7Click(Sender: TObject);
+    procedure SpeedButton9Click(Sender: TObject);
     procedure N23Click(Sender: TObject);
     procedure N48Click(Sender: TObject);
     procedure N74Click(Sender: TObject);
@@ -359,7 +358,7 @@ type
     procedure SpeedButton3Click(Sender: TObject);
     procedure N7Click(Sender: TObject);
     procedure DBGrid1DblClick(Sender: TObject);
-    procedure SpeedButton4Click(Sender: TObject);
+    procedure k(Sender: TObject);
     procedure N44Click(Sender: TObject);
     procedure N47Click(Sender: TObject);
     procedure N64Click(Sender: TObject);
@@ -2683,7 +2682,7 @@ begin
   frmCopyInfo.ShowModal;
 end;
 
-procedure TSDIAppForm.N69Click(Sender: TObject);
+procedure TSDIAppForm.SpeedButton7Click(Sender: TObject);
 begin
   copyName:=trim(LabeledEdit3.text);
   copySex:=trim(LabeledEdit4.text);
@@ -2694,7 +2693,7 @@ begin
   copycheck_doctor:=trim(LabeledEdit10.text);
 end;
 
-procedure TSDIAppForm.N70Click(Sender: TObject);
+procedure TSDIAppForm.SpeedButton9Click(Sender: TObject);
 begin
   LabeledEdit3.text:=copyName;
   LabeledEdit4.text:=copySex;
@@ -3715,7 +3714,7 @@ begin
   end;
 end;
 
-procedure TSDIAppForm.SpeedButton4Click(Sender: TObject);
+procedure TSDIAppForm.k(Sender: TObject);
 begin
   MessageDlg('录入门诊/住院号后回车,可带出患者基本信息',mtInformation,[MBOK],0);
 end;
