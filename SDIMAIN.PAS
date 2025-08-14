@@ -2661,6 +2661,8 @@ begin
   end;
   ini.Free;
   //==============
+
+  SpeedButton7.Enabled:=Trim(TLabeledEdit(Sender).Text)<>'';//复制患者信息按钮的Enabled  
 end;
 
 procedure TSDIAppForm.TimerIdleTrackerTimer(Sender: TObject);
@@ -2695,6 +2697,8 @@ end;
 
 procedure TSDIAppForm.SpeedButton9Click(Sender: TObject);
 begin
+  if copyName='' then exit;
+  
   LabeledEdit3.text:=copyName;
   LabeledEdit4.text:=copySex;
   LabeledEdit5.text:=copyage;
