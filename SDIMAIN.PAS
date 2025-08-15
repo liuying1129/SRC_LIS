@@ -440,7 +440,7 @@ uses Unitstatic, UfrmCommQuery,
   UfrmXDepictType, UfrmXDepict, UfrmCommCode, UfrmPlxg, UfrmCopyInfo,
   UfrmPhoto, 
   UfrmModifyPwd, UfrmEquipManage, UfrmSJ_JBXX, softMeter_globalVar,
-  UfrmHorizontalExport, UfrmCriticalValueDetail, UfrmAboutBox;
+  UfrmHorizontalExport, UfrmCriticalValueDetail, UfrmAboutBox, ToastUnit;
 
 var
     copyName,copySex,copyage,copyCaseno,copyBedno,copydeptname,copycheck_doctor:string;//复制的病人基本信息，仅粘贴时有用
@@ -2697,8 +2697,12 @@ end;
 
 procedure TSDIAppForm.SpeedButton9Click(Sender: TObject);
 begin
-  if copyName='' then exit;
-  
+  if copyName='' then
+  begin
+    ShowToast(Self.Handle,'没有已复制的患者信息');
+    exit;
+  end;
+
   LabeledEdit3.text:=copyName;
   LabeledEdit4.text:=copySex;
   LabeledEdit5.text:=copyage;

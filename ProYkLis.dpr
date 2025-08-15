@@ -41,7 +41,8 @@ uses
   superobject in 'superobject.pas',
   UfrmCriticalManage in 'UfrmCriticalManage.pas' {frmCriticalManage},
   UfrmCriticalValueDetail in 'UfrmCriticalValueDetail.pas' {frmCriticalValueDetail},
-  UfrmAboutBox in 'UfrmAboutBox.pas' {frmAboutBox};
+  UfrmAboutBox in 'UfrmAboutBox.pas' {frmAboutBox},
+  ToastUnit in 'ToastUnit.pas';
 
 {$R *.RES}
 
