@@ -1826,7 +1826,7 @@ BEGIN
   CLOSE Cur_value_dataset
   DEALLOCATE Cur_value_dataset
 
-  set @AIPrompt=@AIPrompt+'请针对提示的异常结果给出结论及建议'
+  set @AIPrompt=@AIPrompt+'您是医生,请针对提示的异常结果,输出3部分.1是患者姓名、性别、年龄,2是结论(含疾病分析),3是专业建议'
 
   return @AIPrompt
 END
