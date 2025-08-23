@@ -1695,8 +1695,7 @@ var
   inJSONRoot:ISuperObject;
   AIPrompt:String;
   PromptJSON:String;
-
-  Headers: string;
+  AIKey,Headers: string;
 begin
   if not ADObasic.Active then exit;
   if ADObasic.RecordCount=0 then exit;
@@ -1718,8 +1717,15 @@ begin
   inJSONRoot:=nil;
   //构造输入JSON end
 
+  AIKey:=ScalarSQLCmd(LisConn,'SELECT TOP 1 Name FROM CommCode WITH(NOLOCK) where TypeName=''系统代码'' and Remark=''AI Key''');
+  if AIKey='' then
+  begin
+    MessageDlg('请向软件服务端获取AI Key',mtError,[mbOK],0);
+    exit;
+  end;
+
   Headers:='Content-Type:application/json'+#13#10+
-           'Authorization:Bearer '+gAPIpassword+#13#10;
+           'Authorization:Bearer '+AIKey+#13#10;
 
   memo1.Lines.Add(DateTimeToStr(now)+':【'+ADObasic.fieldbyname('姓名').AsString+'】分析中...');
   
