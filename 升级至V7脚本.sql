@@ -4200,6 +4200,11 @@ if not exists (select 1 from CommCode where TypeName='系统代码' and Remark='
   insert into CommCode (typename,id,name,remark,sysname) values ('系统代码','0008','ws://localhost:8081','Schedule WebSocket服务地址','LIS')
 GO
 
+--20250823 请求AI API的Key
+if not exists (select 1 from CommCode where TypeName='系统代码' and Remark='AI Key')
+  insert into CommCode (typename,id,remark,sysname) values ('系统代码','0007','AI Key','LIS')
+GO
+
 if not exists(select * from CommCode where TypeName='工具菜单' and name='报表编辑器')
 begin
   insert into CommCode(TypeName,ID,Name,Reserve,Reserve2) values ('工具菜单',010,'报表编辑器','FrfSet.exe','1')
