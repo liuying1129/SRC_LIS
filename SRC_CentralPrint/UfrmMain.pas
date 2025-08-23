@@ -20,7 +20,7 @@ TYPE
 
 type
   //用于发送AI HTTP请求的子线程.解决阻塞界面的问题
-  //线程中必须使用 Synchronize 的情况
+  //线程中必须使用 Synchronize(同步) 的情况
   //1、更新用户界面（UI）控件
   //2、显示消息框或对话框
   //3、访问主线程管理的全局数据
@@ -33,7 +33,6 @@ type
     FHost: string;
     FPath: string;
     FMemo1Msg: string;
-    FifTime: boolean;
     procedure UpdateMemo1;
   protected
     procedure Execute;override;
@@ -157,7 +156,7 @@ var
 
 implementation
 
-uses UfrmLogin, UDM, UfrmModifyPwd, superobject;
+uses UfrmLogin, UDM, UfrmModifyPwd, superobject, ToastUnit;
 var
   lsGroupShow:TStrings;
 
@@ -1703,7 +1702,11 @@ begin
   if ADObasic.RecordCount=0 then exit;
 
   AIPrompt:=ScalarSQLCmd(LisConn,'select dbo.uf_GetAIPrompt('+ADObasic.fieldbyname('ifCompleted').AsString+','+ADObasic.fieldbyname('唯一编号').AsString+')');
-  if AIPrompt='' then exit;
+  if AIPrompt='' then
+  begin
+    ShowToast(Self.Handle,'没有发现提示词,无需分析');
+    exit;
+  end;
   
   //构造输入JSON begin
   //AIPrompt中可能存在回车换行,故使用JSON对象构造
@@ -1718,7 +1721,7 @@ begin
   Headers:='Content-Type:application/json'+#13#10+
            'Authorization:Bearer '+gAPIpassword+#13#10;
 
-  memo1.Lines.Add(DateTimeToStr(now)+':分析中...');
+  memo1.Lines.Add(DateTimeToStr(now)+':【'+ADObasic.fieldbyname('姓名').AsString+'】分析中...');
   
   // 创建并启动线程
   TAIChatThread.Create(PromptJSON, Headers, gHost, gPath);           
@@ -1753,8 +1756,7 @@ begin
   hSession := InternetOpen('', INTERNET_OPEN_TYPE_PRECONFIG, nil, nil, 0);
   if hSession = nil then
   begin
-    FMemo1Msg:='hSession=nil';
-    FifTime:=true;
+    FMemo1Msg:=DateTimeToStr(Now)+':'+'hSession=nil';
     Synchronize(UpdateMemo1);
     Exit;
   end;
@@ -1763,9 +1765,8 @@ begin
   hConnect := InternetConnect(hSession, PChar(FHost), INTERNET_DEFAULT_HTTPS_PORT, nil, nil, INTERNET_SERVICE_HTTP, 0, 0);
   if hConnect = nil then
   begin
-    FMemo1Msg:='hConnect=nil';
-    FifTime:=true;
-    Synchronize(UpdateMemo1);    
+    FMemo1Msg:=DateTimeToStr(Now)+':'+'hConnect=nil';
+    Synchronize(UpdateMemo1);
     InternetCloseHandle(hSession);
     Exit;
   end;
@@ -1774,8 +1775,7 @@ begin
   hRequest := HttpOpenRequest(hConnect, 'POST', PChar(FPath), 'HTTP/1.1', nil, nil, INTERNET_FLAG_SECURE or INTERNET_FLAG_RELOAD, 0);
   if hRequest = nil then
   begin
-    FMemo1Msg:='hRequest=nil';
-    FifTime:=true;    
+    FMemo1Msg:=DateTimeToStr(Now)+':'+'hRequest=nil';
     Synchronize(UpdateMemo1);
     InternetCloseHandle(hConnect);
     InternetCloseHandle(hSession);
@@ -1785,8 +1785,7 @@ begin
   // 4. 添加头部
   if not HttpAddRequestHeaders(hRequest, PChar(FHeaders), Length(FHeaders), HTTP_ADDREQ_FLAG_ADD or HTTP_ADDREQ_FLAG_REPLACE) then
   begin
-    FMemo1Msg:='添加头部失败';
-    FifTime:=true;
+    FMemo1Msg:=DateTimeToStr(Now)+':'+'添加头部失败';
     Synchronize(UpdateMemo1);
     InternetCloseHandle(hRequest);
     InternetCloseHandle(hConnect);
@@ -1797,8 +1796,7 @@ begin
   // 5. 发送请求
   if not HttpSendRequest(hRequest, nil, 0, PChar(FPromptJSON), Length(FPromptJSON)) then
   begin
-    FMemo1Msg:='请求失败';
-    FifTime:=true;
+    FMemo1Msg:=DateTimeToStr(Now)+':'+'请求失败';
     Synchronize(UpdateMemo1);
     InternetCloseHandle(hRequest);
     InternetCloseHandle(hConnect);
@@ -1823,16 +1821,14 @@ begin
   outJSONRoot := SO(ResponseJSON);
   if outJSONRoot = nil then
   begin
-    FMemo1Msg:='返回非JSON: ' + ResponseJSON;
-    FifTime:=true;
+    FMemo1Msg:=DateTimeToStr(Now)+':'+'返回非JSON: ' + ResponseJSON;
     Synchronize(UpdateMemo1);
     Exit;
   end;
 
   if outJSONRoot.AsObject.Exists('error') then//判断根上是否存在error键
   begin
-    FMemo1Msg:='返回error: ' + ResponseJSON;
-    FifTime:=true;
+    FMemo1Msg:=DateTimeToStr(Now)+':'+'返回error: ' + ResponseJSON;
     Synchronize(UpdateMemo1);
     outJSONRoot:=nil;
     Exit;
@@ -1840,8 +1836,7 @@ begin
 
   if not outJSONRoot.AsObject.Exists('choices') then//判断根上是否存在choices键
   begin
-    FMemo1Msg:='无choices键: ' + ResponseJSON;
-    FifTime:=true;
+    FMemo1Msg:=DateTimeToStr(Now)+':'+'无choices键: ' + ResponseJSON;
     Synchronize(UpdateMemo1);
     outJSONRoot:=nil;
     Exit;
@@ -1853,21 +1848,18 @@ begin
     Content := outJSONRoot.O['choices'].AsArray[i].O['message'].S['content'];
     Content := StringReplace(Content, #$A, #$D#$A, [rfReplaceAll]);//为了更好的视觉效果.如此替换后文本在Memo才会真正实现换行效果
 
-    FMemo1Msg:='分析结果如下';
-    FifTime:=true;
+    FMemo1Msg:=DateTimeToStr(Now)+':'+'分析结果如下';
     Synchronize(UpdateMemo1);
     FMemo1Msg := Content;
-    FifTime:=false;
     Synchronize(UpdateMemo1);
   end;
   outJSONRoot:=nil;
 end;
 
 procedure TAIChatThread.UpdateMemo1;
-//调用该方法时使用 Synchronize 方法来安全地更新UI
+//调用该方法时使用 Synchronize(同步) 来安全地更新UI
 begin
-  if FifTime then frmMain.memo1.Lines.Add(DateTimeToStr(Now) + ':' + FMemo1Msg)
-    else frmMain.memo1.Lines.Add(FMemo1Msg); 
+  frmMain.memo1.Lines.Add(FMemo1Msg); 
 end;
 
 end.

@@ -6,7 +6,8 @@ uses
   UDM in 'UDM.pas' {DM: TDataModule},
   UfrmLogin in 'UfrmLogin.pas' {frmLogin},
   UfrmModifyPwd in 'UfrmModifyPwd.pas' {frmModifyPwd},
-  superobject in 'superobject.pas';
+  superobject in 'superobject.pas',
+  ToastUnit in 'ToastUnit.pas';
 
 {$R *.res}
 
