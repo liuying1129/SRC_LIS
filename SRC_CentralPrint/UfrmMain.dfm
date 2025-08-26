@@ -118,9 +118,9 @@ object frmMain: TfrmMain
       Width = 121
       Height = 19
       Ctl3D = False
-      EditLabel.Width = 72
+      EditLabel.Width = 39
       EditLabel.Height = 13
-      EditLabel.Caption = #38376#35786'/'#20303#38498#21495
+      EditLabel.Caption = #30149#21382#21495
       LabelPosition = lpLeft
       ParentCtl3D = False
       TabOrder = 0
@@ -450,7 +450,7 @@ object frmMain: TfrmMain
           end
         end
         object TabSheet2: TTabSheet
-          Caption = #22270#20687
+          Caption = #22270#24418
           ImageIndex = 1
           object ScrollBoxPicture: TScrollBox
             Left = 0

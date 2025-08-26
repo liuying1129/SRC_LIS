@@ -328,7 +328,7 @@ object SDIAppForm: TSDIAppForm
           Top = 156
           Width = 257
           Height = 408
-          ActivePage = TabSheet1
+          ActivePage = TabSheet2
           Align = alClient
           TabOrder = 0
           object TabSheet1: TTabSheet
@@ -357,13 +357,13 @@ object SDIAppForm: TSDIAppForm
             end
           end
           object TabSheet2: TTabSheet
-            Caption = #22270#20687
+            Caption = #22270#24418
             ImageIndex = 1
             object ScrollBoxPicture: TScrollBox
               Left = 0
               Top = 0
-              Width = 409
-              Height = 319
+              Width = 249
+              Height = 380
               Align = alClient
               TabOrder = 0
             end
@@ -833,9 +833,9 @@ object SDIAppForm: TSDIAppForm
         Width = 80
         Height = 19
         Ctl3D = False
-        EditLabel.Width = 72
+        EditLabel.Width = 39
         EditLabel.Height = 13
-        EditLabel.Caption = #38376#35786'/'#20303#38498#21495
+        EditLabel.Caption = #30149#21382#21495
         LabelPosition = lpLeft
         ParentCtl3D = False
         TabOrder = 2

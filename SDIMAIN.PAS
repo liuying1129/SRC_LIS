@@ -1836,11 +1836,11 @@ begin
   if ADObasic.fieldbyname('唯一编号').AsString='' then
   begin
     TabSheet1.Caption:='检验结果(0)';
-    TabSheet2.Caption:='图像(0)';
+    TabSheet2.Caption:='图形(0)';
   end else
   begin
     TabSheet1.Caption:='检验结果('+ScalarSQLCmd(LisConn,'select count(*) from chk_valu where pkunid='+ADObasic.fieldbyname('唯一编号').AsString+'and issure=1 and ltrim(rtrim(isnull(itemvalue,'''')))<>'''' ')+')';
-    TabSheet2.Caption:='图像('+ScalarSQLCmd(LisConn,'select count(*) from chk_valu where pkunid='+ADObasic.fieldbyname('唯一编号').AsString+'and issure=1 and (isnull(histogram,'''')<>'''' or Photo is not null or Reserve8 is not null)')+')';
+    TabSheet2.Caption:='图形('+ScalarSQLCmd(LisConn,'select count(*) from chk_valu where pkunid='+ADObasic.fieldbyname('唯一编号').AsString+'and issure=1 and (isnull(histogram,'''')<>'''' or Photo is not null or Reserve8 is not null)')+')';
   end;
 end;
 
@@ -1987,11 +1987,11 @@ begin
   if ADObasic.fieldbyname('唯一编号').AsString='' then
   begin
     TabSheet1.Caption:='检验结果(0)';
-    TabSheet2.Caption:='图像(0)';
+    TabSheet2.Caption:='图形(0)';
   end else
   begin
     TabSheet1.Caption:='检验结果('+ScalarSQLCmd(LisConn,'select count(*) from chk_valu where pkunid='+ADObasic.fieldbyname('唯一编号').AsString+'and issure=1 and ltrim(rtrim(isnull(itemvalue,'''')))<>'''' ')+')';
-    TabSheet2.Caption:='图像('+ScalarSQLCmd(LisConn,'select count(*) from chk_valu where pkunid='+ADObasic.fieldbyname('唯一编号').AsString+'and issure=1 and (isnull(histogram,'''')<>'''' or Photo is not null or Reserve8 is not null)')+')';
+    TabSheet2.Caption:='图形('+ScalarSQLCmd(LisConn,'select count(*) from chk_valu where pkunid='+ADObasic.fieldbyname('唯一编号').AsString+'and issure=1 and (isnull(histogram,'''')<>'''' or Photo is not null or Reserve8 is not null)')+')';
   end;
 end;
 
@@ -3724,7 +3724,7 @@ end;
 
 procedure TSDIAppForm.SpeedButton4Click(Sender: TObject);
 begin
-  MessageDlg('录入门诊/住院号后回车,可带出患者基本信息',mtInformation,[MBOK],0);
+  MessageDlg('录入病历号后回车,可带出患者基本信息',mtInformation,[MBOK],0);
 end;
 
 procedure TSDIAppForm.N44Click(Sender: TObject);
