@@ -34,7 +34,6 @@ const
   //gBASE_URL='https://qianfan.baidubce.com/v2/chat/completions';//百度智能云 - 文心大模型 -  文本大模型 - 语言模型(对话) - ERNIE 4.5 Turbo
   gHost='qianfan.baidubce.com';//百度智能云 - 文心大模型 -  文本大模型 - 语言模型(对话) - ERNIE 4.5 Turbo
   gPath='/v2/chat/completions';//百度智能云 - 文心大模型 -  文本大模型 - 语言模型(对话) - ERNIE 4.5 Turbo
-  gModel='ernie-4.5-turbo-128k';//百度智能云 - 文心大模型 -  文本大模型 - 语言模型(对话) - ERNIE 4.5 Turbo  
 
   //0 as 选择,默认是未选择的.1--选择,非1--未选
   SHOW_CHK_CON='select top 1000 patientname as 姓名,'+

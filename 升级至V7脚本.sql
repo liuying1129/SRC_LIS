@@ -4185,12 +4185,6 @@ if not exists (select 1 from CommCode where TypeName='系统代码' and Remark='
   insert into CommCode (typename,id,name,remark,sysname) values ('系统代码','0005','B6BB07900F8E5B81BBDEC78B685A68B8','软件过期时间','LIS')
 GO
 
---20180512远程请求地址
---if not exists (select 1 from CommCode where TypeName='系统代码' and Remark='远程请求地址')
-  --http://211.97.0.5:8080/YkAPI/service
---  insert into CommCode (typename,id,name,remark,sysname) values ('系统代码','0007','','远程请求地址','LIS')
---GO
-
 --20220209,已使用GA代替该功能
 delete from CommCode where typename='系统代码' and id='0007' and remark='远程请求地址'
 GO
@@ -4203,6 +4197,11 @@ GO
 --20250823 请求AI API的Key
 if not exists (select 1 from CommCode where TypeName='系统代码' and Remark='AI Key')
   insert into CommCode (typename,id,remark,sysname) values ('系统代码','0007','AI Key','LIS')
+GO
+
+--20250827 请求AI API的Model
+if not exists (select 1 from CommCode where TypeName='系统代码' and Remark='AI Model')
+  insert into CommCode (typename,id,remark,sysname) values ('系统代码','0009','AI Model','LIS')
 GO
 
 if not exists(select * from CommCode where TypeName='工具菜单' and name='报表编辑器')

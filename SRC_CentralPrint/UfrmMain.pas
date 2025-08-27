@@ -1695,7 +1695,7 @@ var
   inJSONRoot:ISuperObject;
   AIPrompt:String;
   PromptJSON:String;
-  AIKey,Headers: string;
+  AIModel,AIKey,Headers: string;
 begin
   if not ADObasic.Active then exit;
   if ADObasic.RecordCount=0 then exit;
@@ -1707,11 +1707,14 @@ begin
     exit;
   end;
   
+  AIModel:=ScalarSQLCmd(LisConn,'SELECT TOP 1 Name FROM CommCode WITH(NOLOCK) where TypeName=''系统代码'' and Remark=''AI Model''');
+  if AIModel='' then AIModel:='ernie-4.5-turbo-128k';//默认模型
+
   //构造输入JSON begin
   //AIPrompt中可能存在回车换行,故使用JSON对象构造
   //{"model":"lite","messages": [{"role": "user","content": "MES是什么系统"}]}
   inJSONRoot := SO;
-  inJSONRoot.S['model'] := gModel;
+  inJSONRoot.S['model'] := AIModel;
   inJSONRoot.O['messages'] := SA([SO(['role', 'user', 'content', AIPrompt])]);
   PromptJSON := inJSONRoot.AsJson;
   inJSONRoot:=nil;
