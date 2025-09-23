@@ -124,23 +124,21 @@ Begin
           exit;
         end;
         
+        iid:=trim(LabeledEdit1.Text);
+
         adotemp12.Close;
         adotemp12.SQL.Clear;
         adotemp12.SQL.Text:='Insert into WORKER ('+
-                            ' Name,PassWd,account_limit,pkdeptid,ID,ShowAllTj) values ('+
-                            ':P_Name,:P_PassWd,:P_account_limit,:P_pkdeptid,:P_ID,:ShowAllTj) ';
+                            ' Name,pkdeptid,ID,ShowAllTj) values ('+
+                            ':P_Name,:P_pkdeptid,:P_ID,:ShowAllTj) ';
         adotemp12.Parameters.ParamByName('P_ID').Value:=trim(uppercase(LabeledEdit1.Text)) ;
         adotemp12.Parameters.ParamByName('P_Name').Value:=trim(uppercase(LabeledEdit2.Text)) ;
-        adotemp12.Parameters.ParamByName('P_PassWd').Value:='' ;
-        adotemp12.Parameters.ParamByName('P_account_limit').Value:='' ;
         adotemp12.Parameters.ParamByName('P_pkdeptid').Value:=dep_unid;
         adotemp12.Parameters.ParamByName('ShowAllTj').Value:=ComboBox1.Text ;
         adotemp12.ExecSQL;
         adotemp12.Free;
 
         UpdateADOdoclist;
-        
-        iid:=trim(LabeledEdit1.Text);
         ADOdoclist.Locate('用户代码',iid,[loCaseInsensitive]);
    end else
    begin
@@ -167,8 +165,6 @@ end;
 
 procedure Tfrmdocset.docrefresh;
 begin
-  ifdocnewadd:=false;
-  
   if (ADOdoclist.Active) and (ADOdoclist.RecordCount>0) then
   begin
       LabeledEdit1.Text:=trim(ADOdoclist.FieldByName('用户代码').AsString);
@@ -205,6 +201,8 @@ end;
 
 procedure Tfrmdocset.ADOdoclistAfterScroll(DataSet: TDataSet);
 begin
+  ifdocnewadd:=false;
+  
   docrefresh;
 end;
 
@@ -234,7 +232,7 @@ end;
 
 procedure Tfrmdocset.ComboBox2DropDown(Sender: TObject);
 begin
-  LoadGroupName(TComboBox(Sender),'select CONCAT(''['',unid,'']'',Name) from CommCode WITH(NOLOCK) where TypeName=''部门'' order by id');
+  LoadGroupName(TComboBox(Sender),'select ''[''+CAST(unid as varchar)+'']''+Name from CommCode WITH(NOLOCK) where TypeName=''部门'' order by id');
 end;
 
 procedure Tfrmdocset.UpdateADOdoclist;
