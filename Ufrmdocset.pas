@@ -89,9 +89,9 @@ end;
 
 procedure Tfrmdocset.suiButton2Click(Sender: TObject);
 Var
-   adotemp11,adotemp12: tadoquery;
-   iid:string;
-   dep_unid:string;
+  adotemp11,adotemp12: tadoquery;
+  dep_unid:string;
+  Insert_Identity:integer;
 Begin
    if ifdocnewadd then
    begin
@@ -123,23 +123,21 @@ Begin
           adotemp12.Free;
           exit;
         end;
-        
-        iid:=trim(LabeledEdit1.Text);
 
         adotemp12.Close;
         adotemp12.SQL.Clear;
-        adotemp12.SQL.Text:='Insert into WORKER ('+
-                            ' Name,pkdeptid,ID,ShowAllTj) values ('+
-                            ':P_Name,:P_pkdeptid,:P_ID,:ShowAllTj) ';
+        adotemp12.SQL.Add('Insert into WORKER (Name,pkdeptid,ID,ShowAllTj) values (:P_Name,:P_pkdeptid,:P_ID,:ShowAllTj)');
+        adotemp12.SQL.Add(' SELECT SCOPE_IDENTITY() AS Insert_Identity ');
         adotemp12.Parameters.ParamByName('P_ID').Value:=trim(uppercase(LabeledEdit1.Text)) ;
         adotemp12.Parameters.ParamByName('P_Name').Value:=trim(uppercase(LabeledEdit2.Text)) ;
         adotemp12.Parameters.ParamByName('P_pkdeptid').Value:=dep_unid;
         adotemp12.Parameters.ParamByName('ShowAllTj').Value:=ComboBox1.Text ;
-        adotemp12.ExecSQL;
+        adotemp12.Open;
+        Insert_Identity:=adotemp12.fieldbyname('Insert_Identity').AsInteger;
         adotemp12.Free;
 
-        UpdateADOdoclist;
-        ADOdoclist.Locate('用户代码',iid,[loCaseInsensitive]);
+        UpdateADOdoclist;   
+        ADOdoclist.Locate('唯一编号',Insert_Identity,[loCaseInsensitive]) ;
    end else
    begin
         adotemp11:=tadoquery.Create(nil);
@@ -241,10 +239,10 @@ begin
   ADOdoclist.SQL.Clear;
   if trim(GetDepUnid)='' then
   begin
-    ADOdoclist.SQL.Text:='SELECT id AS 用户代码,name AS 用户名称,ShowAllTj as 所有科室项目,unid AS 唯一编号 FROM worker order by id';
+    ADOdoclist.SQL.Text:='SELECT id AS 用户代码,name AS 用户名称,ShowAllTj as 所有科室项目,pkdeptid as 科室唯一编号,unid AS 唯一编号 FROM worker order by id';
   end else
   begin
-    ADOdoclist.SQL.Text:='SELECT id AS 用户代码,name AS 用户名称,ShowAllTj as 所有科室项目,unid AS 唯一编号 FROM worker where pkdeptid='+trim(GetDepUnid)+' order by id';
+    ADOdoclist.SQL.Text:='SELECT id AS 用户代码,name AS 用户名称,ShowAllTj as 所有科室项目,pkdeptid as 科室唯一编号,unid AS 唯一编号 FROM worker where pkdeptid='+trim(GetDepUnid)+' order by id';
   end;
   ADOdoclist.Open;
 end;
