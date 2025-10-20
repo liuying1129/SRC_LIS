@@ -103,8 +103,8 @@ begin
   sqlstr1:='select lsh as 流水号,checkid as 联机号,caseno as 病历号,check_date as 检查日期,patientname as 姓名,'+
     'sex as 性别,'+
     'age as 年龄,bedno as 床号,deptname as 送检科室,'+
-    'check_doctor as 送检医生,operator as 操作者,report_doctor as 审核者,Audit_Date as 审核时间,'+
-    'report_date as 申请日期,'+
+    'check_doctor as 送检医生,report_date as 申请日期,operator as 操作者,report_doctor as 审核者,Audit_Date as 审核时间,'+
+    '(case when printtimes>0 then ''√'' end) as 打印,'+
     'diagnosetype as 优先级别,combin_id as 组别,'+
     'flagetype as 样本类型,typeflagcase as 样本情况,diagnose as 临床诊断,'+
     'issure as 备注,germname as 细菌,'+
@@ -175,7 +175,7 @@ begin
     for i :=0  to dbgridresult.Columns.Count-1 do
     begin
        dbgridresult.Columns[i].Width:=55;
-       if (i=3)or(i=12)or(i=2)or(i=13) then dbgridresult.Columns[i].Width:=70;//检查日期，申请日期,病历号，审核时间
+       if (i=2)or(i=3)or(i=10)or(i=13) then dbgridresult.Columns[i].Width:=70;//病历号,检查日期,申请日期,审核时间
     end;
 
     label2.Caption:=inttostr(DataSet.RecordCount);//显示人次
