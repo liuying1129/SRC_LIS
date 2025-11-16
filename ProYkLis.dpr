@@ -42,7 +42,8 @@ uses
   UfrmCriticalManage in 'UfrmCriticalManage.pas' {frmCriticalManage},
   UfrmCriticalValueDetail in 'UfrmCriticalValueDetail.pas' {frmCriticalValueDetail},
   UfrmAboutBox in 'UfrmAboutBox.pas' {frmAboutBox},
-  ToastUnit in 'ToastUnit.pas';
+  ToastUnit in 'ToastUnit.pas',
+  Unit_dialog_pllr in 'Unit_dialog_pllr.pas' {Form_pllr};
 
 {$R *.RES}
 

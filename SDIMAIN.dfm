@@ -2009,6 +2009,10 @@ object SDIAppForm: TSDIAppForm
     end
     object N2: TMenuItem
       Caption = #20449#24687#24405#20837
+      object N3: TMenuItem
+        Caption = #25209#37327#20449#24687#24405#20837
+        OnClick = N3Click
+      end
       object N26: TMenuItem
         Caption = #32467#26524#25209#37327#20462#25913
         OnClick = N26Click

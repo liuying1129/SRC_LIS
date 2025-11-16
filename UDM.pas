@@ -117,6 +117,8 @@ procedure addOrEditCalcValu(const Aadoconnstr:Pchar;const checkunid: integer;con
 procedure WriteLog(const ALogStr: Pchar);stdcall;external 'LYFunction.dll';
 procedure RequestForm2Lis(const AAdoconnstr,ARequestJSON,CurrentWorkGroup:PChar);stdcall;external 'Request2Lis.dll';
 function GetMaxCheckID(const AWorkGroup,APreDate,APreCheckID:PChar):PChar;stdcall;external 'LYFunction.dll';
+//·¶Î§×Ö·û´®pRangeStrÀàËÆ5,7-9,11 ×ª»»Îª('0005','0007','0008','0009','0011')
+function RangeStrToSql(const pRangeStr:Pchar;const ifLPad:boolean;const LPad:Char;const sWidth:integer;var pSqlStr:Pchar):boolean;stdcall;external 'LYFunction.dll';
 //****************************************************************************//
 
 procedure SendKeyToControl(const VK:byte;control:Twincontrol);

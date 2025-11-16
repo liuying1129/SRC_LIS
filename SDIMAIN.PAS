@@ -229,6 +229,7 @@ type
     N31: TMenuItem;
     SpeedButton7: TSpeedButton;
     SpeedButton9: TSpeedButton;
+    N3: TMenuItem;
     procedure FileExit1Execute(Sender: TObject);
     procedure HelpAbout1Execute(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -381,6 +382,7 @@ type
     procedure N104Click(Sender: TObject);
     procedure N31Click(Sender: TObject);
     procedure SpeedButton4Click(Sender: TObject);
+    procedure N3Click(Sender: TObject);
   private
     procedure CheckTheListBox;//根据当前病人的结果在checklistbox1中打钩
     procedure WriteProfile;
@@ -440,7 +442,8 @@ uses Unitstatic, UfrmCommQuery,
   UfrmXDepictType, UfrmXDepict, UfrmCommCode, UfrmPlxg, UfrmCopyInfo,
   UfrmPhoto, 
   UfrmModifyPwd, UfrmEquipManage, UfrmSJ_JBXX, softMeter_globalVar,
-  UfrmHorizontalExport, UfrmCriticalValueDetail, UfrmAboutBox, ToastUnit;
+  UfrmHorizontalExport, UfrmCriticalValueDetail, UfrmAboutBox, ToastUnit,
+  Unit_dialog_pllr;
 
 var
     copyName,copySex,copyage,copyCaseno,copyBedno,copydeptname,copycheck_doctor:string;//复制的病人基本信息，仅粘贴时有用
@@ -3835,6 +3838,14 @@ end;
 procedure TSDIAppForm.N104Click(Sender: TObject);
 begin
   lbedtTelephone.Enabled:=not lbedtTelephone.Enabled;
+end;
+
+procedure TSDIAppForm.N3Click(Sender: TObject);
+begin
+  //20251116曾删除该功能.南沙金洲强烈要求恢复
+  if not ifhaspower(sender,powerstr_js_main) then exit;
+
+  Form_pllr.ShowModal;
 end;
 
 end.
