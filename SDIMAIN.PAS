@@ -2025,7 +2025,7 @@ begin
   adotemp3.Connection:=DM.ADOConnection1;
   adotemp3.Close;
   adotemp3.SQL.Clear;
-  adotemp3.SQL.Text:='select name from CommCode where TypeName=''检验组别'' group by name';
+  adotemp3.SQL.Text:='select name from CommCode where TypeName=''检验组别'' group by name order by MIN(ID)';
   adotemp3.Open;
   while not adotemp3.Eof do
   begin
@@ -2546,7 +2546,7 @@ begin
      adotemp3.Connection:=DM.ADOConnection1;
      adotemp3.Close;
      adotemp3.SQL.Clear;
-     adotemp3.SQL.Text:='select name from CommCode where TypeName=''检验组别'' and Sysname='''+SYSNAME+''' group by name';
+     adotemp3.SQL.Text:='select name from CommCode where TypeName=''检验组别'' and Sysname='''+SYSNAME+''' group by name order by MIN(ID)';
      adotemp3.Open;
      adotemp3.First;
      
@@ -3681,7 +3681,7 @@ end;
 
 procedure TSDIAppForm.cbxConnCharDropDown(Sender: TObject);
 begin
-  LoadGroupName(TComboBox(Sender),'select name from CommCode WITH(NOLOCK) where TypeName=''检验组别'' AND SysName='''+SYSNAME+''' group by name');
+  LoadGroupName(TComboBox(Sender),'select name from CommCode WITH(NOLOCK) where TypeName=''检验组别'' AND SysName='''+SYSNAME+''' group by name order by MIN(ID)');
 end;
 
 procedure TSDIAppForm.SpeedButton3Click(Sender: TObject);

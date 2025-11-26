@@ -34,6 +34,8 @@ type
     procedure FormCreate(Sender: TObject);
     procedure LabeledEdit1Change(Sender: TObject);
     procedure CheckBox1Click(Sender: TObject);
+    procedure ComboBox1DropDown(Sender: TObject);
+    procedure ComboBox2DropDown(Sender: TObject);
   private
     { Private declarations }
   public
@@ -68,11 +70,7 @@ end;
 
 procedure TfrmCopyInfo.FormShow(Sender: TObject);
 begin
-  LoadGroupName(ComboBox1,'select name from CommCode where TypeName=''检验组别'' AND SysName='''+SYSNAME+''' group by name');
-
-  LoadGroupName(ComboBox2,'select name from CommCode where TypeName=''样本类型'' group by name');//加载样本类型
-
-  combinchecklistbox(CheckListBox1);  
+  combinchecklistbox(CheckListBox1);
 end;
 
 procedure TfrmCopyInfo.BitBtn2Click(Sender: TObject);
@@ -294,6 +292,16 @@ begin
     DBGrid1.SelectedRows.CurrentRowSelected:=(sender as TCheckBox).Checked;
     Gadotemp11.Next;  
   end;
+end;
+
+procedure TfrmCopyInfo.ComboBox1DropDown(Sender: TObject);
+begin
+  LoadGroupName(ComboBox1,'select name from CommCode where TypeName=''检验组别'' AND SysName='''+SYSNAME+''' group by name order by MIN(ID)');
+end;
+
+procedure TfrmCopyInfo.ComboBox2DropDown(Sender: TObject);
+begin
+  LoadGroupName(ComboBox2,'select name from CommCode where TypeName=''样本类型'' group by name');//加载样本类型
 end;
 
 initialization

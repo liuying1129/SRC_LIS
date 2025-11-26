@@ -120,6 +120,9 @@ type
     procedure BitBtn15Click(Sender: TObject);
     procedure BitBtn16Click(Sender: TObject);
     procedure BitBtn17Click(Sender: TObject);
+    procedure LabeledEdit14DropDown(Sender: TObject);
+    procedure LabeledEdit8DropDown(Sender: TObject);
+    procedure ComboBox1DropDown(Sender: TObject);
   private
     { Private declarations }
     procedure updateedit;
@@ -191,12 +194,6 @@ begin
   update_CombinItemSChkItem;
   
   updateedit;
-
-  LoadGroupName(LabeledEdit14,'select name from CommCode where TypeName=''检验组别'' AND SysName='''+SYSNAME+''' group by name');
-  
-  LoadGroupName(LabeledEdit8,'select name from CommCode where TypeName=''样本类型'' group by name');//加载样本类型
-
-  LoadGroupName(ComboBox1,'select name from CommCode where TypeName=''部门'' ');//加载所属部门
 
   updateedit2;
 
@@ -811,6 +808,21 @@ begin
   if ADOQuery1.RecordCount<=0 then exit;
 
   frmCriticalManage(adoquery1.fieldbyname('unid').asinteger).ShowModal;
+end;
+
+procedure TfrmItemSetup.LabeledEdit14DropDown(Sender: TObject);
+begin
+  LoadGroupName(LabeledEdit14,'select name from CommCode where TypeName=''检验组别'' AND SysName='''+SYSNAME+''' group by name order by MIN(ID)');
+end;
+
+procedure TfrmItemSetup.LabeledEdit8DropDown(Sender: TObject);
+begin
+  LoadGroupName(LabeledEdit8,'select name from CommCode where TypeName=''样本类型'' group by name');//加载样本类型
+end;
+
+procedure TfrmItemSetup.ComboBox1DropDown(Sender: TObject);
+begin
+  LoadGroupName(ComboBox1,'select name from CommCode where TypeName=''部门'' ');//加载所属部门
 end;
 
 initialization

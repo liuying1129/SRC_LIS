@@ -756,6 +756,7 @@ object frmItemSetup: TfrmItemSetup
           DropDownCount = 20
           ItemHeight = 13
           TabOrder = 9
+          OnDropDown = LabeledEdit14DropDown
         end
         object LabeledEdit8: TComboBox
           Left = 10
@@ -765,6 +766,7 @@ object frmItemSetup: TfrmItemSetup
           DropDownCount = 20
           ItemHeight = 13
           TabOrder = 10
+          OnDropDown = LabeledEdit8DropDown
         end
         object BitBtn14: TBitBtn
           Left = 106
@@ -783,6 +785,7 @@ object frmItemSetup: TfrmItemSetup
           DropDownCount = 20
           ItemHeight = 13
           TabOrder = 12
+          OnDropDown = ComboBox1DropDown
         end
         object LabeledEdit4: TLabeledEdit
           Left = 10

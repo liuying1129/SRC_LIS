@@ -78,8 +78,10 @@ object frmCopyInfo: TfrmCopyInfo
     Width = 145
     Height = 21
     Style = csDropDownList
+    DropDownCount = 20
     ItemHeight = 13
     TabOrder = 0
+    OnDropDown = ComboBox1DropDown
   end
   object LabeledEdit1: TLabeledEdit
     Left = 272
@@ -129,8 +131,10 @@ object frmCopyInfo: TfrmCopyInfo
     Top = 69
     Width = 145
     Height = 21
+    DropDownCount = 20
     ItemHeight = 13
     TabOrder = 5
+    OnDropDown = ComboBox2DropDown
   end
   object GroupBox1: TGroupBox
     Left = 0
