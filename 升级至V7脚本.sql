@@ -1837,6 +1837,47 @@ BEGIN
 END
 GO
 
+--2025-11-27 市政,获取医保编码.服务程序ExtSystemIFKingTTrust调用
+if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[uf_medInsuranceCode]') and xtype in (N'FN', N'IF', N'TF'))
+drop function [dbo].[uf_medInsuranceCode]
+GO
+
+CREATE FUNCTION [dbo].[uf_medInsuranceCode]
+(
+  @ifCompleted int, --0:chk_con,1:chk_con_bak
+  @chk_con_unid int --chk_con.unid或chk_con_bak.unid
+)  
+RETURNS varchar(500) AS  
+BEGIN 
+  declare @re_medInsuranceCode varchar(500) --返回值
+  set @re_medInsuranceCode=''
+  
+  if @ifCompleted=1 
+  begin
+	  select @re_medInsuranceCode=@re_medInsuranceCode+';'+medInsuranceCode from
+	  (
+	  select ci.itemtype as medInsuranceCode from chk_valu_bak cv WITH(NOLOCK),combinitem ci WITH(NOLOCK) where cv.pkunid=@chk_con_unid and cv.pkcombin_id=ci.Id and isnull(ci.itemtype,'')<>''
+	  union all
+	  select cv.Dosage1  as medInsuranceCode from chk_valu_bak cv WITH(NOLOCK) where cv.pkunid=@chk_con_unid and ISNULL(cv.Dosage1,'')<>''
+	  ) T1
+	  group by medInsuranceCode    
+  end else 
+  begin
+	  select @re_medInsuranceCode=@re_medInsuranceCode+';'+medInsuranceCode from
+	  (
+	  select ci.itemtype as medInsuranceCode from chk_valu cv,combinitem ci where cv.pkunid=@chk_con_unid and cv.pkcombin_id=ci.Id and isnull(ci.itemtype,'')<>''
+	  union all
+	  select cv.Dosage1  as medInsuranceCode from chk_valu cv where cv.pkunid=@chk_con_unid and ISNULL(cv.Dosage1,'')<>''
+	  ) T1
+	  group by medInsuranceCode  
+  end
+      
+  set @re_medInsuranceCode=stuff(@re_medInsuranceCode,1,1,'')
+
+  return @re_medInsuranceCode
+END
+GO
+
 --删除函数uf_GetNextXxNo
 if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[uf_GetNextXxNo]') and xtype in (N'FN', N'IF', N'TF'))
 drop function [dbo].[uf_GetNextXxNo]
