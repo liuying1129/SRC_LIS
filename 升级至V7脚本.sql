@@ -1036,6 +1036,11 @@ CREATE TABLE [dbo].[ItemCriticalValue](
 )
 GO
 
+--2025-11-27增加审核者签名图片字段
+IF NOT EXISTS (select 1 from syscolumns where name='SignPic' and id=object_id('worker'))
+  Alter table worker add SignPic image null
+GO
+
 --删除表ChkStatus
 if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[ChkStatus]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
   drop table [dbo].[ChkStatus]

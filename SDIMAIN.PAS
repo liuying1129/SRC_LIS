@@ -230,6 +230,8 @@ type
     SpeedButton7: TSpeedButton;
     SpeedButton9: TSpeedButton;
     N3: TMenuItem;
+    N38: TMenuItem;
+    N39: TMenuItem;
     procedure FileExit1Execute(Sender: TObject);
     procedure HelpAbout1Execute(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -383,6 +385,7 @@ type
     procedure N31Click(Sender: TObject);
     procedure SpeedButton4Click(Sender: TObject);
     procedure N3Click(Sender: TObject);
+    procedure N38Click(Sender: TObject);
   private
     procedure CheckTheListBox;//根据当前病人的结果在checklistbox1中打钩
     procedure WriteProfile;
@@ -443,7 +446,7 @@ uses Unitstatic, UfrmCommQuery,
   UfrmPhoto, 
   UfrmModifyPwd, UfrmEquipManage, UfrmSJ_JBXX, softMeter_globalVar,
   UfrmHorizontalExport, UfrmCriticalValueDetail, UfrmAboutBox, ToastUnit,
-  Unit_dialog_pllr;
+  Unit_dialog_pllr, UfrmCollectSignature;
 
 var
     copyName,copySex,copyage,copyCaseno,copyBedno,copydeptname,copycheck_doctor:string;//复制的病人基本信息，仅粘贴时有用
@@ -3846,6 +3849,11 @@ begin
   if not ifhaspower(sender,powerstr_js_main) then exit;
 
   Form_pllr.ShowModal;
+end;
+
+procedure TSDIAppForm.N38Click(Sender: TObject);
+begin
+  frmCollectSignature(operator_id).ShowModal;
 end;
 
 end.

@@ -43,7 +43,8 @@ uses
   UfrmCriticalValueDetail in 'UfrmCriticalValueDetail.pas' {frmCriticalValueDetail},
   UfrmAboutBox in 'UfrmAboutBox.pas' {frmAboutBox},
   ToastUnit in 'ToastUnit.pas',
-  Unit_dialog_pllr in 'Unit_dialog_pllr.pas' {Form_pllr};
+  Unit_dialog_pllr in 'Unit_dialog_pllr.pas' {Form_pllr},
+  UfrmCollectSignature in 'UfrmCollectSignature.pas' {frmCollectSignature};
 
 {$R *.RES}
 

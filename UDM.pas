@@ -140,7 +140,7 @@ function StopTime: integer; //返回没有键盘和鼠标事件的时间
 procedure Draw_MVIS2035_Curve(Chart_XLB:TChart;const X1,Y1,X2,Y2,X1_MIN,Y1_MIN,X2_MIN,Y2_MIN,
                                                    X1_MAX,Y1_MAX,X2_MAX,Y2_MAX:Real);
 procedure updatechart(ChartHistogram:TChart;const strHistogram:string;const strEnglishName:string;const strXTitle:string);
-
+procedure LoadSignatureToImage(AImage:TImage;const AOperatorID: String);//将指定帐号的签名图片加载到指定的Image组件
 
 implementation
 
@@ -868,6 +868,29 @@ begin
     sList.Free;
 end;
 
+procedure LoadSignatureToImage(AImage:TImage;const AOperatorID: String);
+var
+  Query1: TADOQuery;
+  MemoryStream: TMemoryStream;
+begin
+  Query1 := TADOQuery.Create(nil);
+  Query1.Connection := DM.ADOConnection1;
+  Query1.Close;
+  Query1.SQL.Clear;
+  Query1.SQL.Text:='SELECT top 1 SignPic FROM worker WITH(NOLOCK) WHERE ID=:id and SignPic is not null';
+  Query1.Parameters.ParamByName('id').Value:=AOperatorID;
+  Query1.Open;
+  if Query1.RecordCount<=0 then begin AImage.Picture:=nil;Query1.Free;exit;end;
+  if Query1.FieldByName('SignPic').IsNull then begin AImage.Picture:=nil;Query1.Free;exit;end;
+  
+  MemoryStream := TMemoryStream.Create;
+  TBlobField(Query1.FieldByName('SignPic')).SaveToStream(MemoryStream);// 将image字段数据加载到内存流
+  MemoryStream.Position := 0; // 重置流位置
+  AImage.Picture.Bitmap.LoadFromStream(MemoryStream);// 从流加载图片到Image1控件
+  MemoryStream.Free;
+  Query1.Free;
+end;
+
 procedure TDM.frxReport1BeforePrint(Sender: TfrxReportComponent);
 var
   adotemp11:tadoquery;
@@ -888,6 +911,7 @@ var
   //血流变变量stop
 
   mvPictureTitle :TfrxMemoView;
+  tempBmp:TBitmap;
 begin
   if not frxDBDataset1.GetDataSet.Active then exit;//ADObasic
   if not frxDBDataset1.GetDataSet.RecordCount=0 then exit;//ADObasic
@@ -1027,6 +1051,33 @@ begin
     ExecSQLCmd(LisConn,'update chk_con set report_doctor='''+operator_name+''',Audit_Date=getdate() where unid='+inttostr(unid));
     frxDBDataset1.GetDataSet.Refresh;//更新显示审核者.此处frxDBDataset1.GetDataSet即SDIAppForm.adobasic
   end;
+
+  //加载审核者签名图片 begin
+  if(Sender is TfrxPictureView)and(SameText('AuditerSignPic',Sender.Name))then
+  begin
+    adotemp11:=tadoquery.Create(nil);
+    adotemp11.Connection:=DM.ADOConnection1;
+    adotemp11.Close;
+    adotemp11.SQL.Clear;
+    //小BUG:如存在姓名相同的审核者,获取的签名图片可能不对.影响不大,如出现这种情况,让科室调整姓名即可
+    adotemp11.SQL.Text:='select top 1 w.SignPic from view_Chk_Con_All cc,worker w WITH(NOLOCK) where cc.unid=:unid and w.name=cc.report_doctor and w.SignPic is not null';
+    adotemp11.Parameters.ParamByName('unid').Value:=unid;
+    adotemp11.Open;
+    if not adotemp11.fieldbyname('SignPic').IsNull then
+    begin
+      Sender.Visible:=true;
+      MS:=TMemoryStream.Create;
+      TBlobField(adotemp11.fieldbyname('SignPic')).SaveToStream(MS);
+      MS.Position:=0;
+      tempBmp:=TBitmap.Create;//因为以TBitmap格式保存,故使用TBitmap加载
+      tempBmp.LoadFromStream(MS);
+      MS.Free;
+      TfrxPictureView(Sender).Picture.assign(tempBmp);
+      tempBmp.Free;
+    end;
+    adotemp11.Free;
+  end;  
+  //加载审核者签名图片 end
 end;
 
 procedure TDM.frxReport1BeginDoc(Sender: TObject);

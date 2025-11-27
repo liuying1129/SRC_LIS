@@ -3,7 +3,7 @@ object frmdocset: Tfrmdocset
   Top = 131
   BorderStyle = bsDialog
   Caption = #20154#21592#35774#32622
-  ClientHeight = 336
+  ClientHeight = 471
   ClientWidth = 528
   Color = clSkyBlue
   Font.Charset = DEFAULT_CHARSET
@@ -23,7 +23,7 @@ object frmdocset: Tfrmdocset
     Left = 0
     Top = 108
     Width = 528
-    Height = 228
+    Height = 223
     Align = alClient
     Color = 16767438
     DataSource = DataSourcedoclist
@@ -163,6 +163,28 @@ object frmdocset: Tfrmdocset
       TabOrder = 0
       OnChange = ComboBox2Change
       OnDropDown = ComboBox2DropDown
+    end
+  end
+  object Panel4: TPanel
+    Left = 0
+    Top = 331
+    Width = 528
+    Height = 140
+    Align = alBottom
+    Color = clSkyBlue
+    TabOrder = 4
+    object Image1: TImage
+      Left = 88
+      Top = 5
+      Width = 390
+      Height = 130
+    end
+    object Label3: TLabel
+      Left = 8
+      Top = 8
+      Width = 65
+      Height = 13
+      Caption = #31614#21517#23637#31034#21306
     end
   end
   object ADOdoclist: TADOQuery

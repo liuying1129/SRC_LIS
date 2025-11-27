@@ -2002,6 +2002,13 @@ object SDIAppForm: TSDIAppForm
       object N86: TMenuItem
         Caption = '-'
       end
+      object N38: TMenuItem
+        Caption = #37319#38598#31614#21517
+        OnClick = N38Click
+      end
+      object N39: TMenuItem
+        Caption = '-'
+      end
       object FileOpenItem: TMenuItem
         Caption = #36864#20986#31995#32479
         OnClick = FileOpenItemClick

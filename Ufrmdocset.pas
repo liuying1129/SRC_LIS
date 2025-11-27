@@ -27,6 +27,9 @@ type
     Panel3: TPanel;
     Label1: TLabel;
     ComboBox2: TComboBox;
+    Panel4: TPanel;
+    Image1: TImage;//尺寸与采集签名窗口中PaintBox一致,以免显示变形
+    Label3: TLabel;
     procedure suiButton1Click(Sender: TObject);
     procedure suiButton2Click(Sender: TObject);
     procedure suiButton3Click(Sender: TObject);
@@ -202,6 +205,7 @@ begin
   ifdocnewadd:=false;
   
   docrefresh;
+  LoadSignatureToImage(Image1,DataSet.fieldbyname('用户代码').AsString);
 end;
 
 procedure Tfrmdocset.FormShow(Sender: TObject);
