@@ -1060,7 +1060,7 @@ begin
     adotemp11.Close;
     adotemp11.SQL.Clear;
     //小BUG:如存在姓名相同的审核者,获取的签名图片可能不对.影响不大,如出现这种情况,让科室调整姓名即可
-    adotemp11.SQL.Text:='select top 1 w.SignPic from view_Chk_Con_All cc,worker w WITH(NOLOCK) where cc.unid=:unid and w.name=cc.report_doctor and w.SignPic is not null';
+    adotemp11.SQL.Text:='select top 1 w.SignPic from view_Chk_Con_All cc,worker w WITH(NOLOCK) where cc.unid=:unid and isnull(cc.report_doctor,'''')<>'''' and w.name=cc.report_doctor and w.SignPic is not null';
     adotemp11.Parameters.ParamByName('unid').Value:=unid;
     adotemp11.Open;
     if not adotemp11.fieldbyname('SignPic').IsNull then
