@@ -62,7 +62,6 @@ var
   ifGetDiagnoseFromCaseNo:boolean;//是否根据"门诊/住院号"提取临床诊断
   ifGetMemoFromCaseNo:boolean;//是否根据"门诊/住院号"提取备注
   ifSaveSuccess:boolean;//记录"保存检验单F3"事件是否成功,批量录入时要用到
-  ifAutoCheck:boolean;//记录是否打印时自动审核检验单
   deptname_match:string;//记录送检科室的取码匹配方式
   check_doctor_match:string;////记录送检医生的取码匹配方式
   ifNoResultPrint:boolean;//是否允许无检验结果打印
@@ -143,6 +142,8 @@ procedure updatechart(ChartHistogram:TChart;const strHistogram:string;const strE
 procedure LoadSignatureToImage(AImage:TImage;const AOperatorID: String);//将指定帐号的签名图片加载到指定的Image组件
 
 implementation
+
+uses SDIMAIN;
 
 {$R *.dfm}
 
@@ -1045,7 +1046,7 @@ begin
   //加载血流变曲线、直方图、散点图 stop
 
   //可能要打印审核者，故只能在BeforePrint事件中处理.(其实在PrintReport中处理更合理)
-  if(ifAutoCheck)and(report_doctor='') then//修改审核者
+  if(SDIAppForm.N43.checked)and(report_doctor='') then//修改审核者
   begin
     //chk_con_bak均为已审核记录,故无需处理
     ExecSQLCmd(LisConn,'update chk_con set report_doctor='''+operator_name+''',Audit_Date=getdate() where unid='+inttostr(unid));

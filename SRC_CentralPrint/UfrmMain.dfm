@@ -229,6 +229,7 @@ object frmMain: TfrmMain
       DropDownCount = 20
       ItemHeight = 13
       TabOrder = 9
+      OnDropDown = ComboBox1DropDown
     end
     object LabeledEdit5: TLabeledEdit
       Left = 78
@@ -714,7 +715,7 @@ object frmMain: TfrmMain
     Left = 345
     Top = 125
     object AI1: TMenuItem
-      Caption = 'AI'#20998#26512
+      Caption = 'AI'#35299#35835#25253#21578
       OnClick = AI1Click
     end
   end

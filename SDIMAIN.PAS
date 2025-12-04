@@ -232,6 +232,8 @@ type
     N3: TMenuItem;
     N38: TMenuItem;
     N39: TMenuItem;
+    N40: TMenuItem;
+    N43: TMenuItem;
     procedure FileExit1Execute(Sender: TObject);
     procedure HelpAbout1Execute(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -386,6 +388,7 @@ type
     procedure SpeedButton4Click(Sender: TObject);
     procedure N3Click(Sender: TObject);
     procedure N38Click(Sender: TObject);
+    procedure N43Click(Sender: TObject);
   private
     procedure CheckTheListBox;//根据当前病人的结果在checklistbox1中打钩
     procedure WriteProfile;
@@ -840,6 +843,7 @@ begin
   Panel7.Width:=configini.ReadInteger('Interface','gridBaseInfoWidth',620);{记录基本信息框宽度}
   CheckBox1.Checked:=configini.ReadBool('Interface','ifContinuousEdit',false);{记录是否连续录入基本信息}
   PageControl1.ActivePageIndex:=configini.ReadInteger('Interface','ValueActivePageIndex',0);{记录结果框PageControl1的活动Page}
+  n43.Checked:=configini.ReadBool('Interface','ifPrintAsAudit',true);{记录是否打印时自动审核}
 
   IF CONFIGINI.ReadBool('Interface','ifLSHOrder',TRUE) THEN
   begin
@@ -899,6 +903,7 @@ begin
   configini.WriteBool('Interface','ifContinuousEdit',CheckBox1.Checked);{记录是否连续录入基本信息}
   configini.WriteInteger('Interface','ValueActivePageIndex',PageControl1.ActivePageIndex);{记录结果框PageControl1的活动Page}
   configini.WriteBool('Interface','ifLSHOrder',n6.Checked);{记录是否流水号排序}
+  configini.WriteBool('Interface','ifPrintAsAudit',n43.Checked);{记录是否打印时自动审核}
 
   configini.WriteBool('EditEnabled','LSH',LabeledEdit16.Enabled);
   configini.WriteBool('EditEnabled','checkid',LabeledEdit1.Enabled);
@@ -2041,7 +2046,6 @@ begin
   ss:='直方图光滑次数'+#2+'Edit'+#2+#2+'0'+#2+'注:次数越多曲线越光滑,但曲线偏离越多'+#2+#3+
       '允许无检验结果打印'+#2+'CheckListBox'+#2+#2+'0'+#2+#2+#3+
       '打印对话框'+#2+'CheckListBox'+#2+#2+'0'+#2+'打印预览模式的高级选项(打印机、页码、份数等)'+#2+#3+
-      '打印时自动审核检验单'+#2+'CheckListBox'+#2+#2+'1'+#2+#2+#3+
       '根据"门诊/住院号"提取床号'+#2+'CheckListBox'+#2+#2+'1'+#2+#2+#3+
       '根据"门诊/住院号"提取临床诊断'+#2+'CheckListBox'+#2+#2+'1'+#2+#2+#3+
       '根据"门诊/住院号"提取备注'+#2+'CheckListBox'+#2+#2+'1'+#2+#2+#3+
@@ -2477,7 +2481,6 @@ begin
   SmoothNum:=configini.ReadInteger('报表','直方图光滑次数',0);
   ifNoResultPrint:=configini.ReadBool('报表','允许无检验结果打印',false);
   ifShowPrintDialog:=configini.ReadBool('报表','打印对话框',false);
-  ifAutoCheck:=configini.ReadBool('选项','打印时自动审核检验单',false);
   deptname_match:=configini.ReadString('选项','送检科室取码的匹配方式','');
   check_doctor_match:=configini.ReadString('选项','送检医生取码的匹配方式','');
   ifGetBedNoFromCaseNo:=configini.ReadBool('选项','根据"门诊/住院号"提取床号',false);
@@ -3475,7 +3478,7 @@ begin
   sSex:=adobasic.fieldbyname('性别').AsString;
   sAge:=adobasic.fieldbyname('年龄').AsString;
   
-  if not ifAutoCheck then  //打印前要检查是否已被审核
+  if not N43.Checked then  //打印前要检查是否已被审核
   begin
     if sReport_Doctor='' then
     begin
@@ -3570,7 +3573,7 @@ begin
   sSex:=adobasic.fieldbyname('性别').AsString;
   sAge:=adobasic.fieldbyname('年龄').AsString;
 
-  if not ifAutoCheck then  //打印前要检查是否已被审核
+  if not N43.Checked then  //打印前要检查是否已被审核
   begin
     if sReport_Doctor='' then
     begin
@@ -3854,6 +3857,11 @@ end;
 procedure TSDIAppForm.N38Click(Sender: TObject);
 begin
   frmCollectSignature(operator_id).ShowModal;
+end;
+
+procedure TSDIAppForm.N43Click(Sender: TObject);
+begin
+  TMenuItem(sender).Checked:=not TMenuItem(sender).Checked;
 end;
 
 end.

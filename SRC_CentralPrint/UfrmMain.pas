@@ -135,6 +135,7 @@ type
     procedure SpeedButton7Click(Sender: TObject);
     procedure Memo1Change(Sender: TObject);
     procedure AI1Click(Sender: TObject);
+    procedure ComboBox1DropDown(Sender: TObject);
   private
     procedure WriteProfile;
     procedure ReadConfig;
@@ -172,8 +173,6 @@ begin
   UpdateStatusBar(#$2+'6:'+SCSYDW);
   UpdateStatusBar(#$2+'8:'+gServerName);
   UpdateStatusBar(#$2+'10:'+gDbName);
-  
-  LoadGroupName(ComboBox1,'select name from CommCode where TypeName=''检验组别'' group by name');
 end;
 
 procedure TfrmMain.ReadConfig;
@@ -1287,6 +1286,7 @@ var
   //血流变变量stop
 
   mvPictureTitle:TfrxMemoView;
+  tempBmp:TBitmap;
 begin
   if not ADObasic.Active then exit;
   if not ADObasic.RecordCount=0 then exit;
@@ -1421,6 +1421,33 @@ begin
     adotemp11.Free;
   end;
   //加载血流变曲线、直方图、散点图 stop
+
+  //加载审核者签名图片 begin
+  if(Sender is TfrxPictureView)and(SameText('AuditerSignPic',Sender.Name))then
+  begin
+    adotemp11:=tadoquery.Create(nil);
+    adotemp11.Connection:=DM.ADOConnection1;
+    adotemp11.Close;
+    adotemp11.SQL.Clear;
+    //小BUG:如存在姓名相同的审核者,获取的签名图片可能不对.影响不大,如出现这种情况,让科室调整姓名即可
+    adotemp11.SQL.Text:='select top 1 w.SignPic from '+ifThen(iIfCompleted=1,'chk_con_bak','chk_con')+' cc,worker w WITH(NOLOCK) where cc.unid=:unid and w.name=cc.report_doctor and w.SignPic is not null';
+    adotemp11.Parameters.ParamByName('unid').Value:=unid;
+    adotemp11.Open;
+    if not adotemp11.fieldbyname('SignPic').IsNull then
+    begin
+      Sender.Visible:=true;
+      MS:=TMemoryStream.Create;
+      TBlobField(adotemp11.fieldbyname('SignPic')).SaveToStream(MS);
+      MS.Position:=0;
+      tempBmp:=TBitmap.Create;//因为以TBitmap格式保存,故使用TBitmap加载
+      tempBmp.LoadFromStream(MS);
+      MS.Free;
+      TfrxPictureView(Sender).Picture.assign(tempBmp);
+      tempBmp.Free;
+    end;
+    adotemp11.Free;
+  end;  
+  //加载审核者签名图片 end
 end;
 
 procedure TfrmMain.frxReport1BeginDoc(Sender: TObject);
@@ -1869,6 +1896,11 @@ procedure TAIChatThread.UpdateMemo1;
 //调用该方法时使用 Synchronize(同步) 来安全地更新UI
 begin
   frmMain.memo1.Lines.Add(FMemo1Msg); 
+end;
+
+procedure TfrmMain.ComboBox1DropDown(Sender: TObject);
+begin
+  LoadGroupName(TComboBox(Sender),'select name from CommCode WITH(NOLOCK) where TypeName=''检验组别'' group by name order by MIN(ID)');
 end;
 
 end.
