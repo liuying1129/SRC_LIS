@@ -28,7 +28,7 @@ object frmBatchSpecNo: TfrmBatchSpecNo
   end
   object Label2: TLabel
     Left = 21
-    Top = 77
+    Top = 68
     Width = 78
     Height = 13
     Caption = #32467#26463#30340#26816#39564#21333
@@ -75,7 +75,7 @@ object frmBatchSpecNo: TfrmBatchSpecNo
   end
   object LabeledEdit1: TEdit
     Left = 21
-    Top = 93
+    Top = 84
     Width = 180
     Height = 21
     ReadOnly = True
@@ -84,7 +84,7 @@ object frmBatchSpecNo: TfrmBatchSpecNo
   end
   object Edit1: TEdit
     Left = 203
-    Top = 93
+    Top = 84
     Width = 73
     Height = 21
     Hint = #32852#26426#23383#27597
@@ -99,5 +99,13 @@ object frmBatchSpecNo: TfrmBatchSpecNo
     Hint = #32852#26426#23383#27597
     Enabled = False
     TabOrder = 5
+  end
+  object CheckBox1: TCheckBox
+    Left = 21
+    Top = 113
+    Width = 164
+    Height = 17
+    Caption = #20462#25913#24050#23384#22312#30340#23457#26680#32773
+    TabOrder = 6
   end
 end

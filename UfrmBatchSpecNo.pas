@@ -18,6 +18,7 @@ type
     Label1: TLabel;
     Label2: TLabel;
     Label3: TLabel;
+    CheckBox1: TCheckBox;
     procedure BitBtn1Click(Sender: TObject);
     procedure BitBtn2Click(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
@@ -106,13 +107,14 @@ begin
         adotemp2.next;
         continue;//不审核没有检验结果的项目
       end;
-      
-      ExecSQLCmd(LisConn,'update chk_con set report_doctor='''+operator_name+''',Audit_Date=getdate() where unid='+adotemp2.fieldbyname('唯一编号').AsString+' AND ((report_doctor IS NULL) OR (report_doctor='''')) ');
+
+      if CheckBox1.Checked then ExecSQLCmd(LisConn,'update chk_con set report_doctor='''+operator_name+''',Audit_Date=getdate() where unid='+adotemp2.fieldbyname('唯一编号').AsString)
+        else ExecSQLCmd(LisConn,'update chk_con set report_doctor='''+operator_name+''',Audit_Date=getdate() where unid='+adotemp2.fieldbyname('唯一编号').AsString+' AND ((report_doctor IS NULL) OR (report_doctor='''')) ');
 
       if adotemp2.FieldByName('唯一编号').AsString=Edit1.Text then break;
       
       adotemp2.Next;
-    end;    
+    end;
     adotemp2.Free;
 
     SDIAppForm.ADObasic.Refresh;//刷新界面
@@ -198,6 +200,9 @@ end;
 
 procedure TfrmBatchSpecNo.FormShow(Sender: TObject);
 begin
+  if pPLLX=0 then CheckBox1.Visible:=True  //0:批审核 1:批打印 2:批量删除
+    else CheckBox1.Visible:=False; 
+
   if LabeledEdit3.CanFocus then LabeledEdit3.SetFocus;
 end;
 

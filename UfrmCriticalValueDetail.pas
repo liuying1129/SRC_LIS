@@ -95,7 +95,8 @@ begin
                       'where cc.unid=cv.pkunid and isnull(cc.TjXinDianTu,'''')='''' and dbo.uf_CriticalValueAlarm(cv.itemid,cc.sex,cc.age,cv.itemvalue)=1';
   ADOQuery1.Open;
   
-  SDIAppForm.LYLed1.Value:=ADOQuery1.RecordCount>0;
+  if ADOQuery1.RecordCount>0 then SDIAppForm.Shape1.Brush.Color:=clRed
+    else SDIAppForm.Shape1.Brush.Color:=clWhite;
 end;
 
 procedure TfrmCriticalValueDetail.FormShow(Sender: TObject);

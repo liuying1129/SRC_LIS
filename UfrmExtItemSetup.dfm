@@ -3,14 +3,14 @@ object frmExtItemSetup: TfrmExtItemSetup
   Top = 176
   BorderIcons = [biSystemMenu, biMinimize]
   BorderStyle = bsSingle
-  Caption = 'À©Õ¹×Ö¶ÎÉèÖÃ'
+  Caption = #25193#23637#23383#27573#35774#32622
   ClientHeight = 462
   ClientWidth = 684
   Color = clSkyBlue
   Font.Charset = ANSI_CHARSET
   Font.Color = clWindowText
   Font.Height = -13
-  Font.Name = 'ËÎÌå'
+  Font.Name = #23435#20307
   Font.Style = []
   KeyPreview = True
   OldCreateOrder = False
@@ -24,21 +24,21 @@ object frmExtItemSetup: TfrmExtItemSetup
     Top = 7
     Width = 59
     Height = 13
-    Caption = '±£Áô×Ö¶Î1'
+    Caption = #25193#23637#23383#27573'1'
   end
   object Label2: TLabel
     Left = 75
     Top = 114
     Width = 59
     Height = 13
-    Caption = '±£Áô×Ö¶Î2'
+    Caption = #25193#23637#23383#27573'2'
   end
   object BitBtn2: TBitBtn
     Left = 135
     Top = 435
     Width = 75
     Height = 25
-    Caption = '±£´æ'
+    Caption = #20445#23384
     TabOrder = 13
     OnClick = BitBtn2Click
   end
@@ -51,7 +51,7 @@ object frmExtItemSetup: TfrmExtItemSetup
     Ctl3D = False
     EditLabel.Width = 59
     EditLabel.Height = 13
-    EditLabel.Caption = '±£Áô×Ö¶Î3'
+    EditLabel.Caption = #25193#23637#23383#27573'3'
     LabelPosition = lpLeft
     ParentCtl3D = False
     TabOrder = 2
@@ -65,7 +65,7 @@ object frmExtItemSetup: TfrmExtItemSetup
     Ctl3D = False
     EditLabel.Width = 59
     EditLabel.Height = 13
-    EditLabel.Caption = '±£Áô×Ö¶Î4'
+    EditLabel.Caption = #25193#23637#23383#27573'4'
     LabelPosition = lpLeft
     ParentCtl3D = False
     TabOrder = 3
@@ -79,7 +79,7 @@ object frmExtItemSetup: TfrmExtItemSetup
     Ctl3D = False
     EditLabel.Width = 59
     EditLabel.Height = 13
-    EditLabel.Caption = '±£Áô×Ö¶Î5'
+    EditLabel.Caption = #25193#23637#23383#27573'5'
     LabelPosition = lpLeft
     ParentCtl3D = False
     TabOrder = 4
@@ -93,7 +93,7 @@ object frmExtItemSetup: TfrmExtItemSetup
     Ctl3D = False
     EditLabel.Width = 59
     EditLabel.Height = 13
-    EditLabel.Caption = '±£Áô×Ö¶Î6'
+    EditLabel.Caption = #25193#23637#23383#27573'6'
     LabelPosition = lpLeft
     ParentCtl3D = False
     TabOrder = 5
@@ -107,7 +107,7 @@ object frmExtItemSetup: TfrmExtItemSetup
     Ctl3D = False
     EditLabel.Width = 59
     EditLabel.Height = 13
-    EditLabel.Caption = '±£Áô×Ö¶Î7'
+    EditLabel.Caption = #25193#23637#23383#27573'7'
     LabelPosition = lpLeft
     ParentCtl3D = False
     TabOrder = 6
@@ -121,7 +121,7 @@ object frmExtItemSetup: TfrmExtItemSetup
     Ctl3D = False
     EditLabel.Width = 59
     EditLabel.Height = 13
-    EditLabel.Caption = '±£Áô×Ö¶Î8'
+    EditLabel.Caption = #25193#23637#23383#27573'8'
     LabelPosition = lpLeft
     ParentCtl3D = False
     TabOrder = 7
@@ -155,7 +155,7 @@ object frmExtItemSetup: TfrmExtItemSetup
     Ctl3D = False
     EditLabel.Width = 59
     EditLabel.Height = 13
-    EditLabel.Caption = '±£Áô×Ö¶Î9'
+    EditLabel.Caption = #25193#23637#23383#27573'9'
     LabelPosition = lpLeft
     ParentCtl3D = False
     TabOrder = 10
@@ -169,7 +169,7 @@ object frmExtItemSetup: TfrmExtItemSetup
     Ctl3D = False
     EditLabel.Width = 66
     EditLabel.Height = 13
-    EditLabel.Caption = '±£Áô×Ö¶Î10'
+    EditLabel.Caption = #25193#23637#23383#27573'10'
     LabelPosition = lpLeft
     ParentCtl3D = False
     TabOrder = 11
@@ -199,7 +199,7 @@ object frmExtItemSetup: TfrmExtItemSetup
     Ctl3D = False
     EditLabel.Width = 78
     EditLabel.Height = 13
-    EditLabel.Caption = 'ÍÆËÍÁª»ú±êÊ¶'
+    EditLabel.Caption = #25512#36865#32852#26426#26631#35782
     LabelPosition = lpLeft
     ParentCtl3D = False
     TabOrder = 12

@@ -65,4 +65,43 @@ object frmCollectSignature: TfrmCollectSignature
     Caption = #25552#20132
     OnClick = SpeedButton2Click
   end
+  object Label3: TLabel
+    Left = 80
+    Top = 16
+    Width = 26
+    Height = 13
+    Caption = #35831#12304
+    Font.Charset = ANSI_CHARSET
+    Font.Color = clBlue
+    Font.Height = -13
+    Font.Name = #23435#20307
+    Font.Style = []
+    ParentFont = False
+  end
+  object Label4: TLabel
+    Left = 216
+    Top = 16
+    Width = 91
+    Height = 13
+    Caption = #12305#22312#37319#38598#21306#31614#21517
+    Font.Charset = ANSI_CHARSET
+    Font.Color = clBlue
+    Font.Height = -13
+    Font.Name = #23435#20307
+    Font.Style = []
+    ParentFont = False
+  end
+  object Label5: TLabel
+    Left = 108
+    Top = 16
+    Width = 26
+    Height = 13
+    Caption = #22995#21517
+    Font.Charset = ANSI_CHARSET
+    Font.Color = clBlue
+    Font.Height = -13
+    Font.Name = #23435#20307
+    Font.Style = []
+    ParentFont = False
+  end
 end

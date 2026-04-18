@@ -197,48 +197,30 @@ object SDIAppForm: TSDIAppForm
         ImageIndex = 8
         Style = tbsSeparator
       end
-      object LYLed2: TLYLed
+      object Shape2: TShape
         Left = 648
         Top = 2
-        Width = 19
+        Width = 22
         Height = 22
-        Cursor = crDefault
         Hint = #20307#26816#32467#35770#12289#24314#35758#29983#25104#25552#31034#28783
-        Value = False
-        OnColor = clRed
-        OffColor = clBtnFace
-        Interval = 500
-        Blink = True
-        BorderColor = clMaroon
-        hasSound = False
-        SoundString = '.\Wave\Driveby.wav'
-        SoundInValue = True
+        Shape = stCircle
       end
       object ToolButton7: TToolButton
-        Left = 667
+        Left = 670
         Top = 2
         Width = 8
         Caption = 'ToolButton7'
         ImageIndex = 7
         Style = tbsSeparator
       end
-      object LYLed1: TLYLed
-        Left = 675
+      object Shape1: TShape
+        Left = 678
         Top = 2
-        Width = 19
+        Width = 22
         Height = 22
-        Cursor = crDefault
         Hint = #21361#24613#20540#21578#35686'('#21452#20987#26597#30475#35814#24773')'
-        Value = False
-        OnColor = clRed
-        OffColor = clBtnFace
-        Interval = 500
-        Blink = True
-        BorderColor = clMaroon
-        hasSound = True
-        SoundString = '.\Wave\Driveby.wav'
-        SoundInValue = True
-        OnDblClick = LYLed1DblClick
+        Shape = stCircle
+        OnMouseDown = Shape1MouseDown
       end
     end
   end

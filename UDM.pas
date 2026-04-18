@@ -7,7 +7,7 @@ uses
   ComCtrls, Buttons,StdCtrls, ExtCtrls,MENUS,StrUtils,DBGrids, 
   Forms{Application变量},DBCtrls{DBEdit},Mask{TMaskEdit},Imm{ImmGetIMEFileName},
   CheckLst{TCheckListBox}, frxClass, frxExportPDF, frxDBSet,Jpeg,Chart,
-  Series, Graphics,Math,Variants;
+  Series, Graphics,Math,Variants,ShlObj,ActiveX,ComObj;
 
 type
   PDescriptType=^TDescriptType;
@@ -140,6 +140,7 @@ procedure Draw_MVIS2035_Curve(Chart_XLB:TChart;const X1,Y1,X2,Y2,X1_MIN,Y1_MIN,X
                                                    X1_MAX,Y1_MAX,X2_MAX,Y2_MAX:Real);
 procedure updatechart(ChartHistogram:TChart;const strHistogram:string;const strEnglishName:string;const strXTitle:string);
 procedure LoadSignatureToImage(AImage:TImage;const AOperatorID: String);//将指定帐号的签名图片加载到指定的Image组件
+procedure CreateDesktopShortcut;
 
 implementation
 
@@ -890,6 +891,95 @@ begin
   AImage.Picture.Bitmap.LoadFromStream(MemoryStream);// 从流加载图片到Image1控件
   MemoryStream.Free;
   Query1.Free;
+end;
+
+procedure CreateDesktopShortcut;
+//在某些Windows版本,可能需以管理员权限运行才能创建桌面快捷方式
+var
+  IObject: IUnknown;
+  ISLink: IShellLink;
+  IPFile: IPersistFile;
+  PIDL: PItemIDList;
+  DesktopPath: array[0..MAX_PATH] of WideChar;
+  LinkName: String;
+  Found: Boolean;
+  SearchRec: TSearchRec;
+  ShortcutName: string;//查找到的桌面快捷方式的完整路径及文件名
+  TargetPath: array[0..MAX_PATH] of Char;//查找到的桌面快捷方式所指向程序的完整路径及文件名
+  Win32FindData: TWin32FindData;
+begin
+  try
+    // 获取桌面文件夹路径
+    if SHGetSpecialFolderLocation(0, CSIDL_DESKTOP, PIDL) <> 0 then Exit;
+    if not SHGetPathFromIDListW(PIDL, DesktopPath) then Exit;
+
+    // 构建快捷方式完整路径
+    LinkName := WideString(DesktopPath) + '\' + ChangeFileExt(ExtractFileName(Application.ExeName), '.lnk');
+
+    if FileExists(LinkName) then Exit;//快捷方式已存在则退出
+
+    // 检查桌面是否存在指向本exe的快捷方式 begin
+    Found := False;
+    if FindFirst(String(DesktopPath) + '\*.lnk', faAnyFile, SearchRec) = 0 then
+    begin
+      repeat
+        if (SearchRec.Attr and faDirectory) <> 0 then Continue;// 跳过目录
+
+        // 检查lnk文件是否指向当前程序
+        ShortcutName := String(DesktopPath) + '\' + SearchRec.Name;
+
+        // 创建ShellLink对象来检查现有快捷方式的目标
+        IObject := CreateComObject(CLSID_ShellLink);
+        ISLink := IObject as IShellLink;
+        IPFile := IObject as IPersistFile;
+
+        // 加载现有的快捷方式
+        if Succeeded(IPFile.Load(PWideChar(WideString(ShortcutName)), STGM_READ)) then
+        begin
+          // 初始化目标路径数组
+          ZeroMemory(@TargetPath[0], SizeOf(TargetPath));
+
+          // 获取快捷方式的目标路径
+          if Succeeded(ISLink.GetPath(TargetPath, MAX_PATH, Win32FindData, SLGP_UNCPRIORITY)) then
+          begin
+            // 比较目标路径是否指向当前程序
+            if SameText(string(TargetPath), Application.ExeName) then
+            begin
+              Found := True;
+              Break;
+            end;
+          end;
+        end;
+        // 显式释放COM对象以便下一个循环使用
+        IObject := nil;
+        ISLink := nil;
+        IPFile := nil;
+
+      until FindNext(SearchRec) <> 0;
+
+      FindClose(SearchRec);
+    end;
+    // 检查桌面是否存在指向本exe的快捷方式 end
+
+    if Found then Exit;//如果已存在指向当前程序的快捷方式则退出
+
+    // 创建IShellLink接口实例
+    IObject := CreateComObject(CLSID_ShellLink);
+    ISLink := IObject as IShellLink;
+    IPFile := IObject as IPersistFile;
+
+    // 设置快捷方式属性
+    ISLink.SetPath(PChar(Application.ExeName)); // 设置目标路径
+    ISLink.SetWorkingDirectory(PChar(ExtractFilePath(Application.ExeName))); // 设置工作目录
+
+    // 保存快捷方式
+    IPFile.Save(PWideChar(WideString(LinkName)), False);
+  except
+    on E:Exception do
+    begin
+      WriteLog(pchar('创建桌面快捷方式失败:'+E.Message));
+    end;
+  end;
 end;
 
 procedure TDM.frxReport1BeforePrint(Sender: TfrxReportComponent);

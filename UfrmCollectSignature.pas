@@ -14,6 +14,9 @@ type
     Image1: TImage;//390*130(3:1)
     SpeedButton1: TSpeedButton;
     SpeedButton2: TSpeedButton;
+    Label3: TLabel;
+    Label4: TLabel;
+    Label5: TLabel;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure PaintBox1Paint(Sender: TObject);
@@ -142,6 +145,7 @@ end;
 
 procedure TfrmCollectSignature.FormShow(Sender: TObject);
 begin
+  Label5.Caption:=ScalarSQLCmd(LisConn,'select TOP 1 name from worker WITH(NOLOCK) WHERE id='''+FOperatorID+'''');
   LoadSignatureToImage(Image1,FOperatorID);
 end;
 

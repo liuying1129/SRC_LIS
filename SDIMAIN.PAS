@@ -8,7 +8,7 @@ uses Windows,Messages, Classes,SysUtils, Graphics, Forms, Controls, Menus,
   DB,inifiles, Printers,
   StrUtils, Series, Chart,shellapi{ShellExecute}, 
   DateUtils, ADOLYGetcode,Math, UfrmLocateRecord,
-  UADOLYQuery, LYLed, frxClass, ExtDlgs,Variants,Jpeg;
+  UADOLYQuery, frxClass, ExtDlgs,Variants,Jpeg;
 
 //==为了通过发送消息更新主窗体状态栏而增加==//
 const
@@ -170,7 +170,6 @@ type
     N17: TMenuItem;
     N60: TMenuItem;
     N75: TMenuItem;
-    LYLed2: TLYLed;
     TimerMakeTjDescription: TTimer;
     N85: TMenuItem;
     N86: TMenuItem;
@@ -190,7 +189,6 @@ type
     LabeledEdit9: TComboBox;
     N33: TMenuItem;
     ToolButton3: TToolButton;
-    LYLed1: TLYLed;
     TimerCriticalValue: TTimer;
     SpeedButton2: TSpeedButton;
     SpeedButton8: TSpeedButton;
@@ -234,6 +232,8 @@ type
     N39: TMenuItem;
     N40: TMenuItem;
     N43: TMenuItem;
+    Shape1: TShape;
+    Shape2: TShape;
     procedure FileExit1Execute(Sender: TObject);
     procedure HelpAbout1Execute(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -348,7 +348,6 @@ type
     procedure N32Click(Sender: TObject);
     procedure N33Click(Sender: TObject);
     procedure TimerCriticalValueTimer(Sender: TObject);
-    procedure LYLed1DblClick(Sender: TObject);
     procedure SpeedButton2Click(Sender: TObject);
     procedure SpeedButton8Click(Sender: TObject);
     procedure N6Click(Sender: TObject);
@@ -389,6 +388,8 @@ type
     procedure N3Click(Sender: TObject);
     procedure N38Click(Sender: TObject);
     procedure N43Click(Sender: TObject);
+    procedure Shape1MouseDown(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
   private
     procedure CheckTheListBox;//根据当前病人的结果在checklistbox1中打钩
     procedure WriteProfile;
@@ -457,6 +458,9 @@ var
     lsGroupShow:TStrings;
     lsTransUnid:TStringList;//仪器传输（需刷新）的病人基本资料UNID列表
     bFirstOverWorkTips:boolean;//是否第一次提示【结束当批检验工作】
+    
+    LastClickTime: Cardinal = 0;//用于判断Shape1双击事件
+    LastClickShape: TObject = nil;//用于判断Shape1双击事件
 
 {$R *.dfm}
 //自定义资源文件，源代码为YkLisCustom.rc
@@ -729,6 +733,8 @@ Begin
   //试用版有效期控制 stop
 
   bFirstOverWorkTips:=true;
+
+  CreateDesktopShortcut;
 end;
 
 procedure TSDIAppForm.N4Click(Sender: TObject);
@@ -737,7 +743,7 @@ begin
 
   if '1'=ScalarSQLCmd(LisConn,'select TOP 1 1 from Chk_Con cc WITH(NOLOCK),chk_valu cv WITH(NOLOCK) where cc.unid=cv.pkunid and cc.combin_id='''+cbxConnChar.Text+''' and isnull(cc.TjXinDianTu,'''')='''' and dbo.uf_CriticalValueAlarm(cv.itemid,cc.sex,cc.age,cv.itemvalue)=1') then
   begin
-    LYLed1.Value:=true;
+    Shape1.Brush.Color:=clRed;
     MESSAGEDLG('存在未报告的危急值,不允许结束操作!',mtWarning,[MBOK],0);
     exit;
   end;
@@ -998,6 +1004,7 @@ begin
   dbgrid1.Columns[11].Width:=60;//送检科室
   dbgrid1.Columns[12].Width:=55;//送检医生
   dbgrid1.Columns[13].Width:=72;//申请日期
+  dbgrid1.Columns[14].Width:=42;//操作者
 
   //VisibleColumn(dbgrid1,'流水号',N6.Checked);//按流水号排序时显示流水号,否则(联机号)不显示流水号
 end;
@@ -3400,7 +3407,8 @@ end;
 
 procedure TSDIAppForm.TimerMakeTjDescriptionTimer(Sender: TObject);
 begin
-  LYLed2.Value:='1'=ScalarSQLCmd(LisConn,'select TOP 1 1 from chk_con WITH(NOLOCK) where Weight=''待生成'' ',False);
+  if '1'=ScalarSQLCmd(LisConn,'select TOP 1 1 from chk_con WITH(NOLOCK) where Weight=''待生成'' ',False) then Shape2.Brush.Color:=clRed
+    else Shape2.Brush.Color:=clWhite; 
 end;
 
 procedure TSDIAppForm.N85Click(Sender: TObject);
@@ -3444,14 +3452,10 @@ end;
 
 procedure TSDIAppForm.TimerCriticalValueTimer(Sender: TObject);
 begin
-  if LYLed1.Value then exit;
+  if Shape1.Brush.Color=clRed then exit;
   
-  LYLed1.Value:='1'=ScalarSQLCmd(LisConn,'select TOP 1 1 from Chk_Con cc WITH(NOLOCK),chk_valu cv WITH(NOLOCK) where cc.unid=cv.pkunid and cc.check_date>getdate()-7 and isnull(cc.TjXinDianTu,'''')='''' and dbo.uf_CriticalValueAlarm(cv.itemid,cc.sex,cc.age,cv.itemvalue)=1',False);
-end;
-
-procedure TSDIAppForm.LYLed1DblClick(Sender: TObject);
-begin
-  frmCriticalValueDetail.ShowModal;
+  if '1'=ScalarSQLCmd(LisConn,'select TOP 1 1 from Chk_Con cc WITH(NOLOCK),chk_valu cv WITH(NOLOCK) where cc.unid=cv.pkunid and cc.check_date>getdate()-7 and isnull(cc.TjXinDianTu,'''')='''' and dbo.uf_CriticalValueAlarm(cv.itemid,cc.sex,cc.age,cv.itemvalue)=1',False) then Shape1.Brush.Color:=clRed
+    else Shape1.Brush.Color:=clWhite; 
 end;
 
 procedure TSDIAppForm.SpeedButton2Click(Sender: TObject);
@@ -3862,6 +3866,29 @@ end;
 procedure TSDIAppForm.N43Click(Sender: TObject);
 begin
   TMenuItem(sender).Checked:=not TMenuItem(sender).Checked;
+end;
+
+procedure TSDIAppForm.Shape1MouseDown(Sender: TObject;
+  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+var
+  CurrentTime: Cardinal;
+begin
+  if Button <> mbLeft then exit;
+
+  CurrentTime := GetTickCount;
+
+  // 检查是否是双击（使用系统双击时间）
+  if (CurrentTime - LastClickTime < GetDoubleClickTime) and (LastClickShape = Sender) then
+  begin
+    // 双击处理
+    frmCriticalValueDetail.ShowModal;
+    LastClickTime := 0;  // 防止连续多次触发
+  end else
+  begin
+    // 单击处理,记录点击信息
+    LastClickTime := CurrentTime;
+    LastClickShape := Sender;
+  end;
 end;
 
 end.
