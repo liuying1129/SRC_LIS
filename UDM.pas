@@ -39,6 +39,7 @@ type
 const
   //条件编译指令
   //取消定义的简单办法,在{$...}的$前面随便加点什么,让它变成"注释",譬如:{.$}
+  //通过IDE配置:Project->Options...->Directories/Conditionals->Conditional defines
   {.$DEFINE VERSION_PEIS}
   {$IFDEF VERSION_PEIS}
     SYSNAME='PEIS';
