@@ -105,7 +105,7 @@ object frmBatchSpecNo: TfrmBatchSpecNo
     Top = 113
     Width = 164
     Height = 17
-    Caption = #20462#25913#24050#23384#22312#30340#23457#26680#32773
+    Caption = #20801#35768#20462#25913#24050#23384#22312#30340#23457#26680#32773
     TabOrder = 6
   end
 end

@@ -188,6 +188,7 @@ object frmdocset: Tfrmdocset
     end
   end
   object ADOdoclist: TADOQuery
+    AfterOpen = ADOdoclistAfterOpen
     AfterScroll = ADOdoclistAfterScroll
     Parameters = <>
     Left = 44

@@ -40,8 +40,8 @@ type
     procedure BitBtn1Click(Sender: TObject);
     procedure ComboBox2DropDown(Sender: TObject);
     procedure ComboBox2Change(Sender: TObject);
+    procedure ADOdoclistAfterOpen(DataSet: TDataSet);
   private
-    function GetDepUnid:string;
     procedure UpdateADOdoclist;
     procedure docrefresh;
     { Private declarations }
@@ -77,7 +77,7 @@ procedure Tfrmdocset.suiButton1Click(Sender: TObject);
 begin
   if not ADOdoclist.Active then exit;
   
-  if trim(GetDepUnid)='' then//用户体验更好
+  if ComboBox2.ItemIndex < 0 then//用户体验更好
   begin
     MessageDlg('新增前请先选择部门！',mtError,[MBOK],0);
     exit;
@@ -100,7 +100,7 @@ Begin
    begin
         ifdocnewadd:=false;
 
-        dep_unid:=GetDepUnid;
+        dep_unid:=IntToStr(Integer(ComboBox2.Items.Objects[ComboBox2.ItemIndex]));
 
         if trim(dep_unid)='' then
         begin
@@ -233,20 +233,37 @@ begin
 end;
 
 procedure Tfrmdocset.ComboBox2DropDown(Sender: TObject);
+var
+  adotemp3:tadoquery;
 begin
-  LoadGroupName(TComboBox(Sender),'select ''[''+CAST(unid as varchar)+'']''+Name from CommCode WITH(NOLOCK) where TypeName=''部门'' order by id');
+  adotemp3:=tadoquery.Create(nil);
+  adotemp3.Connection:=DM.ADOConnection1;
+  adotemp3.Close;
+  adotemp3.SQL.Clear;
+  adotemp3.SQL.Text:='select Name,Unid from CommCode WITH(NOLOCK) where TypeName=''部门'' order by id';
+  adotemp3.Open;
+  TComboBox(Sender).Items.Clear;//加载前先清除comboBox项
+  while not adotemp3.Eof do
+  begin
+    //加载到comboBox
+    //TObject(i)只是将整数值强制转换为TObject类型来存储,并没有创建真正的对象.故无需释放对象
+    //仅整数值能通过TObject(i)的方式强制转换,其他类型请使用对象包装
+    TComboBox(Sender).Items.AddObject(trim(adotemp3.fieldbyname('Name').AsString), TObject(adotemp3.fieldbyname('Unid').AsInteger));
+    adotemp3.Next;
+  end;
+  adotemp3.Free;  
 end;
 
 procedure Tfrmdocset.UpdateADOdoclist;
 begin
   ADOdoclist.Close;
   ADOdoclist.SQL.Clear;
-  if trim(GetDepUnid)='' then
+  if ComboBox2.ItemIndex < 0 then
   begin
-    ADOdoclist.SQL.Text:='SELECT id AS 用户代码,name AS 用户名称,ShowAllTj as 所有科室项目,pkdeptid as 科室唯一编号,unid AS 唯一编号 FROM worker order by id';
+    ADOdoclist.SQL.Text:='SELECT w.id AS 用户代码,w.name AS 用户名称,ShowAllTj as 所有科室项目,(select TOP 1 cc.Name from CommCode cc where TypeName=''部门'' and cc.Unid=pkdeptid) as 科室名称,w.unid AS 唯一编号 FROM worker w order by w.id';
   end else
   begin
-    ADOdoclist.SQL.Text:='SELECT id AS 用户代码,name AS 用户名称,ShowAllTj as 所有科室项目,pkdeptid as 科室唯一编号,unid AS 唯一编号 FROM worker where pkdeptid='+trim(GetDepUnid)+' order by id';
+    ADOdoclist.SQL.Text:='SELECT w.id AS 用户代码,w.name AS 用户名称,ShowAllTj as 所有科室项目,(select TOP 1 cc.Name from CommCode cc where TypeName=''部门'' and cc.Unid=pkdeptid) as 科室名称,w.unid AS 唯一编号 FROM worker w where pkdeptid='+IntToStr(Integer(ComboBox2.Items.Objects[ComboBox2.ItemIndex]))+' order by w.id';
   end;
   ADOdoclist.Open;
 end;
@@ -256,13 +273,10 @@ begin
   UpdateADOdoclist;
 end;
 
-function Tfrmdocset.GetDepUnid: string;
-var
-  s2:string;
+procedure Tfrmdocset.ADOdoclistAfterOpen(DataSet: TDataSet);
 begin
-  s2:=leftstr(ComboBox2.Text,pos(']',ComboBox2.Text));
-  Result:=StringReplace(s2,'[','',[rfReplaceAll, rfIgnoreCase]);
-  Result:=StringReplace(Result,']','',[rfReplaceAll, rfIgnoreCase]);
+  if not DataSet.Active then exit;
+  dbgrid1.Columns[3].Width:=80;//科室名称
 end;
 
 initialization
