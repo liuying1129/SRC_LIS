@@ -590,7 +590,7 @@ object frmItemSetup: TfrmItemSetup
           Caption = #23383
           Color = clWindow
           Font.Charset = ANSI_CHARSET
-          Font.Color = clBlue
+          Font.Color = clRed
           Font.Height = -13
           Font.Name = #23435#20307
           Font.Style = []

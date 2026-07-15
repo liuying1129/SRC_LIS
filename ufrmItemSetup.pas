@@ -649,7 +649,7 @@ begin
     ItemUnid:=tdbgrid(sender).DataSource.DataSet.fieldbyname('Unid').AsString;
     if '1'<>ScalarSQLCmd(LisConn,'select TOP 1 1 from CombSChkItem where ItemUnid='+ItemUnid) then
     begin
-      tdbgrid(sender).Canvas.Font.Color:=clBlue;
+      tdbgrid(sender).Canvas.Font.Color:=clRed;
       tdbgrid(sender).DefaultDrawColumnCell(rect,datacol,column,state);
     end;
   end;

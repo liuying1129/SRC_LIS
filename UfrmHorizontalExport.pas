@@ -106,6 +106,7 @@ select
 ,TempA1.age as 年龄
 ,TempA1.combin_id as 工作组
 ,TempA1.deptname as 送检科室
+,TempA1.check_doctor as 送检医生
 
 ,max(case when TempA1.combin_name='尿常规' and TempA1.name='白细胞' then TempA1.itemvalue end) as '尿常规/白细胞'
 ,max(case when TempA1.combin_name='尿常规' and TempA1.name='亚硝酸盐' then TempA1.itemvalue end) as '尿常规/亚硝酸盐'
@@ -125,7 +126,7 @@ select
 
  from 
 (
-select cc2.unid,cc2.Caseno,cc2.check_date,cc2.patientname,cc2.sex,cc2.age,cc2.combin_id,cc2.deptname,cv2.combin_name,cv2.Name,cv2.english_name,cv2.itemvalue,cv2.Unit,cv2.Min_value,cv2.Max_value 
+select cc2.unid,cc2.Caseno,cc2.check_date,cc2.patientname,cc2.sex,cc2.age,cc2.combin_id,cc2.deptname,cc2.check_doctor,cv2.combin_name,cv2.Name,cv2.english_name,cv2.itemvalue,cv2.Unit,cv2.Min_value,cv2.Max_value 
 from view_chk_con_all cc2 WITH(NOLOCK),view_chk_valu_all cv2 WITH(NOLOCK) where cc2.unid=cv2.pkunid
 and isnull(cv2.itemvalue,'')<>'' and cv2.issure=1
 and isnull(cc2.patientname,'')<>''
@@ -143,6 +144,7 @@ group by
 ,TempA1.age
 ,TempA1.combin_id
 ,TempA1.deptname
+,TempA1.check_doctor
 }
 procedure TfrmHorizontalExport.BitBtn1Click(Sender: TObject);
 const
@@ -155,12 +157,13 @@ const
 ',TempA1.sex as 性别'+
 ',TempA1.age as 年龄'+
 ',TempA1.combin_id as 工作组'+
-',TempA1.deptname as 送检科室';
+',TempA1.deptname as 送检科室'+
+',TempA1.check_doctor as 送检医生';
 
   ss2=
 ' from '+
 '('+
-'select cc2.unid,cc2.Caseno,cc2.check_date,cc2.patientname,cc2.sex,cc2.age,cc2.combin_id,cc2.deptname,cv2.combin_name,cv2.Name,cv2.english_name,cv2.itemvalue,cv2.Unit,cv2.Min_value,cv2.Max_value '+
+'select cc2.unid,cc2.Caseno,cc2.check_date,cc2.patientname,cc2.sex,cc2.age,cc2.combin_id,cc2.deptname,cc2.check_doctor,cv2.combin_name,cv2.Name,cv2.english_name,cv2.itemvalue,cv2.Unit,cv2.Min_value,cv2.Max_value '+
 'from view_chk_con_all cc2 WITH(NOLOCK),view_chk_valu_all cv2 WITH(NOLOCK) where cc2.unid=cv2.pkunid '+
 'and isnull(cv2.itemvalue,'''')<>'''' and cv2.issure=1 '+
 'and isnull(cc2.patientname,'''')<>'''' '+
@@ -177,7 +180,8 @@ const
 ',TempA1.sex'+
 ',TempA1.age'+
 ',TempA1.combin_id'+
-',TempA1.deptname';
+',TempA1.deptname'+
+',TempA1.check_doctor';
 var
   ss3,ss4:string;
   i,b:integer;
@@ -267,8 +271,9 @@ begin
     if i=5 then dbgrid1.Columns[i].Width:=30;//年龄
     if i=6 then dbgrid1.Columns[i].Width:=67;//工作组//5个汉字
     if i=7 then dbgrid1.Columns[i].Width:=60;//送检科室
+    if i=8 then dbgrid1.Columns[i].Width:=60;//送检医生
 
-    if i>=8 then dbgrid1.Columns[i].Width:=100;
+    if i>=9 then dbgrid1.Columns[i].Width:=100;
   end;
 end;
 
