@@ -903,6 +903,42 @@ GO
 SET ANSI_NULLS ON 
 GO
 
+if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[uf_GetAge]') and xtype in (N'FN', N'IF', N'TF'))
+drop function [dbo].[uf_GetAge]
+GO
+
+CREATE FUNCTION uf_GetAge
+(
+  @CSRQ datetime,--出生日期
+  @op_date datetime --送检日期
+)  
+RETURNS varchar(50) AS  
+BEGIN   
+  IF @CSRQ IS NULL OR @op_date IS NULL RETURN '';
+
+  IF @CSRQ > @op_date RETURN '';-- 出生日期晚于送检日期
+
+  DECLARE @months int;
+  DECLARE @age int;
+
+  -- 计算精确月龄：先算年月差，再根据“日”调整
+  SET @months = (YEAR(@op_date) - YEAR(@CSRQ)) * 12 + (MONTH(@op_date) - MONTH(@CSRQ));
+
+  IF DAY(@op_date) < DAY(@CSRQ) SET @months = @months - 1;
+
+  -- 不满 1 个月按 1 个月算
+  IF @months < 1 SET @months = 1;
+
+  -- 不满 1 周岁，返回“X月”
+  IF @months < 12 RETURN CAST(@months AS varchar(10)) + '月';
+
+  -- 满 1 周岁，计算周岁（月龄除以 12 取整）
+  SET @age = @months / 12;
+
+  RETURN CAST(@age AS varchar(10));  
+END
+GO
+
 if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[uf_GetAgeReal]') and xtype in (N'FN', N'IF', N'TF'))
 drop function [dbo].[uf_GetAgeReal]
 GO
