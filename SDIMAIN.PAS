@@ -545,6 +545,7 @@ begin
   if Clear_TYPE=2 then labelededit8.Text:=''; //样本类型 注：换组后样本类型一般不会相同，故清空
   labelededit14.Clear;
   if Clear_TYPE=2 then labelededit15.Clear; //备注 注：小林要求换组后清空备注20080423
+  if (Clear_TYPE=1) and (not UseOldMemo) then labelededit15.Clear;//备注 
   DateTimePicker1.DateTime := IncMinute(ServerDate,-10);//申请日期
   DateTimePicker2.DateTime := ServerDate;//检查日期
   DateTimePicker3.DateTime:=IncMinute(ServerDate,-10);   //申请时间
@@ -2058,6 +2059,7 @@ begin
       '根据"门诊/住院号"提取备注'+#2+'CheckListBox'+#2+#2+'1'+#2+#2+#3+
       '送检科室取码的匹配方式'+#2+'Combobox'+#2+'模糊匹配'+#13+'左匹配'+#13+'右匹配'+#13+'全匹配'+#2+'1'+#2+#2+#3+
       '送检医生取码的匹配方式'+#2+'Combobox'+#2+'模糊匹配'+#13+'左匹配'+#13+'右匹配'+#13+'全匹配'+#2+'1'+#2+#2+#3+
+      '新检验单沿用旧备注'+#2+'CheckListBox'+#2+#2+'1'+#2+#2+#3+
       '弹出登录窗口的时间'+#2+'Edit'+#2+#2+'1'+#2+'注:表示多长时间内无操作,则自动弹出登录窗口(单位:秒)'+#2+#3+
       '特殊模板1工作组'+#2+'Combobox'+#2+sWorkGroup+#2+'2'+#2+#2+#3+
       '特殊模板1文件'+#2+'File'+#2+#2+'2'+#2+#2+#3+
@@ -2493,6 +2495,7 @@ begin
   ifGetBedNoFromCaseNo:=configini.ReadBool('选项','根据"门诊/住院号"提取床号',false);
   ifGetDiagnoseFromCaseNo:=configini.ReadBool('选项','根据"门诊/住院号"提取临床诊断',false);
   ifGetMemoFromCaseNo:=configini.ReadBool('选项','根据"门诊/住院号"提取备注',false);
+  UseOldMemo:=configini.ReadBool('选项','新检验单沿用旧备注',false);
   LoginTime:=configini.ReadInteger('选项','弹出登录窗口的时间',30);
 
   WorkGroup_T1:=configini.ReadString('打印模板','特殊模板1工作组','');

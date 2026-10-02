@@ -76,6 +76,7 @@ var
   gServerName:string;//服务名,用于显示在状态栏
   gDbName:string;//数据库名,用于显示在状态栏
   LoginTime:integer;//弹出登录窗口的时间
+  UseOldMemo:boolean;//新检验单沿用旧备注
 
   WorkGroup_T1:string;
   TempFile_T1:string;
