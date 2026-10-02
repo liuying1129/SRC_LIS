@@ -159,12 +159,14 @@ const
 ',TempA1.combin_id as 工作组'+
 ',TempA1.deptname as 送检科室'+
 ',TempA1.check_doctor as 送检医生'+
+',TempA1.report_date as 申请时间'+
+',TempA1.Audit_Date as 审核时间'+
 ',TempA1.issure as 备注';
 
   ss2=
 ' from '+
 '('+
-'select cc2.unid,cc2.Caseno,cc2.check_date,cc2.patientname,cc2.sex,cc2.age,cc2.combin_id,cc2.deptname,cc2.check_doctor,cc2.issure,cv2.combin_name,cv2.Name,cv2.english_name,cv2.itemvalue,cv2.Unit,cv2.Min_value,cv2.Max_value '+
+'select cc2.unid,cc2.Caseno,cc2.check_date,cc2.patientname,cc2.sex,cc2.age,cc2.combin_id,cc2.deptname,cc2.check_doctor,cc2.report_date,cc2.Audit_Date,cc2.issure,cv2.combin_name,cv2.Name,cv2.english_name,cv2.itemvalue,cv2.Unit,cv2.Min_value,cv2.Max_value '+
 'from view_chk_con_all cc2 WITH(NOLOCK),view_chk_valu_all cv2 WITH(NOLOCK) where cc2.unid=cv2.pkunid '+
 'and isnull(cv2.itemvalue,'''')<>'''' and cv2.issure=1 '+
 'and isnull(cc2.patientname,'''')<>'''' '+
@@ -183,6 +185,8 @@ const
 ',TempA1.combin_id'+
 ',TempA1.deptname'+
 ',TempA1.check_doctor'+
+',TempA1.report_date'+
+',TempA1.Audit_Date'+
 ',TempA1.issure';
 var
   ss3,ss4:string;
